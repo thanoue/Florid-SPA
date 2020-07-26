@@ -2,7 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, Injector } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { QRCodeModule } from 'angularx-qrcode';
 import { AppInjector } from './services/common/base.injector';
 import { LoginComponent } from './components/login/login.component';
 import { MainLayoutComponent } from './components/main-layout/main-layout.component';
@@ -61,7 +60,6 @@ import { ImgPipe } from './pipes/img.pipe';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    QRCodeModule,
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,

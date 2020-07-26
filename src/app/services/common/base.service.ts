@@ -2,7 +2,6 @@ import { AppInjector } from './base.injector';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { GlobalService } from './global.service';
-import * as firebase from 'firebase';
 import { BaseEntity } from 'src/app/models/entities/base.entity';
 import { Guid } from 'guid-typescript';
 import { StorageService } from '../storage.service';
@@ -15,7 +14,7 @@ export abstract class BaseService<T extends BaseEntity> {
 
     protected abstract get tableName(): string;
 
-    protected get tableRef(): firebase.database.Reference {
+    protected get tableRef(): any {
         return this.db.ref(this.tableName);
     }
 
@@ -40,8 +39,8 @@ export abstract class BaseService<T extends BaseEntity> {
         this.globalService.showSuccess(message);
     }
 
-    protected get db(): firebase.database.Database {
-        return firebase.database();
+    protected get db(): any {
+        return null;
     }
 
     constructor() {

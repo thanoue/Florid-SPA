@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './common/base.service';
 import { Customer, CustomerAddress, CustomerContactInfo, MembershipInfo, SpecialDay } from '../models/entities/customer.entity';
-import * as firebase from 'firebase';
 import { CustomerReceiverDetail } from '../models/entities/order.entity';
 import { HttpService } from './common/http.service';
 import { GlobalService } from './common/global.service';

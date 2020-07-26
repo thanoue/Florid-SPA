@@ -6,9 +6,6 @@ import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/entities/user.entity';
 import { ROLES, IMAGE_FOLDER_PATHS } from 'src/app/app.constants';
 import { NgForm } from '@angular/forms';
-import { UserAvtService } from 'src/app/services/userr.avt.service';
-import { UserAvtImage } from 'src/app/models/entities/file.entity';
-import { FunctionsService } from 'src/app/services/common/functions.service';
 import { Guid } from 'guid-typescript';
 import { ExchangeService } from 'src/app/services/exchange.service';
 declare function hideAdd(): any;
@@ -33,7 +30,7 @@ export class UsersComponent extends BaseComponent {
   protected PageCompnent: PageComponent = new PageComponent('Nhân Viên', MenuItems.User);
 
 
-  constructor(private userService: UserService, private userAvtImageService: UserAvtService) {
+  constructor(private userService: UserService) {
     super();
   }
 

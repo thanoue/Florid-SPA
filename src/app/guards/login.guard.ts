@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import * as firebase from 'firebase';
 import { AuthService } from '../services/common/auth.service';
 import { Roles } from '../models/enums';
 import { GlobalService } from '../services/common/global.service';

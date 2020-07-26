@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as firebase from 'firebase';
 import { LocalService } from './local.service';
 import { GlobalService } from './global.service';
 
@@ -12,16 +11,16 @@ export class FunctionsService {
 
   public static excuteFunction(name: string, dataObject?: any): Promise<any> {
 
-    const func = firebase.functions().httpsCallable(name);
+    // const func = firebase.functions().httpsCallable(name);
 
-    const params = {
-      data: dataObject,
-      //   token: LocalService.getAccessToken()
-    };
+    // const params = {
+    //   data: dataObject,
+    //   //   token: LocalService.getAccessToken()
+    // };
 
-    return func(params).then(res => {
-      return res.data;
-    });
-
+    // return func(params).then(res => {
+    //   return res.data;
+    // });
+    return;
   }
 }

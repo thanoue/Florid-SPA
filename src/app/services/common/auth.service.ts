@@ -3,7 +3,6 @@ import { LocalService } from './local.service';
 import { Roles } from 'src/app/models/enums';
 import { Local } from 'protractor/built/driverProviders';
 import { LoginModel } from 'src/app/models/entities/user.entity';
-import * as firebase from 'firebase';
 import { GlobalService } from './global.service';
 import { UserService } from '../user.service';
 import { HttpService } from './http.service';
