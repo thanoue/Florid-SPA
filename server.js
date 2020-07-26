@@ -98,38 +98,47 @@ function initial() {
 
                 var categories = [
                     {
+                        Id: 1,
                         Name: "Valentine",
                         Description: "Hoa lễ tình nhân"
                     },
                     {
+                        Id: 2,
                         Name: "Bó hoa tươi",
                         Description: "Bó hoa tươi"
                     },
                     {
+                        Id: 3,
                         Name: "Bình hoa tươi",
                         Description: "Bình hoa tươi"
                     },
                     {
+                        Id: 4,
                         Name: "Hộp hoa tươi",
                         Description: "Hộp hoa tươi"
                     },
                     {
+                        Id: 5,
                         Name: "Giỏ hoa tươi",
                         Description: "Giỏ hoa tươi"
                     },
                     {
+                        Id: 6,
                         Name: "Hoa nghệ thuật",
                         Description: "Hoa nghệ thuật"
                     },
                     {
+                        Id: 7,
                         Name: "Kệ hoa tươi",
                         Description: "Kệ hoa tươi"
                     },
                     {
+                        Id: 8,
                         Name: "Hoa sự kiện",
                         Description: "Hoa sự kiện"
                     },
                     {
+                        Id: 9,
                         Name: "Lan hồ điệp",
                         Description: "Lan hồ điệp"
                     }
