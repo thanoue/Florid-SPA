@@ -1,0 +1,174 @@
+<div class="contentContent container-fluid cusScroll">
+    <!-- Start List Sale Item Component -->
+    <div class="row">
+        <div class="col-9">
+            <div class="leftDetail" *ngIf="customer">
+                <form #form="ngForm" (submit)="editCustomer(form)" autocomplete="off">
+                    <div class="infoCard">
+                        <h3 class="infoTitle">Thông tin cá nhân</h3>
+                        <ul class="infoList">
+                            <li><label>Họ và Tên: </label><input class="form-control" type="text"
+                                    [(ngModel)]="customer.FullName" id="FullName" name="FullName" #FullName="ngModel"
+                                    required minlength="5">
+                                <div *ngIf="FullName.invalid && (FullName.dirty || FullName.touched)"
+                                    class="alert alert-danger">
+
+                                    <div *ngIf="FullName.errors.required">
+                                        Bắt buộc
+                                    </div>
+                                    <div *ngIf="FullName.errors.minlength">
+                                        Tối thiểu 5 ký tự
+                                    </div>
+                                </div>
+                            </li>
+                            <li><label>Số điện thoại: </label><input class="form-control" type="number"
+                                    [(ngModel)]="customer.PhoneNumber" id="PhoneNumber" name="PhoneNumber"
+                                    #PhoneNumber="ngModel" required minlength="9">
+                                <div *ngIf="PhoneNumber.invalid && (PhoneNumber.dirty || PhoneNumber.touched)"
+                                    class="alert alert-danger">
+                                    <div *ngIf="PhoneNumber.errors.required">
+                                        Bắt buộc
+                                    </div>
+                                    <div *ngIf="PhoneNumber.errors.minlength">
+                                        Tối thiểu 9 ký tự
+                                    </div>
+                                </div>
+                            </li>
+                            <li><label>Sinh nhật: </label>
+                                <input class="form-control" type="date"
+                                    [ngModel]="customer.Birthday | date:'yyyy-MM-dd'"
+                                    (ngModelChange)="customer.Birthday = $event" id="Birthday" name="Birthday">
+                            </li>
+                            <li><label>Danh xưng: </label>
+                                <select class="form-control" [(ngModel)]="customer.Sex" name="Sex" id="Sex">
+                                    <option selected>Chọn...</option>
+                                    <option [ngValue]="'Male'">Anh</option>
+                                    <option [ngValue]="'Female'">Chị</option>
+                                    <option [ngValue]="'Others'">Khác</option>
+                                </select>
+                            </li>
+                            <li><label>Địa chỉ nhà riêng: </label>
+                                <input type="text" class="form-control" type="text" [(ngModel)]="customer.Address.Home"
+                                    id="Home" name="Home">
+                            </li>
+                            <li><label>Địa chỉ công ty: </label>
+                                <input type="text" class="form-control" [(ngModel)]="customer.Address.Work" id="Work"
+                                    name="Work">
+                            </li>
+                            <li>
+                                <label>Ngày đặc biệt:</label>
+                                <div class="group-wrap split-wrap">
+                                    <div class="form-row"
+                                        *ngFor="let specialDay of customer.SpecialDays; let i = index">
+                                        <div class="col-6">
+                                            <input type="text" class="form-control" [(ngModel)]="specialDay.Description"
+                                                [id]="'Description' + i" [name]="'Description' + i">
+                                        </div>
+                                        <div class="col-6">
+                                            <input type="date" class="form-control"
+                                                [ngModel]="specialDay.Date | date:'yyyy-MM-dd'"
+                                                (ngModelChange)="specialDay.Date = $event" [id]="'Date'+i"
+                                                [name]="'Date'+i" />
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-3">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                (click)="addSpecialDay()"><i class="fa fa-plus"></i> Thêm
+                                                ngày</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="infoCard">
+                        <h3 class="infoTitle">Thông tin liên hệ</h3>
+                        <ul class="infoList">
+                            <li><label>Facebook: </label><input type="text" class="form-control"
+                                    [(ngModel)]="customer.ContactInfo.Facebook" id="Facebook" name="Facebook"
+                                    placeholder="nguyenvana"></li>
+                            <li><label>Zalo: </label><input type="text" class="form-control"
+                                    [(ngModel)]="customer.ContactInfo.Zalo" id="Zalo" name="Zalo" placeholder="">
+                            </li>
+                            <li><label>Viber: </label><input type="text" class="form-control"
+                                    [(ngModel)]="customer.ContactInfo.Viber" id="Viber" name="Viber" placeholder="">
+                            </li>
+                            <li><label>Skype: </label><input type="text" class="form-control"
+                                    [(ngModel)]="customer.ContactInfo.Skype" id="Skype" name="Skype" placeholder="">
+                            </li>
+                            <li><label>Instagram: </label><input type="text" class="form-control"
+                                    [(ngModel)]="customer.ContactInfo.Instagram" id="Instagram" name="Instagram"
+                                    placeholder=""></li>
+                            <li><label>Liên hệ chính: </label>
+                                <select class="form-control" [(ngModel)]="customer.MainContactInfo"
+                                    name="MainContactInfo" id="MainContactInfo">
+                                    <option selected>Chọn...</option>
+                                    <option [ngValue]="'Zalo'">Zalo</option>
+                                    <option [ngValue]="'Facebook'">Facebook</option>
+                                    <option [ngValue]="'Viber'">Viber</option>
+                                    <option [ngValue]="'Skype'">Skype</option>
+                                    <option [ngValue]="'Instagram'">Instagram</option>
+                                </select>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="infoCard">
+                        <h3 class="infoTitle">Thông tin điểm thành viên</h3>
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr class=" table-info">
+                                    <th>Điểm đã dùng</th>
+                                    <th>Tổng số tiền đã mua</th>
+                                    <th>Cấp bậc thành viên</th>
+                                </tr>
+                                <tr>
+                                    <td><input class="form-control" type="number" name="UsedScoreTotal"
+                                            id="UsedScoreTotal" [(ngModel)]="customer.MembershipInfo.UsedScoreTotal">
+                                    </td>
+
+                                    <td><input class="form-control" type="number" name="AccumulatedAmount"
+                                            id="AccumulatedAmount"
+                                            [(ngModel)]="customer.MembershipInfo.AccumulatedAmount">
+                                    </td>
+                                    <td>
+                                        <select class="form-control"
+                                            [(ngModel)]="customer.MembershipInfo.MembershipType" name="MembershipType"
+                                            id="MembershipType">
+                                            <option selected>Chọn...</option>
+                                            <option [ngValue]="'NewCustomer'">KH mới</option>
+                                            <option [ngValue]="'Member'">Member</option>
+                                            <option [ngValue]="'Vip'">Vip</option>
+                                            <option [ngValue]="'VVip'">VVip</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="w-100 text-right">
+                        <button type="submit" class="btn btn-outline-info"><i class="fa fa-check"></i> Lưu thông
+                            tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rightDetail sidebar">
+                <h4 class="sidebarTitle">Quản lý khách hàng</h4>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/customer-detail">Thông tin chung</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/customer-orders">Danh sách đơn hàng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/customer-receivers">Thông tin nhận hàng đã lưu</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- End List Sale Item Component -->
+</div>

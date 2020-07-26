@@ -1,0 +1,200 @@
+<div class="listWrap">
+    <!-- Top of List Component -->
+    <div class="listHeader">
+        <div class="row listAddNew">
+            <div class="col-xs-12 col-md-2">
+                <button class="btn btn-outline-info d-block w-100" (click)="addingRequest()" role="button">Thêm
+                    Mới</button>
+            </div>
+        </div>
+        <div class="row listOptions">
+            <div class="col-md-2 col-xs-12  optionDelete">
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" (change)="checkAllChange(!isSelectAll)" name=""
+                        id="" value="checkedValue">
+                    <button type="button" (click)="deleteMany()" class="btn btn-outline-danger"><i
+                            class="fa fa-remove"></i> Xóa</button>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12  optionSearch">
+                <app-search-box (searchTextInvoke)="searchProduct($event)" [delayTimeSpan]="1000"
+                    placeholder="Tên Sản phẩm...">
+                </app-search-box>
+            </div>
+            <div class="col-md-2 col-xs-12  cateFilter">
+                <div class="form-group">
+                    <select class="form-control d-inline" [(ngModel)]="selectedCategory" name="selectedCategory"
+                        id="selectedCategory">
+                        <option [ngValue]="0">
+                            Tất cả
+                        </option>
+                        <option *ngFor="let category of globalCategories" [ngValue]="category.Category.Id">
+                            {{category.Category.Name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12  text-right optionPerPage">
+                <div class="form-group">
+                    <label>Hiển thị </label>
+                    <select class="form-control w-25 d-inline" [(ngModel)]="itemPerpage" name="itemPerpage" id="">
+                        <option [ngValue]="10"> 10</option>
+                        <option [ngValue]="20">20</option>
+                        <option [ngValue]="40">40</option>
+                        <option [ngValue]="60">60</option>
+                    </select>
+                    <label> dòng / <strong>{{itemTotalCount}} dòng</strong></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content of List Component -->
+    <div class="listContent">
+        <table class="table table-bordered table-hover table-responsive-xl">
+            <thead class="table-info">
+                <tr>
+                    <th scope="col" style="width: 5%">ID</th>
+                    <th scope="col">Hình ảnh</th>
+                    <th scope="col" style="width:10%">Mã Sản phẩm</th>
+                    <th scope="col">Giá gốc</th>
+                    <th scope="col" style="width: 25%">Danh mục sản phẩm</th>
+                    <th scope="col">Mô tả</th>
+                    <th scope="col" style="width:20%">Tag</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let product of products">
+                    <td scope="row">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" name="" id=""
+                                    [(ngModel)]="product.IsSelect" value="checkedValue">
+                                {{product.Product.Id}}
+                            </label>
+                        </div>
+                    </td>
+                    <td>
+                        <img src="{{product.Product.ImageUrl |  ImgPipe : 'ProductImg'}}" alt="" class="productImg">
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" class="tdName"
+                            onclick="showProductEdit(event)">{{product.Product.Name}}</a>
+                    </td>
+                    <td>{{product.Product.Price}}</td>
+                    <td>
+                        <span *ngFor="let category of product.Categories"
+                            class="badge badge-pill badge-warning d-inline-block p-1 mb-1">{{category.Name}}</span>
+                    </td>
+                    <td>
+                        {{product.Product.Description}}
+                    </td>
+                    <td>
+                        <span *ngFor="let tag of product.Tags"
+                            class="badge badge-pill badge-success d-inline-block p-1 mb-1">{{tag.Name}}</span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-outline-info"
+                                (click)="selectProductToEdit(product.Product.Id)"><i class="fa fa-pencil"></i>
+                                Sửa</button>
+                            <button type="button" class="btn btn-outline-danger"
+                                (click)="deleteProduct(product.Product.Id)"><i class="fa fa-remove"></i>
+                                Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Content of List Component -->
+    <app-page-segment [pageCount]="pageCount" (pageChanged)="pageChanged($event)">
+
+    </app-page-segment>
+</div>
+
+<div class="popupContent" id="productAdd">
+    <h4 class="userName">Thêm mới Sản phẩm</h4>
+    <hr class="adminSeperate">
+    <form #form="ngForm" (submit)="addProduct(form)" autocomplete="on">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Mã Sản Phẩm</label>
+                <input type="text" class="form-control" name="Name" [(ngModel)]="edittingProduct.Name" id="Name"
+                    required minlength="3" #Name="ngModel">
+                <div *ngIf="Name.invalid && (Name.dirty || Name.touched)" class="alert alert-danger">
+
+                    <div *ngIf="Name.errors.required">
+                        Mã là bắt buộc
+                    </div>
+                    <div *ngIf="Name.errors.minlength">
+                        Mã tối thiểu 3 ký tự
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label>Giá Gốc (vnđ)</label>
+                <input type="text" class="form-control" name="Price" [(ngModel)]="edittingProduct.Price" id="Price"
+                    required #Price="ngModel">
+
+                <div *ngIf="Price.invalid && (Price.dirty || Price.touched)" class="alert alert-danger">
+
+                    <div *ngIf="Price.errors.required">
+                        Giá là bắt buộc
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="inputDesc">Mô tả</label>
+                <textarea [(ngModel)]="edittingProduct.Description" name="Description" id="Description"
+                    class="form-control" cols="100" rows="5" placeholder="Mô tả sản phẩm"></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Danh mục sản phẩm</label>
+                <ul class="tagList cusScroll">
+                    <li *ngFor="let category of globalCategories">
+                        <span *ngIf="!category.IsSelected" class="badge badge-pill badge-warning p-2"
+                            (click)="selectCategory(category.Category)">{{category.Category.Name}}</span>
+                        <span *ngIf="category.IsSelected" class="badge badge-pill badge-success p-2"
+                            (click)="unselectCategory(category.Category)">{{category.Category.Name}}</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="inputTag">Tag</label>
+                <div class="tagAdd">
+                    <input type="text" class="form-control" value="" [(ngModel)]="newTagName" name="newTagName"
+                        placeholder="Nhập tag mới">
+                    <span class="addTagBtn" (click)="addTag()">Thêm</span>
+                </div>
+                <ul class="tagList cusScroll">
+                    <li *ngFor="let tag of globalTags">
+                        <span *ngIf="!tag.IsSelected" class="badge badge-pill badge-warning p-2"
+                            (click)="selectTag(tag.Tag)">{{tag.Tag.Name}}</span>
+                        <span *ngIf="tag.IsSelected" class="badge badge-pill badge-success p-2"
+                            (click)="unselectTag(tag.Tag)">{{tag.Tag.Name}}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group avatarChange">
+            <label>Chọn ảnh đại diện</label>
+            <img src="{{edittingImageUrl | ImgPipe : 'ProductImg'}}" *ngIf="edittingImageUrl"
+                style="width: 100px; height: 100px;" />
+            <input type="file" class="form-control-file" accept='image/*' (change)="onChange($event)"
+                name="uploadedFile" aria-describedby="fileHelpId">
+
+        </div>
+        <div class="form-action row">
+            <div class="col-md-2"><button type="submit" class="btn btn-outline-success w-100">Lưu</button>
+            </div>
+            <div class="col-md-1"><a href="javascript:void(0)" class="btn btn-outline-secondary w-100"
+                    onclick="hideAdd()">Hủy</a></div>
+        </div>
+    </form>
+</div>

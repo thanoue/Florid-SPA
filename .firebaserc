@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "lorid-e9c34"
+  },
+  "targets": {
+    "lorid-e9c34": {
+      "hosting": {
+        "client": [
+          "floridapi"
+        ],
+        "floridAdmin": [
+          "florid-admin"
+        ]
+      }
+    }
+  }
+}

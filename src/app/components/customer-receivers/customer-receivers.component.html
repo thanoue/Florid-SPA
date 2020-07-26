@@ -1,0 +1,123 @@
+<div class="contentContent container-fluid cusScroll">
+    <!-- Start List Sale Item Component -->
+    <div class="row">
+        <div class="col-9">
+            <div class="leftDetail">
+                <div class="infoCard">
+                    <h3 class="infoTitle">{{globalCustomer.FullName}}</h3>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr class=" table-info">
+                                <th>Tên người nhận</th>
+                                <th>Địa chỉ nhận hàng</th>
+                                <th>Điện thoại</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                            <tr *ngFor="let receiver of receivers; let i = index">
+                                <td>{{receiver.FullName}}</td>
+                                <td>{{receiver.Address}}</td>
+                                <td>{{receiver.PhoneNumber}}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a type="button" (click)="editReceiver(i)" class="btn btn-outline-secondary"><i
+                                                class="fa fa-pencil"></i>Sửa</a>
+                                        <!-- <button type="button" class="btn btn-outline-info"><i class="fa fa-pencil"></i> Sửa</button> -->
+                                        <button type="button" (click)="removeReceiver(i)"
+                                            class="btn btn-outline-danger"><i class="fa fa-remove"></i>
+                                            Xóa</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rightDetail sidebar">
+                <h4 class="sidebarTitle">Quản lý khách hàng</h4>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/customer-detail">Thông tin chung</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/customer-orders">Danh sách đơn hàng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" routerLink="/customer-receivers">Thông tin nhận hàng đã lưu</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="w-100 ">
+                <a type="button" class="btn btn-outline-success" (click)="addReceiverShow()"
+                    href="javascript:void(0)"><i class="fa fa-pencil"></i>
+                    Thêm TT nhận hàng</a>
+            </div>
+
+            <div class="w-100 ">
+                <a type="button" class="btn btn-outline-info" routerLink="/customer-edit" style="margin-top:10px;"><i
+                        class="fa fa-pencil"></i>
+                    Sửa thông tin KH</a>
+            </div>
+
+            <div class="w-100">
+                <a type="button" class="btn btn-outline-danger" href="#" style="margin-top:10px;"><i
+                        class="fa fa-trash"></i>
+                    Xóa KH</a>
+            </div>
+
+        </div>
+    </div>
+    <!-- End List Sale Item Component -->
+</div>
+<div class="popupContent" id="receiverAdd">
+    <h4 class="userName">Thêm mới Khách Hàng</h4>
+    <hr class="adminSeperate">
+    <form #form="ngForm" (submit)="addReceiver(form)" autocomplete="off">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="FullName">Tên người nhận</label>
+                <input type="text" class="form-control" [(ngModel)]="currentReceiver.FullName" id="FullName"
+                    name="FullName" placeholder="Nguyễn Văn A" #FullName="ngModel" required minlength="5">
+                <div *ngIf="FullName.invalid && (FullName.dirty || FullName.touched)" class="alert alert-danger">
+
+                    <div *ngIf="FullName.errors.required">
+                        Bắt buộc
+                    </div>
+                    <div *ngIf="FullName.errors.minlength">
+                        Tối thiểu 5 ký tự
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="PhoneNumber">Số điện thoại người nhận</label>
+                <input type="text" class="form-control" [(ngModel)]="currentReceiver.PhoneNumber" id="PhoneNumber"
+                    name="PhoneNumber" placeholder="0898443222" minlength="9" required #PhoneNumber="ngModel">
+                <div *ngIf="PhoneNumber.invalid && (PhoneNumber.dirty || PhoneNumber.touched)"
+                    class="alert alert-danger">
+
+                    <div *ngIf="PhoneNumber.errors.required">
+                        Bắt buộc
+                    </div>
+                    <div *ngIf="PhoneNumber.errors.minlength">
+                        Tối thiểu 9 ký tự
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="PhoneNumber">Địa chỉ nhận hàng</label>
+                <input type="text" class="form-control" [(ngModel)]="currentReceiver.Address" id="Address"
+                    name="Address" placeholder="" minlength="9">
+            </div>
+        </div>
+        <div class="form-action row">
+            <div class="col-md-3">
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-outline-success w-100">Lưu</button>
+                    <a href="javascript:void(0)" class="btn btn-outline-secondary" onclick="hideAdd()">Hủy</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

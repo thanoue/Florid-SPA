@@ -1,0 +1,121 @@
+<div class="listWrap">
+  <!-- Top of List Component -->
+  <div class="listHeader">
+    <div class="row listAddNew">
+      <div class="col-xs-12 col-md-2">
+        <button class="btn btn-outline-info d-block w-100" (click)="addRequest()" role="button">Thêm
+          Mới</button>
+      </div>
+    </div>
+    <div class="row listOptions">
+      <div class="col-md-2 col-xs-12  optionDelete">
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" name="" id="" (change)="checkAllChange(!isSelectAll)"
+            value="checkedValue">
+          <button type="button" class="btn btn-outline-danger" (click)="deleteCategories()"><i class="fa fa-remove"></i>
+            Xóa</button>
+        </div>
+      </div>
+      <div class="col-md-6 col-xs-12  optionSearch">
+        <div class="form-group">
+          <input type="text" class="form-control" name="" id="" aria-describedby="helpId" placeholder="Tìm kiếm...">
+          <button type="submit" class="btn btn-info position-absolute "><i class="fa fa-search"></i></button>
+        </div>
+
+      </div>
+      <div class="col-md-4 col-xs-12  text-right optionPerPage">
+        <div class="form-group">
+          <label>Hiển thị </label>
+          <select class="form-control w-25 d-inline" [(ngModel)]="itemPerpage" name="itemPerpage" id="">
+            <option [ngValue]="10"> 10</option>
+            <option [ngValue]="20">20</option>
+            <option [ngValue]="40">40</option>
+            <option [ngValue]="60">60</option>
+          </select>
+          <label> dòng / <strong>{{itemTotalCount}} dòng</strong></label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Content of List Component -->
+  <div class="listContent">
+    <table class="table table-bordered table-hover table-responsive-xl">
+      <thead class="table-info">
+        <tr>
+          <th scope="col" style="width: 5%">STT</th>
+          <th scope="col">Tên hiển thị</th>
+          <th scope="col" style="width:50%">Mô tả</th>
+          <th scope="col">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let category of Categories">
+          <td scope="row">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" name="" id="" [(ngModel)]="category.IsChecked"
+                  value="checkedValue">
+                {{category.Category.Id}}
+              </label>
+            </div>
+          </td>
+          <td>{{category.Category.Name}}</td>
+          <td>{{category.Category.Description}}
+          </td>
+          <td>
+            <div class="btn-group">
+              <button type="button" class="btn btn-outline-info" (click)="editRequest(category.Category)"><i
+                  class="fa fa-pencil"></i> Sửa</button>
+              <button type="button" (click)="deleteCategory(category.Category)" class="btn btn-outline-danger"><i
+                  class="fa fa-remove"></i>
+                Xóa</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- Bottom of List Component -->
+  <app-page-segment [pageCount]="pageCount" (pageChanged)="pageChanged($event)">
+
+  </app-page-segment>
+</div>
+
+<div class="popupContent" id="categoryAddPopup">
+  <h4 class="userName">Thêm mới Danh mục Sản phẩm</h4>
+  <hr class="adminSeperate">
+  <form #form="ngForm" (submit)="addCategory(form)" autocomplete="on">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="inputName">Tên Hiển Thị</label>
+        <input type="text" class="form-control" name="Name" [(ngModel)]="currentCategory.Name" id="Name" required
+          minlength="5" placeholder="Tên danh mục..." #Name="ngModel">
+
+        <div *ngIf="Name.invalid && (Name.dirty || Name.touched)" class="alert alert-danger">
+
+          <div *ngIf="Name.errors.required">
+            Tên là bắt buộc
+          </div>
+          <div *ngIf="Name.errors.minlength">
+            Tên tối thiểu 5 ký tự
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <label for="inputDesc">Mô tả</label>
+        <textarea name="Description" [(ngModel)]="currentCategory.Description" id="Description" class="form-control"
+          cols="100" rows="5" placeholder="Mô tả danh mục"></textarea>
+      </div>
+    </div>
+    <div class="form-action row">
+      <div class="col-md-3">
+        <div class="btn-group w-100">
+          <button type="submit" class="btn btn-outline-success w-100" onclick="">Lưu</button>
+          <a href="javascript:void(0)" class="btn btn-outline-secondary" onclick="hideAdd()">Hủy</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

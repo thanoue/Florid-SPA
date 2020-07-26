@@ -1,0 +1,80 @@
+<div class="adminWrapper">
+    <nav id="sideContent">
+        <div class="adminLogo">
+            <img [src]="userAvt" alt="" class="mw-100 w-100">
+        </div>
+        <ul class="mainMenu">
+            <li [ngClass]="(currentMenu !== menus.Home)?'menuItem':'menuItem active'">
+                <a routerLink="" class="menuItem-link"><i class="fa fa-dashboard"></i>Trang chủ</a>
+            </li>
+            <li [ngClass]="(currentMenu !== menus.User)?'menuItem':'menuItem active'">
+                <a routerLink="/users" class="menuItem-link"><i class="fa fa-user-circle-o"></i>Nhân Viên</a>
+            </li>
+            <li [ngClass]="(currentMenu !== menus.Customer)?'menuItem':'menuItem active'">
+                <a routerLink="/customers" class="menuItem-link"><i class="fa fa-users"></i>Khách Hàng</a>
+            </li>
+            <li class="menuItem hasChildren">
+                <a href="#" class="menuItem-link"><i class="fa fa-tasks"></i>Sản Phẩm</a>
+                <ul class="subMenu">
+                    <li [ngClass]="(currentMenu !== menus.Product)?'menuItem':'menuItem active'">
+                        <a routerLink="/products" class="menuItem-link"><i class="fa fa-list"> </i>Danh sách</a>
+                    </li>
+                    <li [ngClass]="(currentMenu !== menus.ProductCategory)?'menuItem':'menuItem active'">
+                        <a routerLink="/product-categories" class="menuItem-link"><i class="fa fa-th-large"> </i>Danh
+                            mục Sản phẩm</a>
+                    </li>
+                    <li [ngClass]="(currentMenu !== menus.ProductTag)?'menuItem':'menuItem active'">
+                        <a routerLink="/product-tags" class="menuItem-link"><i class="fa fa-tags"> </i>Tag Sản phẩm</a>
+                    </li>
+                </ul>
+            </li>
+            <li [ngClass]="(currentMenu !== menus.Order)?'menuItem':'menuItem active'">
+                <a href="#" class="menuItem-link"><i class="fa fa-file-text"></i>Đơn Hàng</a>
+            </li>
+            <li [ngClass]="(currentMenu !== menus.Summary)?'menuItem':'menuItem active'">
+                <a href="#" class="menuItem-link"><i class="fa fa-line-chart"></i>Thống Kê</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="mainContent">
+        <div class="contentHeader">
+            <div class="col-1 headerLeft">
+                <button class="menuToggle" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+                    aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="icon-bar top-bar"></span>
+                    <span class="icon-bar middle-bar"></span>
+                    <span class="icon-bar bottom-bar"></span>
+                </button>
+            </div>
+            <div class="col-9 headerCen">
+                <h1 class="pageTitle">
+                    {{title}}
+                </h1>
+                <div class="form-group">
+                    <input type="text" name="" id="" class="form-control" placeholder="Tìm kiếm..."
+                        aria-describedby="helpId">
+                    <button type="submit" class="btn"><i class="fa fa-search"></i></button>
+                </div>
+            </div>
+            <div class="col-2  headerRight dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span>{{userName}}</span>
+                    <img [src]="userAvt" alt="" class="rounded-circle mw-100">
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Account</a>
+                    <a class="dropdown-item" href="#">Change Password</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="javascript:void(0);" (click)="logout()">Log Out</a>
+                </div>
+            </div>
+        </div>
+        <div class="contentContent container-fluid cusScroll">
+            <router-outlet></router-outlet>
+        </div>
+        <div class="contentFooter">
+            Power by Florid
+        </div>
+    </div>
+</div>

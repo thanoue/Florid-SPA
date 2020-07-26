@@ -1,0 +1,744 @@
+body,
+.form-control,
+.btn
+{
+    font-size: 14px;
+}
+.form-control::-webkit-input-placeholder { /* Edge */
+    color: var(--main-grey);
+    font-style: normal;
+}
+  
+.form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: var(--main-grey);
+    font-style: normal;
+}
+
+.form-control::placeholder {
+    color: var(--main-grey);
+    font-style: normal;
+}
+.page-item.active .page-link
+{
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+.page-link
+{
+    color: #17a2b8;
+}
+a.tdName {
+    color: #17a2b8;
+    transition: 250ms;
+}
+a.tdName:hover {
+    color: #777;
+}
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-top: 0;
+    left: 20px;
+}
+.form-check {
+    padding-left: 30px;
+}
+hr.adminSeperate {
+    margin: 30px 0;
+    border-color: #c6c6c6;
+}
+.adminWrapper {
+    width: 100vw;
+    height: 100vh;
+    background: #f8f8f8;
+}
+nav#sideContent {
+    position: fixed;
+    width: 250px;
+    height: 100vh;
+    background: #17a2b8;
+    padding: 20px;
+    box-shadow: 0px 0px 10px 5px #999;
+    transition: 350ms;
+}
+.mini nav#sideContent
+{
+    transition: 350ms;
+    width: 0;
+    padding:0;
+    box-shadow: none;
+    overflow: hidden;
+}
+.adminLogo {
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    border-bottom: 4px double #66c2d0;
+}
+.adminLogo h4 {
+    font-size: 20px;
+    color: #fff;
+    display: block;
+    text-align: center;
+    margin-top: 20px
+}
+.mainContent {
+    position: fixed;
+    width: calc(100% - 250px);
+    left: 250px;
+    height: 100vh;
+    transition: 350ms;
+}
+.mini .mainContent{
+    left: 0;
+    width: 100%;
+    transition: 350ms;
+}
+ul.mainMenu li.menuItem
+{
+    position: relative;
+}
+ul.mainMenu > li.menuItem:not(:last-child)
+{
+    border-bottom: 1px solid #66c2d0;
+}
+ul.mainMenu li.menuItem > a {
+    display: block;
+    padding: 15px 0;
+    color: #ddd;
+    transition: 250ms;
+}
+ul.mainMenu li.menuItem.active > a
+{
+    font-weight: 600;
+    color: #fff;
+}
+ul.mainMenu li.menuItem > a:hover 
+{
+    color: #fff;
+}
+ul.mainMenu li.menuItem > a > i 
+{
+    width: 30px;
+}
+ul.mainMenu ul.subMenu li.menuItem > a {
+    font-size: 13px;
+    padding: 7px 0;
+}
+ul.mainMenu ul.subMenu {
+    padding-left: 30px;
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: 350ms;
+    padding-bottom: 0;
+}
+span.showSubMenu {
+    position: absolute;
+    top: 10px;
+    right: 0;
+    cursor: pointer;
+    transition: 250ms;
+    font-size: 20px;
+}
+ul.mainMenu .show ul.subMenu
+{
+    height: auto;
+    opacity: 1;
+    visibility: visible;
+    padding-bottom: 15px;
+}
+.show span.showSubMenu {
+    transform: rotate(90deg);
+}
+span.showSubMenu:before {
+    content: "\f105";
+    font-family: fontawesome;
+    color: #ddd;
+}
+.contentHeader {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding:  15px;
+    height: 80px;
+}
+button.menuToggle {
+    border: none;
+    position: relative;
+    padding: 0;
+    cursor: pointer;
+    height: 40px;
+    width: 40px;
+    background: none;
+}
+.icon-bar {
+	width: 30px; 
+	height: 2px;
+	background-color: #17a2b8;
+	display: block;
+    transition: all 0.2s;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: 550ms;
+}
+span.icon-bar.top-bar {
+    width: 20px;
+    transform: translateY(-50%) rotate(-45deg);
+    top: calc(50% - 7px);
+    left: -2px;
+}
+span.icon-bar.bottom-bar
+{
+    width: 20px;
+    transform: translateY(-50%) rotate(45deg);
+    top: calc(50% + 7px);
+    left: -2px;
+}
+.mini span.icon-bar.top-bar, 
+.mini span.icon-bar.bottom-bar, 
+.mini span.icon-bar {
+    width: 30px;
+    left: 0;
+    transform: none;
+}
+.headerCen h1.pageTitle {
+    margin: 0;
+    color: var(--main-grey);
+    width: 60%;
+    float: left;
+    font-size: 24px;
+}
+.headerCen .form-group  
+{
+    width: 39%;
+    float: right;
+    margin: 0;
+    position: relative;
+}
+.headerCen .form-group input.form-control {
+    background: none;
+    border-radius: 20px;
+}
+.headerCen .form-group button.btn {
+    background: #17a2b8;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    border-radius: 20px;
+    color: #ddd;
+    height: 30px;
+    width: 30px;
+    padding: 0;
+}
+.headerRight 
+{
+    position: relative;
+}
+.headerRight a.nav-link {
+    padding: 0;
+    text-align: right;
+    color: var(--main-grey);
+}
+.headerRight a.nav-link span,
+.headerRight a.nav-link img 
+{
+    display: inline-block;
+}
+.headerRight a.nav-link img 
+{
+    width: 30px;
+    margin-left: 10px;
+    height: 30px;
+}
+.headerRight a.dropdown-item {
+    font-size: 13px;
+}
+.headerRight .dropdown-menu {
+    width: 100%;
+    transform: none !important;
+    left: auto !important;
+    right: 0;
+    top: 40px !important;
+}
+.contentFooter
+{
+    height: 70px;
+    text-align: center;
+    line-height: 70px;
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+/* ==========================================login */
+.adminWrapper.loginScreen
+{
+    background: url(../images/login-bg.jpg) center center no-repeat ;
+    background-size: cover;
+}
+.loginWrap {
+    width: 60vw;
+    height: 500px;
+    position: fixed;
+    overflow: hidden;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 10px;
+    background: #f8f8f8;
+}
+.loginWrap .loginLeft, .loginWrap .loginRight {
+    width: 50%;
+    float: left;
+}
+.loginLeft img {
+    object-fit: cover;
+    object-position: center;
+    height: 500px;
+    width: auto;
+}
+.loginRight {
+    padding: 40px;
+}
+.loginRight img.loginLogo {
+    filter: brightness(0.6);
+    width: 150px;
+}
+.loginRight form {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+}
+.loginRight form input 
+{
+    border-radius: 20px;
+}
+.loginRight form a.form-check-label {
+    display: block;
+    line-height: 40px;
+    color: var(--main-grey);
+    font-size: 14px;
+}
+/* ============================================CONTENT  */
+.col-md-4.optionPerPage
+{
+    max-width: 28%;
+}
+.col-md-4.optionSearch {
+    max-width: 38%;
+    flex: 0 0 38%;
+}
+.col-md-6.optionSearch {
+    flex: 0 0 55%;
+    max-width: 55%;
+}
+.contentContent.container-fluid {
+    padding: 30px;
+    height: calc(100vh - 150px);
+    overflow-y: scroll;
+}
+.listHeader > .row {
+    padding-bottom: 20px;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.listHeader .form-group
+{
+    margin-bottom: 0;
+}
+.listHeader input ,
+.listHeader select
+{
+    border-radius: 20px;
+}
+.optionSearch button.btn.btn-info {
+    top: 0;
+    right: 0;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+.listContent .table
+{
+    margin-bottom: 20px;
+}
+.listContent .table tr td
+{
+    vertical-align: middle;
+}
+.listFooter ul.pagination
+{
+	-webkit-box-pack: end;
+	    -ms-flex-pack: end;
+	        justify-content: flex-end;
+}
+.userAvatar img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+}
+.userAvatar {
+    width: 100%;
+    position: relative;
+}
+.userAvatar:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+.userEdit .userName {
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+.form-action{
+    margin-top: 20px;
+	-webkit-box-pack: end;
+    -ms-flex-pack: end;
+        justify-content: flex-end;
+}
+
+.popupContent {
+    z-index: 9999;
+    position: fixed;
+    width: 1200px;
+    bottom: 0;
+    background: #fff;
+    padding: 40px;
+    right: 0;
+    box-shadow: 0px 0px 20px 0px #999;
+    border-top-left-radius: 10px;
+    display: none;
+}
+
+.leftDetail {
+    border: 1px solid #c6c6c6;
+    padding: 20px;
+    border-radius: 5px;
+}
+.infoCard {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #c6c6c6;
+}
+.infoCard h3.infoTitle {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    display: inline-block;
+}
+ul.infoList,
+.infoCard table tr td
+{
+    color: var(--main-grey);
+}
+ul.infoList li
+{
+    display: flex;
+}
+ul.infoList li:not(:last-child) {
+    margin-bottom: 20px;
+}
+ul.infoList li label {
+    margin: 0;
+    display: inline-block;
+    width: 200px;
+    font-weight: 600;
+}
+ul.infoList li ol {
+    margin-top: 0;
+    padding-left: 0;
+}
+ul.infoList li span {
+    display: inline-block;
+    width: calc(100% - 200px);
+}
+ul.infoList.snsLinks li 
+{
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 0;
+}
+ul.infoList.snsLinks li a {
+    display: block;
+    height: 40px;
+    background-repeat: no-repeat !important;
+    background-position: left center !important;
+    background-size: contain !important;
+    padding-left: 50px;
+    line-height: 40px;
+    color: var(--main-grey);
+}
+ul.infoList.snsLinks li a.fb-sns
+{
+    background: url("../images/facebook.svg");
+}
+ul.infoList.snsLinks li a.zl-sns
+{
+    background: url("../images/zalo.svg");
+}
+ul.infoList.snsLinks li a.vb-sns
+{
+    background: url("../images/viber.svg");
+}
+ul.infoList.snsLinks li a.ig-sns
+{
+    background: url("../images/instagram.svg");
+}
+ul.infoList.snsLinks li a.sk-sns
+{
+    background: url("../images/skype.svg");
+}
+.sidebar ul
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.sidebar ul li {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--main-grey);
+}
+.sidebar ul li a{
+    padding: 0;
+    color: var(--main-grey);
+}
+h4.sidebarTitle {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.infoCard table.table {
+    margin-bottom: 0;
+}
+.sidebar ul li a.active {
+    color: #17a2b8;
+    font-weight: 600;
+}
+
+.group-wrap
+{
+    width: 100%;
+}
+.group-wrap.split-wrap 
+{
+    width: calc(100% + 10px);
+    margin-left: -5px;
+    margin-right: -5px;
+}
+
+.infoCard .form-row 
+{
+    margin:0;
+    margin-bottom: 15px;
+}
+.infoCard .orderDetail ul {
+    columns: 2;
+    margin-bottom: 20px;
+}
+.infoCard .orderDetail ul li
+{
+    display: flex;
+}
+.infoCard .orderDetail ul li label {
+    min-width: 200px;
+}
+.infoCard h4.orderTitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+/* table.orderProducts
+{
+    display: none;
+} */
+
+table tr td .btn-group .btn,
+.form-action .btn
+{
+    padding: 2px 10px;
+}
+select.form-control:not([size]):not([multiple])
+{
+    height: unset;
+}
+h3.saleTitle
+{
+    font-size: 18px;
+    margin: 0;
+}
+.listAddNew .btn,
+.listOptions .btn {
+    border-radius: 20px;
+}
+ul.tagList li {
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.tagAdd input.form-control {
+    width: 80%;
+    display: inline-block;
+}
+
+span.addTagBtn {
+    display: inline-block;
+    width: 19%;
+    text-align: center;
+    height: 35px;
+    line-height: 35px;
+    border: 1px solid #17a2b8;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #17a2b8;
+}
+.showTags {
+    min-height: 50px;
+    margin-top: 5px;
+    max-height: 105px;
+    overflow-y: scroll;
+}
+
+ul.tagList {
+    max-height: 124px;
+    overflow-y: scroll;
+    margin-top: 10px;
+}
+
+.showTags span {
+    display: inline-block;
+    border: 1px solid #aaa;
+    font-size: 13px;
+    padding: 0 7px;
+    margin-right: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    color: #666; 
+    margin-bottom: 5px;
+}
+
+.showTags span:hover {
+    font-weight: 600;
+}
+
+.showTags span:before 
+{
+    content: "\f00d";
+    font-family: fontawesome;
+    margin-right: 5px;
+}
+.cateFilter ul.dropdown-menu {
+    padding: 10px;
+    background: #f8f8f8;
+}
+.cateFilter ul.dropdown-menu a {
+    color: #666;
+}
+.cateFilter ul.dropdown-menu a input {
+    margin-right: 5px;
+}
+.orderDetail .productList {
+    width: 100%;
+    float: left;
+    margin-top: 15px;
+    display: none;
+}
+
+.left-margin-10{
+    margin-left: 10px;
+}
+
+.orderDetail .productItem:not(:last-child) {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px dotted #ddd;
+    width: 100%;
+    float: left;
+}
+.orderDetail .productItem .itemTop {
+    width: 100%;
+    float: left;
+    padding: 10px;
+    background: #ddd;
+    font-weight: 600;
+    font-size: 16px;
+}
+.orderDetail .productItem .itemBot {
+    width: 100%;
+    float: left;
+}
+.orderDetail .productItem .itemBot img.itemImg {
+    width: 30%;
+    float: left;
+    height: 175px;
+    object-fit: cover;
+    object-position: center;
+}
+.orderDetail .productItem .itemBot .itemBotInfo {
+    width: 70%;
+    float: left;
+    padding-left: 20px;
+    padding-top: 20px;
+}
+.orderDetail .productItem .itemBot label 
+{
+    font-weight: 600;
+}
+
+.productImg
+{
+    width: 100%;
+    max-width: 60px;
+    height: 70px;
+    object-fit: cover;
+}
+
+div.popupDialog {
+    position: fixed;
+    width: 400px;
+    top: 50%;
+    left: 50%;
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px -6px #999;
+    transform: translate(-50%,-50%);
+    display: none;
+    z-index: 9;
+}
+h4.confirmText {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.confirmAct {
+    text-align: center;
+}
+.confirmAct button{
+    width: 100px;
+}
+a.openOrderProducts
+{
+    display: block;
+    width: 200px;
+}
+.overlayDiv {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1;
+}
+div.popupDialog select {
+    margin-bottom: 20px;
+}

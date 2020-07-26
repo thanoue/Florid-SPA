@@ -1,0 +1,100 @@
+[debug] [2020-06-24T16:33:48.240Z] ----------------------------------------------------------------------
+[debug] [2020-06-24T16:33:48.241Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2020-06-24T16:33:48.242Z] CLI Version:   8.4.2
+[debug] [2020-06-24T16:33:48.242Z] Platform:      darwin
+[debug] [2020-06-24T16:33:48.242Z] Node Version:  v12.18.1
+[debug] [2020-06-24T16:33:48.243Z] Time:          Wed Jun 24 2020 23:33:48 GMT+0700 (Indochina Time)
+[debug] [2020-06-24T16:33:48.243Z] ----------------------------------------------------------------------
+[debug] [2020-06-24T16:33:48.243Z] 
+[debug] [2020-06-24T16:33:48.249Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-06-24T16:33:48.249Z] > authorizing via signed-in user
+[debug] [2020-06-24T16:33:48.249Z] [iam] checking project lorid-e9c34 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-06-24T16:33:48.251Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/lorid-e9c34:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2020-06-24T16:33:49.354Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:49 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=856","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-24T16:33:49.356Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/lorid-e9c34/serviceAccounts/lorid-e9c34@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2020-06-24T16:33:50.581Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:50 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Deploying to 'lorid-e9c34'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix ./functions/ run build
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2020-06-24T16:33:55.181Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "./node_modules/.bin/tslint --project tsconfig.json && ./node_modules/.bin/tsc",
+    "build": "./node_modules/.bin/tsc",
+    "serve": "npm run build && firebase serve --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "body-parse": "^0.1.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.4",
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
+    "express-jwt-blacklist": "^1.1.0",
+    "firebase-admin": "^8.9.2",
+    "firebase-functions": "^3.7.0",
+    "firebase-functions-helper": "^0.7.5",
+    "js-sha256": "^0.9.0",
+    "jsonwebtoken": "^8.2.2",
+    "rootpath": "^0.1.2",
+    "uuid": "^7.0.2"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^0.1.6",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.5"
+  },
+  "private": true
+}
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[debug] [2020-06-24T16:33:55.999Z] [functions] runtime dependency check dates: warning: 2020-05-21T00:00:00.000Z error: 2020-08-17T00:00:00.000Z
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2020-06-24T16:33:55.999Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/lorid-e9c34/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-06-24T16:33:56.000Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/lorid-e9c34/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2020-06-24T16:33:56.000Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/lorid-e9c34/services/cloudbuild.googleapis.com  
+ 
+[debug] [2020-06-24T16:33:57.244Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:57 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-24T16:33:57.251Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:57 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] ✔  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2020-06-24T16:33:57.326Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:57 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] ✔  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2020-06-24T16:33:57.328Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-06-24T16:33:57.328Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-06-24T16:33:57.480Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:57 GMT","server":"scaffolding on HTTPServer2","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-24T16:33:57.497Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/lorid-e9c34/adminSdkConfig  
+ 
+[debug] [2020-06-24T16:33:58.261Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:58 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  functions: preparing functions directory for uploading... 
+[debug] [2020-06-24T16:33:58.263Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/lorid-e9c34/configs  
+ 
+[debug] [2020-06-24T16:33:58.620Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:58 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  functions: packaged functions (62.98 KB) for uploading 
+[debug] [2020-06-24T16:33:58.938Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/lorid-e9c34/locations/-/functions  
+ 
+[debug] [2020-06-24T16:33:59.928Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:33:59 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-24T16:33:59.932Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/lorid-e9c34/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2020-06-24T16:34:00.718Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 24 Jun 2020 16:34:00 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-24T16:34:00.719Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-1b53a254-cece-4545-a88d-7c3e3cf5a519/fcb36279-19d4-4d71-aa73-f490c6da1631.zip?GoogleAccessId=service-907493762076@gcf-admin-robot.iam.gserviceaccount.com&Expires=1593018240&Signature=qtOkQ7%2BrzfamhtcGhgJ6yKZpwImk9MdR6s3G3IRylM9hc5PTXfjmxEUg%2FVHpi5jJ3hBsbQbkBS2qJi1CPcAC1N0W2Gq245JKa7t8dua77Nh44WcUvWxgicW0qRMBJIV7JY%2FmHT1Tz9EQNQJLbDXJpW2Y6WydMHxOKkfQbtYA5l3XrIbif1qumyablcoPApneFmnQ3SYXC2Ufo0xS2VxHwXJfj7tlBbv1%2FvJ7poAcoF%2BHJX7Qi7ldHnbKL3L7aoSoSoos3LYUgYlvM%2F01vNgtYGKzMFzCoOqZWQp4rU3vqf7zot0PshU6uSd%2FwK8PXOb%2BjoW8M3FOhwvaRo41CPGT7Q%3D%3D  
+ <request body omitted>
+[warn] ⚠  functions: Upload Error: Server Error. getaddrinfo ENOTFOUND storage.googleapis.com 
+[debug] [2020-06-24T16:34:30.868Z] Error: getaddrinfo ENOTFOUND storage.googleapis.com
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:66:26)
+[error] 
+[error] Error: Server Error. getaddrinfo ENOTFOUND storage.googleapis.com
+

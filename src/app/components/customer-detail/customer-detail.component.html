@@ -1,0 +1,91 @@
+<div class="contentContent container-fluid cusScroll">
+    <!-- Start List Sale Item Component -->
+    <div class="row">
+        <div class="col-9">
+            <div class="leftDetail">
+                <div class="infoCard">
+                    <h3 class="infoTitle">Thông tin cá nhân</h3>
+                    <ul class="infoList">
+                        <li><label>Mã khách hàng: </label><span>{{customer.Id}}</span></li>
+                        <li><label>Họ và Tên: </label><span>{{customer.FullName}}</span></li>
+                        <li><label>Số điện thoại: </label><span>{{customer.PhoneNumber}}</span></li>
+                        <li><label>Sinh nhật: </label><span>{{customer.Birthday | date :'dd/MM'}}</span></li>
+                        <li><label>Địa chỉ nhà riêng: </label><span>{{customer.Address.Home}}</span></li>
+                        <li><label>Địa chỉ công ty: </label><span>{{customer.Address.Work}}</span></li>
+                        <li>
+                            <label>Ngày đặc biệt:</label>
+                            <ol>
+                                <li *ngFor="let specialDate of customer.SpecialDays"><label>{{specialDate.Description}}
+                                    </label><span>{{specialDate.Date | date :'dd/MM'}}</span></li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+                <div class="infoCard">
+                    <h3 class="infoTitle">Thông tin liên hệ</h3>
+                    <ul class="infoList snsLinks">
+                        <li style="margin-top:10px;"><a class="fb-sns"
+                                *ngIf="customer.ContactInfo.Facebook">{{customer.ContactInfo.Facebook}}</a></li>
+                        <li style="margin-top:10px;"><a class="zl-sns"
+                                *ngIf="customer.ContactInfo.Zalo">{{customer.ContactInfo.Zalo}}</a></li>
+                        <li style="margin-top:10px;"><a class="vb-sns"
+                                *ngIf="customer.ContactInfo.Viber">{{customer.ContactInfo.Viber}}</a></li>
+                        <li style="margin-top:10px;"><a class="sk-sns"
+                                *ngIf="customer.ContactInfo.Skype">{{customer.ContactInfo.Skype}}</a></li>
+                        <li style="margin-top:10px;"><a class="ig-sns"
+                                *ngIf="customer.ContactInfo.Instagram">{{customer.ContactInfo.Instagram}}</a></li>
+                    </ul>
+                </div>
+                <div class="infoCard">
+                    <h3 class="infoTitle">Thông tin điểm thành viên</h3>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr class=" table-info">
+                                <th>Điểm đã dùng</th>
+                                <th>Điểm khả dụng</th>
+                                <th>Tổng số tiền đã mua</th>
+                                <th>Cấp bậc thành viên</th>
+                            </tr>
+                            <tr>
+                                <td>{{customer.MembershipInfo.UsedScoreTotal}}</td>
+                                <td>{{customer.MembershipInfo.AvailableScore}}</td>
+                                <td>{{customer.MembershipInfo.AccumulatedAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                                </td>
+                                <td>{{getMemberShipName(customer.MembershipInfo.MembershipType)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rightDetail sidebar">
+                <h4 class="sidebarTitle">Quản lý khách hàng</h4>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" routerLink="/customer-detail">Thông tin chung</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/customer-orders">Danh sách đơn hàng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" routerLink="/customer-receivers">Thông tin nhận hàng đã lưu</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="w-100 ">
+                <a type="button" class="btn btn-outline-info" routerLink="/customer-edit"><i class="fa fa-pencil"></i>
+                    Sửa thông tin</a>
+            </div>
+
+            <div class="w-100 ">
+                <a type="button" class="btn btn-outline-danger" href="#" style="margin-top:10px;"><i
+                        class="fa fa-trash"></i>
+                    Xóa Khách hàng</a>
+            </div>
+
+        </div>
+    </div>
+    <!-- End List Sale Item Component -->
+</div>
