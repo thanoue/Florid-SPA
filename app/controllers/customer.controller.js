@@ -6,9 +6,6 @@ const CustomerSpecialDay = db.customerSpecialDay;
 const Op = db.Sequelize.Op;
 const guid = require('guid');
 
-exports.updateCustomer = (req, res) => {
-
-}
 
 exports.getById = (req, res) => {
 
@@ -101,6 +98,30 @@ exports.getCount = (req, res) => {
                     err.message || "Some error occurred while retrieving customer counting."
             });
         });
+}
+
+exports.updateCustomer = (req, res) => {
+    const body = req.body;
+    Customer.update({
+        where: {
+            Id: body.id
+        }
+    }, {
+        FullName: body.fullName,
+        PhoneNumber: body.phoneNumber,
+        Birthday: body.birthday,
+        Sex: body.sex,
+        UsedScoreTotal: body.usedScoreTotal,
+        AvailableScore: body.availableScore,
+        AccumulatedAmount: body.accumulatedAmount,
+        MembershipType: body.membershipType,
+        ContactInfo_Facebook: body.facebook,
+        ContactInfo_Zalo: body.zalo,
+        ContactInfo_Skype: body.skype,
+        ContactInfo_Viber: body.viber,
+        ContactInfo_Instagram: body.instagram,
+        MainContactInfo: body.mainContactInfo,
+    })
 }
 
 exports.create = (req, res) => {
