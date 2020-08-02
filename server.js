@@ -2,16 +2,16 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fileUpload = require('express-fileupload');
 var bcrypt = require("bcryptjs");
-// const cors = require('cors');
+const cors = require('cors');
 const path = require('path');
 const http = require('http');
 
 const app = express();
 
-// var corsOptions = {
-//     origin: "http://localhost:4200"
-// };
-// app.use(cors(corsOptions));
+var corsOptions = {
+    origin: "http://localhost:4200"
+};
+app.use(cors(corsOptions));
 
 app.use(fileUpload({
     createParentPath: true
@@ -35,7 +35,7 @@ app.get('*', (req, res) => {
 
 const { user, role, category } = require("./app/models/index");
 const db = require("./app/models/index");
-db.sequelize.sync().then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
     initial();
 });

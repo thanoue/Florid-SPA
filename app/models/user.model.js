@@ -26,6 +26,9 @@ module.exports = (sequelize, Sequelize) => {
         IsPrinter: {
             type: Sequelize.BOOLEAN
         },
+        IsExternalShipper: {
+            type: Sequelize.BOOLEAN
+        },
 
     });
 

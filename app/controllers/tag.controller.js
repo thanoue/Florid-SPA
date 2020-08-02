@@ -73,7 +73,7 @@ exports.deleteMany = (req, res) => {
     })
         .then(() => {
             res.send({
-                message: 'Tags is deleted'
+                message: 'Tags are deleted'
             });
         })
         .catch((err) => {

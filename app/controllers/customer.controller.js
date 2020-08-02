@@ -84,8 +84,6 @@ exports.getList = (req, res) => {
         });
 }
 
-
-
 exports.getCount = (req, res) => {
     Customer.count()
         .then(count => {
@@ -102,11 +100,8 @@ exports.getCount = (req, res) => {
 
 exports.updateCustomer = (req, res) => {
     const body = req.body;
-    Customer.update({
-        where: {
-            Id: body.id
-        }
-    }, {
+
+    let updates = {
         FullName: body.fullName,
         PhoneNumber: body.phoneNumber,
         Birthday: body.birthday,
@@ -121,7 +116,56 @@ exports.updateCustomer = (req, res) => {
         ContactInfo_Viber: body.viber,
         ContactInfo_Instagram: body.instagram,
         MainContactInfo: body.mainContactInfo,
-    })
+        HomeAddress: body.homeAddress,
+        WorkAddress: body.workAddress,
+    }
+
+    Customer.update(updates, {
+        where: {
+            Id: req.body.id
+        }
+    }).then(result => {
+        CustomerSpecialDay.destroy({
+            where: {
+                CustomerId: body.id
+            }
+        }).then(() => {
+            if (body.specialDays) {
+
+                let specialDays = [];
+
+                body.specialDays.forEach(specialDate => {
+                    specialDays.push({
+                        Date: specialDate.date,
+                        Description: specialDate.description,
+                        CustomerId: body.id
+                    });
+                });
+
+                CustomerSpecialDay.bulkCreate(specialDays, {
+                    returning: false
+                }).then(() => {
+                    res.send({
+                        message: 'a Custoner is Updated'
+                    });
+                });
+            } else {
+                res.send({
+                    message: 'a Custoner is Updated'
+                });
+            }
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while create product."
+            });
+            return;
+        })
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while create product."
+        });
+        return;
+    });
 }
 
 exports.create = (req, res) => {
@@ -174,4 +218,44 @@ exports.create = (req, res) => {
         });
         return;
     })
+}
+
+exports.delete = (req, res) => {
+    Customer.destroy({
+        where: {
+            Id: req.body.id
+        }
+    }).then(() => {
+        res.send({
+            message: 'a customer is deleted'
+        });
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while delete product."
+        });
+        return;
+    });
+}
+
+
+exports.deleteMany = (req, res) => {
+
+    let ids = req.body.ids;
+
+    Customer.destroy({
+        where: {
+            Id: {
+                [Op.in]: ids
+            }
+        }
+    })
+        .then(() => {
+            res.send({
+                message: 'Customers are  deleted'
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send({ message: err });
+        });
 }

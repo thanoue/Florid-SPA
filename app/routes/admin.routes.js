@@ -44,6 +44,18 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.getById
     )
+    app.post(`${customerPrefix}update`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.updateCustomer
+    )
+    app.post(`${customerPrefix}delete`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.delete
+    )
+    app.post(`${customerPrefix}deleteMany`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.deleteMany
+    )
 
     //product
     app.get(`${productPrefix}getList`,

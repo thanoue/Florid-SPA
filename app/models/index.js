@@ -36,16 +36,52 @@ db.category = require('./category.model.js')(sequelize, Sequelize);
 db.customer = require('./customer.model')(sequelize, Sequelize);
 db.customerReceiverInfo = require('./customer.receiverInfo.model')(sequelize, Sequelize);
 db.customerSpecialDay = require('./customer.specialDay.model')(sequelize, Sequelize);
+db.order = require('./order.model')(sequelize, Sequelize);
+db.orderDetail = require('./orderDetail.model')(sequelize, Sequelize);
+db.shippingSession = require('./shippingSession.model')(sequelize, Sequelize);
+db.orderDetailSeen = require('./orderDetailseen.model')(sequelize, Sequelize);
+
+db.user.hasMany(db.shippingSession, {
+    foreignKey: 'ShipperId',
+    onDelete: 'CASCADE',
+});
+
+db.user.hasMany(db.orderDetail, {
+    foreignKey: 'FloristId',
+    onDelete: 'SET NULL',
+});
+// db.orderDetail.belongsTo(db.user);
+
+db.shippingSession.hasMany(db.orderDetail, {
+    foreignKey: 'ShippingSessionId',
+    onDelete: 'SET NULL',
+});
+// db.orderDetail.belongsTo(db.shippingSession);
+
+db.user.belongsToMany(db.orderDetail, {
+    through: "orderDetailSeens",
+    foreignKey: "UserId",
+    otherKey: "OrderDetailId",
+    onDelete: 'CASCADE'
+});
+db.orderDetail.belongsToMany(db.user, {
+    through: "orderDetailSeens",
+    foreignKey: "OrderDetailId",
+    otherKey: "UserId",
+    onDelete: 'CASCADE'
+});
 
 db.customer.hasMany(db.customerReceiverInfo, {
     foreignKey: 'CustomerId',
     onDelete: 'CASCADE',
 });
+// db.customerReceiverInfo.belongsTo(db.customer);
 
 db.customer.hasMany(db.customerSpecialDay, {
     foreignKey: 'CustomerId',
     onDelete: 'CASCADE',
 });
+// db.customerSpecialDay.belongsTo(db.customer);
 
 
 db.tag.belongsToMany(db.product, {
