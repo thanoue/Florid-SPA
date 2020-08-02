@@ -12,7 +12,6 @@ import { PageComponent } from 'src/app/models/view.models/menu.model';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
 })
 export class LoginComponent extends BaseComponent {
 
@@ -26,8 +25,8 @@ export class LoginComponent extends BaseComponent {
 
   protected Init() {
 
-    this.model.passcode = 'test_user';
-    this.model.userName = '123456';
+    this.model.passcode = '123456';
+    this.model.userName = 'admin';
   }
 
   login(form: NgForm) {
@@ -40,7 +39,7 @@ export class LoginComponent extends BaseComponent {
 
       if (isSuccess) {
 
-        this.router.navigate(['']);
+        this.router.navigate(['/admin/home']);
 
       } else {
 

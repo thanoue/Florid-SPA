@@ -10,10 +10,6 @@ import { API_END_POINT } from '../app.constants';
   providedIn: 'root'
 })
 export class CustomerService {
-  updateSingleField(Id: string, arg1: string, currentReceiver: CustomerReceiverDetail) {
-    throw new Error("Method not implemented.");
-  }
-
 
   constructor(private httpService: HttpService, private globalService: GlobalService) {
 
@@ -89,8 +85,50 @@ export class CustomerService {
       });
   }
 
+  updateCustomer(customer: Customer): Promise<any> {
+
+    let specialdays = [];
+
+    if (customer.SpecialDays) {
+      customer.SpecialDays.forEach(specialDay => {
+        specialdays.push({
+          date: specialDay.Date,
+          description: specialDay.Description
+        });
+      })
+    }
+
+    return this.httpService.post(API_END_POINT.updateCustomer, {
+      fullName: customer.FullName,
+      phoneNumber: customer.PhoneNumber,
+      birthday: customer.Birthday,
+      sex: customer.Sex,
+      usedScoreTotal: customer.MembershipInfo.UsedScoreTotal,
+      availableScore: customer.MembershipInfo.AvailableScore,
+      accumulatedAmount: customer.MembershipInfo.AccumulatedAmount,
+      membershipType: customer.MembershipInfo.MembershipType,
+      facebook: customer.ContactInfo.Facebook,
+      zalo: customer.ContactInfo.Zalo,
+      skype: customer.ContactInfo.Skype,
+      viber: customer.ContactInfo.Viber,
+      instagram: customer.ContactInfo.Instagram,
+      mainContactInfo: customer.MainContactInfo,
+      id: customer.Id,
+      specialDays: specialdays,
+      workAddress: customer.Address.Work,
+      homeAddress: customer.Address.Home
+    })
+      .then(() => {
+        return;
+      })
+      .catch(err => {
+        this.httpService.handleError(err);
+        throw err;
+      })
+
+  }
+
   createCustomer(customer: Customer): Promise<any> {
-    console.log(customer);
     return this.httpService.post(API_END_POINT.createCustomer, {
       fullName: customer.FullName,
       phoneNumber: customer.PhoneNumber,
@@ -114,6 +152,29 @@ export class CustomerService {
         this.httpService.handleError(err);
       })
   }
+
+  delete(id: string): Promise<any> {
+    return this.httpService.post(API_END_POINT.deleteCustomer, {
+      id: id
+    }).then(() => {
+      return;
+    }).catch((err) => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+  }
+
+  deleteMany(ids: string[]): Promise<any> {
+    return this.httpService.post(API_END_POINT.deleteManyCustomer, {
+      ids: ids
+    }).then(() => {
+      return;
+    }).catch((err) => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+  }
+
 
 
   getList(page: number, itemsPerPage: number, term: string = ''): Promise<{
@@ -183,6 +244,7 @@ export class CustomerService {
           let item = new SpecialDay();
           item.Date = date.Date;
           item.Description = date.Description;
+          customer.SpecialDays.push(item);
         });
 
         res.Customers.push(customer);
@@ -195,5 +257,6 @@ export class CustomerService {
       throw err;
     });
   }
+
 
 }

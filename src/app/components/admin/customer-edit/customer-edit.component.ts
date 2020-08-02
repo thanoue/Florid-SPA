@@ -50,7 +50,6 @@ export class CustomerEditComponent extends BaseComponent {
       });
     }
 
-
     this.customer.SpecialDays = specialDays;
 
     this.customer.Birthday = new Date(this.customer.Birthday).getTime();
@@ -65,6 +64,16 @@ export class CustomerEditComponent extends BaseComponent {
       return;
     }
 
+    console.log(this.customer);
+
+    this.customerService.updateCustomer(this.customer)
+      .then(() => {
+        this.customerService.getById(this.customer.Id)
+          .then(cus => {
+            this.globalCustomer = cus;
+            this.location.back();
+          });
+      })
 
   }
 
@@ -78,8 +87,6 @@ export class CustomerEditComponent extends BaseComponent {
 
 
     this.customer.SpecialDays.push(newDate);
-
-    console.log(this.customer.SpecialDays);
 
   }
 }

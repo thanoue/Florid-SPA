@@ -20,8 +20,7 @@ export class AuthService {
   }
 
   static getCurrentRole(): any {
-    const role = LocalService.getRole();
-    return role;
+    return LocalService.getRole();
   }
 
   logOut(signedOutCallback: (isSuccess: boolean) => void) {

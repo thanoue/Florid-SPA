@@ -1,21 +1,13 @@
 import { OnInit, Inject, forwardRef, Injector, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
-import { AppComponent } from '../app.component';
-import { AppInjector } from '../services/common/base.injector';
-import { GenericModel } from '../models/view.models/generic.model';
-import { GlobalService } from '../services/common/global.service';
-import { AuthService } from '../services/common/auth.service';
-import { ActivatedRoute } from '@angular/router';
-import { MainLayoutComponent } from './main-layout/main-layout.component';
-import { RouteModel } from '../models/view.models/route.model';
-import { map, tap } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { AppInjector } from '../../services/common/base.injector';
+import { GlobalService } from '../../services/common/global.service';
+import { AuthService } from '../../services/common/auth.service';
 import { Location } from '@angular/common';
-import { OrderViewModel, OrderDetailViewModel } from '../models/view.models/order.model';
-import { DistrictAddressService } from '../services/address/district-address.service';
-import { WardAddressService } from '../services/address/ward-address.service';
-import { District, Ward } from '../models/entities/address.entity';
-import { PageComponent } from '../models/view.models/menu.model';
-import { Customer } from '../models/entities/customer.entity';
+import { DistrictAddressService } from '../../services/address/district-address.service';
+import { WardAddressService } from '../../services/address/ward-address.service';
+import { District, Ward } from '../../models/entities/address.entity';
+import { PageComponent } from '../../models/view.models/menu.model';
+import { Customer } from '../../models/entities/customer.entity';
 
 declare function addressRequest(districts: District[], resCallback: (res: string) => void, onDistrictChange: (res: string, newWardCallback: (wards: Ward[]) => void) => void): any;
 

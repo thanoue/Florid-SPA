@@ -1,0 +1,17 @@
+<div class="page-content" id="login">
+    <h1 class="logo">
+        <a href="#">Login to Florid</a>
+    </h1>
+    <form #form="ngForm" (submit)="login(form)" autocomplete="on" id="loginform">
+        <div class="form-group">
+            <input class="form-control" name="userName" [(ngModel)]="model.userName" placeholder="Tên đăng nhập..." />
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="password" name="passcode" [(ngModel)]="model.passcode"
+                placeholder="Mật khẩu..." />
+        </div>
+        <input type="submit" class="btn btn-default" value="Đăng nhập" />
+
+    </form>
+</div>
