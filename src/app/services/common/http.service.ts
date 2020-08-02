@@ -71,7 +71,7 @@ export class HttpService {
     }
 
     this.globalService.showError(err);
-
+      
   }
 
   public get(url: string, params?: HttpParams | any, cache: boolean = false): Promise<Object | any> {

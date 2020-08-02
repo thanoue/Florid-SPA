@@ -3,9 +3,9 @@ import { NgModule, Injector } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AppInjector } from './services/common/base.injector';
-import { LoginComponent } from './components/login/login.component';
-import { MainLayoutComponent } from './components/main-layout/main-layout.component';
-import { HomeComponent } from './components/home/home.component';
+import { LoginComponent } from './components/admin/login/login.component';
+import { MainLayoutComponent } from './components/admin/main-layout/main-layout.component';
+import { HomeComponent } from './components/admin/home/home.component';
 import { TextBoxComponent } from './controls/text-box/text-box.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InvalidTypeDirective } from './directives/invalid-type.directive';
@@ -13,26 +13,33 @@ import { InvalidmessageDirective } from './directives/invalid-message.directive'
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { HttpClientModule } from '@angular/common/http';
 import { registerLocaleData, CommonModule } from '@angular/common';
-import { NotFoundComponent } from './components/not-found/not-found.component';
+import { NotFoundComponent } from './components/admin/not-found/not-found.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import es from '@angular/common/locales/es';
 import vi from '@angular/common/locales/vi';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
-import { ProductsComponent } from './components/products/products.component';
+import { ProductsComponent } from './components/admin/products/products.component';
 import { PageSegmentComponent } from './controls/page-segment/page-segment.component';
-import { ProductTagComponent } from './components/product-tag/product-tag.component';
-import { ProductCategoryComponent } from './components/product-category/product-category.component';
-import { UsersComponent } from './components/users/users.component';
-import { CustomersComponent } from './components/customers/customers.component';
+import { ProductTagComponent } from './components/admin/product-tag/product-tag.component';
+import { ProductCategoryComponent } from './components/admin/product-category/product-category.component';
+import { UsersComponent } from './components/admin/users/users.component';
+import { CustomersComponent } from './components/admin/customers/customers.component';
 import { LocalService } from './services/common/local.service';
-import { CustomerDetailComponent } from './components/customer-detail/customer-detail.component';
-import { CustomerOrdersComponent } from './components/customer-orders/customer-orders.component';
-import { CustomerReceiversComponent } from './components/customer-receivers/customer-receivers.component';
-import { CustomerEditComponent } from './components/customer-edit/customer-edit.component';
+import { CustomerDetailComponent } from './components/admin/customer-detail/customer-detail.component';
+import { CustomerOrdersComponent } from './components/admin/customer-orders/customer-orders.component';
+import { CustomerReceiversComponent } from './components/admin/customer-receivers/customer-receivers.component';
+import { CustomerEditComponent } from './components/admin/customer-edit/customer-edit.component';
 import { SearchBoxComponent } from './controls/search-box/search-box.component';
 import { ImgPipe } from './pipes/img.pipe';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { BaseAdminComponent } from './components/admin/base-admin/base-admin.component';
+import { BaseStaffComponent } from './components/staff/base-staff/base-staff.component';
+import { StaffLoginComponent } from './components/staff/staff-login/staff-login.component';
+import { OrdersManageComponent } from './components/staff/orders-manage/orders-manage.component';
+import { StaffMainLayoutComponent } from './components/staff/staff-main-layout/staff-main-layout.component';
+import { StatusPointComponent } from './controls/status-point/status-point.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +62,13 @@ import { ImgPipe } from './pipes/img.pipe';
     CustomerReceiversComponent,
     CustomerEditComponent,
     SearchBoxComponent,
-    ImgPipe
+    ImgPipe,
+    BaseAdminComponent,
+    BaseStaffComponent,
+    StaffLoginComponent,
+    OrdersManageComponent,
+    StaffMainLayoutComponent,
+    StatusPointComponent
   ],
   imports: [
     BrowserModule,
@@ -76,6 +89,7 @@ import { ImgPipe } from './pipes/img.pipe';
     }),
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    DragDropModule
   ],
   providers: [
     { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi' },

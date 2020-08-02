@@ -1,0 +1,58 @@
+<div *ngIf="index >-1" [ngSwitch]="state">
+    <div *ngSwitchCase="states.Added" class="item-status pi" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.Waiting" class="item-status r" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.Making" class="item-status o" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.Comfirming" class="item-status y" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.DeliveryWaiting" class="item-status p" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.Delivering" class="item-status b" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.Deliveried" class="item-status bl" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.Completed" class="item-status g" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.Canceled" class="item-status x" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+</div>  
+<div *ngIf="index==-1" [ngSwitch]="state">
+    <div *ngSwitchCase="states.Added" class="item-status pi" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Waiting" class="item-status r" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Making" class="item-status o" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Comfirming" class="item-status y" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.DeliveryWaiting" class="item-status p" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Delivering" class="item-status b" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Deliveried" class="item-status bl" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Completed" class="item-status g" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Canceled" class="item-status x" (click)="pointClicked()">
+        <span></span>
+    </div>
+</div>

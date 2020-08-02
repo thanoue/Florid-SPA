@@ -150,10 +150,17 @@ export class CustomersComponent extends BaseComponent {
       return;
     }
 
+    let ids: string[] = []
+
+    seletedcustomers.forEach(cus => {
+      ids.push(cus.Customer.Id);
+    })
+
     this.openConfirm('Chắc chắn xoá những khách hàng này ?', () => {
-
-      this.startLoading();
-
+      this.customerService.deleteMany(ids)
+        .then(() => {
+          this.pageChanged(1);
+        })
 
     });
   }
@@ -162,8 +169,10 @@ export class CustomersComponent extends BaseComponent {
 
     this.openConfirm('Chắc chắn xoá khách hàng?', () => {
 
-      this.startLoading();
-
+      this.customerService.delete(customer.Id)
+        .then(() => {
+          this.pageChanged(this.currentPage);
+        })
     });
   }
 

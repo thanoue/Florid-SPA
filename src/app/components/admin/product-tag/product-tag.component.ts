@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
-import { PageComponent } from "../../models/view.models/menu.model";
+import { PageComponent } from "../../../models/view.models/menu.model";
 import { MenuItems } from 'src/app/models/enums';
 import { Tag } from 'src/app/models/entities/tag.entity';
 import { TagService } from 'src/app/services/tag.service';
@@ -65,7 +65,7 @@ export class ProductTagComponent extends BaseComponent {
     this.currentTag.Alias = str;
   }
 
-  
+
 
   editRequest(tag: Tag) {
 

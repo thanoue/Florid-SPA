@@ -1,30 +1,46 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { LoggedInGuard, AdminGuard } from './guards/login.guard';
-import { MainLayoutComponent } from './components/main-layout/main-layout.component';
-import { HomeComponent } from './components/home/home.component';
-import { NotFoundComponent } from './components/not-found/not-found.component';
-import { ProductsComponent } from './components/products/products.component';
-import { ProductTagComponent } from './components/product-tag/product-tag.component';
-import { ProductCategoryComponent } from './components/product-category/product-category.component';
-import { UsersComponent } from './components/users/users.component';
-import { CustomersComponent } from './components/customers/customers.component';
-import { CustomerDetailComponent } from './components/customer-detail/customer-detail.component';
-import { CustomerEditComponent } from './components/customer-edit/customer-edit.component';
-import { CustomerReceiverDetail } from './models/entities/order.entity';
-import { CustomerOrdersComponent } from './components/customer-orders/customer-orders.component';
-import { CustomerReceiversComponent } from './components/customer-receivers/customer-receivers.component';
+import { LoginComponent } from './components/admin/login/login.component';
+import { LoggedInGuard, AdminGuard, AccountMobileGuard } from './guards/login.guard';
+import { MainLayoutComponent } from './components/admin/main-layout/main-layout.component';
+import { HomeComponent } from './components/admin/home/home.component';
+import { NotFoundComponent } from './components/admin/not-found/not-found.component';
+import { ProductsComponent } from './components/admin/products/products.component';
+import { ProductTagComponent } from './components/admin/product-tag/product-tag.component';
+import { ProductCategoryComponent } from './components/admin/product-category/product-category.component';
+import { UsersComponent } from './components/admin/users/users.component';
+import { CustomersComponent } from './components/admin/customers/customers.component';
+import { CustomerDetailComponent } from './components/admin/customer-detail/customer-detail.component';
+import { CustomerEditComponent } from './components/admin/customer-edit/customer-edit.component';
+import { CustomerOrdersComponent } from './components/admin/customer-orders/customer-orders.component';
+import { CustomerReceiversComponent } from './components/admin/customer-receivers/customer-receivers.component';
+import { BaseAdminComponent } from './components/admin/base-admin/base-admin.component';
+import { BaseStaffComponent } from './components/staff/base-staff/base-staff.component';
+import { StaffLoginComponent } from './components/staff/staff-login/staff-login.component';
+import { StaffMainLayoutComponent } from './components/staff/staff-main-layout/staff-main-layout.component';
+import { OrdersManageComponent } from './components/staff/orders-manage/orders-manage.component';
 
 const routes: Routes = [
+  { path: 'staff-login', component: StaffLoginComponent },
   { path: 'login', component: LoginComponent },
   {
-    path: '',
+    path: 'staff',
+    component: StaffMainLayoutComponent,
+    children: [
+      {
+        path: 'orders-manage',
+        canActivate: [AccountMobileGuard],
+        component: OrdersManageComponent
+      }
+    ]
+  },
+  {
+    path: 'admin',
     component: MainLayoutComponent,
     canActivate: [AdminGuard],
     children: [
       {
-        path: '',
+        path: 'home',
         component: HomeComponent,
       },
       {
@@ -66,7 +82,7 @@ const routes: Routes = [
     ]
   },
   { path: '404', component: NotFoundComponent },
-  { path: '**', redirectTo: '/404' },
+  { path: '**', redirectTo: '/admin/home' },
 ];
 
 @NgModule({

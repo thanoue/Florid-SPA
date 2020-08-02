@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  base_domain: '',
+  base_domain: 'http://localhost:3000',
   momo_generate_qr_domain: 'https://test-payment.momo.vn'
 };
 

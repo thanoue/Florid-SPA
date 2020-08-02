@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
       .subscribe(isLoading => {
         setTimeout(() => {
           this.loading = isLoading;
-        }, 100);
+        }, 50);
       });
 
   }

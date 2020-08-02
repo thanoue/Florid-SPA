@@ -10,7 +10,7 @@ import { TagService } from 'src/app/services/tag.service';
 import { Guid } from 'guid-typescript';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/models/entities/product.entity';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
 import { isatty } from 'tty';
 import { single } from 'rxjs/operators';
 import { Customer, MembershipInfo } from 'src/app/models/entities/customer.entity';
@@ -24,7 +24,6 @@ import { info } from 'console';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
 })
 export class HomeComponent extends BaseComponent {
 
@@ -106,241 +105,241 @@ export class HomeComponent extends BaseComponent {
 
   // }
 
-  getNumFromString(src: string): string {
+  // getNumFromString(src: string): string {
 
-    let numSrc = '';
+  //   let numSrc = '';
 
-    if (src == '')
-      return '';
+  //   if (src == '')
+  //     return '';
 
-    for (let i = 0; i < src.length; i++) {
+  //   for (let i = 0; i < src.length; i++) {
 
-      let char = src[i];
+  //     let char = src[i];
 
-      if (char == '')
-        continue;
+  //     if (char == '')
+  //       continue;
 
-      let num = parseInt(char);
+  //     let num = parseInt(char);
 
-      if (num >= 0 && num <= 9)
-        numSrc += char;
-    }
+  //     if (num >= 0 && num <= 9)
+  //       numSrc += char;
+  //   }
 
-    return numSrc;
+  //   return numSrc;
 
-  }
+  // }
 
-  resetCusIndex() {
-    // this.customerService.getAllWithOrder('Id')
-    //   .then(customers => {
+  // resetCusIndex() {
+  //   // this.customerService.getAllWithOrder('Id')
+  //   //   .then(customers => {
 
-    //     let updates = {};
-    //     let index = 1;
+  //   //     let updates = {};
+  //   //     let index = 1;
 
-    //     customers.forEach(customer => {
-    //       updates[`/${customer.Id}/Index`] = index;
-    //       index++;
-    //     });
+  //   //     customers.forEach(customer => {
+  //   //       updates[`/${customer.Id}/Index`] = index;
+  //   //       index++;
+  //   //     });
 
-    //     console.log(updates);
+  //   //     console.log(updates);
 
-    //     this.customerService.updateFields(updates);
+  //   //     this.customerService.updateFields(updates);
 
-    //   });
-  }
+  //   //   });
+  // }
 
-  onFileChange(evt: any) {
+  // onFileChange(evt: any) {
 
-    /* wire up file reader */
-    const target: DataTransfer = <DataTransfer>(evt.target);
-    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
-    const reader: FileReader = new FileReader();
-    reader.onload = (e: any) => {
-      /* read workbook */
-      const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+  //   /* wire up file reader */
+  //   const target: DataTransfer = <DataTransfer>(evt.target);
+  //   if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+  //   const reader: FileReader = new FileReader();
+  //   reader.onload = (e: any) => {
+  //     /* read workbook */
+  //     const bstr: string = e.target.result;
+  //     const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
-      /* grab first sheet */
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+  //     /* grab first sheet */
+  //     const wsname: string = wb.SheetNames[0];
+  //     const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
-      /* save data */
-      let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
+  //     /* save data */
+  //     let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
 
-      var orders: Order[] = [];
-      var orderDetails: OrderDetail[] = [];
+  //     var orders: Order[] = [];
+  //     var orderDetails: OrderDetail[] = [];
 
-      this.startLoading();
+  //     this.startLoading();
 
-      // this.productService.getAll()
-      //   .then(async products => {
+  //     // this.productService.getAll()
+  //     //   .then(async products => {
 
-      //     this.stopLoading();
+  //     //     this.stopLoading();
 
-      //     for (let i = 0; i < data.length; i++) {
+  //     //     for (let i = 0; i < data.length; i++) {
 
-      //       if (i == 0)
-      //         continue;
+  //     //       if (i == 0)
+  //     //         continue;
 
-      //       const row = data[i];
-      //       const order = new Order();
+  //     //       const row = data[i];
+  //     //       const order = new Order();
 
-      //       if (!row[0])
-      //         break;
+  //     //       if (!row[0])
+  //     //         break;
 
-      //       order.CustomerId = row[0] ? row[0].toString() : Guid.create().toString();
-      //       order.Id = row[1] ? row[1].toString() : Guid.create().toString();
-      //       order.Created = ExchangeService.getTimeFromExcel(row[3]);
-      //       order.TotalAmount = row[6] && row[6] != '' ? parseInt(row[6]) : 0;
-      //       order.GainedScore = ExchangeService.getGainedScore(order.TotalAmount);
-      //       order.TotalPaidAmount = order.TotalAmount;
+  //     //       order.CustomerId = row[0] ? row[0].toString() : Guid.create().toString();
+  //     //       order.Id = row[1] ? row[1].toString() : Guid.create().toString();
+  //     //       order.Created = ExchangeService.getTimeFromExcel(row[3]);
+  //     //       order.TotalAmount = row[6] && row[6] != '' ? parseInt(row[6]) : 0;
+  //     //       order.GainedScore = ExchangeService.getGainedScore(order.TotalAmount);
+  //     //       order.TotalPaidAmount = order.TotalAmount;
 
-      //       order.Id = order.Id.replace('/', '-').replace('.', '_');
+  //     //       order.Id = order.Id.replace('/', '-').replace('.', '_');
 
-      //       let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
-      //       if (duplicates && duplicates.length > 0) {
-      //         order.Id += "_";
-      //       }
+  //     //       let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
+  //     //       if (duplicates && duplicates.length > 0) {
+  //     //         order.Id += "_";
+  //     //       }
 
-      //       var detail = new OrderDetail();
+  //     //       var detail = new OrderDetail();
 
-      //       detail.TotalAmount = order.TotalAmount;
-      //       detail.OrderId = order.Id;
-      //       detail.Id = Guid.create().toString();
-      //       detail.PurposeOf = row[4] ? row[4] : '';
-      //       detail.Index = 0;
-      //       detail.State = OrderDetailStates.Completed;
-      //       detail.ProductModifiedPrice = order.TotalAmount;
+  //     //       detail.TotalAmount = order.TotalAmount;
+  //     //       detail.OrderId = order.Id;
+  //     //       detail.Id = Guid.create().toString();
+  //     //       detail.PurposeOf = row[4] ? row[4] : '';
+  //     //       detail.Index = 0;
+  //     //       detail.State = OrderDetailStates.Completed;
+  //     //       detail.ProductModifiedPrice = order.TotalAmount;
 
-      //       detail.ProductName = row[2] ? row[2] : '';
+  //     //       detail.ProductName = row[2] ? row[2] : '';
 
-      //       let productIdNum = this.getNumFromString(detail.ProductName);
+  //     //       let productIdNum = this.getNumFromString(detail.ProductName);
 
-      //       var pros = products.filter(p => p.Name.indexOf(productIdNum) > -1);
+  //     //       var pros = products.filter(p => p.Name.indexOf(productIdNum) > -1);
 
-      //       if (productIdNum != '' && pros && pros[0]) {
+  //     //       if (productIdNum != '' && pros && pros[0]) {
 
-      //         let product = pros[0];
+  //     //         let product = pros[0];
 
-      //         detail.ProductImageUrl = product.ImageUrl;
-      //         detail.ProductPrice = ExchangeService.stringPriceToNumber(product.Price);
-      //         detail.ProductId = product.Id;
-      //         detail.IsHardcodeProduct = false;
+  //     //         detail.ProductImageUrl = product.ImageUrl;
+  //     //         detail.ProductPrice = ExchangeService.stringPriceToNumber(product.Price);
+  //     //         detail.ProductId = product.Id;
+  //     //         detail.IsHardcodeProduct = false;
 
-      //       } else {
+  //     //       } else {
 
-      //         detail.ProductImageUrl = 'https://firebasestorage.googleapis.com/v0/b/lorid-e9c34.appspot.com/o/products%2FLOGO%20FLORID.png?alt=media&token=be8bd572-4e06-44ba-aa3e-0a709c3e519c';
-      //         detail.IsHardcodeProduct = true;
-      //         detail.ProductPrice = detail.ProductModifiedPrice;
+  //     //         detail.ProductImageUrl = 'https://firebasestorage.googleapis.com/v0/b/lorid-e9c34.appspot.com/o/products%2FLOGO%20FLORID.png?alt=media&token=be8bd572-4e06-44ba-aa3e-0a709c3e519c';
+  //     //         detail.IsHardcodeProduct = true;
+  //     //         detail.ProductPrice = detail.ProductModifiedPrice;
 
-      //       }
+  //     //       }
 
-      //       orderDetails.push(detail);
-      //       orders.push(order);
+  //     //       orderDetails.push(detail);
+  //     //       orders.push(order);
 
-      //     };
+  //     //     };
 
-      //     let newOrders: Order[] = [];
-      //     let index = 1;
+  //     //     let newOrders: Order[] = [];
+  //     //     let index = 1;
 
-      //     orders.forEach(order => {
+  //     //     orders.forEach(order => {
 
-      //       let duplicates = newOrders.filter(p => p.CustomerId == order.CustomerId && p.Id == order.Id);
+  //     //       let duplicates = newOrders.filter(p => p.CustomerId == order.CustomerId && p.Id == order.Id);
 
-      //       if (duplicates && duplicates[0]) {
+  //     //       if (duplicates && duplicates[0]) {
 
-      //         duplicates[0].TotalAmount += order.TotalAmount;
-      //         duplicates[0].TotalPaidAmount += order.TotalPaidAmount;
-      //         duplicates[0].GainedScore = ExchangeService.getGainedScore(duplicates[0].TotalAmount);
+  //     //         duplicates[0].TotalAmount += order.TotalAmount;
+  //     //         duplicates[0].TotalPaidAmount += order.TotalPaidAmount;
+  //     //         duplicates[0].GainedScore = ExchangeService.getGainedScore(duplicates[0].TotalAmount);
 
-      //       }
-      //       else {
-      //         order.Index = index;
-      //         newOrders.push(order);
-      //         index++;
-      //       }
+  //     //       }
+  //     //       else {
+  //     //         order.Index = index;
+  //     //         newOrders.push(order);
+  //     //         index++;
+  //     //       }
 
-      //     });
+  //     //     });
 
-      //     let cuses = await this.customerService.getAll();
+  //     //     let cuses = await this.customerService.getAll();
 
-      //     let editCustomers: {
-      //       Id: string,
-      //       TotalAmount: number,
-      //       MemberType: MembershipTypes,
-      //       TotalUsedScore: number
-      //     }[] = [];
+  //     //     let editCustomers: {
+  //     //       Id: string,
+  //     //       TotalAmount: number,
+  //     //       MemberType: MembershipTypes,
+  //     //       TotalUsedScore: number
+  //     //     }[] = [];
 
-      //     console.log(newOrders);
-      //     console.log(orderDetails);
+  //     //     console.log(newOrders);
+  //     //     console.log(orderDetails);
 
-      //     newOrders.forEach(order => {
+  //     //     newOrders.forEach(order => {
 
-      //       let cus = editCustomers.filter(p => p.Id == order.CustomerId);
+  //     //       let cus = editCustomers.filter(p => p.Id == order.CustomerId);
 
-      //       if (cus && cus.length > 0) {
+  //     //       if (cus && cus.length > 0) {
 
-      //         cus[0].TotalAmount += order.TotalAmount;
+  //     //         cus[0].TotalAmount += order.TotalAmount;
 
-      //       }
-      //       else {
+  //     //       }
+  //     //       else {
 
-      //         let currentCus = cuses.filter(p => p.Id == order.CustomerId);
+  //     //         let currentCus = cuses.filter(p => p.Id == order.CustomerId);
 
-      //         if (currentCus && currentCus.length > 0) {
+  //     //         if (currentCus && currentCus.length > 0) {
 
-      //           let memberInfo = currentCus[0].MembershipInfo ? currentCus[0].MembershipInfo : new MembershipInfo();
+  //     //           let memberInfo = currentCus[0].MembershipInfo ? currentCus[0].MembershipInfo : new MembershipInfo();
 
-      //           editCustomers.push({
-      //             Id: order.CustomerId,
-      //             TotalAmount: order.TotalAmount,
-      //             MemberType: memberInfo.MembershipType,
-      //             TotalUsedScore: memberInfo.UsedScoreTotal
-      //           });
+  //     //           editCustomers.push({
+  //     //             Id: order.CustomerId,
+  //     //             TotalAmount: order.TotalAmount,
+  //     //             MemberType: memberInfo.MembershipType,
+  //     //             TotalUsedScore: memberInfo.UsedScoreTotal
+  //     //           });
 
-      //         }
+  //     //         }
 
-      //       }
-      //     });
+  //     //       }
+  //     //     });
 
-      //     console.log(editCustomers);
+  //     //     console.log(editCustomers);
 
-      //     let updates = {};
+  //     //     let updates = {};
 
-      //     editCustomers.forEach(customer => {
+  //     //     editCustomers.forEach(customer => {
 
-      //       let infor = new MembershipInfo();
+  //     //       let infor = new MembershipInfo();
 
-      //       infor.AvailableScore = ExchangeService.getGainedScore(customer.TotalAmount);
-      //       infor.UsedScoreTotal = customer.TotalUsedScore;
-      //       infor.AccumulatedAmount = customer.TotalAmount;
-      //       infor.MembershipType = customer.MemberType;
+  //     //       infor.AvailableScore = ExchangeService.getGainedScore(customer.TotalAmount);
+  //     //       infor.UsedScoreTotal = customer.TotalUsedScore;
+  //     //       infor.AccumulatedAmount = customer.TotalAmount;
+  //     //       infor.MembershipType = customer.MemberType;
 
-      //       updates[`/${customer.Id}/MembershipInfo`] = infor;
+  //     //       updates[`/${customer.Id}/MembershipInfo`] = infor;
 
-      //     });
+  //     //     });
 
-      //     this.orderDetailService.setListSeperate(orderDetails)
-      //       .then(() => {
-      //       });
+  //     //     this.orderDetailService.setListSeperate(orderDetails)
+  //     //       .then(() => {
+  //     //       });
 
-      //     this.orderService.setListSeperate(newOrders)
-      //       .then(() => {
-      //       });
+  //     //     this.orderService.setListSeperate(newOrders)
+  //     //       .then(() => {
+  //     //       });
 
-      //     this.customerService.updateFields(updates)
-      //       .then(() => {
-      //       });
+  //     //     this.customerService.updateFields(updates)
+  //     //       .then(() => {
+  //     //       });
 
-      //   });
-    }
+  //     //   });
+  //   }
 
 
 
 
-    reader.readAsBinaryString(target.files[0]);
+  //   reader.readAsBinaryString(target.files[0]);
 
-  }
+  // }
 
 
   // onFileChange(evt: any) { // customer

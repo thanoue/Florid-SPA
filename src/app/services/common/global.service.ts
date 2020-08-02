@@ -13,9 +13,15 @@ import { LocalService } from './local.service';
 import { Customer } from 'src/app/models/entities/customer.entity';
 
 declare function alert(message: string, alertType: number): any;
+
 declare function confirmDialog(message: string, okCallback: () => void, noCallback: () => void, cancelCallback: () => void): any;
+declare function openConfirm(message: string, okCallback: () => void, noCallback: () => void, cancelCallback: () => void): any;
+
 declare function messageDialog(message: string, okCallback: () => void): any;
+
 declare function hideAdd(): any;
+declare function setStatusBarColor(isDark: boolean): any;
+declare function isOnTerminal(): any;
 
 @Injectable({
     providedIn: 'root'
@@ -27,12 +33,18 @@ export class GlobalService {
     spinnerInvoke: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     updateHeader: BehaviorSubject<PageComponent> = new BehaviorSubject<PageComponent>(null);
 
+    mobileUpdateHeader: BehaviorSubject<RouteModel> = new BehaviorSubject<RouteModel>(null);
+
     private loadingCount = 0;
 
+    currentOrderViewModel: OrderViewModel;
+    currentOrderDetailViewModel: OrderDetailViewModel;
     currentDistricts: District[];
     currentWards: Ward[];
     globalCustomer: Customer;
 
+    navigateOnClick = new Subject<boolean>();
+    navigateOnClickEmitter$ = this.navigateOnClick.asObservable;
 
     constructor(private toastr: ToastrService, private ngZone: NgZone) {
 
@@ -74,6 +86,26 @@ export class GlobalService {
         }
     }
 
+    setStatusBarColor(isDark: boolean) {
+        setStatusBarColor(isDark);
+    }
+
+    updateHeaderInfo(info: PageComponent) {
+        this.updateHeader.next(info);
+    }
+
+    updaterMobileHeaderInfo(info: RouteModel) {
+        this.mobileUpdateHeader.next(info);
+    }
+
+    clickOnNavigateButton() {
+        this.navigateOnClick.next(true);
+    }
+
+    isRunOnTerimal(): boolean {
+        return isOnTerminal();
+    }
+
 
     toastTrShowing(message: string, alertType: number) {
         switch (alertType) {
@@ -113,6 +145,11 @@ export class GlobalService {
     openConfirm(message: string, okCallback: () => void, noCallback?: () => void, cancelCallback?: () => void) {
         confirmDialog(message, okCallback, noCallback, cancelCallback);
     }
+
+    openMobileConfirm(message: string, okCallback: () => void, noCallback?: () => void, cancelCallback?: () => void) {
+        openConfirm(message, okCallback, noCallback, cancelCallback);
+    }
+
 
     openMessage(message: string, okCallback?: () => void) {
         messageDialog(message, okCallback);
