@@ -10,7 +10,37 @@ jQuery(document).ready(function () {
             jQuery(this).remove();
         })
     });
-})
+});
+
+var socket;
+
+function connectSocket(host, connectedCallback) {
+
+    console.log('connect to socket');
+
+    socket = io.connect(host);
+
+    socket.on('connected', (data) => {
+        connectedCallback();
+    });
+}
+
+function forceLogoutRegister(callback) {
+    socket.on('forceLogout', (data) => {
+        console.log('force logout ne');
+        callback(data.message);
+    });
+}
+
+function disConnectSocket() {
+    if (socket)
+        socket.disconnect();
+}
+
+function login(userId) {
+    if (socket)
+        socket.emit('login', { userId: userId });
+}
 
 function filterFocus() {
 

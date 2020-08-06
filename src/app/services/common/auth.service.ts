@@ -10,13 +10,14 @@ import { API_END_POINT, LOCAL_STORAGE_VARIABLE } from 'src/app/app.constants';
 import { OnlineUserService } from '../online.user.service';
 import { OnlineUser } from 'src/app/models/entities/online.user.entity';
 import { FunctionsService } from './functions.service';
+import { RealtimeService } from '../realtime.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private onlineUserService: OnlineUserService, private globalService: GlobalService, private userService: UserService, private httpService: HttpService) {
+  constructor(private realTimeService: RealtimeService, private onlineUserService: OnlineUserService, private globalService: GlobalService, private userService: UserService, private httpService: HttpService) {
   }
 
   static getCurrentRole(): any {
@@ -25,6 +26,7 @@ export class AuthService {
 
   logOut(signedOutCallback: (isSuccess: boolean) => void) {
 
+    this.realTimeService.disConnect();
 
     this.httpService.post(API_END_POINT.logout)
       .then(() => {
@@ -64,6 +66,8 @@ export class AuthService {
           LocalService.setRole(result.roles[0]);
           LocalService.setUserName(result.fullName);
           LocalService.setUserId(result.id);
+
+          this.realTimeService.connect(result.id);
 
           loginCallback(true);
 

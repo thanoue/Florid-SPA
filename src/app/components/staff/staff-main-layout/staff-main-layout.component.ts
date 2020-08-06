@@ -8,6 +8,7 @@ import { LocalService } from 'src/app/services/common/local.service';
 import { OnlineUserService } from 'src/app/services/online.user.service';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { PrintJobService } from 'src/app/services/print-job.service';
+import { RealtimeService } from 'src/app/services/realtime.service';
 @Component({
   selector: 'app-staff-main-layout',
   templateUrl: './staff-main-layout.component.html',
@@ -21,7 +22,7 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   headerUpdate: Subscription;
 
   constructor(public router: Router, private globalService: GlobalService, private onlineUserService: OnlineUserService, private authService: AuthService
-    , private printJobService: PrintJobService) {
+    , private printJobService: PrintJobService, private realtimeService: RealtimeService) {
 
     this.navigateClass = '';
     this.title = '';
@@ -40,13 +41,14 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   }
   ngOnInit(): void {
 
-    // this.onlineUserService.loginTimeChanging(LocalService.getUserId(), (userId) => {
-    //   this.authService.loutOutFirebase((loggedOut) => {
-    //     if (loggedOut) {
-    //       this.router.navigate(['login']);
-    //     }
-    //   });
-    // });
+    this.realtimeService.forceLogoutRegister((message) => {
+      this.globalService.showError(message);
+      this.authService.logOut((isSuccess) => {
+        if (isSuccess) {
+          this.router.navigate(['/staff-login']);
+        }
+      });
+    });
 
     this.globalService.setStatusBarColor(false);
 

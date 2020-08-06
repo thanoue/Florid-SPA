@@ -42,7 +42,7 @@ export class OrdersManageComponent extends BaseComponent {
   protected IsDataLosingWarning = false;
 
   orders: OrderViewModel[];
-  states = OrderDetailStates;
+  states = OrderDetailStates; 
 
   selectedDetail = {} as ISelectedDetail;
 

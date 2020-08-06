@@ -71,6 +71,4 @@ export class CustomerOrdersComponent extends BaseComponent {
   getState(state: OrderDetailStates): string {
     return ORDER_DETAIL_STATES.filter(p => p.State == state)[0].DisplayName;
   }
-
-
 }

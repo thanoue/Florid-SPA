@@ -8,23 +8,25 @@
                 <a routerLink="" class="menuItem-link"><i class="fa fa-dashboard"></i>Trang chủ</a>
             </li>
             <li [ngClass]="(currentMenu !== menus.User)?'menuItem':'menuItem active'">
-                <a routerLink="/users" class="menuItem-link"><i class="fa fa-user-circle-o"></i>Nhân Viên</a>
+                <a routerLink="/admin/users" class="menuItem-link"><i class="fa fa-user-circle-o"></i>Nhân Viên</a>
             </li>
             <li [ngClass]="(currentMenu !== menus.Customer)?'menuItem':'menuItem active'">
-                <a routerLink="/customers" class="menuItem-link"><i class="fa fa-users"></i>Khách Hàng</a>
+                <a routerLink="/admin/customers" class="menuItem-link"><i class="fa fa-users"></i>Khách Hàng</a>
             </li>
             <li class="menuItem hasChildren">
                 <a href="javascript:void(0);" class="menuItem-link"><i class="fa fa-tasks"></i>Sản Phẩm</a>
                 <ul class="subMenu">
                     <li [ngClass]="(currentMenu !== menus.Product)?'menuItem':'menuItem active'">
-                        <a routerLink="/products" class="menuItem-link"><i class="fa fa-list"> </i>Danh sách</a>
+                        <a routerLink="/admin/products" class="menuItem-link"><i class="fa fa-list"> </i>Danh sách</a>
                     </li>
                     <li [ngClass]="(currentMenu !== menus.ProductCategory)?'menuItem':'menuItem active'">
-                        <a routerLink="/product-categories" class="menuItem-link"><i class="fa fa-th-large"> </i>Danh
+                        <a routerLink="/admin/product-categories" class="menuItem-link"><i class="fa fa-th-large">
+                            </i>Danh
                             mục Sản phẩm</a>
                     </li>
                     <li [ngClass]="(currentMenu !== menus.ProductTag)?'menuItem':'menuItem active'">
-                        <a routerLink="/product-tags" class="menuItem-link"><i class="fa fa-tags"> </i>Tag Sản phẩm</a>
+                        <a routerLink="/admin/product-tags" class="menuItem-link"><i class="fa fa-tags"> </i>Tag Sản
+                            phẩm</a>
                     </li>
                 </ul>
             </li>

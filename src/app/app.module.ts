@@ -40,6 +40,7 @@ import { StaffLoginComponent } from './components/staff/staff-login/staff-login.
 import { OrdersManageComponent } from './components/staff/orders-manage/orders-manage.component';
 import { StaffMainLayoutComponent } from './components/staff/staff-main-layout/staff-main-layout.component';
 import { StatusPointComponent } from './controls/status-point/status-point.component';
+import { AddOrderComponent } from './components/staff/add-order/add-order.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { StatusPointComponent } from './controls/status-point/status-point.compo
     StaffLoginComponent,
     OrdersManageComponent,
     StaffMainLayoutComponent,
-    StatusPointComponent
+    StatusPointComponent,
+    AddOrderComponent
   ],
   imports: [
     BrowserModule,
