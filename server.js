@@ -27,7 +27,6 @@ app.use('/product/img', express.static('uploads/productImg'));
 
 require('./app/routes/admin.routes')(app);
 
-
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
@@ -40,15 +39,47 @@ db.sequelize.sync({ alter: true }).then(() => {
     initial();
 });
 
+
 /**
  * Get port from environment and store in Express.
  */
 const port = process.env.PORT || '3000';
 app.set('port', port);
 
-const server = http.createServer(app);
+const serverApp = http.createServer(app);
 
-server.listen(port, () => console.log(`API running on host with port:${port}`));
+serverApp.listen(port, () => console.log(`API running on host with port:${port}`));
+
+const io = require('socket.io')(serverApp);
+io.on('connection', (socket) => {
+
+    socket.emit('connected')
+
+    socket.userId = 0;
+
+    socket.on('login', (data) => {
+
+        socket.userId = data.userId;
+
+        var clients = io.sockets.clients();
+
+        const keys = Object.keys(clients.connected)
+
+        keys.forEach(key => {
+
+            let itemSocket = clients.connected[key];
+
+            console.log('item user id = ', itemSocket.userId);
+
+            if (itemSocket.userId && itemSocket.userId == data.userId) {
+                if (key != socket.id) {
+                    itemSocket.emit('forceLogout', { message: 'someone has already logged in with your account!' });
+                }
+            }
+        });
+    });
+
+});
 
 function initial() {
 
