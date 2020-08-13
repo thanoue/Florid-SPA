@@ -1,0 +1,42 @@
+<div class="page-content" id="orderAdd">
+    <div class="container">
+        <form #form="ngForm" (submit)="submitOrderDetail(form)" autocomplete="on" class="addOrderForm">
+            <div class="form-group prodInfo">
+                <div class="prodImg">
+                    <img [src]="orderDetail.ProductImageUrl" alt="">
+                </div>
+                <div class="prodContent">
+                    <h5 class="prodCode" (click)="productNameChangeRequest()">{{orderDetail.ProductName}}</h5>
+                    <span (click)="insertModifiedValue()"
+                        class="prodPrice">{{orderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <div class="prodQuantity"><input type="number" readonly [(ngModel)]="orderDetail.Quantity"
+                            name="Quantity" id="Quantity" step="1" min="1">
+                    </div>
+                </div>
+                <div class="prodBrowser" (click)="searchProduct()">
+                    <i class="fa fa-search main-bg"></i>
+                </div>
+            </div>
+            <div class="form-group addInfo">
+                <a class="main-bg" routerLink="/select-receiver">Thông tin người nhận</a>
+            </div>
+            <div class="form-group orderInfo">
+                <input type="number" name="AdditionalFee" id="AdditionalFee" class="orderField"
+                    [(ngModel)]="orderDetail.AdditionalFee" placeholder="Phụ phí (k)...">
+            </div>
+            <div class="form-group orderInfo">
+                <input type="text" name="PurposeOf" id="PurposeOf" class="orderField"
+                    [(ngModel)]="orderDetail.PurposeOf" placeholder="Mục đích mua hàng...">
+            </div>
+            <div class="form-group orderDesc">
+                <textarea name="Description" id="Description" class="orderField" placeholder="Mô tả..."
+                    [(ngModel)]="orderDetail.Description"></textarea>
+            </div>
+            <div class="row">
+                <div class="col-8 mx-auto text-center">
+                    <button type="submit" class="btn main-btn w-100">Xong</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

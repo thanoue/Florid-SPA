@@ -1,5 +1,5 @@
 import { BaseEntity } from './base.entity';
-import { OrderDetailStates, Roles } from '../enums';
+import { OrderDetailStates, Roles, OrderType } from '../enums';
 
 export class Order extends BaseEntity {
     CustomerId = '';
@@ -7,6 +7,7 @@ export class Order extends BaseEntity {
     VATIncluded = false;
     TotalAmount = 0;
     TotalPaidAmount = 0;
+    OrderType: OrderType;
 
     GainedScore = 0;
     ScoreUsed = 0;

@@ -62,15 +62,14 @@ export class AuthService {
           LocalService.setApiAccessToken(result.accessToken);
           LocalService.setUserAvtUrl(result.avtUrl);
           LocalService.setPhoneNumber(result.phoneNumber);
-          LocalService.setIsPrinter(result.phoneNumber);
+          LocalService.setIsPrinter(result.isPrinter);
           LocalService.setRole(result.roles[0]);
           LocalService.setUserName(result.fullName);
           LocalService.setUserId(result.id);
 
-          this.realTimeService.connect(result.id);
-
-          loginCallback(true);
-
+          this.realTimeService.connect(result.id, result.isPrinter, () => {
+            loginCallback(true);
+          });
         })
         .catch(err => {
           this.globalService.stopLoading();

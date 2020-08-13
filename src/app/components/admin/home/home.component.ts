@@ -335,49 +335,6 @@ export class HomeComponent extends BaseComponent {
   //     //   });
   //   }
 
-
-
-
-  //   reader.readAsBinaryString(target.files[0]);
-
-  // }
-
-  onFileChange(evt: any) {
-
-    /* wire up file reader */
-    const target: DataTransfer = <DataTransfer>(evt.target);
-    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
-    const reader: FileReader = new FileReader();
-    reader.onload = (e: any) => {
-      /* read workbook */
-      const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-
-      /* grab first sheet */
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-      /* save data */
-      let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
-
-
-      data.forEach((row) => {
-        let uid = new ShortUniqueId();
-        row[1] = uid.randomUUID(6);
-      });
-
-      console.log(data);
-
-      let newSheet = XLSX.utils.aoa_to_sheet(data);
-
-      XLSX.utils.book_append_sheet(wb, newSheet, "result");
-
-      XLSX.writeFile(wb, 'email_id.xlsb');
-    }
-
-    reader.readAsBinaryString(target.files[0]);
-  }
-
   // onFileChange(evt: any) { // customer
   //   /* wire up file reader */
   //   const target: DataTransfer = <DataTransfer>(evt.target);

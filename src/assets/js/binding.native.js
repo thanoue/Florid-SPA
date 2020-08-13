@@ -24,7 +24,6 @@ function setStatusBarColor(isDark) {
 }
 
 function doPrintJob(data) {
-    console.log('native js');
     if (typeof Android !== "undefined" && Android !== null) {
         Android.doPrintJob(JSON.stringify(data));
     }
@@ -59,66 +58,6 @@ function getTimeSelecting(hour, minute) {
 function setTime(hour, minute) {
     window.BaseReference.zone.run(() => { window.BaseReference.timeSelected(hour, minute); });
 }
-
-function getDateTimeSelecting(year, month, day, hour, minute) {
-
-    if (isOnTerminal()) {
-        Android.requestDateTimeSelecting(year, month, day, hour, minute);
-    } else {
-
-        let deafaultDate = new Date();
-
-        deafaultDate.setFullYear(year);
-        deafaultDate.setMonth(month);
-        deafaultDate.setDate(day);
-
-        deafaultDate.setHours(hour);
-        deafaultDate.setMinutes(minute);
-        deafaultDate.setSeconds(0);
-
-        // var timePicker = new DateTimePicker.Time({
-        //     default: deafaultDate,
-        //     minuteStep: 5   
-        // })
-        // timePicker.on('selected', function (formatTime, now) {
-        //     console.log('selected time: ', formatTime, now)
-        //     //time.value = formatTime
-        // })
-        // timePicker.on('cleared', function () {
-        //     console.log('cleared time')
-        //     // time.value = ''
-        // });
-        // timePicker.show();
-
-        var datePicker = new DateTimePicker.Date({
-            lang: 'vi-VN',
-            default: deafaultDate,
-            min: '2018-01-01',
-            max: '2025-12-31'
-        }, {
-            day: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-            shortDay: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
-            MDW: 'D, MM-dd',
-            YM: 'yyyy-MM',
-            OK: 'Xác nhận',
-            CANCEL: 'huỷ',
-            CLEAR: 'Xoá'
-        });
-
-        datePicker.on('selected', function (formatDate, now) {
-            console.log('selected date: ', formatDate, now);
-            //date.value = formatDate
-        });
-        datePicker.on('cleared', function () {
-            console.log('cleared date')
-            // date.value = ''
-        });
-        datePicker.show();
-
-    }
-
-}
-
 
 function setDateTime(year, month, day, hour, minute) {
     window.BaseReference.zone.run(() => { window.BaseReference.dateTimeSelected(year, month, day, hour, minute); });

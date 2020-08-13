@@ -42,12 +42,14 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
 
     this.realtimeService.forceLogoutRegister((message) => {
+      
       this.globalService.showError(message);
       this.authService.logOut((isSuccess) => {
         if (isSuccess) {
           this.router.navigate(['/staff-login']);
         }
       });
+
     });
 
     this.globalService.setStatusBarColor(false);

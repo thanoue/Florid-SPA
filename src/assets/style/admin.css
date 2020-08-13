@@ -739,6 +739,9 @@ form.addOrderForm .form-group {
     font-size: 14px;
     margin-bottom: 2vh;
 }
+
+
+
 .form-group.prodInfo {
     padding: 5px;
     display: -webkit-box;
@@ -2645,4 +2648,17 @@ a.openOrderProducts
 }
 div.popupDialog select {
     margin-bottom: 20px;
+}
+
+.borderless-field {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    font-size: 14px;
+    margin-bottom: 2vh;
+    margin-top: 2vh;
+}
+
+.borderless-field .small-height{
+    height: 40px;
 }

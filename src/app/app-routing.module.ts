@@ -14,11 +14,11 @@ import { CustomerDetailComponent } from './components/admin/customer-detail/cust
 import { CustomerEditComponent } from './components/admin/customer-edit/customer-edit.component';
 import { CustomerOrdersComponent } from './components/admin/customer-orders/customer-orders.component';
 import { CustomerReceiversComponent } from './components/admin/customer-receivers/customer-receivers.component';
-import { BaseAdminComponent } from './components/admin/base-admin/base-admin.component';
-import { BaseStaffComponent } from './components/staff/base-staff/base-staff.component';
 import { StaffLoginComponent } from './components/staff/staff-login/staff-login.component';
 import { StaffMainLayoutComponent } from './components/staff/staff-main-layout/staff-main-layout.component';
 import { OrdersManageComponent } from './components/staff/orders-manage/orders-manage.component';
+import { SelectCustomerComponent } from './components/staff/select-customer/select-customer.component';
+import { OrderDetailComponent } from './components/staff/order-detail/order-detail.component';
 
 const routes: Routes = [
   { path: 'staff-login', component: StaffLoginComponent },
@@ -31,7 +31,17 @@ const routes: Routes = [
         path: 'orders-manage',
         canActivate: [AccountMobileGuard],
         component: OrdersManageComponent
-      }
+      },
+      {
+        path: 'select-customer',
+        component: SelectCustomerComponent,
+        canActivate: [AccountMobileGuard]
+      },
+      {
+        path: 'order-detail/:id',
+        component: OrderDetailComponent,
+        canActivate: [AccountMobileGuard]
+      },
     ]
   },
   {

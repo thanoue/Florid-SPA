@@ -19,6 +19,7 @@ export class CustomerEditComponent extends BaseComponent {
 
 
   protected PageCompnent: PageComponent = new PageComponent('Sửa thông tin khách hàng', MenuItems.Customer);
+  
   protected Init() {
     this.customerService.getById(this.globalCustomer.Id)
       .then(cus => {

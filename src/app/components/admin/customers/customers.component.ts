@@ -62,7 +62,7 @@ export class CustomersComponent extends BaseComponent {
 
   viewCusDetail(cus: Customer) {
     this.globalCustomer = cus;
-    this.router.navigate(['customer-detail']);
+    this.router.navigate(['admin/customer-detail']);
   }
 
   addCustomer(form: NgForm) {

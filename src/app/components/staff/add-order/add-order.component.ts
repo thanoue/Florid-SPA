@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderViewModel, OrderDetailViewModel } from 'src/app/models/view.models/order.model';
-import { OrderDetailStates, MembershipTypes } from 'src/app/models/enums';
+import { OrderDetailStates, MembershipTypes, OrderType } from 'src/app/models/enums';
 import { Router } from '@angular/router';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
@@ -26,435 +26,422 @@ declare function getNumberValidateInput(resCallback: (res: number, validCallback
 })
 export class AddOrderComponent extends BaseComponent {
 
-  Title: string;
-  protected Init() {
+  Title = 'Thêm Đơn';
+
+  memberShipTitle = '';
+
+  order: OrderViewModel;
+
+  totalBalance = 0;
+
+  isResetPaidAmount = false;
+  isEditting = false;
+
+  originalOrderId = '';
+
+  constructor(private orderDetailService: OrderDetailService, private router: Router,
+    // tslint:disable-next-line: align
+    private orderService: OrderService,
+    // tslint:disable-next-line: align
+    private customerService: CustomerService,
+
+    // tslint:disable-next-line: align
+    private printJobService: PrintJobService) {
+    super();
   }
 
-  // Title = 'Thêm Đơn';
 
-  // memberShipTitle = '';
+  protected Init() {
 
-  // order: OrderViewModel;
+    this.order = this.globalOrder;
 
-  // totalBalance = 0;
+    if (!this.order) {
 
-  // isResetPaidAmount = false;
+      this.memberShipTitle = 'New Customer';
 
-  // constructor(private orderDetailService: OrderDetailService, private router: Router,
-  //   // tslint:disable-next-line: align
-  //   private orderService: OrderService,
-  //   // tslint:disable-next-line: align
-  //   private customerService: CustomerService,
+      this.orderService.getNormalDayOrdersCount()
+        .then(count => {
 
-  //   // tslint:disable-next-line: align
-  //   private printJobService: PrintJobService) {
-  //   super();
-  // }
+          this.order.OrderId = (count + 1).toString();
+          this.originalOrderId = this.order.OrderId;
+          this.order.OrderType = OrderType.NormalDay;
 
+        });
 
-  // protected Init() {
+    } else {
 
-  //   this.order = this.globalOrder;
+      this.isEditting = true;
+      this.originalOrderId = this.order.OrderId;
+      this.onVATIncludedChange();
+    }
 
-  //   if (!this.order) {
-  //     this.memberShipTitle = 'New Customer';
-  //   } else {
-  //     this.onVATIncludedChange();
-  //   }
+    switch (this.order.CustomerInfo.MembershipType) {
+      case MembershipTypes.NewCustomer:
+        this.memberShipTitle = 'New Customer';
+        break;
+      case MembershipTypes.Member:
+        this.memberShipTitle = 'Member';
+        break;
+      case MembershipTypes.Vip:
+        this.memberShipTitle = 'VIP';
+        break;
+      case MembershipTypes.VVip:
+        this.memberShipTitle = 'VVIP';
+        break;
+      default:
+        this.memberShipTitle = 'New Customer';
+        break;
+    }
+    this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+  }
 
-  //   switch (this.order.CustomerInfo.MembershipType) {
-  //     case MembershipTypes.NewCustomer:
-  //       this.memberShipTitle = 'New Customer';
-  //       break;
-  //     case MembershipTypes.Member:
-  //       this.memberShipTitle = 'Member';
-  //       break;
-  //     case MembershipTypes.Vip:
-  //       this.memberShipTitle = 'VIP';
-  //       break;
-  //     case MembershipTypes.VVip:
-  //       this.memberShipTitle = 'VVIP';
-  //       break;
-  //     default:
-  //       this.memberShipTitle = 'New Customer';
-  //       break;
-  //   }
-  //   this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
-  // }
+  requestPaidInput() {
 
-  // requestPaidInput() {
+    if (!this.order.CustomerInfo.Id) {
+      this.showWarning('Thiếu thông tin Khách hàng!');
+      return;
+    }
 
-  //   if (!this.order.CustomerInfo.Id) {
-  //     this.showWarning('Thiếu thông tin Khách hàng!');
-  //     return;
-  //   }
+    if (!this.order.OrderDetails || this.order.OrderDetails.length <= 0) {
+      this.showWarning('Chưa chọn sản phẩm nào!');
+      return;
+    }
 
-  //   if (!this.order.OrderDetails || this.order.OrderDetails.length <= 0) {
-  //     this.showWarning('Chưa chọn sản phẩm nào!');
-  //     return;
-  //   }
+    if (!this.order.TotalAmount || this.order.TotalAmount <= 0) {
+      this.showWarning('Thành tiền không hợp lệ!');
+      return;
+    }
 
-  //   if (!this.order.TotalAmount || this.order.TotalAmount <= 0) {
-  //     this.showWarning('Thành tiền không hợp lệ!');
-  //     return;
-  //   }
+    if (this.totalBalance < 0) {
 
-  //   if (this.totalBalance < 0) {
+      this.openConfirm('Trả lại tiền thừa cho khách hàng : ' + this.totalBalance.toString(), () => {
 
-  //     this.openConfirm('Trả lại tiền thừa cho khách hàng : ' + this.totalBalance.toString(), () => {
+        this.isResetPaidAmount = true;
+        this.totalBalance = 0;
 
-  //       this.isResetPaidAmount = true;
-  //       this.totalBalance = 0;
+        this.printConfirm();
 
-  //       this.printConfirm();
+      });
 
-  //     });
+      return;
+    }
 
-  //     return;
-  //   }
+    if (this.totalBalance === 0) {
+      this.printConfirm();
+      return;
+    }
 
-  //   if (this.totalBalance === 0) {
-  //     this.printConfirm();
-  //     return;
-  //   }
+    getNumberValidateInput((res, validateCallback) => {
 
-  //   getNumberValidateInput((res, validateCallback) => {
+      if (res > this.totalBalance) {
+        validateCallback(false, 'Thanh toán vượt quá thành tiền!');
+        return;
+      } else if (res <= 0) {
+        validateCallback(false, 'Thanh toán phải lớn hơn 0!');
+        return;
+      }
 
-  //     if (res > this.totalBalance) {
-  //       validateCallback(false, 'Thanh toán vượt quá thành tiền!');
-  //       return;
-  //     } else if (res <= 0) {
-  //       validateCallback(false, 'Thanh toán phải lớn hơn 0!');
-  //       return;
-  //     }
+      validateCallback(true, '');
+      this.doingPay(res);
 
-  //     validateCallback(true, '');
-  //     this.doingPay(res);
+    }, 'Số tiền đã thanh toán...', this.totalBalance);
 
-  //   }, 'Số tiền đã thanh toán...', this.totalBalance);
+  }
 
-  // }
+  doingPay(res: number) {
 
-  // doingPay(res: number) {
+    this.order.TotalPaidAmount += res;
 
-  //   this.order.TotalPaidAmount += res;
+    this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
 
-  //   this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+    if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
 
-  //   if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
+    this.order.CustomerInfo.GainedScore = ExchangeService.getGainedScore(this.order.TotalAmount);
 
-  //   this.order.CustomerInfo.GainedScore = ExchangeService.getGainedScore(this.order.TotalAmount);
+    this.printConfirm();
+  }
 
-  //   if (!this.order.OrderId) {
+  printConfirm() {
 
-  //     this.startLoading();
+    this.openConfirm('In hoá đơn?', () => {
 
-  //     this.orderService.getNextIndex()
-  //       .then(nextIndex => {
+      if (this.isResetPaidAmount) {
+        this.order.TotalPaidAmount = this.order.TotalAmount;
+      }
+
+      let tempSummary = 0;
+      const products: PrintSaleItem[] = [];
+
+      this.order.OrderDetails.forEach(product => {
+        products.push({
+          productName: product.ProductName,
+          index: product.Index + 1,
+          price: product.ModifiedPrice,
+          additionalFee: product.AdditionalFee
+        });
+        tempSummary += product.ModifiedPrice;
+      });
 
-  //         this.stopLoading();
+      const orderData: PrintJob = {
+        Created: (new Date()).getTime(),
+        Id: Guid.create().toString(),
+        Active: true,
+        IsDeleted: false,
+        saleItems: products,
+        createdDate: this.order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
+        orderId: this.order.Index.toString(),
+        summary: tempSummary,
+        totalAmount: this.order.TotalAmount,
+        totalPaidAmount: this.order.TotalPaidAmount,
+        totalBalance: this.totalBalance,
+        vatIncluded: this.order.VATIncluded,
+        memberDiscount: this.order.CustomerInfo.DiscountPercent,
+        scoreUsed: this.order.CustomerInfo.ScoreUsed,
+        gainedScore: this.order.CustomerInfo.GainedScore,
+        totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
+      };
 
-  //         this.order.OrderId = Guid.create().toString();
-  //         this.order.Index = nextIndex;
+      this.printJobService.addPrintJob(orderData);
+      this.orderConfirm();
 
-  //         this.printConfirm();
+    }, () => {
 
-  //       });
+      this.orderConfirm();
 
-  //   } else {
+    }, () => {
 
-  //     this.printConfirm();
+      if (this.isResetPaidAmount) {
+        this.isResetPaidAmount = false;
+        this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+      }
 
-  //   }
-  // }
+    });
 
-  // printConfirm() {
+  }
 
-  //   this.openConfirm('In hoá đơn?', () => {
+  orderConfirm() {
 
-  //     if (this.isResetPaidAmount) {
-  //       this.order.TotalPaidAmount = this.order.TotalAmount;
-  //     }
+    if (this.isResetPaidAmount) {
+      this.order.TotalPaidAmount = this.order.TotalAmount;
+    }
 
-  //     let tempSummary = 0;
-  //     const products: PrintSaleItem[] = [];
+    this.startLoading();
 
-  //     this.order.OrderDetails.forEach(product => {
-  //       products.push({
-  //         productName: product.ProductName,
-  //         index: product.Index + 1,
-  //         price: product.ModifiedPrice,
-  //         additionalFee: product.AdditionalFee
-  //       });
-  //       tempSummary += product.ModifiedPrice;
-  //     });
+    const orderDB = new Order();
 
-  //     const orderData: PrintJob = {
-  //       Created: (new Date()).getTime(),
-  //       Id: Guid.create().toString(),
-  //       Active: true,
-  //       IsDeleted: false,
-  //       saleItems: products,
-  //       createdDate: this.order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
-  //       orderId: this.order.Index.toString(),
-  //       summary: tempSummary,
-  //       totalAmount: this.order.TotalAmount,
-  //       totalPaidAmount: this.order.TotalPaidAmount,
-  //       totalBalance: this.totalBalance,
-  //       vatIncluded: this.order.VATIncluded,
-  //       memberDiscount: this.order.CustomerInfo.DiscountPercent,
-  //       scoreUsed: this.order.CustomerInfo.ScoreUsed,
-  //       gainedScore: this.order.CustomerInfo.GainedScore,
-  //       totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
-  //     };
+    if (this.originalOrderId != this.order.OrderId) {
+      this.order.OrderType = OrderType.SpecialDay;
+    }
 
-  //     this.printJobService.set(orderData).then(res => {
-  //       this.orderConfirm();
-  //     })
-  //       .catch(error => {
-  //         this.showError(error);
-  //         return;
-  //       });
+    orderDB.CustomerId = this.order.CustomerInfo.Id;
+    orderDB.Id = this.order.OrderId;
+    orderDB.Created = this.order.CreatedDate.getTime();
+    orderDB.VATIncluded = this.order.VATIncluded;
+    orderDB.TotalAmount = this.order.TotalAmount;
+    orderDB.TotalPaidAmount = this.order.TotalPaidAmount;
+    orderDB.GainedScore = this.order.CustomerInfo.GainedScore;
+    orderDB.ScoreUsed = this.order.CustomerInfo.ScoreUsed;
+    orderDB.Index = this.order.Index;
+    orderDB.OrderType = this.order.OrderType;
 
-  //   }, () => {
+    this.orderService.addOrder(orderDB)
+      .then(async res => {
 
-  //     this.orderConfirm();
+        const orderDetails: OrderDetail[] = [];
+        const receiverInfos: CustomerReceiverDetail[] = [];
 
-  //   }, () => {
+        this.order.OrderDetails.forEach(detailVM => {
 
-  //     if (this.isResetPaidAmount) {
-  //       this.isResetPaidAmount = false;
-  //       this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
-  //     }
+          const detail = new OrderDetail();
 
-  //   });
+          detail.Id = Guid.create().toString();
 
-  // }
+          detail.OrderId = orderDB.Id;
+          detail.IsHardcodeProduct = detailVM.IsFromHardCodeProduct;
+          detail.HardcodeProductImageName = detailVM.HardcodeImageName;
+          detail.ProductId = detailVM.ProductId;
+          detail.ProductImageUrl = detailVM.ProductImageUrl;
+          detail.ProductPrice = detailVM.ModifiedPrice;
+          detail.AdditionalFee = detailVM.AdditionalFee;
+          detail.ProductName = detailVM.ProductName;
+          detail.Description = detailVM.Description;
+          detail.State = OrderDetailStates.Added;
+          detail.IsVATIncluded = orderDB.VATIncluded;
+          detail.PurposeOf = detailVM.PurposeOf;
+          detail.Index = detailVM.Index;
 
-  // orderConfirm() {
+          detail.CustomerName = this.order.CustomerInfo.Name;
+          detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
 
-  //   if (this.isResetPaidAmount) {
-  //     this.order.TotalPaidAmount = this.order.TotalAmount;
-  //   }
+          detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
 
-  //   this.startLoading();
+          const receiverInfo = new CustomerReceiverDetail();
 
-  //   const orderDB = new Order();
+          receiverInfo.Address = detailVM.DeliveryInfo.Address;
+          receiverInfo.PhoneNumber = detailVM.DeliveryInfo.PhoneNumber;
+          receiverInfo.FullName = detailVM.DeliveryInfo.FullName;
 
-  //   orderDB.CustomerId = this.order.CustomerInfo.Id;
-  //   orderDB.Id = this.order.OrderId;
-  //   orderDB.Created = this.order.CreatedDate.getTime();
-  //   orderDB.VATIncluded = this.order.VATIncluded;
-  //   orderDB.TotalAmount = this.order.TotalAmount;
-  //   orderDB.TotalPaidAmount = this.order.TotalPaidAmount;
-  //   orderDB.GainedScore = this.order.CustomerInfo.GainedScore;
-  //   orderDB.ScoreUsed = this.order.CustomerInfo.ScoreUsed;
-  //   orderDB.Index = this.order.Index;
+          detail.DeliveryInfo.ReceiverDetail = receiverInfo;
 
-  //   this.orderService.set(orderDB)
-  //     .then(async res => {
+          orderDetails.push(detail);
 
-  //       const orderDetails: OrderDetail[] = [];
-  //       const receiverInfos: CustomerReceiverDetail[] = [];
+          let isAdd = true;
 
-  //       this.order.OrderDetails.forEach(detailVM => {
+          receiverInfos.forEach(info => {
 
-  //         const detail = new OrderDetail();
+            if (ExchangeService.receiverInfoCompare(info, receiverInfo)) {
+              isAdd = false;
+              return;
+            }
 
-  //         detail.Id = Guid.create().toString();
+          });
 
-  //         detail.OrderId = orderDB.Id;
-  //         detail.IsHardcodeProduct = detailVM.IsFromHardCodeProduct;
-  //         detail.HardcodeProductImageName = detailVM.HardcodeImageName;
-  //         detail.ProductId = detailVM.ProductId;
-  //         detail.ProductImageUrl = detailVM.ProductImageUrl;
-  //         detail.ProductPrice = detailVM.ModifiedPrice;
-  //         detail.AdditionalFee = detailVM.AdditionalFee;
-  //         detail.ProductName = detailVM.ProductName;
-  //         detail.Description = detailVM.Description;
-  //         detail.Index = detailVM.Index;
-  //         detail.State = OrderDetailStates.Added;
-  //         detail.ProductModifiedPrice = detailVM.ModifiedPrice;
-  //         detail.IsVATIncluded = orderDB.VATIncluded;
-  //         detail.PurposeOf = detailVM.PurposeOf;
+          if (isAdd) {
+            receiverInfos.push(receiverInfo);
+          }
 
-  //         detail.CustomerName = this.order.CustomerInfo.Name;
-  //         detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
+        });
 
-  //         detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
+        this.globalOrder.CustomerInfo.ReceiverInfos.forEach(receiver => {
 
-  //         const receiverInfo = new CustomerReceiverDetail();
+          let isAdd = true;
 
-  //         receiverInfo.Address = detailVM.DeliveryInfo.Address;
-  //         receiverInfo.PhoneNumber = detailVM.DeliveryInfo.PhoneNumber;
-  //         receiverInfo.FullName = detailVM.DeliveryInfo.FullName;
+          receiverInfos.forEach(item => {
 
-  //         detail.DeliveryInfo.ReceiverDetail = receiverInfo;
+            if (ExchangeService.receiverInfoCompare(receiver, item)) {
+              isAdd = false;
+              return;
+            }
 
-  //         orderDetails.push(detail);
+          });
 
-  //         let isAdd = true;
+          if (isAdd) {
+            receiverInfos.push(receiver);
+          }
 
-  //         receiverInfos.forEach(info => {
+        });
 
-  //           if (ExchangeService.receiverInfoCompare(info, receiverInfo)) {
-  //             isAdd = false;
-  //             return;
-  //           }
+        await this.orderService.deleteOrderDetailByOrderId(orderDB.Id);
 
-  //         });
+        this.orderService.addOrderDetails(orderDetails)
+          .then(() => {
 
-  //         if (isAdd) {
-  //           receiverInfos.push(receiverInfo);
-  //         }
+            this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
 
-  //       });
+              this.stopLoading();
 
-  //       this.globalOrder.CustomerInfo.ReceiverInfos.forEach(receiver => {
+              if (isSuccess) {
+                this.OnBackNaviage();
+              }
 
-  //         let isAdd = true;
+            });
 
-  //         receiverInfos.forEach(item => {
+          })
+          .catch(error => {
 
-  //           if (ExchangeService.receiverInfoCompare(receiver, item)) {
-  //             isAdd = false;
-  //             return;
-  //           }
+            console.log(error);
+            this.globalService.stopLoading();
+            this.showError(error.toString());
 
-  //         });
+          });
+      });
+  }
 
-  //         if (isAdd) {
-  //           receiverInfos.push(receiver);
-  //         }
+  totalAmountCalculate(isVATIncluded: boolean) {
 
-  //       });
+    this.order.TotalAmount = 0;
 
-  //       const removeOldRes = await this.orderDetailService.deleteAllByOrderId(orderDB.Id);
+    this.order.OrderDetails.forEach(detail => {
 
-  //       if (!removeOldRes) {
+      if (!detail.AdditionalFee) {
+        detail.AdditionalFee = 0;
+      }
 
-  //         this.globalService.stopLoading();
-  //         return;
+      this.order.TotalAmount += ExchangeService.getFinalPrice(detail.ModifiedPrice, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee);
 
-  //       } else {
-  //         this.orderDetailService.setList(orderDetails)
-  //           .then(() => {
+    });
 
-  //             this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
-  //               this.stopLoading();
-  //               if (isSuccess) {
-  //                 this.OnBackNaviage();
-  //               }
-  //             });
+    if (isVATIncluded) {
+      this.order.TotalAmount += (this.order.TotalAmount / 100) * 10;
+    }
 
-  //           })
-  //           .catch(error => {
+    this.order.TotalAmount -= ExchangeService.geExchangableAmount(this.order.CustomerInfo.ScoreUsed);
 
-  //             console.log(error);
-  //             this.globalService.stopLoading();
-  //             this.showError(error.toString());
+    this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
 
-  //           });
-  //       }
-  //     });
-  // }
+  }
 
-  // totalAmountCalculate(isVATIncluded: boolean) {
+  onVATIncludedChange() {
+    this.totalAmountCalculate(this.order.VATIncluded);
+  }
 
-  //   this.order.TotalAmount = 0;
+  scoreExchange() {
 
-  //   this.order.OrderDetails.forEach(detail => {
+    openExcForm((res, validateCalback) => {
 
-  //     if (!detail.AdditionalFee) {
-  //       detail.AdditionalFee = 0;
-  //     }
+      if (this.order.CustomerInfo.AvailableScore < res) {
 
-  //     this.order.TotalAmount += ExchangeService.getFinalPrice(detail.ModifiedPrice, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee);
+        this.showError('Vượt quá điểm tích lũy!!');
 
-  //   });
+        validateCalback.call(this, false);
 
-  //   if (!isVATIncluded) {
-  //     this.order.TotalAmount += (this.order.TotalAmount / 100) * 10;
-  //   }
+        return;
 
-  //   this.order.TotalAmount -= ExchangeService.geExchangableAmount(this.order.CustomerInfo.ScoreUsed);
+      }
 
-  //   this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+      const exchangeAmount = ExchangeService.geExchangableAmount(res);
 
-  // }
+      if (exchangeAmount >= this.totalBalance) {
 
-  // onVATIncludedChange() {
-  //   this.totalAmountCalculate(this.order.VATIncluded);
-  // }
+        this.showError('Vượt quá tổng tiền thanh toán!');
 
-  // scoreExchange() {
+        validateCalback.call(this, false);
 
-  //   openExcForm((res, validateCalback) => {
+        return;
 
-  //     if (this.order.CustomerInfo.AvailableScore < res) {
+      }
 
-  //       this.showError('Vượt quá điểm tích lũy!!');
+      validateCalback.call(this, true);
 
-  //       validateCalback.call(this, false);
+      this.order.CustomerInfo.ScoreUsed = res;
 
-  //       return;
+      this.onVATIncludedChange();
 
-  //     }
+    });
 
-  //     const exchangeAmount = ExchangeService.geExchangableAmount(res);
+  }
 
-  //     if (exchangeAmount >= this.totalBalance) {
+  addNewOrderDetail() {
 
-  //       this.showError('Vượt quá tổng tiền thanh toán!');
+    this.globalOrderDetail = new OrderDetailViewModel();
 
-  //       validateCalback.call(this, false);
+    this.router.navigate([`/admin/order-detail/-1`]);
+  }
 
-  //       return;
+  editOrderDetail(index: number) {
 
-  //     }
+    const viewModel = OrderDetailViewModel.DeepCopy(this.order.OrderDetails[index]);
 
-  //     validateCalback.call(this, true);
+    this.globalOrderDetail = viewModel;
 
-  //     console.log('exchange amout:', res);
+    this.router.navigate([`/admin/order-detail/${index}`]);
 
-  //     this.order.CustomerInfo.ScoreUsed = res;
+  }
 
-  //     this.onVATIncludedChange();
-  //   });
+  deleteOrderDetail(index: number) {
+    // confirm here
+    this.openConfirm('Chắc chắn xoá?', () => {
+      this.order.OrderDetails.splice(index, 1);
 
-  // }
+      let tempIndex = 0;
 
-  // addNewOrderDetail() {
+      this.order.OrderDetails.forEach(item => {
+        item.Index = tempIndex;
+        tempIndex++;
+      });
 
-  //   this.globalOrderDetail = new OrderDetailViewModel();
+      this.onVATIncludedChange();
 
-  //   this.router.navigate([`/order-detail/-1`]);
-  // }
-
-  // editOrderDetail(index: number) {
-
-  //   const viewModel = OrderDetailViewModel.DeepCopy(this.order.OrderDetails[index]);
-
-  //   this.globalOrderDetail = viewModel;
-
-  //   this.router.navigate([`/order-detail/${index}`]);
-
-  // }
-
-  // deleteOrderDetail(index: number) {
-  //   // confirm here
-  //   this.openConfirm('Chắc chắn xoá?', () => {
-  //     this.order.OrderDetails.splice(index, 1);
-
-  //     let tempIndex = 0;
-
-  //     this.order.OrderDetails.forEach(item => {
-  //       item.Index = tempIndex;
-  //       tempIndex++;
-  //     });
-
-  //     this.onVATIncludedChange();
-
-  //   });
-  // }
+    });
+  }
 }

@@ -50,6 +50,13 @@ export const API_END_POINT = {
     getCustomers: '/customer/getList',
     getCustomeCount: '/customer/getCount',
     getCustomeById: '/customer/getById',
+    updateReciverInfo: '/customer/updateReceiverList',
+    getAllCustomer: '/customer/getAll',
+
+    getNormalDayOrdersCount: '/order/getNormalDayOrdersCount',
+    addOrder: '/order/add',
+    addOrderDetails: '/order/addOrderDetails',
+    deleteOrderDetailByOrderId: '/order/deleteOrderDetailByOrderId',
 };
 
 export const IMAGE_FOLDER_PATHS = {
