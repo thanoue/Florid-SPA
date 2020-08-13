@@ -53,13 +53,12 @@ serverApp.listen(port, () => console.log(`API running on host with port:${port}`
 const io = require('socket.io')(serverApp);
 io.on('connection', (socket) => {
 
-    socket.emit('connected')
+    socket.emit('connected');
 
     socket.userId = 0;
+    socket.isPrinter = false;
 
-    socket.on('login', (data) => {
-
-        socket.userId = data.userId;
+    socket.on('doPrintJob', (data) => {
 
         var clients = io.sockets.clients();
 
@@ -69,7 +68,28 @@ io.on('connection', (socket) => {
 
             let itemSocket = clients.connected[key];
 
-            console.log('item user id = ', itemSocket.userId);
+            if (itemSocket.isPrinter) {
+
+                itemSocket.emit('doPrintJob', { printJob: data.printJob });
+
+                return;
+            }
+
+        });
+    })
+
+    socket.on('login', (data) => {
+
+        socket.userId = data.userId;
+        socket.isPrinter = data.isPrinter;
+
+        var clients = io.sockets.clients();
+
+        const keys = Object.keys(clients.connected)
+
+        keys.forEach(key => {
+
+            let itemSocket = clients.connected[key];
 
             if (itemSocket.userId && itemSocket.userId == data.userId) {
                 if (key != socket.id) {
@@ -102,10 +122,12 @@ function initial() {
                 {
                     Id: 3,
                     Name: "Florist"
-                }, {
+                },
+                {
                     Id: 4,
                     Name: "Account"
-                }, {
+                },
+                {
                     Id: 5,
                     Name: "Admin"
                 }
@@ -155,21 +177,26 @@ function initial() {
                     },
                     {
                         Id: 6,
+                        Name: "Hoa cưới",
+                        Description: "Hoa cưới"
+                    },
+                    {
+                        Id: 7,
                         Name: "Hoa nghệ thuật",
                         Description: "Hoa nghệ thuật"
                     },
                     {
-                        Id: 7,
+                        Id: 8,
                         Name: "Kệ hoa tươi",
                         Description: "Kệ hoa tươi"
                     },
                     {
-                        Id: 8,
+                        Id: 9,
                         Name: "Hoa sự kiện",
                         Description: "Hoa sự kiện"
                     },
                     {
-                        Id: 9,
+                        Id: 10,
                         Name: "Lan hồ điệp",
                         Description: "Lan hồ điệp"
                     }

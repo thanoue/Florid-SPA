@@ -12,6 +12,48 @@ const Op = db.Sequelize.Op;
 const appConstant = require('../config/app.config');
 const proudctImgFolderPath = appConstant.fileFolderPath.productImg;
 
+exports.addBulk = (req, res) => {
+    try {
+        let rawProducts = req.body;
+        let prodCates = [];
+        let products = [];
+
+        let id = 1;
+        rawProducts.forEach(rawProduct => {
+
+            products.push({
+                Id: id,
+                Name: rawProduct.Name,
+                Price: rawProduct.Price,
+                ImageUrl: rawProduct.Id + ".jpg",
+            });
+
+            prodCates.push({
+                ProductId: id,
+                CategoryId: rawProduct.Category + 1
+            });
+
+            id += 1;
+        });
+
+        Product.bulkCreate(products, {
+            returning: true
+        }).then(result => {
+            ProductCategory.bulkCreate(prodCates, {
+                returning: true
+            }).then(done => {
+                res.send({ products: prodCates });
+            });
+        });
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occurred while create product."
+        });
+        return;
+    }
+}
+
 exports.getList = (req, res) => {
 
     const { page, size, name, categoryId } = req.query;
@@ -33,13 +75,13 @@ exports.getList = (req, res) => {
         }).then(prodCates => {
             if (prodCates && prodCates.length > 0) {
 
-                let userIds = [];
+                let ptoductIds = [];
 
                 prodCates.forEach((prodCate) => {
-                    userIds.push(prodCate.ProductId);
+                    ptoductIds.push(prodCate.ProductId);
                 });
 
-                countClause.where.Id = { [Op.in]: userIds };
+                countClause.where.Id = { [Op.in]: ptoductIds };
 
                 Product.count(countClause)
                     .then(data => {
@@ -111,8 +153,6 @@ exports.getList = (req, res) => {
 exports.createProduct = (req, res) => {
 
     const body = req.body;
-
-    console.log(body);
 
     if (!body.categoryIds) {
 

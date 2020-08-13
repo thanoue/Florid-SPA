@@ -6,7 +6,6 @@ module.exports = (sequelize, Sequelize) => {
         },
         CustomerId: {
             type: Sequelize.STRING,
-
         },
         VATIncluded: {
             type: Sequelize.BOOLEAN
@@ -22,6 +21,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         ScoreUsed: {
             type: Sequelize.INTEGER
+        },
+        OrderType: {
+            type: Sequelize.STRING
         }
     });
 

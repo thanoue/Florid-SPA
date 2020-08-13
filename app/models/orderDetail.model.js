@@ -17,10 +17,16 @@ module.exports = (sequelize, Sequelize) => {
         ProductImageUrl: {
             type: Sequelize.STRING,
         },
-        ProductModifiedPrice: {
+        ProductPrice: {
             type: Sequelize.BIGINT,
         },
-        ProductPrice: {
+        CustomerName: {
+            type: Sequelize.STRING
+        },
+        CustomerPhoneNumber: {
+            type: Sequelize.STRING
+        },
+        AdditionalFee: {
             type: Sequelize.BIGINT,
         },
         ReceivingTime: {
@@ -32,8 +38,8 @@ module.exports = (sequelize, Sequelize) => {
         ReceiverPhoneNumber: {
             type: Sequelize.STRING
         },
-        ReceivingTime: {
-            type: Sequelize.BIGINT(11)
+        ReceivingAddress: {
+            type: Sequelize.STRING
         },
         Description: {
             type: Sequelize.STRING
@@ -78,6 +84,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         DeliveryImageUrl: {
             type: Sequelize.STRING
+        },
+        Index: {
+            type: Sequelize.INTEGER
         }
     });
 

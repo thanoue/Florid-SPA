@@ -5,7 +5,134 @@ const CustomerReciverInfo = db.customerReceiverInfo;
 const CustomerSpecialDay = db.customerSpecialDay;
 const Op = db.Sequelize.Op;
 const guid = require('guid');
+var fs = require('fs');
 
+exports.bulkAdd = (req, res) => {
+
+    try {
+
+        let specialDays = [];
+        let customers = [];
+
+        fs.readFile('hardcodes/customers.json', { encoding: 'utf8' }, (err, data) => {
+
+            let rawCustomers = JSON.parse(data);
+
+            rawCustomers.forEach(rawCustomer => {
+
+                let customer = {
+                    Id: rawCustomer.Id,
+                    FullName: rawCustomer.FullName,
+                    PhoneNumber: rawCustomer.PhoneNumber ? rawCustomer.PhoneNumber : '',
+                    Birthday: rawCustomer.Birthday ? rawCustomer.Birthday : 0,
+                    HomeAddress: rawCustomer.Address && rawCustomer.Address.Home ? rawCustomer.Address.Home : '',
+                    WorkAddress: rawCustomer.Address && rawCustomer.Address.Work ? rawCustomer.Address.Work : '',
+                    ContactInfo_Facebook: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Facebook ? rawCustomer.ContactInfo.Facebook : '',
+                    ContactInfo_Zalo: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Zalo ? rawCustomer.ContactInfo.Zalo : '',
+                    ContactInfo_Skype: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Skype ? rawCustomer.ContactInfo.Skype : '',
+                    ContactInfo_Viber: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Viber ? rawCustomer.ContactInfo.Viber : '',
+                    ContactInfo_Instagram: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Instagram ? rawCustomer.ContactInfo.Instagram : '',
+                    Sex: rawCustomer.Sex ? rawCustomer.Sex : 'Male',
+                    MainContactInfo: rawCustomer.MainContactInfo,
+                    UsedScoreTotal: rawCustomer.MembershipInfo.UsedScoreTotal,
+                    AvailableScore: rawCustomer.MembershipInfo.AvailableScore,
+                    AccumulatedAmount: rawCustomer.MembershipInfo.AccumulatedAmount,
+                    MembershipType: rawCustomer.MembershipInfo.MembershipType
+                };
+
+                customers.push(customer);
+
+                if (rawCustomer.SpecialDays && rawCustomer.SpecialDays.length > 0) {
+
+                    rawCustomer.SpecialDays.forEach(rawSpecialDay => {
+
+                        specialDays.push({
+                            Date: rawSpecialDay.Date,
+                            Description: rawSpecialDay.Description,
+                            CustomerId: rawCustomer.Id
+                        });
+
+                    });
+                }
+
+            });
+
+
+            Customer.bulkCreate(customers, {
+                returning: true
+            }).then(result => {
+                CustomerSpecialDay.bulkCreate(specialDays, {
+                    returning: true
+                }).then(done => {
+                    res.send({ customers: customers });
+                });
+            });
+
+        });
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occurred while create bulk customer."
+        });
+        return;
+    }
+}
+
+exports.updateReceiverList = (req, res) => {
+
+    if (!req.body.customerId) {
+
+        res.status(403).send({
+            message: 'customer Id is Required'
+        });
+
+        return;
+    }
+
+    CustomerReciverInfo.destroy({
+        where: {
+            CustomerId: req.body.customerId
+        }
+    }).then(data => {
+
+        if (req.body.receiverList && req.body.receiverList.length > 0) {
+
+            let entities = [];
+
+            req.body.receiverList.forEach(receiverInfo => {
+                entities.push({
+                    CustomerId: req.body.customerId,
+                    FullName: receiverInfo.FullName,
+                    PhoneNumber: receiverInfo.PhoneNumber,
+                    Address: receiverInfo.Address
+                });
+            });
+
+            CustomerReciverInfo.bulkCreate(entities, {
+                returning: true
+            }).then(final => {
+
+                res.send({ message: 'Customer Receiver info updated' });
+
+            }).catch(err => {
+
+                res.status(500).send({
+                    message: err.message || "Some error occurred while update receiver."
+                });
+
+            });
+
+        } else {
+            res.send({ message: 'Deleted some customer receiver information' });
+        }
+
+    })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while update receiver."
+            });
+        });
+};
 
 exports.getById = (req, res) => {
 
@@ -25,6 +152,18 @@ exports.getById = (req, res) => {
             });
         });
 
+}
+
+exports.getAll = (req, res) => {
+    Customer.findAll()
+        .then(customers => {
+            res.send({ customers: customers });
+        }).catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving customers."
+            });
+        });
 }
 
 exports.getList = (req, res) => {
@@ -47,41 +186,64 @@ exports.getList = (req, res) => {
 
     } : {};
 
-    const { limit, offset } = commonService.getPagination(page, size);
+    if (page == -1 && size == -1) {
 
-    let countClause = {
-        where: condition
-    }
-
-    Customer.count(countClause)
-        .then(data => {
-
-            const count = data;
-
-            Customer.findAndCountAll({
-                where: condition,
-                include: [
-                    { model: CustomerReciverInfo },
-                    { model: CustomerSpecialDay },
-                ],
-                limit: limit,
-                offset: offset
-            }).then(newData => {
-
-                newData.count = count;
-
-                const newResponse = commonService.getPagingData(newData, page, limit);
-
-                res.send(newResponse);
+        Customer.findAll({
+            where: condition
+        })
+            .then(customers => {
+                res.send({
+                    totalItemCount: -1,
+                    items: customers,
+                    totalPages: -1,
+                    currentPage: -1
+                });
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while retrieving customers."
+                });
             })
 
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving customers."
+    } else {
+        const { limit, offset } = commonService.getPagination(page, size);
+
+        let countClause = {
+            where: condition
+        }
+
+        Customer.count(countClause)
+            .then(data => {
+
+                const count = data;
+
+                Customer.findAndCountAll({
+                    where: condition,
+                    include: [
+                        { model: CustomerReciverInfo },
+                        { model: CustomerSpecialDay },
+                    ],
+                    limit: limit,
+                    offset: offset
+                }).then(newData => {
+
+                    newData.count = count;
+
+                    const newResponse = commonService.getPagingData(newData, page, limit);
+
+                    res.send(newResponse);
+                })
+
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while retrieving customers."
+                });
             });
-        });
+    }
+
 }
 
 exports.getCount = (req, res) => {

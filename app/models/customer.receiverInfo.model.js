@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
         PhoneNumber: {
             type: Sequelize.STRING,
         },
+        Address: {
+            type: Sequelize.STRING,
+        },
         CustomerId: {
             type: Sequelize.STRING,
             allowNull: false

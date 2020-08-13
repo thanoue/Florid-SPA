@@ -5,6 +5,8 @@ const categoryController = require("../controllers/category.controller");
 const authController = require("../controllers/authentication.controller");
 const userController = require("../controllers/user.controller");
 const customerController = require("../controllers/customer.controller");
+const addressController = require("../controllers/address.controller");
+const orderController = require('../controllers/order.controller');
 
 const authJwt = middlewares.authJwt;
 const verifySignUp = middlewares.verifySignUp;
@@ -18,6 +20,8 @@ module.exports = function (app) {
     const categoryPrefix = "/api/category/";
     const userPrefix = "/api/user/";
     const customerPrefix = "/api/customer/";
+    const addressPrefix = "/api/address/";
+    const orderPrefix = "/api/order/";
 
     app.use(function (req, res, next) {
         res.header(
@@ -26,6 +30,34 @@ module.exports = function (app) {
         );
         next();
     });
+
+    //order
+    app.post(`${orderPrefix}getNormalDayOrdersCount`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.getNormalDayOrdersCount
+    )
+    app.post(`${orderPrefix}add`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.addOrder
+    )
+    app.post(`${orderPrefix}addOrderDetails`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.addOrderDetails
+    )
+    app.post(`${orderPrefix}deleteOrderDetailByOrderId`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.deleteOrderDetailByOrderId
+    )
+
+    //address
+    app.post(`${addressPrefix}addBulkDistrict`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        addressController.addBulkDistrict
+    )
+    app.post(`${addressPrefix}addBulkWard`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        addressController.addBulkWard
+    )
 
     //customer
     app.get(`${customerPrefix}getList`,
@@ -56,32 +88,46 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.deleteMany
     )
+    app.post(`${customerPrefix}bulkCreate`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.bulkAdd
+    )
+    app.post(`${customerPrefix}updateReceiverList`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        customerController.updateReceiverList
+    )
+    app.get(`${customerPrefix}getAll`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        customerController.getAll
+    )
+
 
     //product
     app.get(`${productPrefix}getList`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         productController.getList
     )
-
     app.post(`${productPrefix}create`,
         [authJwt.verifyToken, authJwt.isAdmin],
         productController.createProduct
     )
-
     app.post(`${productPrefix}update`,
         [authJwt.verifyToken, authJwt.isAdmin],
         productController.updateProduct
     )
-
     app.post(`${productPrefix}delete`,
         [authJwt.verifyToken, authJwt.isAdmin],
         productController.deleteProduct
     )
-
     app.post(`${productPrefix}deleteMany`,
         [authJwt.verifyToken, authJwt.isAdmin],
         productController.deleteManyProduct
     )
+    app.post(`${productPrefix}addBulk`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        productController.addBulk
+    )
+
 
     //tag
     app.get(`${tagPrefix}getList`,

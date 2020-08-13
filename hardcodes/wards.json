@@ -1,0 +1,2256 @@
+[
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_0",
+        "IsDeleted": false,
+        "Name": "Thị trấn Tân Túc"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_1",
+        "IsDeleted": false,
+        "Name": "Xã An Phú Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_10",
+        "IsDeleted": false,
+        "Name": "Xã Quy Đức"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_11",
+        "IsDeleted": false,
+        "Name": "Xã Tân Kiên"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_12",
+        "IsDeleted": false,
+        "Name": "Xã Tân Nhựt"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_13",
+        "IsDeleted": false,
+        "Name": "Xã Tân Quý Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_14",
+        "IsDeleted": false,
+        "Name": "Xã Vĩnh Lộc A"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_15",
+        "IsDeleted": false,
+        "Name": "Xã Vĩnh Lộc B"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_2",
+        "IsDeleted": false,
+        "Name": "Xã Bình Chánh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_3",
+        "IsDeleted": false,
+        "Name": "Xã Bình Hưng"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_4",
+        "IsDeleted": false,
+        "Name": "Xã Bình Lợi"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_5",
+        "IsDeleted": false,
+        "Name": "Xã Đa Phước"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_6",
+        "IsDeleted": false,
+        "Name": "Xã Hưng Long"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_7",
+        "IsDeleted": false,
+        "Name": "Xã Lê Minh Xuân"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_8",
+        "IsDeleted": false,
+        "Name": "Xã Phạm Văn Hai"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "091af1b6-abf9-4c21-9800-d44a72c75dc6",
+        "Id": "091af1b6-abf9-4c21-9800-d44a72c75dc6_9",
+        "IsDeleted": false,
+        "Name": "Xã Phong Phú"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_10",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_11",
+        "IsDeleted": false,
+        "Name": "Phường 17"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_12",
+        "IsDeleted": false,
+        "Name": "Phường 19"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_13",
+        "IsDeleted": false,
+        "Name": "Phường 21"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_14",
+        "IsDeleted": false,
+        "Name": "Phường 22"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_15",
+        "IsDeleted": false,
+        "Name": "Phường 24"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_16",
+        "IsDeleted": false,
+        "Name": "Phường 25"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_17",
+        "IsDeleted": false,
+        "Name": "Phường 26"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_18",
+        "IsDeleted": false,
+        "Name": "Phường 27"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_19",
+        "IsDeleted": false,
+        "Name": "Phường 28"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_3",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_4",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_5",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_6",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_7",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_8",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a",
+        "Id": "1411dbdf-0889-4c9f-b8b8-6955bbd42e0a_9",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_10",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_11",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_12",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_13",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_6",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_7",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_8",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43",
+        "Id": "1e92eeaf-c9a5-41c9-a762-d58c5c875e43_9",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_10",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_11",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_12",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_13",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_14",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_6",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_7",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_8",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "30868c8f-27fb-4edd-9df7-3836886015f3",
+        "Id": "30868c8f-27fb-4edd-9df7-3836886015f3_9",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "38b2d370-d345-4aca-8f4c-62df6d8289dc",
+        "Id": "38b2d370-d345-4aca-8f4c-62df6d8289dc_0",
+        "IsDeleted": false,
+        "Name": "Thị trấn Nhà Bè"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "38b2d370-d345-4aca-8f4c-62df6d8289dc",
+        "Id": "38b2d370-d345-4aca-8f4c-62df6d8289dc_1",
+        "IsDeleted": false,
+        "Name": "Xã Hiệp Phước"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "38b2d370-d345-4aca-8f4c-62df6d8289dc",
+        "Id": "38b2d370-d345-4aca-8f4c-62df6d8289dc_2",
+        "IsDeleted": false,
+        "Name": "Xã Long Thới"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "38b2d370-d345-4aca-8f4c-62df6d8289dc",
+        "Id": "38b2d370-d345-4aca-8f4c-62df6d8289dc_3",
+        "IsDeleted": false,
+        "Name": "Xã Nhơn Đức"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "38b2d370-d345-4aca-8f4c-62df6d8289dc",
+        "Id": "38b2d370-d345-4aca-8f4c-62df6d8289dc_4",
+        "IsDeleted": false,
+        "Name": "Xã Phú Xuân"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "38b2d370-d345-4aca-8f4c-62df6d8289dc",
+        "Id": "38b2d370-d345-4aca-8f4c-62df6d8289dc_5",
+        "IsDeleted": false,
+        "Name": "Xã Phước Kiển"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "38b2d370-d345-4aca-8f4c-62df6d8289dc",
+        "Id": "38b2d370-d345-4aca-8f4c-62df6d8289dc_6",
+        "IsDeleted": false,
+        "Name": "Xã Phước Lộc"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_1",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_10",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_11",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_12",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_13",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_14",
+        "IsDeleted": false,
+        "Name": "Phường 16"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_15",
+        "IsDeleted": false,
+        "Name": "Phường 17"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_2",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_3",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_4",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_5",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_6",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_7",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_8",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "39217d66-6a3f-42f7-ab34-4023b7948a34",
+        "Id": "39217d66-6a3f-42f7-ab34-4023b7948a34_9",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_10",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_11",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_12",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_13",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_6",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_7",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_8",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "3ad8b739-96b6-4102-aa79-162a718aa47d",
+        "Id": "3ad8b739-96b6-4102-aa79-162a718aa47d_9",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_10",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_11",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_12",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_13",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_14",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_6",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_7",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_8",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "45c3407b-1ce8-4415-9d46-674327d999d5",
+        "Id": "45c3407b-1ce8-4415-9d46-674327d999d5_9",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_10",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_11",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_12",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_13",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_14",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_15",
+        "IsDeleted": false,
+        "Name": "Phường 16"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_6",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_7",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_8",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0",
+        "Id": "4cb1e03b-bb5d-4b0c-ac8e-2c5f516981f0_9",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_0",
+        "IsDeleted": false,
+        "Name": "Phường An Phú Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_1",
+        "IsDeleted": false,
+        "Name": "Phường Đông Hưng Thuận"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_10",
+        "IsDeleted": false,
+        "Name": "Phường Trung Mỹ Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_2",
+        "IsDeleted": false,
+        "Name": "Phường Hiệp Thành"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_3",
+        "IsDeleted": false,
+        "Name": "Phường Tân Chánh Hiệp"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_4",
+        "IsDeleted": false,
+        "Name": "Phường Tân Hưng Thuận"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_5",
+        "IsDeleted": false,
+        "Name": "Phường Tân Thới Hiệp"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_6",
+        "IsDeleted": false,
+        "Name": "Phường Tân Thới Nhất"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_7",
+        "IsDeleted": false,
+        "Name": "Phường Thạnh Lộc"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_8",
+        "IsDeleted": false,
+        "Name": "Phường Thạnh Xuân"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "543d3891-d58c-4ac4-a94a-6e2764f5b155",
+        "Id": "543d3891-d58c-4ac4-a94a-6e2764f5b155_9",
+        "IsDeleted": false,
+        "Name": "Phường Thới An"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_10",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_11",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_12",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_13",
+        "IsDeleted": false,
+        "Name": "Phường 16"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_14",
+        "IsDeleted": false,
+        "Name": "Phường 18"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_6",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_7",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_8",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "5de15464-5950-4330-9615-de65eaf9a1d6",
+        "Id": "5de15464-5950-4330-9615-de65eaf9a1d6_9",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_0",
+        "IsDeleted": false,
+        "Name": "Phường Bình Chiểu"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_1",
+        "IsDeleted": false,
+        "Name": "Phường Bình Thọ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_10",
+        "IsDeleted": false,
+        "Name": "Phường Tam Phú"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_11",
+        "IsDeleted": false,
+        "Name": "Phường Trường Thọ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_2",
+        "IsDeleted": false,
+        "Name": "Phường Hiệp Bình Chánh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_3",
+        "IsDeleted": false,
+        "Name": "Phường Hiệp Bình Phước"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_4",
+        "IsDeleted": false,
+        "Name": "Phường Linh Chiểu"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_5",
+        "IsDeleted": false,
+        "Name": "Phường Linh Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_6",
+        "IsDeleted": false,
+        "Name": "Phường Linh Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_7",
+        "IsDeleted": false,
+        "Name": "Phường Linh Trung"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_8",
+        "IsDeleted": false,
+        "Name": "Phường Linh Xuân"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd",
+        "Id": "616cf9b0-7b13-4f5a-94aa-7a8754583ebd_9",
+        "IsDeleted": false,
+        "Name": "Phường Tam Bình"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_10",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_11",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_12",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_13",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_14",
+        "IsDeleted": false,
+        "Name": "Phường 17"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_5",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_6",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_7",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_8",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0",
+        "Id": "6918d0ae-a1e5-47a3-82a4-6543faf81fa0_9",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_10",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_11",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_12",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_13",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_14",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_15",
+        "IsDeleted": false,
+        "Name": "Phường 16"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_6",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_7",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_8",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78",
+        "Id": "7ca79086-b01c-42c2-ac36-ef2edbbd1a78_9",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_0",
+        "IsDeleted": false,
+        "Name": "Phường Bình Thuận"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_1",
+        "IsDeleted": false,
+        "Name": "Phường Phú Mỹ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_2",
+        "IsDeleted": false,
+        "Name": "Phường Phú Thuận"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_3",
+        "IsDeleted": false,
+        "Name": "Phường Tân Hưng"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_4",
+        "IsDeleted": false,
+        "Name": "Phường Tân Kiểng"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_5",
+        "IsDeleted": false,
+        "Name": "Phường Tân Phong"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_6",
+        "IsDeleted": false,
+        "Name": "Phường Tân Phú"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_7",
+        "IsDeleted": false,
+        "Name": "Phường Tân Quy"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_8",
+        "IsDeleted": false,
+        "Name": "Phường Tân Thuận Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "84eae873-92e0-42e3-ac21-4b21efa0626f",
+        "Id": "84eae873-92e0-42e3-ac21-4b21efa0626f_9",
+        "IsDeleted": false,
+        "Name": "Phường Tân Thuận Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8dccac08-cdea-4faf-925e-2c85ae255707",
+        "Id": "8dccac08-cdea-4faf-925e-2c85ae255707_0",
+        "IsDeleted": false,
+        "Name": "Thị trấn Cần Thạnh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8dccac08-cdea-4faf-925e-2c85ae255707",
+        "Id": "8dccac08-cdea-4faf-925e-2c85ae255707_1",
+        "IsDeleted": false,
+        "Name": "Xã An Thới Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8dccac08-cdea-4faf-925e-2c85ae255707",
+        "Id": "8dccac08-cdea-4faf-925e-2c85ae255707_2",
+        "IsDeleted": false,
+        "Name": "Xã Bình Khánh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8dccac08-cdea-4faf-925e-2c85ae255707",
+        "Id": "8dccac08-cdea-4faf-925e-2c85ae255707_3",
+        "IsDeleted": false,
+        "Name": "Xã Long Hòa"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8dccac08-cdea-4faf-925e-2c85ae255707",
+        "Id": "8dccac08-cdea-4faf-925e-2c85ae255707_4",
+        "IsDeleted": false,
+        "Name": "Xã Lý Nhơn"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8dccac08-cdea-4faf-925e-2c85ae255707",
+        "Id": "8dccac08-cdea-4faf-925e-2c85ae255707_5",
+        "IsDeleted": false,
+        "Name": "Xã Tam Thôn Hiệp"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8dccac08-cdea-4faf-925e-2c85ae255707",
+        "Id": "8dccac08-cdea-4faf-925e-2c85ae255707_6",
+        "IsDeleted": false,
+        "Name": "Xã Thạnh An"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_0",
+        "IsDeleted": false,
+        "Name": "Phường An Khánh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_1",
+        "IsDeleted": false,
+        "Name": "Phường An Lợi Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_10",
+        "IsDeleted": false,
+        "Name": "Phường Thủ Thiêm"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_2",
+        "IsDeleted": false,
+        "Name": "Phường An Phú"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_3",
+        "IsDeleted": false,
+        "Name": "Phường Bình An"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_4",
+        "IsDeleted": false,
+        "Name": "Phường Bình Khánh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_5",
+        "IsDeleted": false,
+        "Name": "Phường Bình Trưng Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_6",
+        "IsDeleted": false,
+        "Name": "Phường Bình Trưng Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_7",
+        "IsDeleted": false,
+        "Name": "Phường Cát Lái"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_8",
+        "IsDeleted": false,
+        "Name": "Phường Thạnh Mỹ Lợi"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "8de1f676-e5b2-407b-8e50-0cd231483b53",
+        "Id": "8de1f676-e5b2-407b-8e50-0cd231483b53_9",
+        "IsDeleted": false,
+        "Name": "Phường Thảo Điền"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_0",
+        "IsDeleted": false,
+        "Name": "Phường 01"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_1",
+        "IsDeleted": false,
+        "Name": "Phường 02"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_10",
+        "IsDeleted": false,
+        "Name": "Phường 11"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_11",
+        "IsDeleted": false,
+        "Name": "Phường 12"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_12",
+        "IsDeleted": false,
+        "Name": "Phường 13"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_13",
+        "IsDeleted": false,
+        "Name": "Phường 14"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_14",
+        "IsDeleted": false,
+        "Name": "Phường 15"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_2",
+        "IsDeleted": false,
+        "Name": "Phường 03"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_3",
+        "IsDeleted": false,
+        "Name": "Phường 04"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_4",
+        "IsDeleted": false,
+        "Name": "Phường 05"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_5",
+        "IsDeleted": false,
+        "Name": "Phường 06"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_6",
+        "IsDeleted": false,
+        "Name": "Phường 07"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_7",
+        "IsDeleted": false,
+        "Name": "Phường 08"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_8",
+        "IsDeleted": false,
+        "Name": "Phường 09"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6",
+        "Id": "9103f31a-3eaf-4c8f-bd11-e7ea182187f6_9",
+        "IsDeleted": false,
+        "Name": "Phường 10"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_0",
+        "IsDeleted": false,
+        "Name": "Phường An Lạc"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_1",
+        "IsDeleted": false,
+        "Name": "Phường An Lạc A"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_2",
+        "IsDeleted": false,
+        "Name": "Phường Bình Hưng Hòa"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_3",
+        "IsDeleted": false,
+        "Name": "Phường Bình Hưng Hoà A"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_4",
+        "IsDeleted": false,
+        "Name": "Phường Bình Hưng Hoà B"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_5",
+        "IsDeleted": false,
+        "Name": "Phường Bình Trị Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_6",
+        "IsDeleted": false,
+        "Name": "Phường Bình Trị Đông A"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_7",
+        "IsDeleted": false,
+        "Name": "Phường Bình Trị Đông B"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_8",
+        "IsDeleted": false,
+        "Name": "Phường Tân Tạo"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae",
+        "Id": "c3148d1b-f3ce-4a5c-8656-bbac1a4938ae_9",
+        "IsDeleted": false,
+        "Name": "Phường Tân Tạo A"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_0",
+        "IsDeleted": false,
+        "Name": "Phường Hiệp Tân"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_1",
+        "IsDeleted": false,
+        "Name": "Phường Hoà Thạnh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_10",
+        "IsDeleted": false,
+        "Name": "Phường Tây Thạnh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_2",
+        "IsDeleted": false,
+        "Name": "Phường Phú Thạnh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_3",
+        "IsDeleted": false,
+        "Name": "Phường Phú Thọ Hoà"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_4",
+        "IsDeleted": false,
+        "Name": "Phường Phú Trung"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_5",
+        "IsDeleted": false,
+        "Name": "Phường Sơn Kỳ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_6",
+        "IsDeleted": false,
+        "Name": "Phường Tân Qúy"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_7",
+        "IsDeleted": false,
+        "Name": "Phường Tân Sơn Nhì"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_8",
+        "IsDeleted": false,
+        "Name": "Phường Tân Thành"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "d4b4b69d-5798-4a8c-ab12-82ac1598718c",
+        "Id": "d4b4b69d-5798-4a8c-ab12-82ac1598718c_9",
+        "IsDeleted": false,
+        "Name": "Phường Tân Thới Hoà"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_0",
+        "IsDeleted": false,
+        "Name": "Thị trấn Hóc Môn"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_1",
+        "IsDeleted": false,
+        "Name": "Xã Bà Điểm"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_10",
+        "IsDeleted": false,
+        "Name": "Xã Xuân Thới Sơn"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_11",
+        "IsDeleted": false,
+        "Name": "Xã Xuân Thới Thượng"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_2",
+        "IsDeleted": false,
+        "Name": "Xã Đông Thạnh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_3",
+        "IsDeleted": false,
+        "Name": "Xã Nhị Bình"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_4",
+        "IsDeleted": false,
+        "Name": "Xã Tân Hiệp"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_5",
+        "IsDeleted": false,
+        "Name": "Xã Tân Thới Nhì"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_6",
+        "IsDeleted": false,
+        "Name": "Xã Tân Xuân"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_7",
+        "IsDeleted": false,
+        "Name": "Xã Thới Tam Thôn"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_8",
+        "IsDeleted": false,
+        "Name": "Xã Trung Chánh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e4922bb5-866d-4c20-8784-e739c50ed783",
+        "Id": "e4922bb5-866d-4c20-8784-e739c50ed783_9",
+        "IsDeleted": false,
+        "Name": "Xã Xuân Thới Đông"
+    },
+    {
+        "Created": 1585939905531,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_0",
+        "IsDeleted": false,
+        "Name": "Phường Bến Nghé"
+    },
+    {
+        "Created": 1585939905531,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_1",
+        "IsDeleted": false,
+        "Name": "Phường Bến Thành"
+    },
+    {
+        "Created": 1585939905531,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_2",
+        "IsDeleted": false,
+        "Name": "Phường Cầu Kho"
+    },
+    {
+        "Created": 1585939905531,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_3",
+        "IsDeleted": false,
+        "Name": "Phường Cầu Ông Lãnh"
+    },
+    {
+        "Created": 1585939905531,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_4",
+        "IsDeleted": false,
+        "Name": "Phường Cô Giang"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_5",
+        "IsDeleted": false,
+        "Name": "Phường Đa Kao"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_6",
+        "IsDeleted": false,
+        "Name": "Phường Nguyễn Cư Trinh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_7",
+        "IsDeleted": false,
+        "Name": "Phường Nguyễn Thái Bình"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_8",
+        "IsDeleted": false,
+        "Name": "Phường Phạm Ngũ Lão"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6",
+        "Id": "e84cf1ca-cd8a-477a-bce9-3fabfae176b6_9",
+        "IsDeleted": false,
+        "Name": "Phường Tân Định"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_0",
+        "IsDeleted": false,
+        "Name": "Thị trấn Củ Chi"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_1",
+        "IsDeleted": false,
+        "Name": "Xã An Nhơn Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_10",
+        "IsDeleted": false,
+        "Name": "Xã Phước Thạnh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_11",
+        "IsDeleted": false,
+        "Name": "Xã Phước Vĩnh An"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_12",
+        "IsDeleted": false,
+        "Name": "Xã Tân An Hội"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_13",
+        "IsDeleted": false,
+        "Name": "Xã Tân Phú Trung"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_14",
+        "IsDeleted": false,
+        "Name": "Xã Tân Thạnh Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_15",
+        "IsDeleted": false,
+        "Name": "Xã Tân Thạnh Tây"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_16",
+        "IsDeleted": false,
+        "Name": "Xã Tân Thông Hội"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_17",
+        "IsDeleted": false,
+        "Name": "Xã Thái Mỹ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_18",
+        "IsDeleted": false,
+        "Name": "Xã Trung An"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_19",
+        "IsDeleted": false,
+        "Name": "Xã Trung Lập Hạ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_2",
+        "IsDeleted": false,
+        "Name": "Xã An Phú"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_20",
+        "IsDeleted": false,
+        "Name": "Xã Trung Lập Thượng"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_3",
+        "IsDeleted": false,
+        "Name": "Xã Bình Mỹ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_4",
+        "IsDeleted": false,
+        "Name": "Xã Hòa Phú"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_5",
+        "IsDeleted": false,
+        "Name": "Xã Nhuận Đức"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_6",
+        "IsDeleted": false,
+        "Name": "Xã Phạm Văn Cội"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_7",
+        "IsDeleted": false,
+        "Name": "Xã Phú Hòa Đông"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_8",
+        "IsDeleted": false,
+        "Name": "Xã Phú Mỹ Hưng"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "f7c7620e-68c7-449d-972e-e8db4ea71372",
+        "Id": "f7c7620e-68c7-449d-972e-e8db4ea71372_9",
+        "IsDeleted": false,
+        "Name": "Xã Phước Hiệp"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_0",
+        "IsDeleted": false,
+        "Name": "Phường Hiệp Phú"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_1",
+        "IsDeleted": false,
+        "Name": "Phường Long Bình"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_10",
+        "IsDeleted": false,
+        "Name": "Phường Tăng Nhơn Phú A"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_11",
+        "IsDeleted": false,
+        "Name": "Phường Tăng Nhơn Phú B"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_12",
+        "IsDeleted": false,
+        "Name": "Phường Trường Thạnh"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_2",
+        "IsDeleted": false,
+        "Name": "Phường Long Phước"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_3",
+        "IsDeleted": false,
+        "Name": "Phường Long Thạnh Mỹ"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_4",
+        "IsDeleted": false,
+        "Name": "Phường Long Trường"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_5",
+        "IsDeleted": false,
+        "Name": "Phường Phú Hữu"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_6",
+        "IsDeleted": false,
+        "Name": "Phường Phước Bình"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_7",
+        "IsDeleted": false,
+        "Name": "Phường Phước Long A"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_8",
+        "IsDeleted": false,
+        "Name": "Phường Phước Long B"
+    },
+    {
+        "Created": 1585939905532,
+        "DistrictId": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b",
+        "Id": "fc9f53a7-3a4b-4316-b5de-19231f33ac0b_9",
+        "IsDeleted": false,
+        "Name": "Phường Tân Phú"
+    }
+]
