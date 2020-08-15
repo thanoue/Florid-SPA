@@ -43,6 +43,11 @@ db.orderDetailSeen = require('./orderDetailseen.model')(sequelize, Sequelize);
 db.districtAddress = require('./district.address.model')(sequelize, Sequelize);
 db.wardAddress = require('./ward.address.model')(sequelize, Sequelize);
 
+db.order.hasMany(db.orderDetail, {
+    foreignKey: 'OrderId',
+    onDelete: 'SET NULL'
+})
+
 db.customer.hasMany(db.order, {
     foreignKey: 'CustomerId',
     onDelete: 'SET NULL'

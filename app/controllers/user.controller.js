@@ -5,6 +5,7 @@ const User = db.user;
 const Role = db.role;
 const UsersRoles = db.user_role;
 const fs = require('fs');
+const commonService = require("../services/common.service");
 
 const appConstant = require('../config/app.config');
 const userAvtFolderPath = appConstant.fileFolderPath.userAvt;
@@ -35,7 +36,7 @@ exports.createUser = (req, res) => {
 
         avtname = commonService.getNewFileName(req.files.avatar);
 
-        avatar.mv(userAvtFolderPath + avtname);
+        req.files.avatar.mv(userAvtFolderPath + avtname);
     }
 
     // Save User to Database

@@ -24,6 +24,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         OrderType: {
             type: Sequelize.STRING
+        },
+        CreatedDate: {
+            type: Sequelize.BIGINT(11)
         }
     });
 

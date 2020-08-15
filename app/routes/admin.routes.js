@@ -32,7 +32,7 @@ module.exports = function (app) {
     });
 
     //order
-    app.post(`${orderPrefix}getNormalDayOrdersCount`,
+    app.get(`${orderPrefix}getNormalDayOrdersCount`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.getNormalDayOrdersCount
     )
@@ -48,6 +48,14 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.deleteOrderDetailByOrderId
     )
+    app.post(`${orderPrefix}getByStates`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.getByStates
+    )
+    app.post(`${orderPrefix}getByCustomer`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.getByCustomer
+    )
 
     //address
     app.post(`${addressPrefix}addBulkDistrict`,
@@ -58,6 +66,15 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         addressController.addBulkWard
     )
+    app.get(`${addressPrefix}getAllDistricts`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        addressController.getAllDistricts
+    )
+    app.get(`${addressPrefix}getAllWards`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        addressController.getAllWards
+    )
+
 
     //customer
     app.get(`${customerPrefix}getList`,
@@ -77,33 +94,32 @@ module.exports = function (app) {
         customerController.getById
     )
     app.post(`${customerPrefix}update`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        [authJwt.verifyToken, authJwt.isAdmin],
         customerController.updateCustomer
     )
     app.post(`${customerPrefix}delete`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        [authJwt.verifyToken, authJwt.isAdmin],
         customerController.delete
     )
     app.post(`${customerPrefix}deleteMany`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        [authJwt.verifyToken, authJwt.isAdmin],
         customerController.deleteMany
     )
     app.post(`${customerPrefix}bulkCreate`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        [authJwt.verifyToken, authJwt.isAdmin],
         customerController.bulkAdd
     )
     app.post(`${customerPrefix}updateReceiverList`,
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.updateReceiverList
     )
     app.get(`${customerPrefix}getAll`,
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.getAll
     )
 
-
     //product
-    app.get(`${productPrefix}getList`,
+    app.post(`${productPrefix}getList`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         productController.getList
     )
@@ -131,11 +147,11 @@ module.exports = function (app) {
 
     //tag
     app.get(`${tagPrefix}getList`,
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         tagController.getList
     )
     app.get(`${tagPrefix}getall`,
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         tagController.getAll
     )
     app.post(`${tagPrefix}create`,
@@ -157,11 +173,11 @@ module.exports = function (app) {
 
     //category
     app.get(`${categoryPrefix}getList`,
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         categoryController.getList
     )
     app.get(`${categoryPrefix}getAll`,
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         categoryController.getAll
     )
     app.post(`${categoryPrefix}create`,

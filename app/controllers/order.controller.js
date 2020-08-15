@@ -3,6 +3,7 @@ const commonService = require("../services/common.service");
 const Order = db.order;
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
+const Customer = db.Customer;
 
 exports.getByCustomer = (req, res) => {
 
@@ -22,6 +23,7 @@ exports.getByCustomer = (req, res) => {
         include: [
             { model: OrderDetail },
         ]
+
     }).then(orders => {
         res.send({ orders: orders });
     }).catch(err => {
@@ -78,10 +80,13 @@ exports.addOrderDetails = (req, res) => {
                 PurposeOf: rawOrderDetail.PurposeOf,
                 IsHardcodeProduct: rawOrderDetail.IsHardcodeProduct,
                 HardcodeProductImageName: rawOrderDetail.HardcodeProductImageName ? rawOrderDetail.HardcodeProductImageName : '',
+                CustomerName: rawOrderDetail.CustomerName ? rawOrderDetail.CustomerName : '',
+                CustomerPhoneNumber: rawOrderDetail.CustomerPhoneNumber ? rawOrderDetail.CustomerPhoneNumber : '',
+                Index: rawOrderDetail.Index
             });
         });
 
-        OrderDetail.bulkCreate(orderDetail, {
+        OrderDetail.bulkCreate(orderDetails, {
             returning: true
         }).then(data => {
             res.send({ orderDetails: orderDetails });
@@ -103,7 +108,8 @@ exports.addOrder = (req, res) => {
         TotalPaidAmount: body.totalPaidAmount,
         GainedScore: body.gaindedScore,
         ScoreUsed: body.scoreUsed,
-        OrderType: body.orderType
+        OrderType: body.orderType,
+        CreatedDate: body.createdDate
     }
 
     try {
@@ -117,6 +123,7 @@ exports.addOrder = (req, res) => {
 }
 
 exports.getNormalDayOrdersCount = (req, res) => {
+
     Order.count({
         where: {
             OrderType: 'NormalDay'
@@ -132,4 +139,85 @@ exports.getNormalDayOrdersCount = (req, res) => {
                     err.message || "Some error occurred while retrieving customer counting."
             });
         });
+};
+
+
+exports.getByStates = (req, res) => {
+
+    let states = req.body.states;
+
+    Order.findAll({
+        include: [
+            {
+                model: OrderDetail,
+                where: {
+                    State: {
+                        [Op.in]: states
+                    }
+                }
+            }]
+    }).then(orders => {
+        res.send({
+            orders: orders
+        });
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving orders"
+        });
+    });
+
+}
+
+
+exports.getProcessingOrderDetails = (req, res) => {
+
+    let states = ['Completed', 'Canceled'];
+
+    OrderDetail.findAll({
+        where: {
+            State: {
+                [Op.notIn]: states
+            }
+        }
+    }).then(orderDetails => {
+
+        if (!orderDetails || orderDetails.length <= 0) {
+            res.send({ orderDetails: [] });
+            return;
+        }
+
+        let orderIds = [];
+        orderDetails.forEach(orderDetail => {
+            if (orderIds.indexOf(orderDetail.OrderId) < 0) {
+                orderIds.push(orderDetail.OrderId);
+            }
+        });
+
+        Order.findAll({
+            where: {
+                Id: {
+                    [Op.in]: orderIds
+                }
+            },
+            include: [
+                { model: OrderDetail },
+            ]
+        }).then(orders => {
+            res.send({
+                orders: orders
+            });
+        }).catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving customer counting."
+            });
+        });
+
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving customer counting."
+        });
+    });;
 };

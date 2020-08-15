@@ -4,6 +4,34 @@ const Op = db.Sequelize.Op;
 const District = db.districtAddress;
 const Ward = db.wardAddress;
 
+exports.getAllDistricts = (req, res) => {
+
+    District.findAll()
+        .then(districts => {
+            res.send({ districts: districts });
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving categories."
+            });
+        });
+}
+
+exports.getAllWards = (req, res) => {
+
+    Ward.findAll()
+        .then(wards => {
+            res.send({ wards: wards });
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving categories."
+            });
+        });
+}
+
 exports.addBulkDistrict = (req, res) => {
     try {
         let rawDistricts = req.body;

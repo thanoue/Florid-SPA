@@ -9,7 +9,7 @@ const http = require('http');
 const app = express();
 
 var corsOptions = {
-    origin: "http://localhost:4200"
+    origin: "http://192.168.1.10:4200"
 };
 app.use(cors(corsOptions));
 
@@ -59,6 +59,8 @@ io.on('connection', (socket) => {
     socket.isPrinter = false;
 
     socket.on('doPrintJob', (data) => {
+
+        console.log('PRINT JOB:', data);
 
         var clients = io.sockets.clients();
 

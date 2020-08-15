@@ -54,9 +54,47 @@ exports.addBulk = (req, res) => {
     }
 }
 
+function getProducts(countClause, page, limit, offset, res) {
+
+    Product.count(countClause)
+        .then(data => {
+
+            const count = data;
+
+            Product.findAndCountAll({
+                where: countClause.where,
+                include: [
+                    { model: Category },
+                    { model: Tag },
+                ],
+                limit: limit,
+                offset: offset
+            }).then(newData => {
+
+                newData.count = count;
+
+                const newResponse = commonService.getPagingData(newData, page, limit);
+                newResponse.totalItemCount = count;
+
+                res.send(newResponse);
+            })
+
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving products."
+            });
+        });
+}
+
 exports.getList = (req, res) => {
 
-    const { page, size, name, categoryId } = req.query;
+    const page = req.body.page;
+    const size = req.body.size;
+    const categoryId = req.body.categoryId ? req.body.categoryId : -1;
+    const name = req.body.name;
+    const tagIds = req.body.tagIds ? req.body.tagIds : [];
 
     var condition = name ? { Name: { [Op.like]: `%${name}%` } } : {};
 
@@ -66,87 +104,104 @@ exports.getList = (req, res) => {
         where: condition
     }
 
-    if (categoryId && categoryId > 0) {
+    if (categoryId > -1) {
 
         ProductCategory.findAll({
             where: {
                 CategoryId: categoryId
             }
         }).then(prodCates => {
-            if (prodCates && prodCates.length > 0) {
 
-                let ptoductIds = [];
+            let productIds = [];
 
-                prodCates.forEach((prodCate) => {
-                    ptoductIds.push(prodCate.ProductId);
+            if (!prodCates || prodCates.length <= 0) {
+                res.status(500).send({
+                    message: "Product Category error!"
                 });
+                return;
+            }
 
-                countClause.where.Id = { [Op.in]: ptoductIds };
+            prodCates.forEach((prodCate) => {
+                productIds.push(prodCate.ProductId);
+            });
 
-                Product.count(countClause)
-                    .then(data => {
+            countClause.where.Id = { [Op.in]: productIds };
 
-                        const count = data;
+            if (tagIds.length > 0) {
+                ProductTag.findAll({
+                    where: {
+                        TagId: {
+                            [Op.in]: tagIds
+                        }
+                    }
+                }).then(productTags => {
 
-                        Product.findAndCountAll({
-                            where: countClause.where,
-                            include: [
-                                { model: Category },
-                                { model: Tag },
-                            ],
-                            limit: limit,
-                            offset: offset
-                        }).then(newData => {
-
-                            newData.count = count;
-
-                            const newResponse = commonService.getPagingData(newData, page, limit);
-                            newResponse.totalItemCount = count;
-
-                            res.send(newResponse);
-                        })
-
-                    })
-                    .catch(err => {
+                    if (!productTags || productTags.length <= 0) {
                         res.status(500).send({
                             message:
                                 err.message || "Some error occurred while retrieving products."
                         });
+                        return;
+                    }
+
+                    let productIds2 = [];
+
+                    productTags.forEach(productTag => {
+                        if (productIds.indexOf(productTag.ProductId) > -1)
+                            productIds2.push(productTag.ProductId);
                     });
-            }
-            else {
-                res.send({});
+
+                    countClause.where.Id = { [Op.in]: productIds2 };
+
+                    getProducts(countClause, page, limit, offset, res);
+                    return;
+                });
+            } else {
+                getProducts(countClause, page, limit, offset, res);
+                return;
             }
         });
     } else {
-        Product.count(countClause)
-            .then(data => {
 
-                const count = data;
+        if (tagIds.length > 0) {
+            ProductTag.findAll({
+                where: {
+                    TagId: {
+                        [Op.in]: tagIds
+                    }
+                }
+            }).then(productTags => {
 
-                Product.findAndCountAll({
-                    where: condition,
-                    include: [
-                        { model: Category },
-                        { model: Tag },
-                    ],
-                    limit: limit,
-                    offset: offset
-                }).then(newData => {
+                if (!productTags || productTags.length <= 0) {
+                    res.status(500).send({
+                        message:
+                            err.message || "Some error occurred while retrieving products."
+                    });
+                    return;
+                }
 
-                    newData.count = count;
-                    const newResponse = commonService.getPagingData(newData, page, limit);
-                    newResponse.totalItemCount = count;
-                    res.send(newResponse);
-                })
+                let productIds = [];
 
-            })
-            .catch(err => {
+                productTags.forEach(productTag => {
+                    productIds.push(productTag.ProductId);
+                });
+
+                countClause.where.Id = { [Op.in]: productIds };
+
+                getProducts(countClause, page, limit, offset, res);
+
+                return;
+            }).catch(err => {
                 res.status(500).send({
                     message:
                         err.message || "Some error occurred while retrieving products."
                 });
             });
+
+        } else {
+            getProducts(countClause, page, limit, offset, res);
+            return;
+        }
     }
 }
 
