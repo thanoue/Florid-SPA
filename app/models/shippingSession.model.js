@@ -12,6 +12,14 @@ module.exports = (sequelize, Sequelize) => {
         AssignTime: {
             type: Sequelize.BIGINT(11)
         },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        }
     });
 
     return ShippingSession;

@@ -29,7 +29,14 @@ module.exports = (sequelize, Sequelize) => {
         IsExternalShipper: {
             type: Sequelize.BOOLEAN
         },
-
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        }
     });
 
     return User;

@@ -17,6 +17,14 @@ module.exports = (sequelize, Sequelize) => {
         CustomerId: {
             type: Sequelize.STRING,
             allowNull: false
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
         }
     });
     return CustomerReceiverInfo;

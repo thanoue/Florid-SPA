@@ -13,6 +13,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         Alias: {
             type: Sequelize.STRING
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
         }
     });
 

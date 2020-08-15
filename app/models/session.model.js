@@ -11,6 +11,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         IsExpired: {
             type: Sequelize.BOOLEAN
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
         }
     });
 

@@ -20,7 +20,6 @@ import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { info } from 'console';
-import ShortUniqueId from 'short-unique-id';
 
 @Component({
   selector: 'app-home',

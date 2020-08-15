@@ -10,6 +10,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         Name: {
             type: Sequelize.STRING
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
         }
     });
 
