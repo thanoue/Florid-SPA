@@ -12,7 +12,7 @@ const app = express();
 //     origin: "http://localhost:4200"
 // };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use(fileUpload({
     createParentPath: true
