@@ -12,7 +12,7 @@ declare function invokePrintJob(data: any): any;
 })
 export class PrintJobService {
 
-  constructor(private realTimeService: RealtimeService) {
+  constructor() {
 
   }
 

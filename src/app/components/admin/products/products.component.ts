@@ -205,7 +205,7 @@ export class ProductsComponent extends BaseComponent {
     this.products = [];
     this.currentPage = page;
 
-    this.productService.getRecords(page, this.itemPerpage, this._selectedCategory, this.searchTerm)
+    this.productService.getRecords(page, this.itemPerpage, this._selectedCategory, [], this.searchTerm)
       .then(data => {
 
         this.stopLoading();

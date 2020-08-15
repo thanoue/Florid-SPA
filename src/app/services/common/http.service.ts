@@ -55,13 +55,13 @@ export class HttpService {
 
     this.globalService.stopLoading();
 
-    if (err.error.message) {
-      this.globalService.showError(err.error.message);
+    if (err.message) {
+      this.globalService.showError(err.message);
       return;
     }
 
-    if (err.message) {
-      this.globalService.showError(err.message);
+    if (err.error && err.error.message) {
+      this.globalService.showError(err.error.message);
       return;
     }
 
@@ -71,7 +71,7 @@ export class HttpService {
     }
 
     this.globalService.showError(err);
-      
+
   }
 
   public get(url: string, params?: HttpParams | any, cache: boolean = false): Promise<Object | any> {

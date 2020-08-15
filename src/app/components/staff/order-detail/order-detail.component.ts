@@ -48,6 +48,8 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
       if (!this.orderDetail.PurposeOf) this.orderDetail.PurposeOf = 'Mua tặng';
 
+      if (!this.orderDetail.ProductName) this.orderDetail.ProductName = '...';
+
       createNumbericElement(this.detailIndex > -1, (val) => {
         this.orderDetail.Quantity = val;
       });
@@ -55,11 +57,18 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       this.categoryService.getAll()
         .then((cates) => {
 
+          this.categories.push({
+            Value: -1,
+            Name: 'Tất cả'
+          });
+
           cates.forEach(cate => {
+
             this.categories.push({
               Value: cate.Id,
               Name: cate.Name
-            })
+            });
+
           });
 
         });
@@ -89,7 +98,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
     selectProductCategory(this.categories, (val) => {
 
-      this.router.navigate(['/admin/search-product'], { queryParams: { category: +val }, queryParamsHandling: 'merge' });
+      this.router.navigate(['/staff/search-product'], { queryParams: { category: +val }, queryParamsHandling: 'merge' });
 
     });
 
@@ -114,7 +123,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       return;
     }
 
-    if (!this.globalOrderDetail.IsFromHardCodeProduct && (!this.globalOrderDetail.ProductId || this.globalOrderDetail.ProductId === '')) {
+    if (!this.globalOrderDetail.IsFromHardCodeProduct && (!this.globalOrderDetail.ProductId || this.globalOrderDetail.ProductId <= 0)) {
       this.showWarning('Chưa chọn sản phẩm');
       return;
     }

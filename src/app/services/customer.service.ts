@@ -225,19 +225,26 @@ export class CustomerService {
       customer.ReceiverInfos = [];
       customer.SpecialDays = [];
 
-      item.customerReceivers.forEach(receiver => {
-        let item = new CustomerReceiverDetail();
-        item.PhoneNumber = receiver.PhoneNumber;
-        item.FullName = receiver.FullName;
-        customer.ReceiverInfos.push(item);
-      });
+      if (item.customerReceivers && item.customerReceivers.length > 0) {
 
-      item.customerSpecialDays.forEach(date => {
-        let item = new SpecialDay();
-        item.Date = date.Date;
-        item.Description = date.Description;
-        customer.SpecialDays.push(item);
-      });
+        item.customerReceivers.forEach(receiver => {
+
+          let item = new CustomerReceiverDetail();
+          item.PhoneNumber = receiver.PhoneNumber;
+          item.FullName = receiver.FullName;
+
+          customer.ReceiverInfos.push(item);
+        });
+      }
+
+      if (item.customerSpecialDays && item.customerSpecialDays.length > 0) {
+        item.customerSpecialDays.forEach(date => {
+          let item = new SpecialDay();
+          item.Date = date.Date;
+          item.Description = date.Description;
+          customer.SpecialDays.push(item);
+        });
+      }
 
       customers.push(customer);
 

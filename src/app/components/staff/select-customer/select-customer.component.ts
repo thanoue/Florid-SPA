@@ -29,6 +29,7 @@ export class SelectCustomerComponent extends BaseComponent {
     super();
 
     const key = 'searchProdReference';
+    this.newCustomer = new CustomerViewModel();
 
     window[key] = {
       component: this, zone: this._ngZone,
@@ -85,6 +86,10 @@ export class SelectCustomerComponent extends BaseComponent {
 
       closeAddCustomerDialog();
 
+      this.totalCount += 1;
+      this.newCustomer = new CustomerViewModel();
+      this.newCustomer.Id = ExchangeService.detectCustomerId(this.totalCount);
+
     });
 
   }
@@ -98,6 +103,7 @@ export class SelectCustomerComponent extends BaseComponent {
 
     if (this.globalOrder.CustomerInfo.Id === this.selectedCustomer.Id) {
       this.OnBackNaviage();
+      return;
     }
 
     this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(this.selectedCustomer);
@@ -126,14 +132,11 @@ export class SelectCustomerComponent extends BaseComponent {
       this.getCustomerList();
       return;
     }
-    this.startLoading();
 
-    this.customerService.getList(-1, -1, term)
+    this.customerService.getList(0, -1, term)
       .then(data => {
 
         this.customers = data.Customers;
-
-        this.stopLoading();
 
         setTimeout(() => {
           if (this.globalOrder.CustomerInfo.Id) {

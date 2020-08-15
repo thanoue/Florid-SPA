@@ -1,10 +1,12 @@
 import { BaseEntity } from './base.entity';
 
-export class District extends BaseEntity {
+export class District {
+    Id: string;
     Name: string;
 }
 
-export class Ward extends BaseEntity {
+export class Ward {
+    Id: string;
     Name: string;
     DistrictId: string;
 }

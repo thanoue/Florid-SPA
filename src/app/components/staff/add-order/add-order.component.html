@@ -2,26 +2,27 @@
     <div class="container">
         <div class="row custBrow">
             <div class="col-10 custList ">
-                <a routerLink="/admin/select-customer" class="main-bg custListButton"><img
-                        src="../../../assets/images/cust.png" alt="">
+                <a routerLink="/staff/select-customer" class="main-bg custListButton"><img
+                        src="../../../../assets/images/cust.png" alt="">
                     <marquee behavior="scroll" direction="left">{{order.CustomerInfo.Name}}
                         (-{{order.CustomerInfo.DiscountPercent}}%)</marquee>
                 </a>
             </div>
             <div class="col-2 prodAdd text-right pl-0">
-                <a (click)="addNewOrderDetail()" class="main-bg"><img src="../../../assets/images/add.svg" alt=""
+                <a (click)="addNewOrderDetail()" class="main-bg"><img src="../../../../assets/images/add.svg" alt=""
                         class="main-filter"></a>
             </div>
         </div>
         <div class="form-group orderInfo borderless-field">
-            <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="isEditting"
+            <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="!isEditting"
                 class="orderField small-height" placeholder="Mã đơn...">
         </div>
         <ul class=" orderDetail cusScroll">
             <li *ngFor="let orderDetail of order.OrderDetails" class="orderDetailItem">
                 <div class="itemNumb"><span>{{orderDetail.Index + 1}}</span></div>
                 <div class="itemDetail">
-                    <img src="{{orderDetail.ProductImageUrl}}" alt="" class="item-detail-thumb">
+                    <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt=""
+                        class="item-detail-thumb">
                     <div class="item-detail-info">
                         <h5 class="item-code">{{orderDetail.ProductName}}</h5>
                         <span
@@ -36,10 +37,10 @@
                 </div>
                 <div class="itemAction">
 
-                    <a (click)="deleteOrderDetail(orderDetail.Index)"><img src="../../../assets/images/delete.svg"
+                    <a (click)="deleteOrderDetail(orderDetail.Index)"><img src="../../../../assets/images/delete.svg"
                             alt="" class="white-filter"></a>
 
-                    <a (click)="editOrderDetail(orderDetail.Index)"><img src="../../../assets/images/edit.svg" alt=""
+                    <a (click)="editOrderDetail(orderDetail.Index)"><img src="../../../../assets/images/edit.svg" alt=""
                             class="white-filter"></a>
                 </div>
             </li>
@@ -64,8 +65,8 @@
         </div>
         <div class="row orderConfirm text-center">
             <div class="col-4 exchange">
-                <button class="btn main-bg w-100" (click)="scoreExchange()"><img src="../../../assets/images/money.svg"
-                        alt="Đổi điểm" class="main-filter"></button>
+                <button class="btn main-bg w-100" (click)="scoreExchange()"><img
+                        src="../../../../assets/images/money.svg" alt="Đổi điểm" class="main-filter"></button>
             </div>
             <div class="col-8 pl-0">
                 <a href="javascript:void(0)" (click)="requestPaidInput()" type="submit"

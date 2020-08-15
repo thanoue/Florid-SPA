@@ -36,9 +36,13 @@ function login(userId, isPrinter) {
 }
 
 function registerPrintEvent(callback) {
-    socket.on('doPrintJob', (data) => {
-        callback(data.printJob);
-    });
+
+    if (socket) {
+        console.log('do print register');
+        socket.on('doPrintJob', (data) => {
+            callback(data.printJob);
+        });
+    }
 }
 
 function invokePrintJob(data) {

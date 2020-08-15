@@ -24,6 +24,7 @@ function setStatusBarColor(isDark) {
 }
 
 function doPrintJob(data) {
+    console.log('do print job:', data);
     if (typeof Android !== "undefined" && Android !== null) {
         Android.doPrintJob(JSON.stringify(data));
     }

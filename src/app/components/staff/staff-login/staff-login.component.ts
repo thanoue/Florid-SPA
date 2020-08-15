@@ -34,7 +34,7 @@ export class StaffLoginComponent extends BaseComponent {
 
     this.model.passcode = '123456';
     // this.model.userName = 'florid.florist.main@floridday.com'; // florist
-    this.model.userName = 'admin'; //admin
+    this.model.userName = 'account'; //admin
     //   this.model.userName = 'florid.florist.main@floridday.com'; //florist
     // this.model.userName = 'florid.shipper.main@floridday.com'; //shipper
 

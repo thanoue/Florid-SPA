@@ -57,11 +57,11 @@ export class OrderViewModel {
 export class OrderDetailViewModel {
 
     ProductName = '';
-    OrderDetailId = '';
+    OrderDetailId = 0;
     OrderId = '';
     OrderIndex = 0;
     State = OrderDetailStates.Waiting;
-    ProductId = '';
+    ProductId = 0;
     ProductImageUrl = '';
     Quantity = 1;
     Index = 0;

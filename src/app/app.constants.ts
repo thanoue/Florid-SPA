@@ -57,6 +57,12 @@ export const API_END_POINT = {
     addOrder: '/order/add',
     addOrderDetails: '/order/addOrderDetails',
     deleteOrderDetailByOrderId: '/order/deleteOrderDetailByOrderId',
+    getOrdersByStates: '/order/getByStates',
+    getOrdersByCustomerId: '/order/getByCustomer',
+
+    getAllDistricts: '/address/getAllDistricts',
+    getAllWards: '/address/getAllWards'
+
 };
 
 export const IMAGE_FOLDER_PATHS = {

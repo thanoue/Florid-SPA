@@ -41,6 +41,9 @@ import { StatusPointComponent } from './controls/status-point/status-point.compo
 import { AddOrderComponent } from './components/staff/add-order/add-order.component';
 import { SelectCustomerComponent } from './components/staff/select-customer/select-customer.component';
 import { OrderDetailComponent } from './components/staff/order-detail/order-detail.component';
+import { SelectProductComponent } from './components/staff/select-product/select-product.component';
+import { MobileSearchBoxComponent } from './controls/mobile-search-box/mobile-search-box.component';
+import { SelectReceiverComponent } from './components/staff/select-receiver/select-receiver.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +66,7 @@ import { OrderDetailComponent } from './components/staff/order-detail/order-deta
     CustomerReceiversComponent,
     CustomerEditComponent,
     SearchBoxComponent,
+    MobileSearchBoxComponent,
     ImgPipe,
     StaffLoginComponent,
     OrdersManageComponent,
@@ -70,7 +74,9 @@ import { OrderDetailComponent } from './components/staff/order-detail/order-deta
     StatusPointComponent,
     AddOrderComponent,
     SelectCustomerComponent,
-    OrderDetailComponent
+    OrderDetailComponent,
+    SelectProductComponent,
+    SelectReceiverComponent
   ],
   imports: [
     BrowserModule,

@@ -19,6 +19,9 @@ import { StaffMainLayoutComponent } from './components/staff/staff-main-layout/s
 import { OrdersManageComponent } from './components/staff/orders-manage/orders-manage.component';
 import { SelectCustomerComponent } from './components/staff/select-customer/select-customer.component';
 import { OrderDetailComponent } from './components/staff/order-detail/order-detail.component';
+import { SelectProductComponent } from './components/staff/select-product/select-product.component';
+import { AddOrderComponent } from './components/staff/add-order/add-order.component';
+import { SelectReceiverComponent } from './components/staff/select-receiver/select-receiver.component';
 
 const routes: Routes = [
   { path: 'staff-login', component: StaffLoginComponent },
@@ -40,6 +43,21 @@ const routes: Routes = [
       {
         path: 'order-detail/:id',
         component: OrderDetailComponent,
+        canActivate: [AccountMobileGuard]
+      },
+      {
+        path: 'search-product',
+        component: SelectProductComponent,
+        canActivate: [AccountMobileGuard]
+      },
+      {
+        path: 'add-order',
+        component: AddOrderComponent,
+        canActivate: [AccountMobileGuard]
+      },
+      {
+        path: 'select-receiver',
+        component: SelectReceiverComponent,
         canActivate: [AccountMobileGuard]
       },
     ]

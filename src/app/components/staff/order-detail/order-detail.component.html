@@ -3,7 +3,7 @@
         <form #form="ngForm" (submit)="submitOrderDetail(form)" autocomplete="on" class="addOrderForm">
             <div class="form-group prodInfo">
                 <div class="prodImg">
-                    <img [src]="orderDetail.ProductImageUrl" alt="">
+                    <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt="">
                 </div>
                 <div class="prodContent">
                     <h5 class="prodCode" (click)="productNameChangeRequest()">{{orderDetail.ProductName}}</h5>
@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="form-group addInfo">
-                <a class="main-bg" routerLink="/select-receiver">Thông tin người nhận</a>
+                <a class="main-bg" routerLink="/staff/select-receiver">Thông tin người nhận</a>
             </div>
             <div class="form-group orderInfo">
                 <input type="number" name="AdditionalFee" id="AdditionalFee" class="orderField"

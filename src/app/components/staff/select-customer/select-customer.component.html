@@ -2,9 +2,9 @@
     <div class="container">
         <div class="row checkTop search">
             <div class="col-10 filterSearch">
-                <app-search-box (searchTextInvoke)="searchCustomer($event)" [delayTimeSpan]="1000"
+                <mobile-search-box (searchTextInvoke)="searchCustomer($event)" [delayTimeSpan]="1000"
                     placeholder="Tên hoặc số điện thoại KH...">
-                </app-search-box>
+                </mobile-search-box>
             </div>
             <div class="col-2 filterAdd text-right">
                 <button class="main-bg" onclick="openAddInfo()"><img src="../../../../assets/images/addnew.svg" alt=""
@@ -35,7 +35,7 @@
     <form #form="ngForm" (submit)="addCustomer(form)" autocomplete="on" class="addInfoForm">
 
         <div class="form-group">
-            <input type="text" name="Name" [(ngModel)]="newCustomer.Id" id="Id" required minlength="3" class="mainForm"
+            <input type="text" name="Id" [(ngModel)]="newCustomer.Id" id="Id" required minlength="3" class="mainForm"
                 placeholder="Mã KH..." #Id="ngModel">
 
             <div *ngIf="Id.invalid && (Id.dirty || Id.touched)" class="alert alert-danger">

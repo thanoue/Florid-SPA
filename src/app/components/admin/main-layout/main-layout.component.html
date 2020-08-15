@@ -1,7 +1,7 @@
 <div class="adminWrapper">
     <nav id="sideContent">
         <div class="adminLogo">
-            <img [src]="userAvt" alt="" class="mw-100 w-100">
+            <img src="{{userAvt |  ImgPipe : 'UserAvt'}}" alt="" class="mw-100 w-100">
         </div>
         <ul class="mainMenu">
             <li [ngClass]="(currentMenu !== menus.Home)?'menuItem':'menuItem active'">

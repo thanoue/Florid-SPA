@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './common/base.service';
 import { StorageService } from './storage.service';
-import 'firebase/database';
 import { Receipt, TempProduct } from '../models/entities/file.entity';
 
 @Injectable({

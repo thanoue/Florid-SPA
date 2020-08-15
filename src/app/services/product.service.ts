@@ -91,7 +91,7 @@ export class ProductService {
         });
     }
 
-    getRecords(page: number, itemsPerPage: number, categoryId: number, name: string = ''): Promise<{
+    getRecords(page: number, itemsPerPage: number, categoryId: number, tagIds: number[] = [], name: string = ''): Promise<{
         products: {
             Product: Product,
             Tags: Tag[],
@@ -101,11 +101,12 @@ export class ProductService {
         totalPages: number
     }> {
 
-        return this.htttService.get(API_END_POINT.getProducts, {
+        return this.htttService.post(API_END_POINT.getProducts, {
             page: page - 1,
             size: itemsPerPage,
             name: name,
-            categoryId: categoryId
+            categoryId: categoryId,
+            tagIds: tagIds
         }).then(data => {
             this.globalService.stopLoading();
             if (!data) {

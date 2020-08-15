@@ -9,8 +9,7 @@ import { Order, OrderDetail, CustomerReceiverDetail } from 'src/app/models/entit
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { District, Ward } from 'src/app/models/entities/address.entity';
-import { DistrictAddressService } from 'src/app/services/address/district-address.service';
-import { WardAddressService } from 'src/app/services/address/ward-address.service';
+import { AddressService } from 'src/app/services/address.service';
 import { PrintSaleItem, PrintJob } from 'src/app/models/entities/printjob.entity';
 import { Guid } from 'guid-typescript';
 import { PrintJobService } from 'src/app/services/print-job.service';
@@ -55,7 +54,7 @@ export class AddOrderComponent extends BaseComponent {
 
     this.order = this.globalOrder;
 
-    if (!this.order) {
+    if (!this.order.OrderId || this.order.OrderId == '') {
 
       this.memberShipTitle = 'New Customer';
 
@@ -92,6 +91,7 @@ export class AddOrderComponent extends BaseComponent {
         this.memberShipTitle = 'New Customer';
         break;
     }
+
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
   }
 
@@ -136,6 +136,7 @@ export class AddOrderComponent extends BaseComponent {
       if (res > this.totalBalance) {
         validateCallback(false, 'Thanh toán vượt quá thành tiền!');
         return;
+
       } else if (res <= 0) {
         validateCallback(false, 'Thanh toán phải lớn hơn 0!');
         return;
@@ -184,12 +185,12 @@ export class AddOrderComponent extends BaseComponent {
 
       const orderData: PrintJob = {
         Created: (new Date()).getTime(),
-        Id: Guid.create().toString(),
+        Id: this.order.OrderId,
         Active: true,
         IsDeleted: false,
         saleItems: products,
         createdDate: this.order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
-        orderId: this.order.Index.toString(),
+        orderId: this.order.OrderId,
         summary: tempSummary,
         totalAmount: this.order.TotalAmount,
         totalPaidAmount: this.order.TotalPaidAmount,
@@ -253,8 +254,6 @@ export class AddOrderComponent extends BaseComponent {
         this.order.OrderDetails.forEach(detailVM => {
 
           const detail = new OrderDetail();
-
-          detail.Id = Guid.create().toString();
 
           detail.OrderId = orderDB.Id;
           detail.IsHardcodeProduct = detailVM.IsFromHardCodeProduct;
@@ -326,6 +325,7 @@ export class AddOrderComponent extends BaseComponent {
         this.orderService.addOrderDetails(orderDetails)
           .then(() => {
 
+            console.log(receiverInfos);
             this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
 
               this.stopLoading();
@@ -415,7 +415,7 @@ export class AddOrderComponent extends BaseComponent {
 
     this.globalOrderDetail = new OrderDetailViewModel();
 
-    this.router.navigate([`/admin/order-detail/-1`]);
+    this.router.navigate([`/staff/order-detail/-1`]);
   }
 
   editOrderDetail(index: number) {
@@ -424,7 +424,7 @@ export class AddOrderComponent extends BaseComponent {
 
     this.globalOrderDetail = viewModel;
 
-    this.router.navigate([`/admin/order-detail/${index}`]);
+    this.router.navigate([`/staff/order-detail/${index}`]);
 
   }
 

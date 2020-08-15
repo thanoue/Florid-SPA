@@ -25,7 +25,7 @@ export class RealtimeService {
 
       if (isPrinter) {
 
-        this.registerPrintiJob((printJob) => {
+        registerPrintEvent((printJob) => {
           this.printJobService.doPrintJob(printJob);
         });
 
@@ -36,10 +36,6 @@ export class RealtimeService {
 
   disConnect() {
     disConnectSocket();
-  }
-
-  registerPrintiJob(callback: (data: any) => void) {
-    registerPrintEvent(callback);
   }
 
   forceLogoutRegister(callback: (message: string) => void) {
