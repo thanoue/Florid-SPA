@@ -18,11 +18,11 @@ export class CustomerReceiversComponent extends BaseComponent {
   currentReceiver: CustomerReceiverDetail;
   currentIndex = -1;
 
+  constructor(private customerService: CustomerService) { super(); this.currentReceiver = new CustomerReceiverDetail(); }
+
   protected Init() {
     this.receivers = this.globalCustomer.ReceiverInfos ? this.globalCustomer.ReceiverInfos : [];
   }
-
-  constructor(private customerService: CustomerService) { super(); this.currentReceiver = new CustomerReceiverDetail(); }
 
   addReceiverShow() {
     showReceiverSetupPopup();
@@ -38,10 +38,7 @@ export class CustomerReceiversComponent extends BaseComponent {
 
   protected destroy() {
     this.globalCustomer.ReceiverInfos = this.receivers;
-    this.startLoading();  
-    // this.customerService.updateSingleField(this.globalCustomer.Id, 'ReceiverInfos', this.currentReceiver).then(() => {
-    //   this.stopLoading();
-    // });
+
   }
 
   removeReceiver(index) {

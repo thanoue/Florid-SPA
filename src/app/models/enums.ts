@@ -31,6 +31,10 @@ export enum CusContactInfoTypes {
     Instagram = 'Instagram'
 }
 
+export enum OrderType {
+    NormalDay = 'NormalDay',
+    SpecialDay = 'SpecialDay'
+}
 
 export enum MenuItems {
     None,

@@ -1,0 +1,74 @@
+<div class="page-content" id="custInfo">
+    <div class="container">
+        <div class="custInfo">
+            <div class="currentInfo">
+                <span>Thông tin người nhận đã lưu</span>
+                <a href="javascript:void(0)" class="main-bg" onclick="openCustMenu()"><img
+                        src="../../../../assets/images/view.svg" class="white-filter"></a>
+            </div>
+            <div class="newInfo">
+                <form #form="ngForm" (submit)="addReceiver(form)" autocomplete="on" class="addInfoForm">
+                    <div class="form-group">
+                        <input type="text" name="FullName" [(ngModel)]="deliveryInfo.FullName" id="FullName" required
+                            minlength="5" value="" class="mainForm" placeholder="Tên..." #FullName="ngModel">
+                        <div *ngIf="FullName.invalid && (FullName.dirty || FullName.touched)"
+                            class="alert alert-danger">
+
+                            <div *ngIf="FullName.errors.required">
+                                Tên là bắt buộc
+                            </div>
+                            <div *ngIf="FullName.errors.minlength">
+                                Tên tối thiểu 5 ký tự
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="PhoneNumber" [(ngModel)]="deliveryInfo.PhoneNumber" required
+                            minlength="5" id="PhoneNumber" value="" class="mainForm" placeholder="Số điện thoại..."
+                            #PhoneNumber="ngModel">
+                        <div *ngIf="PhoneNumber.invalid && (PhoneNumber.dirty || PhoneNumber.touched)"
+                            class="alert alert-danger">
+
+                            <div *ngIf="PhoneNumber.errors.required">
+                                SDT là bắt buộc
+                            </div>
+                            <div *ngIf="PhoneNumber.errors.minlength">
+                                SDT tối thiểu 10 ký tự
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="Address" [(ngModel)]="deliveryInfo.Address" required id="Address"
+                            class="mainForm" placeholder="Địa chỉ..." #Address="ngModel">
+                        <a class="viewMore btn main-btn" href="javascript:void(0)" (click)="addressChoosing()"><i
+                                class="fa fa-location-arrow"></i></a>
+                        <div *ngIf="Address.invalid && (Address.dirty || Address.touched)" class="alert alert-danger">
+                            <div *ngIf="Address.errors.required">
+                                Địa chỉ là bắt buộc
+                            </div>
+                        </div>
+                    </div>
+                    <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="deliveryInfo.DateTime"
+                        name="DateTime" class="mainForm">
+                    <owl-date-time [stepMinute]="5" #dt1></owl-date-time>
+                    <div class="row">
+                        <div class="col-8 mx-auto text-center">
+                            <button type="submit" class="btn main-btn w-100 mt-3">Xong</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="actionMenu" id="recentInfo">
+    <ul>
+        <li *ngFor="let receiverInfo of currentList; let i = index" onclick="selectSavedDeliveryInfo(this)"
+            [attr.data-index]="i">
+            <p class="recentInfo-name">{{receiverInfo.FullName}}</p>
+            <span class="recentInfo-phone">{{receiverInfo.PhoneNumber}}</span>
+            <span class="recentInfo-date">{{deliveryInfo.DateTime | date: 'dd/MM/yyyy hh:mm a'}}</span>
+            <span class="recentInfo-add">{{receiverInfo.Address}}</span>
+        </li>
+    </ul>
+</div>

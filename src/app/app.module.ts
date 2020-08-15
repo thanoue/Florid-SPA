@@ -34,12 +34,16 @@ import { CustomerEditComponent } from './components/admin/customer-edit/customer
 import { SearchBoxComponent } from './controls/search-box/search-box.component';
 import { ImgPipe } from './pipes/img.pipe';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { BaseAdminComponent } from './components/admin/base-admin/base-admin.component';
-import { BaseStaffComponent } from './components/staff/base-staff/base-staff.component';
 import { StaffLoginComponent } from './components/staff/staff-login/staff-login.component';
 import { OrdersManageComponent } from './components/staff/orders-manage/orders-manage.component';
 import { StaffMainLayoutComponent } from './components/staff/staff-main-layout/staff-main-layout.component';
 import { StatusPointComponent } from './controls/status-point/status-point.component';
+import { AddOrderComponent } from './components/staff/add-order/add-order.component';
+import { SelectCustomerComponent } from './components/staff/select-customer/select-customer.component';
+import { OrderDetailComponent } from './components/staff/order-detail/order-detail.component';
+import { SelectProductComponent } from './components/staff/select-product/select-product.component';
+import { MobileSearchBoxComponent } from './controls/mobile-search-box/mobile-search-box.component';
+import { SelectReceiverComponent } from './components/staff/select-receiver/select-receiver.component';
 
 @NgModule({
   declarations: [
@@ -62,13 +66,17 @@ import { StatusPointComponent } from './controls/status-point/status-point.compo
     CustomerReceiversComponent,
     CustomerEditComponent,
     SearchBoxComponent,
+    MobileSearchBoxComponent,
     ImgPipe,
-    BaseAdminComponent,
-    BaseStaffComponent,
     StaffLoginComponent,
     OrdersManageComponent,
     StaffMainLayoutComponent,
-    StatusPointComponent
+    StatusPointComponent,
+    AddOrderComponent,
+    SelectCustomerComponent,
+    OrderDetailComponent,
+    SelectProductComponent,
+    SelectReceiverComponent
   ],
   imports: [
     BrowserModule,

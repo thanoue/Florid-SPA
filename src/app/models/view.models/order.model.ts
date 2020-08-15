@@ -1,9 +1,8 @@
-import { OrderDetailStates } from '../../models/enums';
+import { OrderDetailStates, OrderType } from '../../models/enums';
 import { MembershipTypes } from '../enums';
 import { Customer } from '../entities/customer.entity';
 import { ExchangeService } from '../../services/exchange.service';
 import { CustomerReceiverDetail, OrderDetail, Order, ODFloristInfo, ODShipperInfo, ODSeenUserInfo } from '../entities/order.entity';
-import { sha1 } from '@angular/compiler/src/i18n/digest';
 
 export class OrderViewModel {
 
@@ -12,6 +11,8 @@ export class OrderViewModel {
     TotalPaidAmount: number;
     CreatedDate: Date;
     VATIncluded = false;
+    OrderType: OrderType;
+
     Index: number;
 
     CustomerInfo: OrderCustomerInfoViewModel;
@@ -29,6 +30,7 @@ export class OrderViewModel {
         vm.VATIncluded = entity.VATIncluded;
         vm.CreatedDate = new Date(entity.Created);
         vm.Index = entity.Index;
+        vm.OrderType = entity.OrderType;
 
         vm.CustomerInfo.ScoreUsed = entity.ScoreUsed;
         vm.CustomerInfo.GainedScore = entity.GainedScore;
@@ -55,11 +57,11 @@ export class OrderViewModel {
 export class OrderDetailViewModel {
 
     ProductName = '';
-    OrderDetailId = '';
+    OrderDetailId = 0;
     OrderId = '';
     OrderIndex = 0;
     State = OrderDetailStates.Waiting;
-    ProductId = '';
+    ProductId = 0;
     ProductImageUrl = '';
     Quantity = 1;
     Index = 0;

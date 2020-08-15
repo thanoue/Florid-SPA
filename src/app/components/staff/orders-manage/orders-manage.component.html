@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8 text-center">
-                <a routerLink="/add-order" class="btn main-btn">Thêm đơn</a>
+                <a routerLink="/staff/add-order" class="btn main-btn">Thêm đơn</a>
             </div>
             <div class="col-2 order-noti text-right">
                 <a href="./xac-nhan-don.html"><img src="../../../assets/images/noti.png" alt=""
@@ -32,7 +32,7 @@
                 <li *ngFor="let order of orders; let orderIndex = index" class="order-content-item"
                     [id]="'order' + orderIndex">
                     <div class="item-top" [id]="'heading' + orderIndex">
-                        <span class="item-code">{{order.Index}}</span>
+                        <span class="item-code">{{order.OrderId}}</span>
                         <div class="item-info">
                             <h4 class="item-name">{{order.CustomerInfo.Name}}</h4>
                             <span class="item-price">{{order.TotalAmount| currency:'VND':'symbol-narrow':'':'vi-VN'}}
@@ -52,7 +52,8 @@
 
                                 </app-status-point>
                                 <div class="item-detail" (click)="updateOrderDetailState(orderDetail.OrderDetailId)">
-                                    <img [src]="orderDetail.ProductImageUrl" alt="" class="item-detail-thumb">
+                                    <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt=""
+                                        class="item-detail-thumb">
                                     <div class="item-detail-info">
                                         <h5 class="item-code">{{orderDetail.ProductName}}</h5>
                                         <span class="item-quantity">Phụ phí:
@@ -92,7 +93,7 @@
     </ul>
 </div>
 <div class="customer-support">
-    <img [src]="CurrentUser.Avt" alt="" class="customer-avatar">
+    <img src="{{CurrentUser.Avt |  ImgPipe : 'UserAvt'}}" alt="" class="customer-avatar">
     <p class="customer-name">{{CurrentUser.FullName}}</p>
     <a class="customer-phone" href="tel:0000">{{CurrentUser.PhoneNumber}}</a>
     <p class="customer-position">{{CurrentUser.Role}}</p>

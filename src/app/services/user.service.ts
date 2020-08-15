@@ -12,11 +12,6 @@ import { GlobalService } from './common/global.service';
 })
 export class UserService {
 
-
-    protected get tableName(): string {
-        return '/users';
-    }
-
     constructor(private httpService: HttpService, private globalService: GlobalService) {
     }
 

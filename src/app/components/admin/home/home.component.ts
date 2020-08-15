@@ -10,7 +10,7 @@ import { TagService } from 'src/app/services/tag.service';
 import { Guid } from 'guid-typescript';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/models/entities/product.entity';
-// import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx';
 import { isatty } from 'tty';
 import { single } from 'rxjs/operators';
 import { Customer, MembershipInfo } from 'src/app/models/entities/customer.entity';
@@ -20,6 +20,7 @@ import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { info } from 'console';
+import ShortUniqueId from 'short-unique-id';
 
 @Component({
   selector: 'app-home',
@@ -333,14 +334,6 @@ export class HomeComponent extends BaseComponent {
 
   //     //   });
   //   }
-
-
-
-
-  //   reader.readAsBinaryString(target.files[0]);
-
-  // }
-
 
   // onFileChange(evt: any) { // customer
   //   /* wire up file reader */

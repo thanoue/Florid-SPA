@@ -9,6 +9,7 @@ import { OnlineUserService } from 'src/app/services/online.user.service';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { MenuItems } from 'src/app/models/enums';
+import { RealtimeService } from 'src/app/services/realtime.service';
 
 declare function initLeftMenu(): any;
 
@@ -28,10 +29,19 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
   menus = MenuItems;
 
-  constructor(private globalService: GlobalService, public router: Router, private onlineUserService: OnlineUserService, private authService: AuthService) {
+  constructor(private globalService: GlobalService, public router: Router, private realtimeService: RealtimeService, private onlineUserService: OnlineUserService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
+
+    this.realtimeService.forceLogoutRegister((message) => {
+      this.globalService.showError(message);
+      this.authService.logOut((isSuccess) => {
+        if (isSuccess) {
+          this.router.navigate(['/login']);
+        }
+      });
+    });
 
     this.currentMenu = MenuItems.None;
 

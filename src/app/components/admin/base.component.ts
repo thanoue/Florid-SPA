@@ -3,11 +3,10 @@ import { AppInjector } from '../../services/common/base.injector';
 import { GlobalService } from '../../services/common/global.service';
 import { AuthService } from '../../services/common/auth.service';
 import { Location } from '@angular/common';
-import { DistrictAddressService } from '../../services/address/district-address.service';
-import { WardAddressService } from '../../services/address/ward-address.service';
 import { District, Ward } from '../../models/entities/address.entity';
 import { PageComponent } from '../../models/view.models/menu.model';
 import { Customer } from '../../models/entities/customer.entity';
+import { AddressService } from 'src/app/services/address.service';
 
 declare function addressRequest(districts: District[], resCallback: (res: string) => void, onDistrictChange: (res: string, newWardCallback: (wards: Ward[]) => void) => void): any;
 
@@ -18,9 +17,8 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
     protected globalService: GlobalService;
     protected authService: AuthService;
     protected location: Location;
+    private addressService: AddressService;
     private ngZone: NgZone;
-    private districtService: DistrictAddressService;
-    private wardService: WardAddressService;
 
     get globalCustomer(): Customer {
         return this.globalService.globalCustomer;
@@ -54,8 +52,7 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
         this.authService = injector.get(AuthService);
         this.location = injector.get(Location);
         this.ngZone = injector.get(NgZone);
-        this.districtService = injector.get(DistrictAddressService);
-        this.wardService = injector.get(WardAddressService);
+        this.addressService = injector.get(AddressService);
     }
 
 
@@ -80,11 +77,11 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
         if (this.globalwards.length <= 0) {
 
-            this.districtService.getAll().then(dists => {
+            this.addressService.getAllDistrict().then(dists => {
 
                 this.globalDistricts = dists;
 
-                this.wardService.getAll().then(wards => {
+                this.addressService.getAllWards().then(wards => {
 
                     this.globalwards = wards;
 

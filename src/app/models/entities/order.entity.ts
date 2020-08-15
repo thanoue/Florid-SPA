@@ -1,5 +1,5 @@
 import { BaseEntity } from './base.entity';
-import { OrderDetailStates, Roles } from '../enums';
+import { OrderDetailStates, Roles, OrderType } from '../enums';
 
 export class Order extends BaseEntity {
     CustomerId = '';
@@ -7,6 +7,7 @@ export class Order extends BaseEntity {
     VATIncluded = false;
     TotalAmount = 0;
     TotalPaidAmount = 0;
+    OrderType: OrderType;
 
     GainedScore = 0;
     ScoreUsed = 0;
@@ -14,11 +15,11 @@ export class Order extends BaseEntity {
     Index: number;
 }
 
-export class OrderDetail extends BaseEntity {
-
+export class OrderDetail {
+    Id = 0;
     OrderId = '';
     AdditionalFee = 0;
-    ProductId = '';
+    ProductId = 0;
     ProductName = '';
     ProductImageUrl = '';
     ProductModifiedPrice = 0;
@@ -50,7 +51,6 @@ export class OrderDetail extends BaseEntity {
     DeliveryImageUrl: string;
 
     constructor() {
-        super();
 
         this.DeliveryInfo = new OrderReceiverDetail();
         this.FloristInfo = new ODFloristInfo();

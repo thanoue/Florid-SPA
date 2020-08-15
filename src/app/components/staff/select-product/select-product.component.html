@@ -1,0 +1,65 @@
+<div class="page-content" id="prodCate">
+    <div class="container">
+        <div class="prodFilter">
+            <div class="filterCate">
+                <a href="javascript:void(0)" class="main-bg" (click)="filter()"><img
+                        src="../../../../assets/images/filter2.png" alt=""><span>{{categoryName}}</span></a>
+            </div>
+            <div class="filterSearch" onclick="searchFocus(this)">
+                <mobile-search-box (searchTextInvoke)="searchProduct($event)" [delayTimeSpan]="1600"
+                    placeholder="Mã sản phẩm...">
+                </mobile-search-box>
+            </div>
+            <div class="filterAdd">
+                <button class="main-bg"><img src="../../../../assets/images/attach.svg" alt=""
+                        class="main-filter"></button>
+            </div>
+            <!-- <div class="filterAdd" *ngIf="IsOnTerminal">
+                <button (click)="openFile()" class="main-bg"><img src="../../../assets/images/attach.svg" alt=""
+                        class="main-filter"></button>
+            </div>
+            <div class="filterAdd" *ngIf="!IsOnTerminal">
+                <input type="file" class="img-cover file-upload-default" (change)="onChange($event)" name="uploadedFile"
+                    #imageUpload hidden>
+                <button (click)="imageUpload.click()" class="main-bg"><img src="../../../assets/images/attach.svg"
+                        alt="" class="main-filter"></button>
+            </div> -->
+            <div class="filterAdd">
+                <button class="main-bg"><img src="../../../../assets/images/price.svg" alt="" class="main-filter"
+                        onClick="openTagMenu()"></button>
+            </div>
+        </div>
+        <div class="row prodList cusScroll">
+            <div *ngFor='let product of pagingProducts' onclick="selectItem(this,'.product-item')"
+                class="col-4 product-item" [attr.data-id]="product.Id">
+                <div class="prodItem">
+                    <img src="{{product.ImageUrl |  ImgPipe : 'ProductImg'}}" alt="">
+                    <h4>{{product.Name}}</h4>
+                    <span>{{product.Price}}</span>
+                </div>
+            </div>
+        </div>
+        <ul class="paging">
+            <li class="paging-arrow paging-prev main-bg" (click)="getProductsByPage(currentPage-1)"><i
+                    class="fa fa-angle-left"></i></li>
+            <li class="paging-arrow paging-next main-bg" (click)="getProductsByPage(currentPage+1)"><i
+                    class="fa fa-angle-right"></i></li>
+        </ul>
+        <div class="row prodDone">
+            <div class="col-8 mx-auto text-center">
+                <a (click)="selectProduct()" href="javascript:void(0);" class="btn main-btn">Xong</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="tagsMenu" class="tagMenu checkMenu tagMenu">
+
+    <div *ngFor="let cateTag of globalTags" class="form-check">
+        <label class="form-check-label">
+            <input type="checkbox" [(ngModel)]="cateTag.IsSelected" class="form-check-input" name="IsSelected"
+                id="IsSelected" value="checkedValue">
+            <span class="main-bg vatCustom"></span>{{cateTag.Tag.Name}}
+        </label>
+    </div>
+
+</div>

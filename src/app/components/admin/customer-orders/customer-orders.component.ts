@@ -31,46 +31,14 @@ export class CustomerOrdersComponent extends BaseComponent {
 
     this.orders = [];
 
-
-    this.orderService.getByFieldName('CustomerId', this.customer.Id)
-      .then(orders => {
-
-        let task = new Promise(async (resolve, reject) => {
-
-          for (let i = 0; i < orders.length; i++) {
-
-            let orderVM = OrderViewModel.ToViewModel(orders[i], this.customer);
-
-            let orderDetails = await this.orderDetailService.getByFieldName('OrderId', orders[i].Id);
-
-            if (orderDetails.length > 0) {
-
-              orderDetails.forEach(orderDetail => {
-                orderVM.OrderDetails.push(OrderDetailViewModel.ToViewModel(orderDetail));
-              });
-
-            }
-
-            this.orders.push(orderVM);
-          }
-
-          setTimeout(() => {
-            resolve();
-          }, 200);
-
-        });
-
-        task.then(() => {
-          cusOrdersBinding();
-        });
-
+    this.orderService.getOrderViewModelsByCusId(this.customer.Id)
+      .then(orderVMs => {
+        this.orders = orderVMs;
+        cusOrdersBinding();
       });
-
   }
 
   getState(state: OrderDetailStates): string {
     return ORDER_DETAIL_STATES.filter(p => p.State == state)[0].DisplayName;
   }
-
-
 }

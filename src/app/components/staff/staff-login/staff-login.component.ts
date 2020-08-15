@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/services/common/auth.service';
 import { LoginModel } from 'src/app/models/entities/user.entity';
 import { OnlineUserService } from 'src/app/services/online.user.service';
 import { Roles } from 'src/app/models/enums';
+import { RealtimeService } from 'src/app/services/realtime.service';
 declare function deviceLogin(email: string, pasword: string, isPrinter: boolean, idToken: string): any;
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class StaffLoginComponent extends BaseComponent {
 
   model: LoginModel = new LoginModel();
 
-  constructor(private router: Router, protected activatedRoute: ActivatedRoute) {
+  constructor(private router: Router, protected activatedRoute: ActivatedRoute, private realtimeService: RealtimeService) {
     super();
     LocalService.clear();
 
@@ -33,7 +34,7 @@ export class StaffLoginComponent extends BaseComponent {
 
     this.model.passcode = '123456';
     // this.model.userName = 'florid.florist.main@floridday.com'; // florist
-    this.model.userName = 'admin'; //admin
+    this.model.userName = 'account'; //admin
     //   this.model.userName = 'florid.florist.main@floridday.com'; //florist
     // this.model.userName = 'florid.shipper.main@floridday.com'; //shipper
 

@@ -6,8 +6,7 @@ import { RouteModel } from '../../models/view.models/route.model';
 import { Subscription } from 'rxjs';
 import { Location } from '@angular/common';
 import { OrderViewModel, OrderDetailViewModel } from '../../models/view.models/order.model';
-import { DistrictAddressService } from '../../services/address/district-address.service';
-import { WardAddressService } from '../../services/address/ward-address.service';
+import { AddressService } from '../../services/address.service';
 import { District, Ward } from '../../models/entities/address.entity';
 import { LocalService } from '../../services/common/local.service';
 import { Roles } from '../../models/enums';
@@ -27,8 +26,7 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
     private ngZone: NgZone;
     private navigateOnClick: Subscription;
-    private districtService: DistrictAddressService;
-    private wardService: WardAddressService;
+    private addressService: AddressService;
 
     public IsOnTerminal: boolean;
 
@@ -78,8 +76,7 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
         this.authService = injector.get(AuthService);
         this.location = injector.get(Location);
         this.ngZone = injector.get(NgZone);
-        this.districtService = injector.get(DistrictAddressService);
-        this.wardService = injector.get(WardAddressService);
+        this.addressService = injector.get(AddressService);
     }
 
     ngOnInit(): void {
@@ -121,11 +118,11 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
         if (this.globalwards.length <= 0) {
 
-            this.districtService.getAll().then(dists => {
+            this.addressService.getAllDistrict().then(dists => {
 
                 this.globalDistricts = dists;
 
-                this.wardService.getAll().then(wards => {
+                this.addressService.getAllWards().then(wards => {
 
                     this.globalwards = wards;
 

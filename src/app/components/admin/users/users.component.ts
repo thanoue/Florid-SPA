@@ -111,7 +111,7 @@ export class UsersComponent extends BaseComponent {
 
     Object.assign(this.currrentEditUser, user);
 
-    // this.edittingImageUrl = ExchangeService.getFullImgUrl(IMAGE_FOLDER_PATHS.user_avt, this.currrentEditUser.AvtUrl);
+    this.edittingImageUrl = this.currrentEditUser.AvtUrl;
 
     this.edittingFile = null;
 

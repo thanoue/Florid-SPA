@@ -1,0 +1,98 @@
+<div class="page-content" id="confirm">
+    <div class="container">
+        <div class="row custBrow">
+            <div class="col-10 custList ">
+                <a routerLink="/staff/select-customer" class="main-bg custListButton"><img
+                        src="../../../../assets/images/cust.png" alt="">
+                    <marquee behavior="scroll" direction="left">{{order.CustomerInfo.Name}}
+                        (-{{order.CustomerInfo.DiscountPercent}}%)</marquee>
+                </a>
+            </div>
+            <div class="col-2 prodAdd text-right pl-0">
+                <a (click)="addNewOrderDetail()" class="main-bg"><img src="../../../../assets/images/add.svg" alt=""
+                        class="main-filter"></a>
+            </div>
+        </div>
+        <div class="form-group orderInfo borderless-field">
+            <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="!isEditting"
+                class="orderField small-height" placeholder="Mã đơn...">
+        </div>
+        <ul class=" orderDetail cusScroll">
+            <li *ngFor="let orderDetail of order.OrderDetails" class="orderDetailItem">
+                <div class="itemNumb"><span>{{orderDetail.Index + 1}}</span></div>
+                <div class="itemDetail">
+                    <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt=""
+                        class="item-detail-thumb">
+                    <div class="item-detail-info">
+                        <h5 class="item-code">{{orderDetail.ProductName}}</h5>
+                        <span
+                            class="prodPriceOld">{{orderDetail.OriginalPrice | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        </span>
+                        <span class="prodCharge">Phụ phí:
+                            {{orderDetail.AdditionalFee | currency:'VND':'symbol-narrow':'':'vi-VN'}} </span>
+                        <span
+                            class="prodPrice">{{orderDetail.ModifiedPrice | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        </span>
+                    </div>
+                </div>
+                <div class="itemAction">
+
+                    <a (click)="deleteOrderDetail(orderDetail.Index)"><img src="../../../../assets/images/delete.svg"
+                            alt="" class="white-filter"></a>
+
+                    <a (click)="editOrderDetail(orderDetail.Index)"><img src="../../../../assets/images/edit.svg" alt=""
+                            class="white-filter"></a>
+                </div>
+            </li>
+        </ul>
+        <div class="vatStatus">
+            <p>Bao gồm VAT</p>
+            <div class="vatScope">
+                <input type="checkbox" id="VATIncluded" name="VATIncluded" (change)="onVATIncludedChange()"
+                    [(ngModel)]="order.VATIncluded" value="1"><span class="main-bg vatCustom"></span>
+            </div>
+        </div>
+        <div class="orderTotal">
+            <p class="totalOld">Còn lại: <span
+                    class="orderPrice">{{totalBalance| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                </span>
+            </p>
+            <p class="totalNew">Thành tiền: <span
+                    class="orderPrice">{{order.TotalAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                </span>
+            </p>
+            <p class="totalExc">Đổi điểm: <span class="orderPrice">{{order.CustomerInfo.ScoreUsed}}</span></p>
+        </div>
+        <div class="row orderConfirm text-center">
+            <div class="col-4 exchange">
+                <button class="btn main-bg w-100" (click)="scoreExchange()"><img
+                        src="../../../../assets/images/money.svg" alt="Đổi điểm" class="main-filter"></button>
+            </div>
+            <div class="col-8 pl-0">
+                <a href="javascript:void(0)" (click)="requestPaidInput()" type="submit"
+                    class="btn main-btn w-100">Xong</a>
+            </div>
+            <span>Xác nhận thanh toán</span>
+        </div>
+    </div>
+</div>
+<div id="exchangeAdd" class="popup-content">
+    <form action="" class="">
+        <div class="form-group">
+            <label for="" class="excLabel">Thành viên: </label>
+            <span class="memberLevel v">{{memberShipTitle}}</span>
+        </div>
+        <div class="form-group">
+            <label for="" class="excLabel">Điểm tích lũy: </label>
+            <span class="">{{order.CustomerInfo.AvailableScore}}</span>
+        </div>
+        <div class="form-group">
+            <input type="number" name="" id="exchange-val" class="mainForm" placeholder="Số điểm muốn đổi...">
+        </div>
+        <div class="row">
+            <div class="col-8 mx-auto text-center">
+                <button type="submit" class="btn main-btn w-100 mt-3 exchange-confirm">Đổi điểm</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,92 @@
+<div class="page-content" id="customerInfo">
+    <div class="container">
+        <div class="row checkTop search">
+            <div class="col-10 filterSearch">
+                <mobile-search-box (searchTextInvoke)="searchCustomer($event)" [delayTimeSpan]="1000"
+                    placeholder="Tên hoặc số điện thoại KH...">
+                </mobile-search-box>
+            </div>
+            <div class="col-2 filterAdd text-right">
+                <button class="main-bg" onclick="openAddInfo()"><img src="../../../../assets/images/addnew.svg" alt=""
+                        class="main-filter"></button>
+            </div>
+        </div>
+        <div class="nameTable">
+            <div class="tableHead">
+                <div class="tableLeft">Tên Khách Hàng</div>
+                <div class="tableRight">Số điện thoại</div>
+            </div>
+            <div class="tableBody cusScroll" id="customer-list">
+                <div class="tableRow main-bg customer-item" onclick="selectItem(this,'.customer-item')"
+                    *ngFor="let customer of customers" [attr.data-id]="customer.Id">
+                    <div class="tableLeft">{{customer.FullName}}</div>
+                    <div class="tableRight">{{customer.PhoneNumber}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row prodDone">
+            <div class="col-8 mx-auto text-center">
+                <a (click)="selectConfirm()" href="javascript:void(0);" class="btn main-btn w-100">Xong</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="infoAdd" class="popup-content">
+    <form #form="ngForm" (submit)="addCustomer(form)" autocomplete="on" class="addInfoForm">
+
+        <div class="form-group">
+            <input type="text" name="Id" [(ngModel)]="newCustomer.Id" id="Id" required minlength="3" class="mainForm"
+                placeholder="Mã KH..." #Id="ngModel">
+
+            <div *ngIf="Id.invalid && (Id.dirty || Id.touched)" class="alert alert-danger">
+
+                <div *ngIf="Name.errors.required">
+                    Mã là bắt buộc
+                </div>
+                <div *ngIf="Id.errors.minlength">
+                    Tên tối thiểu 3 ký tự
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <input type="text" name="Name" [(ngModel)]="newCustomer.Name" id="Name" required minlength="5"
+                class="mainForm" placeholder="Tên đầy đủ ..." #Name="ngModel">
+
+            <div *ngIf="Name.invalid && (Name.dirty || Name.touched)" class="alert alert-danger">
+
+                <div *ngIf="Name.errors.required">
+                    Tên là bắt buộc
+                </div>
+                <div *ngIf="Name.errors.minlength">
+                    Tên tối thiểu 5 ký tự
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <input type="tel" name="PhoneNumber" [(ngModel)]="newCustomer.PhoneNumber" id="PhoneNumber" required
+                minlength="10" class="mainForm" placeholder="Số điện thoại..." #PhoneNumber="ngModel">
+
+            <div *ngIf="PhoneNumber.invalid && (PhoneNumber.dirty || PhoneNumber.touched)" class="alert alert-danger">
+                <div *ngIf="PhoneNumber.errors.required">
+                    SDT là bắt buộc
+                </div>
+                <div *ngIf="PhoneNumber.errors.minlength">
+                    SDT tối thiểu 10 ký tự
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-6 mx-auto text-center">
+                <button type="button" id="cancel-button" class="btn grey-btn w-100 mt-3">Hủy</button>
+            </div>
+            <div class="col-6 mx-auto text-center">
+                <button type="submit" class="btn main-btn w-100 mt-3 btn-success">Lưu</button>
+            </div>
+        </div>
+    </form>
+</div>
