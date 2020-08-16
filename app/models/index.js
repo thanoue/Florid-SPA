@@ -84,6 +84,7 @@ db.user.belongsToMany(db.orderDetail, {
     otherKey: "OrderDetailId",
     onDelete: 'CASCADE'
 });
+
 db.orderDetail.belongsToMany(db.user, {
     through: "orderDetailSeens",
     foreignKey: "OrderDetailId",

@@ -8,10 +8,11 @@ const http = require('http');
 
 const app = express();
 
-var corsOptions = {
-    origin: "http://localhost:4200"
-};
-app.use(cors(corsOptions));
+// var corsOptions = {
+//     origin: "http://localhost:4200"
+// };
+
+// app.use(cors(corsOptions));
 
 app.use(fileUpload({
     createParentPath: true
@@ -35,8 +36,8 @@ app.get('*', (req, res) => {
 const { user, role, category } = require("./app/models/index");
 const db = require("./app/models/index");
 db.sequelize.sync({ alter: true }).then(() => {
-    // console.log('Drop and Resync Db');
-    // initial();
+    console.log('Drop and Resync Db');
+    initial();
 });
 
 
@@ -144,10 +145,23 @@ function initial() {
                     LoginName: 'admin',
                     Password: bcrypt.hashSync('123456', 8),
                     PhoneNumber: '0987654321',
+                    IsPrinter: false,
                     AvtUrl: 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg',
-                    IsPrinter: false
-                }).then(user => {
-                    user.setRoles([5]).then(() => {
+                }).then(user1 => {
+                    user1.setRoles([5]).then(() => {
+                        user.create({
+                            FullName: 'Mai Van Ba',
+                            Email: 'bamai@florid.com',
+                            LoginName: 'account',
+                            Password: bcrypt.hashSync('123456', 8),
+                            PhoneNumber: '0987654321',
+                            IsPrinter: true,
+                            AvtUrl: 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg',
+                        }).then(user2 => {
+                            user2.setRoles([4]).then(() => {
+
+                            });
+                        });
                     });
                 });
 
