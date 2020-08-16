@@ -27,6 +27,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         CreatedDate: {
             type: Sequelize.BIGINT(11)
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
         }
     });
 

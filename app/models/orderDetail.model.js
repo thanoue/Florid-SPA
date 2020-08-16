@@ -87,6 +87,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         Index: {
             type: Sequelize.INTEGER
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
         }
     });
 

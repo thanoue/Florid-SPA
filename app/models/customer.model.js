@@ -52,6 +52,14 @@ module.exports = (sequelize, Sequelize) => {
         MembershipType: {
             type: Sequelize.STRING
         },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        }
     });
 
     return Customer;

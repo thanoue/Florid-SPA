@@ -17,6 +17,14 @@ module.exports = (sequelize, Sequelize) => {
         Description: {
             type: Sequelize.STRING
         },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        }
     });
 
     return Product;

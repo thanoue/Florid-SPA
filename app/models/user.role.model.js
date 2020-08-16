@@ -7,6 +7,14 @@ module.exports = (sequelize, Sequelize) => {
         UserId: {
             type: Sequelize.INTEGER,
             allowNull: false
+        },
+        createdAt: {
+            type: Sequelize.DATE,
+            allowNull: true
+        },
+        updatedAt: {
+            type: Sequelize.DATE,
+            allowNull: true
         }
     });
 

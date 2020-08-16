@@ -9,7 +9,7 @@ const http = require('http');
 const app = express();
 
 var corsOptions = {
-    origin: "http://192.168.1.10:4200"
+    origin: "http://localhost:4200"
 };
 app.use(cors(corsOptions));
 
@@ -35,8 +35,8 @@ app.get('*', (req, res) => {
 const { user, role, category } = require("./app/models/index");
 const db = require("./app/models/index");
 db.sequelize.sync({ alter: true }).then(() => {
-    console.log('Drop and Resync Db');
-    initial();
+    // console.log('Drop and Resync Db');
+    // initial();
 });
 
 
