@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "floridday-client": {
+    "kha-test-mysql": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -71,18 +71,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "floridday-client:build"
+            "browserTarget": "kha-test-mysql:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "floridday-client:build:production"
+              "browserTarget": "kha-test-mysql:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "floridday-client:build"
+            "browserTarget": "kha-test-mysql:build"
           }
         },
         "test": {
@@ -120,18 +120,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "floridday-client:serve"
+            "devServerTarget": "kha-test-mysql:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "floridday-client:serve:production"
+              "devServerTarget": "kha-test-mysql:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "floridday-client",
+  "defaultProject": "kha-test-mysql",
   "cli": {
     "analytics": "7797043f-7a9b-4048-9d54-cf93793c6f90"
   }
