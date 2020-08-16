@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ng build  --prod"
+    "heroku-postbuild": "ng build  --prod"
   },
   "private": true,
   "dependencies": {
@@ -75,7 +75,7 @@
     "typescript": "~3.7.5"
   },
   "engines": {
-    "node": "6.11.0",
-    "npm": "3.10.10"
+    "node": "12.18.1",
+    "npm": "6.14.5"
   }
 }
