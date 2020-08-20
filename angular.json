@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "kha-test-mysql": {
+    "florid": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -71,18 +71,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "kha-test-mysql:build"
+            "browserTarget": "florid:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "kha-test-mysql:build:production"
+              "browserTarget": "florid:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "kha-test-mysql:build"
+            "browserTarget": "florid:build"
           }
         },
         "test": {
@@ -120,18 +120,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "kha-test-mysql:serve"
+            "devServerTarget": "florid:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "kha-test-mysql:serve:production"
+              "devServerTarget": "florid:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "kha-test-mysql",
+  "defaultProject": "florid",
   "cli": {
     "analytics": "7797043f-7a9b-4048-9d54-cf93793c6f90"
   }

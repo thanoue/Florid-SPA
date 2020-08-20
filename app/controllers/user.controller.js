@@ -110,7 +110,7 @@ exports.editUser = (req, res) => {
     // Save User to Database
     User.update(updates, {
         where: {
-            Id: req.body.id
+            Id: req.body.id         
         }
     })
         .then(user => {

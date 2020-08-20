@@ -28,6 +28,12 @@ module.exports = (sequelize, Sequelize) => {
         CreatedDate: {
             type: Sequelize.BIGINT(11)
         },
+        AmountDiscount: {
+            type: Sequelize.INTEGER
+        },
+        PercentDiscount: {
+            type: Sequelize.INTEGER
+        },
         createdAt: {
             type: Sequelize.DATE,
             allowNull: true
@@ -35,7 +41,8 @@ module.exports = (sequelize, Sequelize) => {
         updatedAt: {
             type: Sequelize.DATE,
             allowNull: true
-        }
+        },
+
     });
 
     return Order;
