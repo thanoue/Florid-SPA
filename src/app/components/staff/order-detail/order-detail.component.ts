@@ -23,7 +23,6 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   Title = 'Chi tiết đơn';
 
-  orderDetail: OrderDetailViewModel;
   detailIndex: number;
 
   categories: {
@@ -42,16 +41,14 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
       this.detailIndex = + params.id;
 
-      this.orderDetail = this.globalOrderDetail;
+      this.globalOrderDetail.AdditionalFee /= 1000;
 
-      this.orderDetail.AdditionalFee /= 1000;
+      if (!this.globalOrderDetail.PurposeOf) this.globalOrderDetail.PurposeOf = 'Mua tặng';
 
-      if (!this.orderDetail.PurposeOf) this.orderDetail.PurposeOf = 'Mua tặng';
-
-      if (!this.orderDetail.ProductName) this.orderDetail.ProductName = '...';
+      if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '...';
 
       createNumbericElement(this.detailIndex > -1, (val) => {
-        this.orderDetail.Quantity = val;
+        this.globalOrderDetail.Quantity = val;
       });
 
       this.categoryService.getAll()
@@ -82,15 +79,29 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     }
   }
 
+  clearProductImg() {
+    if (!this.globalOrderDetail.ProductImageUrl)
+      return;
+    if (!this.globalOrderDetail.IsFromHardCodeProduct) {
+      this.openConfirm('Chắc chăc xoá ảnh này? ', () => {
+        this.globalOrderDetail.ProductImageUrl = '';
+
+      });
+    } else {
+      this.globalOrderDetail.ProductImageUrl = '';
+    }
+  }
+
   productNameChangeRequest() {
     getTextInput(res => {
-      this.orderDetail.ProductName = res;
-    }, 'Cập nhật tên sản phẩm...', this.orderDetail.ProductName);
+      this.globalOrderDetail.ProductName = res;
+      this.globalOrderDetail.IsFromHardCodeProduct = true;
+    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName);
   }
 
   insertModifiedValue() {
     getNumberInput(res => {
-      this.orderDetail.ModifiedPrice = res;
+      this.globalOrderDetail.ModifiedPrice = res;
     }, 'Cập nhật giá...');
   }
 

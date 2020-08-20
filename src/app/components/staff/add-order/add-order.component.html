@@ -13,8 +13,9 @@
                         class="main-filter"></a>
             </div>
         </div>
+        <label class="title-field">Mã đơn </label>
         <div class="form-group orderInfo borderless-field">
-            <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="!isEditting"
+            <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="isEdittingOrder"
                 class="orderField small-height" placeholder="Mã đơn...">
         </div>
         <ul class=" orderDetail cusScroll">

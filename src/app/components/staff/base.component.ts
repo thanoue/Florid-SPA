@@ -30,6 +30,14 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
     public IsOnTerminal: boolean;
 
+    get isEdittingOrder(): boolean {
+        return this.globalService.isEdittingOrder;
+    }
+
+    set isEdittingOrder(isEditting: boolean) {
+        this.globalService.isEdittingOrder = isEditting;
+    }
+
     get globalOrder(): OrderViewModel {
         return this.globalService.currentOrderViewModel;
     }

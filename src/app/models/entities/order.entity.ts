@@ -50,6 +50,9 @@ export class OrderDetail {
     ResultImageUrl: string;
     DeliveryImageUrl: string;
 
+    PercentDiscount: number;
+    AmountDiscount: number
+
     constructor() {
 
         this.DeliveryInfo = new OrderReceiverDetail();

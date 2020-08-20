@@ -55,6 +55,7 @@ export const API_END_POINT = {
 
     getNormalDayOrdersCount: '/order/getNormalDayOrdersCount',
     addOrder: '/order/add',
+    editOrder: '/order/editOrder',
     addOrderDetails: '/order/addOrderDetails',
     deleteOrderDetailByOrderId: '/order/deleteOrderDetailByOrderId',
     getOrdersByStates: '/order/getByStates',

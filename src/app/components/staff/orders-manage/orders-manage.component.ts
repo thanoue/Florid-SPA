@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderViewModel, OrderDetailViewModel } from '../../../models/view.models/order.model';
+import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from '../../../models/view.models/order.model';
 import { OrderDetail } from 'src/app/models/entities/order.entity';
 import { OrderDetailStates } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
@@ -115,7 +115,23 @@ export class OrdersManageComponent extends BaseComponent {
 
   editOrder(orderId: string) {
     this.globalOrder = this.orders.filter(p => p.OrderId === orderId)[0];
+    this.customerService.getById(this.globalOrder.CustomerInfo.Id)
+      .then(customer => {
+
+        this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(customer);
+        this.isEdittingOrder = true;
+        this.router.navigate(['/staff/add-order']);
+
+      });
+  }
+
+  addOrder() {
+
+    this.globalOrder = new OrderViewModel();
+    this.globalOrderDetail = new OrderDetailViewModel();
+    this.isEdittingOrder = false;
     this.router.navigate(['/staff/add-order']);
+
   }
 
   openDetailInfo(id: number) {

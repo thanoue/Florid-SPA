@@ -26,16 +26,10 @@ declare function getNumberValidateInput(resCallback: (res: number, validCallback
 export class AddOrderComponent extends BaseComponent {
 
   Title = 'Thêm Đơn';
-
   memberShipTitle = '';
-
   order: OrderViewModel;
-
   totalBalance = 0;
-
   isResetPaidAmount = false;
-  isEditting = false;
-
   originalOrderId = '';
 
   constructor(private orderDetailService: OrderDetailService, private router: Router,
@@ -54,7 +48,7 @@ export class AddOrderComponent extends BaseComponent {
 
     this.order = this.globalOrder;
 
-    if (!this.order.OrderId || this.order.OrderId == '') {
+    if (!this.isEdittingOrder) {
 
       this.memberShipTitle = 'New Customer';
 
@@ -69,7 +63,6 @@ export class AddOrderComponent extends BaseComponent {
 
     } else {
 
-      this.isEditting = true;
       this.originalOrderId = this.order.OrderId;
       this.onVATIncludedChange();
     }
@@ -200,6 +193,7 @@ export class AddOrderComponent extends BaseComponent {
         scoreUsed: this.order.CustomerInfo.ScoreUsed,
         gainedScore: this.order.CustomerInfo.GainedScore,
         totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
+        customerName: this.order.CustomerInfo.Name
       };
 
       this.printJobService.addPrintJob(orderData);
@@ -245,7 +239,7 @@ export class AddOrderComponent extends BaseComponent {
     orderDB.Index = this.order.Index;
     orderDB.OrderType = this.order.OrderType;
 
-    this.orderService.addOrder(orderDB)
+    this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {
 
         const orderDetails: OrderDetail[] = [];
@@ -268,9 +262,12 @@ export class AddOrderComponent extends BaseComponent {
           detail.IsVATIncluded = orderDB.VATIncluded;
           detail.PurposeOf = detailVM.PurposeOf;
           detail.Index = detailVM.Index;
+          detail.PercentDiscount = detailVM.PercentDiscount;
+          detail.AmountDiscount = detailVM.AmountDiscount;
 
           detail.CustomerName = this.order.CustomerInfo.Name;
           detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
+
 
           detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
 
@@ -325,7 +322,6 @@ export class AddOrderComponent extends BaseComponent {
         this.orderService.addOrderDetails(orderDetails)
           .then(() => {
 
-            console.log(receiverInfos);
             this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
 
               this.stopLoading();
@@ -357,6 +353,15 @@ export class AddOrderComponent extends BaseComponent {
         detail.AdditionalFee = 0;
       }
 
+      let amount = 0;
+
+      //member discount;
+      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent)
+        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * this.order.CustomerInfo.DiscountPercent;
+
+      if (detail.AmountDiscount && detail.AmountDiscount > 0)
+        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * this.order.CustomerInfo.DiscountPercent;
+
       this.order.TotalAmount += ExchangeService.getFinalPrice(detail.ModifiedPrice, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee);
 
     });
@@ -370,6 +375,8 @@ export class AddOrderComponent extends BaseComponent {
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
 
   }
+
+
 
   onVATIncludedChange() {
     this.totalAmountCalculate(this.order.VATIncluded);
