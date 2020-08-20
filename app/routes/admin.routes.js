@@ -40,6 +40,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.addOrder
     )
+    app.post(`${orderPrefix}editOrder`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.editOrder
+    )
     app.post(`${orderPrefix}addOrderDetails`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.addOrderDetails

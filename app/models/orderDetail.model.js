@@ -95,7 +95,14 @@ module.exports = (sequelize, Sequelize) => {
         updatedAt: {
             type: Sequelize.DATE,
             allowNull: true
+        },
+        AmountDiscount: {
+            type: Sequelize.BIGINT,
+        },
+        PercentDiscount: {
+            type: Sequelize.BIGINT
         }
+
     });
 
     return OrderDetail;

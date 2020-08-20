@@ -82,7 +82,9 @@ exports.addOrderDetails = (req, res) => {
                 HardcodeProductImageName: rawOrderDetail.HardcodeProductImageName ? rawOrderDetail.HardcodeProductImageName : '',
                 CustomerName: rawOrderDetail.CustomerName ? rawOrderDetail.CustomerName : '',
                 CustomerPhoneNumber: rawOrderDetail.CustomerPhoneNumber ? rawOrderDetail.CustomerPhoneNumber : '',
-                Index: rawOrderDetail.Index
+                Index: rawOrderDetail.Index,
+                AmountDiscount: rawOrderDetail.AmountDiscount,
+                PercentDiscount: rawOrderDetail.PercentDiscount
             });
         });
 
@@ -116,6 +118,40 @@ exports.addOrder = (req, res) => {
         Order.create(order)
             .then(orderRes => {
                 res.send({ order: orderRes });
+            }).catch(err => {
+                res.status(500).send({ message: err.message });
+            });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+}
+
+exports.editOrder = (req, res) => {
+
+    let body = req.body;
+
+    let order = {
+        CustomerId: body.customerId,
+        VATIncluded: body.vatIncluded,
+        TotalAmount: body.totalAmount,
+        TotalPaidAmount: body.totalPaidAmount,
+        GainedScore: body.gaindedScore,
+        ScoreUsed: body.scoreUsed,
+        OrderType: body.orderType,
+        CreatedDate: body.createdDate
+    }
+
+    try {
+
+        Order.update(order, {
+            where: {
+                Id: req.body.id
+            }
+        })
+            .then(orderRes => {
+                res.send({ order: orderRes });
+            }).catch(err => {
+                res.status(500).send({ message: err.message });
             });
     } catch (err) {
         res.status(500).send({ message: err.message });
