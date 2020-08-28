@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         },
         Amount: {
-            type: Sequelize.LONG,
+            type: Sequelize.BIGINT,
         },
         PromotionType: {
             type: Sequelize.STRING
@@ -19,7 +19,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         EndTime: {
             type: Sequelize.BIGINT(11)
+        },
+        IsEnable: {
+            type: Sequelize.BOOLEAN
         }
     });
-    return Order;
+    return Promotion;
 };

@@ -42,6 +42,7 @@ db.shippingSession = require('./shippingSession.model')(sequelize, Sequelize);
 db.orderDetailSeen = require('./orderDetailseen.model')(sequelize, Sequelize);
 db.districtAddress = require('./district.address.model')(sequelize, Sequelize);
 db.wardAddress = require('./ward.address.model')(sequelize, Sequelize);
+db.promotion = require('./promotion.model')(sequelize, Sequelize);
 
 db.order.hasMany(db.orderDetail, {
     foreignKey: 'OrderId',

@@ -30,7 +30,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         AmountDiscount: {
             type: Sequelize.INTEGER
-        },
+        }, 
         PercentDiscount: {
             type: Sequelize.INTEGER
         },

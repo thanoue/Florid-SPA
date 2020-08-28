@@ -2,6 +2,7 @@ const middlewares = require("../middlewares");
 const productController = require("../controllers/product.controller");
 const tagController = require("../controllers/tag.controller");
 const categoryController = require("../controllers/category.controller");
+const promotionController = require("../controllers/promotion.controller");
 const authController = require("../controllers/authentication.controller");
 const userController = require("../controllers/user.controller");
 const customerController = require("../controllers/customer.controller");
@@ -18,6 +19,7 @@ module.exports = function (app) {
     const productPrefix = "/api/product/";
     const tagPrefix = "/api/tag/";
     const categoryPrefix = "/api/category/";
+    const promotionPrefix = "/api/promotion/";
     const userPrefix = "/api/user/";
     const customerPrefix = "/api/customer/";
     const addressPrefix = "/api/address/";
@@ -30,6 +32,36 @@ module.exports = function (app) {
         );
         next();
     });
+
+    //promotion
+    app.get(`${promotionPrefix}getList`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        promotionController.getList
+    )
+    app.get(`${promotionPrefix}getAll`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        promotionController.getAll
+    )
+    app.post(`${promotionPrefix}create`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        promotionController.create
+    )
+    app.post(`${promotionPrefix}update`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        promotionController.update
+    )
+    app.post(`${promotionPrefix}delete`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        promotionController.delete
+    )
+    app.post(`${promotionPrefix}deletemany`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        promotionController.deleteMany
+    )
+    app.post(`${promotionPrefix}getAvailable`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        promotionController.getAvailable
+    )
 
     //order
     app.get(`${orderPrefix}getNormalDayOrdersCount`,
