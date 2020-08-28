@@ -27,6 +27,10 @@
                 <input type="number" name="AdditionalFee" id="AdditionalFee" class="orderField"
                     [(ngModel)]="globalOrderDetail.AdditionalFee" placeholder="Phụ phí (k)...">
             </div>
+
+            <a href="javascript:void(0)" onclick="openCustMenu()" style="margin-bottom:1vh;" type="button"
+                class="btn main-btn w-100">Áp dụng
+                khuyến mãi</a>
             <label class="title-field">Giảm giá phần trăm </label>
             <div class="form-group orderInfo">
                 <input type="number" name="PercentDiscount" id="PercentDiscount" class="orderField"
@@ -54,4 +58,15 @@
             </div>
         </form>
     </div>
+</div>
+<div class="actionMenu2" id="recentInfo">
+    <ul>
+        <li *ngFor="let promotion of promotions; let i = index" (click)="selectPromotion(i)" [attr.data-index]="i"
+            style="height: 69px;text-align: left;">
+            <p class="recentInfo-name">{{promotion.Name}}</p>
+            <span style="width: 25%;" class="recentInfo-phone">{{getPromotionAmount(promotion)}}</span>
+            <span style="width: 75%;"
+                class="recentInfo-date">{{promotion.StartTime | date: 'dd/MM/yyyy'}}-{{promotion.EndTime | date: 'dd/MM/yyyy'}}</span>
+        </li>
+    </ul>
 </div>

@@ -151,7 +151,7 @@
         </div>
         <div class="form-row">
 
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-4">
                 <label for="Role">Quyền</label>
                 <select id="Role" name="Role" [(ngModel)]="currrentEditUser.Role" class="form-control">
                     <option selected>Choose...</option>
@@ -162,10 +162,11 @@
                     <option [ngValue]="'User'">Khác</option>
                 </select>
             </div>
-            <div class="form-check  col-md-3">
-                <label class="form-check-label">
-                    <input type="checkbox" id="IsPrinter" class="form-check-input"
-                        [(ngModel)]="currrentEditUser.IsPrinter" name="IsPrinter" value="checkedValue">
+            <div class="form-group  col-md-4">
+                <label for="IsEnable"></label>
+                <label class="form-check-label" style="margin-top: 38px;">
+                    <input type="checkbox" class="" style="width:15px;height:15px;" name="IsPrinter" id="IsPrinter"
+                        [(ngModel)]="currrentEditUser.IsPrinter" value="checkedValue">
                     Cho phép in
                 </label>
             </div>

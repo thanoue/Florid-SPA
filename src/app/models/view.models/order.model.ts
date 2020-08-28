@@ -15,6 +15,9 @@ export class OrderViewModel {
 
     Index: number;
 
+    PercentDiscount = 0;
+    AmountDiscount = 0;
+
     CustomerInfo: OrderCustomerInfoViewModel;
 
     OrderDetails: OrderDetailViewModel[];
@@ -31,6 +34,8 @@ export class OrderViewModel {
         vm.CreatedDate = new Date(entity.Created);
         vm.Index = entity.Index;
         vm.OrderType = entity.OrderType;
+        vm.AmountDiscount = entity.AmountDiscount;
+        vm.PercentDiscount = entity.PercentDiscount;
 
         vm.CustomerInfo.ScoreUsed = entity.ScoreUsed;
         vm.CustomerInfo.GainedScore = entity.GainedScore;

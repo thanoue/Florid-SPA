@@ -45,7 +45,8 @@ export enum MenuItems {
     ProductCategory,
     ProductTag,
     Order,
-    Summary
+    Summary,
+    Promotion
 }
 
 export enum OrderDetailStates {

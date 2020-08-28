@@ -44,6 +44,7 @@ import { OrderDetailComponent } from './components/staff/order-detail/order-deta
 import { SelectProductComponent } from './components/staff/select-product/select-product.component';
 import { MobileSearchBoxComponent } from './controls/mobile-search-box/mobile-search-box.component';
 import { SelectReceiverComponent } from './components/staff/select-receiver/select-receiver.component';
+import { PromotionComponent } from './components/admin/promotion/promotion.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { SelectReceiverComponent } from './components/staff/select-receiver/sele
     SelectCustomerComponent,
     OrderDetailComponent,
     SelectProductComponent,
-    SelectReceiverComponent
+    SelectReceiverComponent,
+    PromotionComponent
   ],
   imports: [
     BrowserModule,

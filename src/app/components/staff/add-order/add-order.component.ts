@@ -14,9 +14,12 @@ import { PrintSaleItem, PrintJob } from 'src/app/models/entities/printjob.entity
 import { Guid } from 'guid-typescript';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { LocalService } from 'src/app/services/common/local.service';
+import { Promotion, PromotionType } from 'src/app/models/entities/Promotion.entity';
+import { PromotionService } from 'src/app/services/Promotion.service';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
 declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string) => void) => void, placeHolder: string, oldValue: number): any;
+declare function hideReceiverPopup(): any;
 
 @Component({
   selector: 'app-add-order',
@@ -31,6 +34,7 @@ export class AddOrderComponent extends BaseComponent {
   totalBalance = 0;
   isResetPaidAmount = false;
   originalOrderId = '';
+  promotions: Promotion[];
 
   constructor(private orderDetailService: OrderDetailService, private router: Router,
     // tslint:disable-next-line: align
@@ -39,12 +43,19 @@ export class AddOrderComponent extends BaseComponent {
     private customerService: CustomerService,
 
     // tslint:disable-next-line: align
-    private printJobService: PrintJobService) {
+    private printJobService: PrintJobService,
+    private promotionService: PromotionService) {
     super();
+    this.promotions = [];
   }
 
 
   protected Init() {
+
+    this.promotionService.getAvailablePromotions((new Date()).getTime())
+      .then(promotions => {
+        this.promotions = promotions;
+      });
 
     this.order = this.globalOrder;
 
@@ -87,6 +98,26 @@ export class AddOrderComponent extends BaseComponent {
 
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
   }
+
+  getPromotionAmount(promotion: Promotion): string {
+    return promotion.PromotionType == PromotionType.Amount ? promotion.Amount + " ₫" : promotion.Amount + " %";
+  }
+
+  selectPromotion(index: number) {
+
+    this.order.AmountDiscount = this.order.PercentDiscount = 0;
+
+    let promotion = this.promotions[index];
+
+    if (promotion.PromotionType == PromotionType.Amount) {
+      this.order.AmountDiscount = promotion.Amount;
+    } else {
+      this.order.PercentDiscount = promotion.Amount;
+    }
+
+    hideReceiverPopup();
+
+  };
 
   requestPaidInput() {
 
@@ -238,6 +269,8 @@ export class AddOrderComponent extends BaseComponent {
     orderDB.ScoreUsed = this.order.CustomerInfo.ScoreUsed;
     orderDB.Index = this.order.Index;
     orderDB.OrderType = this.order.OrderType;
+    orderDB.PercentDiscount = this.order.PercentDiscount;
+    orderDB.AmountDiscount = this.order.AmountDiscount;
 
     this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {

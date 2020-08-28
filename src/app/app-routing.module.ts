@@ -22,6 +22,7 @@ import { OrderDetailComponent } from './components/staff/order-detail/order-deta
 import { SelectProductComponent } from './components/staff/select-product/select-product.component';
 import { AddOrderComponent } from './components/staff/add-order/add-order.component';
 import { SelectReceiverComponent } from './components/staff/select-receiver/select-receiver.component';
+import { PromotionComponent } from './components/admin/promotion/promotion.component';
 
 const routes: Routes = [
   { path: 'staff-login', component: StaffLoginComponent },
@@ -106,6 +107,10 @@ const routes: Routes = [
       {
         path: 'customer-receivers',
         component: CustomerReceiversComponent,
+      },
+      {
+        path: 'promotion',
+        component: PromotionComponent,
       }
     ]
   },
