@@ -53,7 +53,6 @@ export class OrdersManageComponent extends BaseComponent {
   constructor(private customerService: CustomerService,
     protected activatedRoute: ActivatedRoute,
     private router: Router, private orderService: OrderService,
-    private orderDetailService: OrderDetailService,
     protected storageService: StorageService,
     protected productService: ProductService,
     protected http: HttpClient) {
@@ -94,7 +93,10 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.orderService.getOrderViewModelsByStates(states)
       .then(order => {
+
         this.orders = order;
+        console.info(this.orders);
+
       })
   }
 
@@ -114,12 +116,15 @@ export class OrdersManageComponent extends BaseComponent {
   // }
 
   editOrder(orderId: string) {
+    // console.info(this.orders);
     this.globalOrder = this.orders.filter(p => p.OrderId === orderId)[0];
+
     this.customerService.getById(this.globalOrder.CustomerInfo.Id)
       .then(customer => {
 
-        this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(customer);
+        this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(customer, this.globalOrder.CustomerInfo);
         this.isEdittingOrder = true;
+
         this.router.navigate(['/staff/add-order']);
 
       });

@@ -59,10 +59,23 @@ export class AdminGuard implements CanActivate {
             return false;
 
         const role = (AuthService.getCurrentRole());
+
         if (role == Roles.Admin) {
             return true;
         } else {
-            this.router.navigate(['login']);
+
+            switch (role) {
+                case Roles.Admin:
+                case Roles.Account:
+                    this.router.navigate(['/staff/orders-manage']);
+                    break;
+                case Roles.Florist:
+                    this.router.navigate(['/florist-main']);
+                    break;
+                case Roles.Shipper:
+                    this.router.navigate(['/shipper-main']);
+                    break;
+            }
             return false;
         }
     }

@@ -117,12 +117,9 @@ function messageDialog(message, okCallback) {
     });
 }
 
-function cusOrdersBinding() {
 
-    jQuery(".openOrderProducts").click(function () {
-        jQuery(this).next().toggle(250);
-    });
-
+function showOrderDetail(e) {
+    jQuery(e).parent().parent().next().toggle(250);
 }
 
 //Add New Object

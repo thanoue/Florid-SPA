@@ -24,7 +24,7 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
     protected authService: AuthService;
     protected location: Location;
 
-    private ngZone: NgZone;
+    protected ngZone: NgZone;
     private navigateOnClick: Subscription;
     private addressService: AddressService;
 
@@ -95,7 +95,8 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
             zone: this.ngZone,
             dateTimeSelected: (year, month, day, hour, minute) => this.dateTimeSelected(year, month, day, hour, minute),
             forceBackNavigate: () => this.backNavigateOnClick(),
-            fileChosen: (path) => this.fileChosen(path)
+            fileChosen: (path) => this.fileChosen(path),
+            printConfirm: (callback) => this.printConfirm(callback),
         };
 
         this.IsOnTerminal = this.globalService.isRunOnTerimal();
@@ -120,6 +121,13 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
                 this.backNavigateOnClick();
             });
+    }
+
+    printConfirm(continueCallback: () => void) {
+        this.openConfirm('In thêm bản?', () => {
+            continueCallback();
+        }, () => {
+        });
     }
 
     protected selectAddress(resCallback: (res: string) => void) {

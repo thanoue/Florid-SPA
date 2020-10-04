@@ -6,7 +6,6 @@ import html2canvas from 'html2canvas';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { LoginModel } from 'src/app/models/entities/user.entity';
-import { OnlineUserService } from 'src/app/services/online.user.service';
 import { Roles } from 'src/app/models/enums';
 import { RealtimeService } from 'src/app/services/realtime.service';
 declare function deviceLogin(email: string, pasword: string, isPrinter: boolean, idToken: string): any;

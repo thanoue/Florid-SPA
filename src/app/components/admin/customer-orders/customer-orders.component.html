@@ -43,9 +43,20 @@
                                                     <main>VAT</main></span>
                                             </li>
                                         </ul>
-                                        <a href="javascript:void(0)"
-                                            class="btn btn-outline-secondary openOrderProducts">Thông tin mặt hàng
-                                            <i class="fa fa-arrow-right" aria-hidden="true"></i></a>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <a href="javascript:void(0)"
+                                                    class="btn btn btn-outline-info openOrderProducts"
+                                                    onclick="showOrderDetail(this)">Thông tin mặt hàng
+                                                </a>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <a href="javascript:void(0)"
+                                                    class="btn btn btn-outline-warning openOrderProducts"
+                                                    (click)="doPrintJob(order)">Xuất Bill
+                                                </a>
+                                            </div>
+                                        </div>
                                         <div class="productList">
                                             <div class="productItem" *ngFor="let orderDetail of order.OrderDetails">
                                                 <div class="itemTop">
@@ -55,7 +66,8 @@
                                                     <span class="itemName">{{orderDetail.ProductName}}</span>
                                                 </div>
                                                 <div class="itemBot">
-                                                    <img [src]="orderDetail.ProductImageUrl" alt="" class="itemImg">
+                                                    <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}"
+                                                        alt="" class="itemImg" />
                                                     <div class="itemBotInfo">
                                                         <label for="">Giá gốc: </label>
                                                         <span
@@ -71,8 +83,8 @@
                                                             class="left-margin-10">{{getState(orderDetail.State)}}</span>
                                                         <br />
 
-                                                        <a href="#" class="btn btn-outline-info btn-small">Chi tiết <i
-                                                                class="fa fa-arrow-right"></i></a>
+                                                        <!-- <a href="#" class="btn btn-outline-info btn-small">Chi tiết <i
+                                                                class="fa fa-arrow-right"></i></a> -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -91,18 +103,19 @@
                 <h4 class="sidebarTitle">Quản lý khách hàng</h4>
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="/customer-detail">Thông tin chung</a>
+                        <a class="nav-link" routerLink="/admin/customer-detail">Thông tin chung</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" routerLink="/customer-orders">Danh sách đơn hàng</a>
+                        <a class="nav-link active" routerLink="/admin/customer-orders">Danh sách đơn hàng</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" routerLink="/customer-receivers">Thông tin nhận hàng đã lưu</a>
+                        <a class="nav-link" routerLink="/admin/customer-receivers">Thông tin nhận hàng đã lưu</a>
                     </li>
                 </ul>
             </div>
             <div class="w-100 ">
-                <a type="button" class="btn btn-outline-info" routerLink="/customer-edit"><i class="fa fa-pencil"></i>
+                <a type="button" class="btn btn-outline-info" routerLink="/admin/customer-edit"><i
+                        class="fa fa-pencil"></i>
                     Sửa thông tin</a>
             </div>
 

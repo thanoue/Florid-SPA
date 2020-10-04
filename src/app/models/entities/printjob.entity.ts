@@ -15,6 +15,7 @@ export class PrintJob extends BaseEntity {
     gainedScore: number;
     totalScore: number;
     customerName: string;
+    discount: number;
 
     constructor() {
         super();
@@ -27,4 +28,5 @@ export class PrintSaleItem {
     index: number;
     price: number;
     additionalFee: number;
+    discount: number;
 }

@@ -6,7 +6,6 @@ import html2canvas from 'html2canvas';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { LoginModel } from 'src/app/models/entities/user.entity';
-import { OnlineUserService } from 'src/app/services/online.user.service';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 
 @Component({

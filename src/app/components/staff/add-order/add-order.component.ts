@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderViewModel, OrderDetailViewModel } from 'src/app/models/view.models/order.model';
 import { OrderDetailStates, MembershipTypes, OrderType } from 'src/app/models/enums';
@@ -18,7 +18,7 @@ import { Promotion, PromotionType } from 'src/app/models/entities/Promotion.enti
 import { PromotionService } from 'src/app/services/Promotion.service';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
-declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string) => void) => void, placeHolder: string, oldValue: number): any;
+declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string, dismissCallback?: () => void) => void) => void, placeHolder: string, oldValue: number): any;
 declare function hideReceiverPopup(): any;
 
 @Component({
@@ -34,15 +34,12 @@ export class AddOrderComponent extends BaseComponent {
   totalBalance = 0;
   isResetPaidAmount = false;
   originalOrderId = '';
+  orderDiscount = 0;
   promotions: Promotion[];
 
   constructor(private orderDetailService: OrderDetailService, private router: Router,
-    // tslint:disable-next-line: align
     private orderService: OrderService,
-    // tslint:disable-next-line: align
     private customerService: CustomerService,
-
-    // tslint:disable-next-line: align
     private printJobService: PrintJobService,
     private promotionService: PromotionService) {
     super();
@@ -71,6 +68,8 @@ export class AddOrderComponent extends BaseComponent {
           this.order.OrderType = OrderType.NormalDay;
 
         });
+
+      this.onVATIncludedChange();
 
     } else {
 
@@ -117,6 +116,7 @@ export class AddOrderComponent extends BaseComponent {
 
     hideReceiverPopup();
 
+    this.onVATIncludedChange();
   };
 
   requestPaidInput() {
@@ -166,8 +166,9 @@ export class AddOrderComponent extends BaseComponent {
         return;
       }
 
-      validateCallback(true, '');
-      this.doingPay(res);
+      validateCallback(true, '', () => {
+        this.doingPay(res);
+      });
 
     }, 'Số tiền đã thanh toán...', this.totalBalance);
 
@@ -186,6 +187,48 @@ export class AddOrderComponent extends BaseComponent {
     this.printConfirm();
   }
 
+  doPrintJob() {
+
+    let tempSummary = 0;
+    const products: PrintSaleItem[] = [];
+
+    this.order.OrderDetails.forEach(product => {
+      products.push({
+        productName: product.ProductName,
+        index: product.Index + 1,
+        price: product.ModifiedPrice,
+        additionalFee: product.AdditionalFee,
+        discount: this.getDetailDiscount(product)
+      });
+      tempSummary += product.ModifiedPrice;
+    });
+
+    const orderData: PrintJob = {
+      Created: (new Date()).getTime(),
+      Id: this.order.OrderId,
+      Active: true,
+      IsDeleted: false,
+      saleItems: products,
+      createdDate: this.order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
+      orderId: this.order.OrderId,
+      summary: tempSummary,
+      totalAmount: this.order.TotalAmount,
+      totalPaidAmount: this.order.TotalPaidAmount,
+      totalBalance: this.totalBalance,
+      vatIncluded: this.order.VATIncluded,
+      memberDiscount: this.order.CustomerInfo.DiscountPercent,
+      scoreUsed: this.order.CustomerInfo.ScoreUsed,
+      gainedScore: this.order.CustomerInfo.GainedScore,
+      totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
+      customerName: this.order.CustomerInfo.Name,
+      discount: this.orderDiscount
+    };
+
+    this.printJobService.addPrintJob(orderData);
+
+    this.orderConfirm();
+  }
+
   printConfirm() {
 
     this.openConfirm('In hoá đơn?', () => {
@@ -194,41 +237,7 @@ export class AddOrderComponent extends BaseComponent {
         this.order.TotalPaidAmount = this.order.TotalAmount;
       }
 
-      let tempSummary = 0;
-      const products: PrintSaleItem[] = [];
-
-      this.order.OrderDetails.forEach(product => {
-        products.push({
-          productName: product.ProductName,
-          index: product.Index + 1,
-          price: product.ModifiedPrice,
-          additionalFee: product.AdditionalFee
-        });
-        tempSummary += product.ModifiedPrice;
-      });
-
-      const orderData: PrintJob = {
-        Created: (new Date()).getTime(),
-        Id: this.order.OrderId,
-        Active: true,
-        IsDeleted: false,
-        saleItems: products,
-        createdDate: this.order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
-        orderId: this.order.OrderId,
-        summary: tempSummary,
-        totalAmount: this.order.TotalAmount,
-        totalPaidAmount: this.order.TotalPaidAmount,
-        totalBalance: this.totalBalance,
-        vatIncluded: this.order.VATIncluded,
-        memberDiscount: this.order.CustomerInfo.DiscountPercent,
-        scoreUsed: this.order.CustomerInfo.ScoreUsed,
-        gainedScore: this.order.CustomerInfo.GainedScore,
-        totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
-        customerName: this.order.CustomerInfo.Name
-      };
-
-      this.printJobService.addPrintJob(orderData);
-      this.orderConfirm();
+      this.doPrintJob();
 
     }, () => {
 
@@ -380,6 +389,18 @@ export class AddOrderComponent extends BaseComponent {
 
     this.order.TotalAmount = 0;
 
+    let isWillApplyMemberDiscount = true;
+
+    if (this.order.AmountDiscount > 0 || this.order.PercentDiscount > 0)
+      isWillApplyMemberDiscount = false;
+    else {
+      this.order.OrderDetails.forEach(detail => {
+        if (detail.PercentDiscount > 0 || detail.AmountDiscount > 0) {
+          isWillApplyMemberDiscount = false;
+        }
+      });
+    }
+
     this.order.OrderDetails.forEach(detail => {
 
       if (!detail.AdditionalFee) {
@@ -388,16 +409,32 @@ export class AddOrderComponent extends BaseComponent {
 
       let amount = 0;
 
-      //member discount;
-      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent)
-        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * this.order.CustomerInfo.DiscountPercent;
+      if (detail.PercentDiscount && detail.PercentDiscount > 0)
+        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * detail.PercentDiscount;
 
       if (detail.AmountDiscount && detail.AmountDiscount > 0)
-        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * this.order.CustomerInfo.DiscountPercent;
+        amount = detail.ModifiedPrice - detail.AmountDiscount;
 
-      this.order.TotalAmount += ExchangeService.getFinalPrice(detail.ModifiedPrice, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee);
+      if (amount == 0)
+        amount = detail.ModifiedPrice;
+
+      this.order.TotalAmount += ExchangeService.getFinalPrice(amount, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee, isWillApplyMemberDiscount);
 
     });
+
+    this.orderDiscount = 0;
+
+    if (this.order.PercentDiscount && this.order.PercentDiscount > 0) {
+
+      this.orderDiscount = (this.order.TotalAmount / 100) * this.order.PercentDiscount
+      this.order.TotalAmount = this.order.TotalAmount - this.orderDiscount;
+
+    }
+
+    if (this.order.AmountDiscount && this.order.AmountDiscount > 0) {
+      this.order.TotalAmount = this.order.TotalAmount - this.order.AmountDiscount;
+      this.orderDiscount += this.order.AmountDiscount;
+    }
 
     if (isVATIncluded) {
       this.order.TotalAmount += (this.order.TotalAmount / 100) * 10;
@@ -409,7 +446,22 @@ export class AddOrderComponent extends BaseComponent {
 
   }
 
+  getDetailDiscount(orderDetail: OrderDetailViewModel): number {
 
+    let discount = 0;
+
+    if (orderDetail.PercentDiscount && orderDetail.PercentDiscount > 0)
+      discount = (orderDetail.ModifiedPrice / 100) * orderDetail.PercentDiscount;
+
+    if (orderDetail.AmountDiscount && orderDetail.AmountDiscount > 0)
+      discount = discount + orderDetail.AmountDiscount;
+
+    return discount;
+  }
+
+  onDiscountChanged(value) {
+    this.onVATIncludedChange();
+  }
 
   onVATIncludedChange() {
     this.totalAmountCalculate(this.order.VATIncluded);

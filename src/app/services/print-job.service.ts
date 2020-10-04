@@ -21,6 +21,7 @@ export class PrintJobService {
   }
 
   addPrintJob(printJob: PrintJob) {
+
     if (LocalService.isPrinter()) {
       this.doPrintJob(printJob);
     }

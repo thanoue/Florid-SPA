@@ -265,17 +265,20 @@ export class OrderCustomerInfoViewModel {
         this.ReceiverInfos = [];
     }
 
-    static toViewModel(customer: Customer): OrderCustomerInfoViewModel {
-        const viewModel = new OrderCustomerInfoViewModel();
+    static toViewModel(customer: Customer, vm: OrderCustomerInfoViewModel = null): OrderCustomerInfoViewModel {
 
-        viewModel.Id = customer.Id;
-        viewModel.Name = customer.FullName;
-        viewModel.PhoneNumber = customer.PhoneNumber;
-        viewModel.MembershipType = customer.MembershipInfo.MembershipType;
-        viewModel.DiscountPercent = ExchangeService.getMemberDiscountPercent(customer.MembershipInfo.MembershipType);
-        viewModel.AvailableScore = customer.MembershipInfo.AvailableScore;
-        Object.assign(viewModel.ReceiverInfos, customer.ReceiverInfos);
+        if (!vm || vm == null)
+            vm = new OrderCustomerInfoViewModel();
 
-        return viewModel;
+        vm.Id = customer.Id;
+        vm.Name = customer.FullName;
+        vm.PhoneNumber = customer.PhoneNumber;
+        vm.MembershipType = customer.MembershipInfo.MembershipType;
+        vm.DiscountPercent = ExchangeService.getMemberDiscountPercent(customer.MembershipInfo.MembershipType);
+        vm.AvailableScore = customer.MembershipInfo.AvailableScore;
+
+        Object.assign(vm.ReceiverInfos, customer.ReceiverInfos);
+
+        return vm;
     }
 }

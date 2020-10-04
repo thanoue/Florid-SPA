@@ -23,12 +23,6 @@ function setStatusBarColor(isDark) {
     }
 }
 
-function doPrintJob(data) {
-    console.log('do print job:', data);
-    if (typeof Android !== "undefined" && Android !== null) {
-        Android.doPrintJob(JSON.stringify(data));
-    }
-}
 
 
 function getInput(resCallback) {
@@ -66,6 +60,24 @@ function setDateTime(year, month, day, hour, minute) {
 
 function backNavigate() {
     window.BaseReference.zone.run(() => { window.BaseReference.forceBackNavigate(); });
+}
+
+function doPrintJob(data) {
+    if (typeof Android !== "undefined" && Android !== null) {
+        Android.doPrintJob(JSON.stringify(data));
+    } else {
+        errorToast('Không thể kết nối tới máy in!');
+    }
+}
+
+function reprintOrderConfirm() {
+    window.BaseReference.zone.run(() => {
+        window.BaseReference.printConfirm(function () {
+            if (typeof Android !== "undefined" && Android !== null) {
+                Android.doOldPrintJob();
+            }
+        });
+    })
 }
 
 function isOnTerminal() {

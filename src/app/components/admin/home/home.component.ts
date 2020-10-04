@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FunctionsService } from 'src/app/services/common/functions.service';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates } from 'src/app/models/enums';
 import { Tag } from 'src/app/models/entities/tag.entity';

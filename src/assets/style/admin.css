@@ -226,6 +226,7 @@ div.tagMenu{
 }
 .dialog-popup button {
     width: 100%;
+    height: 40px;
 }
 /* ============================================================HOME PAGE */
 /* div#home
@@ -472,7 +473,7 @@ ul.order-content {
 }
 
 .order-content-item .item-top .item-code {
-    width: 28%;
+    width: 19%;
     text-align: center;
     float: left;
     font-size: 14px;
@@ -1145,7 +1146,7 @@ ul.orderDetail {
     margin-top: 1vh;
 }
 li.orderDetailItem {
-    height: 110px;
+    height: 103px;
     border-bottom: 1px solid var(--main-grey);
     padding-bottom: 5px;
     margin-bottom: 5px;
@@ -1187,7 +1188,7 @@ li.orderDetailItem:last-child {
 .itemDetail img.item-detail-thumb {
     width: 35%;
     margin-right: 5%;
-    height: 104px;
+    height: 98px;
 }
 .itemDetail .item-detail-info {
     width: 60%;

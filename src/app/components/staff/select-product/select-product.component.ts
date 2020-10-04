@@ -9,7 +9,6 @@ import { TempProductService } from 'src/app/services/tempProduct.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { Tag } from 'src/app/models/entities/tag.entity';
 import { TagService } from 'src/app/services/tag.service';
-import { FunctionsService } from 'src/app/services/common/functions.service';
 import { CategoryService } from 'src/app/services/category.service';
 
 declare function selectProductCategory(menuitems: { Name: string; Value: number; }[], callback: (index: any) => void): any;

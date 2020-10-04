@@ -34,9 +34,14 @@ export class OrderService {
       orderVM.VATIncluded = order.VATIncluded;
       orderVM.OrderType = order.OrderType;
       orderVM.CreatedDate = new Date(order.CreatedDate);
+      orderVM.PercentDiscount = order.PercentDiscount;
+      orderVM.AmountDiscount = order.AmountDiscount;
 
       orderVM.CustomerInfo = new OrderCustomerInfoViewModel();
       orderVM.CustomerInfo.Id = order.CustomerId;
+
+      orderVM.CustomerInfo.ScoreUsed = order.ScoreUsed;
+      orderVM.CustomerInfo.GainedScore = order.GainedScore;
 
       if (order.orderDetails && order.orderDetails.length > 0) {
         orderVM.CustomerInfo.Name = order.orderDetails[0].CustomerName;
@@ -55,7 +60,7 @@ export class OrderService {
         orderDetailVM.ProductImageUrl = orderDetail.ProductImageUrl;
         orderDetailVM.Index = orderDetail.Index;
         orderDetailVM.DeliveryInfo.Address = orderDetail.ReceivingAddress;
-        orderDetailVM.DeliveryInfo.DateTime = orderDetail.ReceivingTime;
+        orderDetailVM.DeliveryInfo.DateTime = new Date(orderDetail.ReceivingTime);
         orderDetailVM.DeliveryInfo.FullName = orderDetail.ReceiverName;
         orderDetailVM.DeliveryInfo.PhoneNumber = orderDetail.ReceiverPhoneNumber;
         orderDetailVM.PurposeOf = orderDetail.PurposeOf;
@@ -98,7 +103,7 @@ export class OrderService {
     return this.httpService.post(API_END_POINT.getOrdersByStates, {
       states: states
     }).then(orders => {
-      console.log(orders);
+
       return this.getOrderVMsByRaw(orders.orders);
 
     }).catch(err => {
@@ -132,7 +137,6 @@ export class OrderService {
   }
 
   addOrderDetails(orderDetails: OrderDetail[]): Promise<any> {
-    console.log(orderDetails);
     return this.httpService.post(API_END_POINT.addOrderDetails, {
       orderDetails: orderDetails
     }).then(res => {
@@ -144,7 +148,7 @@ export class OrderService {
   }
 
   addOrEditOrder(order: Order, isEdit: boolean): Promise<Order> {
-
+    console.log(order);
     return this.httpService.post(isEdit ? API_END_POINT.editOrder : API_END_POINT.addOrder, {
       customerId: order.CustomerId,
       id: order.Id,
@@ -154,7 +158,9 @@ export class OrderService {
       gaindedScore: order.GainedScore,
       scoreUsed: order.ScoreUsed,
       orderType: order.OrderType,
-      createdDate: order.Created
+      createdDate: order.Created,
+      percentDiscount: order.PercentDiscount,
+      amountDiscount: order.AmountDiscount
     })
       .then(data => {
 

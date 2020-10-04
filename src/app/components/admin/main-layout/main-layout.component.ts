@@ -5,7 +5,6 @@ import { map, filter, scan } from 'rxjs/operators';
 import { GlobalService } from 'src/app/services/common/global.service';
 import { Subscription } from 'rxjs';
 import { LocalService } from 'src/app/services/common/local.service';
-import { OnlineUserService } from 'src/app/services/online.user.service';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { MenuItems } from 'src/app/models/enums';
@@ -29,7 +28,7 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
   menus = MenuItems;
 
-  constructor(private globalService: GlobalService, public router: Router, private realtimeService: RealtimeService, private onlineUserService: OnlineUserService, private authService: AuthService) {
+  constructor(private globalService: GlobalService, public router: Router, private realtimeService: RealtimeService,  private authService: AuthService) {
   }
 
   ngOnInit(): void {

@@ -458,7 +458,7 @@ function getNumberValidateInput(callback, placeHolder, oldValue) {
             return;
         }
 
-        callback(parseInt(val), function (isValid, error) {
+        callback(parseInt(val), function (isValid, error, dissmissCallback) {
 
             if (!isValid) {
                 warningToast(error);
@@ -470,6 +470,8 @@ function getNumberValidateInput(callback, placeHolder, oldValue) {
             jQuery("#inputDialog").hide(250, function () {
                 jQuery(".overlay-dark").remove();
                 jQuery(this).remove();
+                if (dissmissCallback != undefined)
+                    dissmissCallback();
             });
 
         });

@@ -68,8 +68,12 @@ export class ExchangeService {
         }
     }
 
-    static getFinalPrice(requestPrice: number, discountPercent: number, additionalFee: number) {
-        return requestPrice - (requestPrice / 100) * discountPercent + additionalFee;
+    static getFinalPrice(requestPrice: number, discountPercent: number, additionalFee: number, isDiscount: boolean) {
+
+        if (isDiscount)
+            return requestPrice - (requestPrice / 100) * discountPercent + additionalFee;
+
+        return requestPrice + additionalFee;
     }
 
     static getGainedScore(totalAmount: number): number {
