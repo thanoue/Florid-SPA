@@ -59,7 +59,7 @@ module.exports = function (app) {
         promotionController.deleteMany
     )
     app.post(`${promotionPrefix}getAvailable`,
-        [authJwt.verifyToken, authJwt.isAdmin],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         promotionController.getAvailable
     )
 

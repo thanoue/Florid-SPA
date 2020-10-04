@@ -111,7 +111,9 @@ exports.addOrder = (req, res) => {
         GainedScore: body.gaindedScore,
         ScoreUsed: body.scoreUsed,
         OrderType: body.orderType,
-        CreatedDate: body.createdDate
+        CreatedDate: body.createdDate,
+        PercentDiscount: body.percentDiscount ? body.percentDiscount : 0,
+        AmountDiscount: body.amountDiscount ? body.amountDiscount : 0
     }
 
     try {
@@ -138,7 +140,9 @@ exports.editOrder = (req, res) => {
         GainedScore: body.gaindedScore,
         ScoreUsed: body.scoreUsed,
         OrderType: body.orderType,
-        CreatedDate: body.createdDate
+        CreatedDate: body.createdDate,
+        PercentDiscount: body.percentDiscount,
+        AmountDiscount: body.amountDiscount
     }
 
     try {
