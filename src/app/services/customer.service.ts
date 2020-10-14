@@ -16,6 +16,19 @@ export class CustomerService {
 
   }
 
+  updateFields(id: string, obj: any): Promise<any> {
+    return this.httpService.post(API_END_POINT.updateCustomerFields, {
+      customerId: id,
+      obj: obj
+    }).then(res => {
+      console.log(res);
+      return res;
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+  }
+
   getById(id: string): Promise<Customer> {
     return this.httpService.get(API_END_POINT.getCustomeById, {
       id: id
@@ -72,7 +85,7 @@ export class CustomerService {
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;
-    });;
+    });
   }
 
   updateReceiverList(customerId: string, receiverDetails: CustomerReceiverDetail[]): Promise<any> {

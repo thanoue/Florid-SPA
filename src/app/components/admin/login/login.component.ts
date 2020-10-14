@@ -20,6 +20,8 @@ export class LoginComponent extends BaseComponent {
 
   constructor(private router: Router, protected activatedRoute: ActivatedRoute) {
     super();
+    LocalService.clear();
+
   }
 
   protected Init() {

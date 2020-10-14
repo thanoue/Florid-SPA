@@ -12,6 +12,9 @@ import { LocalService } from '../../services/common/local.service';
 import { Roles } from '../../models/enums';
 
 declare function pickFile(isSaveUrl: boolean): any;
+declare function isRememberPassChecking(): any;
+declare function passwordSaving(): any;
+declare function passwordClearing(): any;
 declare function addressRequest(districts: District[], resCallback: (res: string) => void, onDistrictChange: (res: string, newWardCallback: (wards: Ward[]) => void) => void): any;
 
 export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -68,13 +71,13 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
         this.globalService.currentWards = value;
     }
 
-    get CurrentUser(): { Id: string, FullName: string, Role: Roles, Avt: string, PhoneNumber: string } {
+    get CurrentUser(): { Id: number, FullName: string, Role: Roles, Avt: string, PhoneNumber: string } {
         return {
             FullName: LocalService.getUserName(),
             Role: LocalService.getRole() as Roles,
             Avt: LocalService.getUserAvtUrl(),
             Id: LocalService.getUserId(),
-            PhoneNumber: LocalService.getPhoneNumber()
+            PhoneNumber: LocalService.getPhoneNumber(),
         }
     }
 
@@ -97,10 +100,34 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
             forceBackNavigate: () => this.backNavigateOnClick(),
             fileChosen: (path) => this.fileChosen(path),
             printConfirm: (callback) => this.printConfirm(callback),
+            rememberPassConfirm: () => this.rememberPassConfirm(),
+            savedLoginInforReturn: (loginName, passcode) => this.savedLoginInforReturn(loginName, passcode)
         };
 
         this.IsOnTerminal = this.globalService.isRunOnTerimal();
         this.Init();
+
+    }
+
+    protected savedLoginInforReturn(loginName: string, passcode: string) {
+
+    }
+
+    askForRememberPassword() {
+        if (this.globalService.isRememberPassWillCheck) {
+            this.globalService.isRememberPassWillCheck = false;
+            if (this.globalService.isOnMobile()) {
+                isRememberPassChecking();
+            }
+        }
+    }
+
+    rememberPassConfirm() {
+        this.openConfirm('Bạn muốn lưu thông tin đăng nhập?', () => {
+            passwordSaving();
+        }, () => {
+            passwordClearing();
+        });
     }
 
     ngOnDestroy(): void {

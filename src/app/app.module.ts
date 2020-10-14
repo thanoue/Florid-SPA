@@ -18,7 +18,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import es from '@angular/common/locales/es';
 import vi from '@angular/common/locales/vi';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { OwlDateTimeIntl, OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { ProductsComponent } from './components/admin/products/products.component';
 import { PageSegmentComponent } from './controls/page-segment/page-segment.component';
@@ -45,6 +45,31 @@ import { SelectProductComponent } from './components/staff/select-product/select
 import { MobileSearchBoxComponent } from './controls/mobile-search-box/mobile-search-box.component';
 import { SelectReceiverComponent } from './components/staff/select-receiver/select-receiver.component';
 import { PromotionComponent } from './components/admin/promotion/promotion.component';
+import { ViewOrderDetailComponent } from './components/staff/view-order-detail/view-order-detail.component';
+import { DatePipe } from '@angular/common';
+import { OrderDetailConfirmingComponent } from './components/staff/order-detail-confirming/order-detail-confirming.component';
+import { SortOrderChangingComponent } from './components/staff/sort-order-changing/sort-order-changing.component';
+import { FloristMainComponent } from './components/staff/florist-main/florist-main.component';
+import { CustomerConfirmComponent } from './components/staff/customer-confirm/customer-confirm.component';
+import { ShipperMainComponent } from './components/staff/shipper-main/shipper-main.component';
+import { FinalConfirmComponent } from './components/staff/final-confirm/final-confirm.component';
+
+export class DefaultIntl extends OwlDateTimeIntl {
+
+  /** A label for the cancel button */
+  static cancelBtnLabel = 'Huỷ';
+
+  /** A label for the set button */
+  static setBtnLabel = 'Chọn';
+
+  /** A label for the hour12 button (AM) */
+  static hour12AMLabel = 'SA';
+
+  /** A label for the hour12 button (PM) */
+
+  static hour12PMLabel = 'CH';
+}
+
 
 @NgModule({
   declarations: [
@@ -78,7 +103,14 @@ import { PromotionComponent } from './components/admin/promotion/promotion.compo
     OrderDetailComponent,
     SelectProductComponent,
     SelectReceiverComponent,
-    PromotionComponent
+    PromotionComponent,
+    ViewOrderDetailComponent,
+    OrderDetailConfirmingComponent,
+    SortOrderChangingComponent,
+    FloristMainComponent,
+    CustomerConfirmComponent,
+    ShipperMainComponent,
+    FinalConfirmComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,7 +134,8 @@ import { PromotionComponent } from './components/admin/promotion/promotion.compo
     DragDropModule
   ],
   providers: [
-    { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi' },
+    { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi', useClass: DefaultIntl },
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

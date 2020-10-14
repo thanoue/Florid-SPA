@@ -6,7 +6,9 @@ import { shareReplay, timeout, catchError } from 'rxjs/operators';
 import { REQUEST_TIMEOUT } from 'src/app/app.constants';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
+declare function isOnMobile(): any;
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +35,7 @@ export class HttpService {
     return this.apiHost + this.apiUrlPrefix + path;
   }
 
-  constructor(protected http: HttpClient, protected globalService: GlobalService) {
+  constructor(protected http: HttpClient, private router: Router, protected globalService: GlobalService) {
     this.headers = new HttpHeaders(HttpService.defaultHeader);
   }
 
@@ -54,6 +56,14 @@ export class HttpService {
   public handleError(err) {
 
     this.globalService.stopLoading();
+
+    if (err.status == 403 || err.status == 401) {
+      if (!isOnMobile()) {
+        this.router.navigate(['login']);
+      } else {
+        this.router.navigate(['staff-login']);
+      }
+    }
 
     if (err.message) {
       this.globalService.showError(err.message);

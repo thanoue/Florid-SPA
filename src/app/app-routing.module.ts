@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './components/admin/login/login.component';
-import { LoggedInGuard, AdminGuard, AccountMobileGuard } from './guards/login.guard';
+import { LoggedInGuard, AdminGuard, AccountMobileGuard, FloristMobileGuard, AccountAndShipperMobileGuard } from './guards/login.guard';
 import { MainLayoutComponent } from './components/admin/main-layout/main-layout.component';
 import { HomeComponent } from './components/admin/home/home.component';
 import { NotFoundComponent } from './components/admin/not-found/not-found.component';
@@ -23,6 +23,13 @@ import { SelectProductComponent } from './components/staff/select-product/select
 import { AddOrderComponent } from './components/staff/add-order/add-order.component';
 import { SelectReceiverComponent } from './components/staff/select-receiver/select-receiver.component';
 import { PromotionComponent } from './components/admin/promotion/promotion.component';
+import { ViewOrderDetailComponent } from './components/staff/view-order-detail/view-order-detail.component';
+import { OrderDetailConfirmingComponent } from './components/staff/order-detail-confirming/order-detail-confirming.component';
+import { SortOrderChangingComponent } from './components/staff/sort-order-changing/sort-order-changing.component';
+import { FloristMainComponent } from './components/staff/florist-main/florist-main.component';
+import { CustomerConfirmComponent } from './components/staff/customer-confirm/customer-confirm.component';
+import { ShipperMainComponent } from './components/staff/shipper-main/shipper-main.component';
+import { FinalConfirmComponent } from './components/staff/final-confirm/final-confirm.component';
 
 const routes: Routes = [
   { path: 'staff-login', component: StaffLoginComponent },
@@ -31,6 +38,36 @@ const routes: Routes = [
     path: 'staff',
     component: StaffMainLayoutComponent,
     children: [
+      {
+        path: 'final-confirm',
+        component: FinalConfirmComponent,
+        canActivate: [AccountMobileGuard]
+      },
+      {
+        path: 'customer-confirming',
+        component: CustomerConfirmComponent,
+        canActivate: [AccountAndShipperMobileGuard]
+      },
+      {
+        path: 'shipper-main',
+        component: ShipperMainComponent,
+        canActivate: [AccountAndShipperMobileGuard],
+      },
+      {
+        path: 'sort-order-changing',
+        component: SortOrderChangingComponent,
+        canActivate: [AccountMobileGuard],
+      },
+      {
+        path: 'florist-main',
+        component: FloristMainComponent,
+        canActivate: [FloristMobileGuard],
+      },
+      {
+        path: 'order-detail-confirming',
+        component: OrderDetailConfirmingComponent,
+        canActivate: [AccountAndShipperMobileGuard],
+      },
       {
         path: 'orders-manage',
         canActivate: [AccountMobileGuard],
@@ -61,6 +98,11 @@ const routes: Routes = [
         component: SelectReceiverComponent,
         canActivate: [AccountMobileGuard]
       },
+      {
+        path: 'order-detail-view',
+        component: ViewOrderDetailComponent,
+        canActivate: [LoggedInGuard]
+      }
     ]
   },
   {

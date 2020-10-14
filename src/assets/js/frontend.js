@@ -137,6 +137,10 @@ function selectProductCategory(menuItems, callback) {
     actionMenuSelecting(menuItems, callback);
 }
 
+function filterOrderByState(menuItems, callback) {
+    actionMenuSelecting(menuItems, callback);
+}
+
 function actionMenuSelecting(menuItems, callback) {
 
     let templateRes = '';
@@ -356,13 +360,22 @@ function openDeliConfirm() {
 
 //Hiển thị số lượt xem
 function openViewed() {
+
     appendInBody();
+
     jQuery("#viewed").fadeIn(350);
 
     jQuery(".overlay-dark:not(.layer2)").click(function () {
         jQuery(".popup-content").hide(250, function () {
             jQuery(".overlay-dark").remove();
         });
+    });
+}
+
+function dismissShipperSelecting(callback) {
+    jQuery(".popup-content").hide(250, function () {
+        jQuery(".overlay-dark").remove();
+        callback();
     });
 }
 
@@ -667,6 +680,35 @@ function openTagMenu() {
     });
 }
 
+function makingTimeRequest(resCallback) {
+
+    appendInBody();
+
+    jQuery("#makingTimeRequest").fadeIn(350);
+
+    jQuery("#makingTimeRequest #submit-btn").on('click', function () {
+
+        resCallback();
+
+        jQuery('#makingTimeRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+
+    });
+
+    jQuery("#makingTimeRequest #cancel-btn").one('click', function () {
+        jQuery('#makingTimeRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    })
+
+    jQuery(".overlay-dark:not(.layer2)").click(function () {
+        jQuery('#makingTimeRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    });
+}
+
 function addressRequest(districts, resCallback, requestNewWards) {
 
     let districtData = `<option value="NULL">Quận/Huyện</option>`;
@@ -743,6 +785,13 @@ function addressRequest(districts, resCallback, requestNewWards) {
         });
 
     });
+
+    jQuery("#addressAdd #cancel-btn").one('click', function () {
+        jQuery('#addressAdd').hide(250, function () {
+            jQuery(this).remove();
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    })
 
     jQuery(".overlay-dark:not(.layer2)").click(function () {
         jQuery('#addressAdd').hide(250, function () {

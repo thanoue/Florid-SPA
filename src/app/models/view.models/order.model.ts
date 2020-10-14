@@ -97,6 +97,14 @@ export class OrderDetailViewModel {
     PercentDiscount: number;
     AmountDiscount: number;
 
+    ShippingSessionId: number;
+
+    MakingRequestTime: number;
+    DeliveryCompletedTime: number;
+    MakingStartTime: number;
+    MakingCompletedTime: number;
+    MakingNote: string;
+
     SeenUsers: ODSeenUserInfo[];
 
     constructor() {
@@ -170,6 +178,12 @@ export class OrderDetailViewModel {
 
         const viewModel = new OrderDetailViewModel();
 
+        viewModel.DeliveryCompletedTime = model.DeliveryCompletedTime;
+        viewModel.MakingNote = model.MakingNote;
+        viewModel.MakingCompletedTime = model.MakingCompletedTime;
+        viewModel.MakingStartTime = model.MakingStartTime;
+        viewModel.ShippingSessionId = model.ShippingSessionId;
+        viewModel.MakingRequestTime = model.MakingRequestTime;
         viewModel.ResultImageUrl = model.ResultImageUrl;
         viewModel.DeliveryImageUrl = model.DeliveryImageUrl;
         viewModel.CustomerName = model.CustomerName;

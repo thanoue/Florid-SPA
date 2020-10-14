@@ -1,0 +1,78 @@
+<div class="page-content" id="prodDetail">
+    <div class="container">
+        <div class="prodDetail">
+            <div class="prodGen">
+
+                <app-status-point [state]="orderDetail.State">
+
+                </app-status-point>
+
+                <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt="" class="item-detail-thumb">
+                <div class="item-detail-info">
+                    <h5 class="item-code">{{orderDetail.ProductName}}</h5>
+                    <span
+                        class="prodPriceOld">{{orderDetail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <span class="prodCharge">Phụ phí:
+                        {{orderDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <span
+                        class="prodPrice">{{orderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                </div>
+            </div>
+            <div class="prodInfo cusScroll">
+                <div class="prodQuan infoGroup">
+                    <span class="itemlabel">Trạng thái:</span>
+                    <span class="itemVal">{{state}}</span>
+                </div>
+                <div class="prodName infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
+                    <span class="itemlabel">Tên KH</span>
+                    <span class="itemVal">{{orderDetail.CustomerName}}</span>
+                </div>
+                <div class="prodName infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
+                    <span class="itemlabel">SDT KH</span>
+                    <span class="itemVal">{{orderDetail.CustomerPhoneNumber}}</span>
+                </div>
+                <div class="prodName infoGroup" *ngIf="CurrentUser.Role != 'Florist'">
+                    <span class="itemlabel">Tên người nhận:</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.FullName}}</span>
+                </div>
+                <div class="prodAddr infoGroup" *ngIf="CurrentUser.Role != 'Florist'">
+                    <span class="itemlabel">SDT người nhận:</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.PhoneNumber}}</span>
+                </div>
+                <div class="prodAddr infoGroup" *ngIf="CurrentUser.Role != 'Florist'">
+                    <span class="itemlabel">Địa chỉ giao:</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.Address}}</span>
+                </div>
+                <div class="prodTime infoGroup">
+                    <span class="itemlabel">Thời gian giao:</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.DateTime | date: 'hh:mm a dd/MM/yyyy'}}</span>
+                </div>
+                <div class="prodMakingTime infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
+                    <span class="itemlabel">Yêu cầu xong trước:</span>
+                    <span class="itemVal">{{orderDetail.MakingRequestTime | date: 'hh:mm a dd/MM/yyyy'}}</span>
+                </div>
+                <div class="prodDesc infoGroup">
+                    <span class="itemlabel">Mô tả KH:</span>
+                    <span class="itemVal">{{orderDetail.Description}}</span>
+                </div> 
+                <div class="prodDesc infoGroup">
+                    <span class="itemlabel">Ghi chú thực hiện:</span>
+                    <span class="itemVal">{{orderDetail.MakingNote}}</span>
+                </div>
+            </div>
+            <div *ngIf="CurrentUser.Role == 'Admin' || CurrentUser.Role == 'Account' " class="viewed" (click)="openViewed()"><img
+                    src="../../../assets/images/eye.svg" alt="" class="main-filter">Đã xem
+            </div>
+        </div>
+    </div>
+</div>
+<div class="popup-content" id="viewed">
+    <h3 class="main-bg">Những người đã xem</h3>
+    <ul class="viewedList">
+        <li class="viewItem" *ngFor="let user of orderDetail.SeenUsers">
+            <img src="{{user.Avt | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
+            <span class="itemName">{{user.FullName}}</span>
+            <span class="itemRole">{{user.Role}}</span>
+        </li>
+    </ul>
+</div>

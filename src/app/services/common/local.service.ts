@@ -24,9 +24,10 @@ export class LocalService {
     }
 
     static getUserId() {
-        return LocalService.getItem(LOCAL_STORAGE_VARIABLE.user_id);
+        return parseInt(LocalService.getItem(LOCAL_STORAGE_VARIABLE.user_id));
     }
-    static setUserId(id) {
+
+    static setUserId(id: any) {
         LocalService.setItem(LOCAL_STORAGE_VARIABLE.user_id, id);
     }
 

@@ -9,6 +9,8 @@ import { LoginModel } from 'src/app/models/entities/user.entity';
 import { Roles } from 'src/app/models/enums';
 import { RealtimeService } from 'src/app/services/realtime.service';
 declare function deviceLogin(email: string, pasword: string, isPrinter: boolean, idToken: string): any;
+declare function mobileLogin(email: string, pasword: string): any;
+declare function savedLoginInforGettingRequest(): any;
 @Component({
   selector: 'app-login',
   templateUrl: './staff-login.component.html',
@@ -21,22 +23,32 @@ export class StaffLoginComponent extends BaseComponent {
 
   model: LoginModel = new LoginModel();
 
-  constructor(private router: Router, protected activatedRoute: ActivatedRoute, private realtimeService: RealtimeService) {
+  constructor(private router: Router, private realtimeService: RealtimeService) {
     super();
-    LocalService.clear();
 
+    LocalService.clear();
   }
 
   protected Init() {
 
     this.setStatusBarColor(true);
 
-    this.model.passcode = '123456';
+    if (this.globalService.isOnMobile()) {
+      savedLoginInforGettingRequest();
+      return;
+    }
+
+    this.model.passcode = 'aAA123456';
     // this.model.userName = 'florid.florist.main@floridday.com'; // florist
-    this.model.userName = 'account'; //admin
+    this.model.userName = 'Account2'; //admin
     //   this.model.userName = 'florid.florist.main@floridday.com'; //florist
     // this.model.userName = 'florid.shipper.main@floridday.com'; //shipper
 
+  }
+
+  protected savedLoginInforReturn(loginName: string, passcode: string) {
+    this.model.passcode = passcode;
+    this.model.userName = loginName; //admin
   }
 
   login(form: NgForm) {
@@ -48,6 +60,13 @@ export class StaffLoginComponent extends BaseComponent {
     this.authService.login(this.model, isSuccess => {
       if (isSuccess) {
 
+        if (this.globalService.isOnMobile()) {
+
+          this.globalService.isRememberPassWillCheck = true;
+          mobileLogin(this.model.userName, this.model.passcode);
+
+        }
+
         var role = LocalService.getRole();
 
         switch (role) {
@@ -56,10 +75,10 @@ export class StaffLoginComponent extends BaseComponent {
             this.router.navigate(['/staff/orders-manage']);
             break;
           case Roles.Florist:
-            this.router.navigate(['/florist-main']);
+            this.router.navigate(['staff/florist-main']);
             break;
           case Roles.Shipper:
-            this.router.navigate(['/shipper-main']);
+            this.router.navigate(['staff/shipper-main']);
             break;
         }
 

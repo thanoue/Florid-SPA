@@ -35,7 +35,7 @@
                     <th scope="col">Điện thoại</th>
                     <th scope="col">Email đăng nhập</th>
                     <th scope="col">Quyền</th>
-                    <th scope="col">Chức năng</th>
+                    <th scope="col">Ghi chú</th>
                     <th scope="col">Thao tác</th>
                 </tr>
             </thead>
@@ -57,13 +57,15 @@
                     <td>{{user.User.PhoneNumber}}</td>
                     <td>{{user.User.Email}}</td>
                     <td>
-                        <span class="badge badge-pill badge-success d-block p-2">{{user.Role}}</span>
+                        <span *ngIf="user.Role == 'Florist'" class="badge badge-pill badge-warning d-block p-2">Thợ cắm hoa</span>
+                        <span *ngIf="user.Role == 'Account'" class="badge badge-pill badge-info d-block p-2">Chăm sóc KH</span>
+                        <span *ngIf="user.Role == 'Shipper'" class="badge badge-pill badge-success d-block p-2">Người giao hàng</span>
+                        <span *ngIf="user.Role == 'Admin'" class="badge badge-pill badge-danger d-block p-2">Quản trị viên</span>
                     </td>
-                    <td *ngIf="user.User.IsPrinter">
-                        In ấn
-                    </td>
-                    <td *ngIf="!user.User.IsPrinter">
-                    </td>
+                    <td >
+                        {{user.User.IsPrinter ? 'In ấn' : ''}}
+                        {{user.User.IsExternalShipper ? 'Shipper ngoài' : ''}}
+                    </td> 
                     <td>
                         <div class="btn-group">
                             <button type="button" class="btn btn-outline-info" (click)="selectUserToEdit(user.User)"><i
@@ -84,7 +86,7 @@
     <h4 class="userName">Thêm mới Nhân Viên</h4>
     <hr class="adminSeperate">
     <form #form="ngForm" (submit)="editUser(form)" autocomplete="off">
-        <div class="form-row">
+        <div class="form-row" *ngIf="currrentEditUser.Role != 'Shipper' || !currrentEditUser.IsExternalShipper">
             <div class="form-group col-md-6">
                 <label for="Email">Tên đăng nhập</label>
                 <input [(ngModel)]="currrentEditUser.LoginName" id="LoginName" name="LoginName" required minlength="6"
@@ -162,12 +164,20 @@
                     <option [ngValue]="'User'">Khác</option>
                 </select>
             </div>
-            <div class="form-group  col-md-4">
-                <label for="IsEnable"></label>
-                <label class="form-check-label" style="margin-top: 38px;">
+            <div class="form-group  col-md-2" *ngIf="currrentEditUser.Role !='Shipper'">
+                <label for="IsPrinter"></label>
+                <label class="form-check-label" style="margin-top: 38px;" >
                     <input type="checkbox" class="" style="width:15px;height:15px;" name="IsPrinter" id="IsPrinter"
                         [(ngModel)]="currrentEditUser.IsPrinter" value="checkedValue">
                     Cho phép in
+                </label>
+            </div>
+            <div class="form-group  col-md-2" *ngIf="currrentEditUser.Role =='Shipper'">
+                <label for="IsExternalShipper"></label>
+                <label class="form-check-label" style="margin-top: 38px;">
+                    <input type="checkbox" class="" style="width:15px;height:15px;" name="IsExternalShipper" id="IsExternalShipper"
+                        [(ngModel)]="currrentEditUser.IsExternalShipper" value="checkedValue">
+                    Shipper ngoài
                 </label>
             </div>
         </div>
