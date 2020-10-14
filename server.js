@@ -9,7 +9,7 @@ const http = require('http');
 const app = express();
 
 var corsOptions = {
-    origin: "http://192.168.0.126:4200"
+    origin: "http://localhost:4200"
 };
 
 app.use(cors(corsOptions));
@@ -25,6 +25,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/file', express.static('uploads'));
 app.use('/user/avt', express.static('uploads/userAvt'));
 app.use('/product/img', express.static('uploads/productImg'));
+app.use('/orderDetail/resultImg', express.static('uploads/resultImg'));
+app.use('/orderDetail/shippingImg', express.static('uploads/shipppingImg'));
 
 require('./app/routes/admin.routes')(app);
 

@@ -8,6 +8,9 @@ const userController = require("../controllers/user.controller");
 const customerController = require("../controllers/customer.controller");
 const addressController = require("../controllers/address.controller");
 const orderController = require('../controllers/order.controller');
+const orderDetailController = require('../controllers/order.detail.controller');
+const shippingSessionController = require('../controllers/shipping.session.controller')
+const orderDetailSeenerController = require('../controllers/order.detail.seener.controller');
 
 const authJwt = middlewares.authJwt;
 const verifySignUp = middlewares.verifySignUp;
@@ -24,6 +27,9 @@ module.exports = function (app) {
     const customerPrefix = "/api/customer/";
     const addressPrefix = "/api/address/";
     const orderPrefix = "/api/order/";
+    const orderDetailPrefix = "/api/orderDetail/";
+    const orderDetailSeenerPrefix = "/api/orderDetailSeener/";
+    const shippingSessionPrefix = "/api/shippingSession/";
 
     app.use(function (req, res, next) {
         res.header(
@@ -76,14 +82,6 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.editOrder
     )
-    app.post(`${orderPrefix}addOrderDetails`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
-        orderController.addOrderDetails
-    )
-    app.post(`${orderPrefix}deleteOrderDetailByOrderId`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
-        orderController.deleteOrderDetailByOrderId
-    )
     app.post(`${orderPrefix}getByStates`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.getByStates
@@ -92,6 +90,60 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.getByCustomer
     )
+    app.post(`${orderPrefix}getById`,
+        [authJwt.verifyToken],
+        orderController.getById
+    )
+    app.post(`${orderPrefix}updateFields`,
+        [authJwt.verifyToken], orderController.updateOrderFields)
+    app.post(`${orderPrefix}searchByPhoneNumberOrCustomerName`,
+        [authJwt.verifyToken], orderController.searchByPhoneNumberOrCustomerName)
+
+    //order detail
+    app.get(`${orderDetailPrefix}getMaxMakingSortOrder`,
+        [authJwt.verifyToken], orderDetailController.getMaxMakingSortOrder);
+    app.get(`${orderDetailPrefix}getMaxShippingSortOrder`,
+        [authJwt.verifyToken], orderDetailController.getMaxShippingSortOrder);
+    app.post(`${orderDetailPrefix}updateFields`,
+        [authJwt.verifyToken], orderDetailController.updateFields);
+    app.post(`${orderDetailPrefix}getByState`,
+        [authJwt.verifyToken], orderDetailController.getByState);
+    app.post(`${orderDetailPrefix}updateShippingSortOrder`,
+        [authJwt.verifyToken], orderDetailController.updateShippingSortOrder);
+    app.post(`${orderDetailPrefix}updateMakingSortOrder`,
+        [authJwt.verifyToken], orderDetailController.updateMakingSortOrder);
+    app.post(`${orderDetailPrefix}getDetailByStateAndFloristId`,
+        [authJwt.verifyToken], orderDetailController.getDetailByStateAndFloristId);
+    app.post(`${orderDetailPrefix}getOrderDetailShipperAndFlorist`,
+        [authJwt.verifyToken], orderDetailController.getOrderDetailShipperAndFlorist);
+    app.post(`${orderDetailPrefix}resultConfirm`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.resultConfirm)
+    app.post(`${orderDetailPrefix}shippingConfirm`,
+        [authJwt.verifyToken, authJwt.isShipper], orderDetailController.shippingConfirm)
+    app.post(`${orderDetailPrefix}addOrderDetails`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.addOrderDetails)
+    app.post(`${orderDetailPrefix}deleteOrderDetailByOrderId`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.deleteOrderDetailByOrderId)
+    app.post(`${orderDetailPrefix}getProcessingOrderDetails`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.getProcessingOrderDetails)
+    app.post(`${orderDetailPrefix}getByOrderId`,
+        [authJwt.verifyToken], orderDetailController.getByOrderId)
+
+
+    //shipping session
+    app.post(`${shippingSessionPrefix}assignSingleOD`,
+        [authJwt.verifyToken], shippingSessionController.assignSingleOD)
+    app.post(`${shippingSessionPrefix}assignOrderDetails`,
+        [authJwt.verifyToken], shippingSessionController.assignOrderDetails)
+    app.post(`${shippingSessionPrefix}getShippingOrderDetails`,
+        [authJwt.verifyToken], shippingSessionController.getShippingOrderDetails)
+
+
+    //od seener
+    app.post(`${orderDetailSeenerPrefix}getODSeeners`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailSeenerController.getODSeeners);
+    app.post(`${orderDetailSeenerPrefix}updateDetailSeen`,
+        [authJwt.verifyToken], orderDetailSeenerController.updateDetailSeen);
 
     //address
     app.post(`${addressPrefix}addBulkDistrict`,
@@ -111,7 +163,6 @@ module.exports = function (app) {
         addressController.getAllWards
     )
 
-
     //customer
     app.get(`${customerPrefix}getList`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
@@ -126,7 +177,7 @@ module.exports = function (app) {
         customerController.getCount
     )
     app.get(`${customerPrefix}getById`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        [authJwt.verifyToken],
         customerController.getById
     )
     app.post(`${customerPrefix}update`,
@@ -152,6 +203,10 @@ module.exports = function (app) {
     app.get(`${customerPrefix}getAll`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.getAll
+    )
+    app.post(`${customerPrefix}updateFields`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.updateFields
     )
 
     //product
@@ -179,7 +234,6 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         productController.addBulk
     )
-
 
     //tag
     app.get(`${tagPrefix}getList`,
@@ -272,5 +326,10 @@ module.exports = function (app) {
         `${userPrefix}deleteUser`,
         [authJwt.verifyToken, authJwt.isAdmin],
         userController.deleteUser
+    )
+    app.post(
+        `${userPrefix}getByRole`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        userController.getByRole
     )
 };

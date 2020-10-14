@@ -72,8 +72,14 @@ module.exports = (sequelize, Sequelize) => {
         MakingRequestTime: {
             type: Sequelize.BIGINT(11)
         },
-        CompletedTime: {
+        MakingStartTime: {
             type: Sequelize.BIGINT(11)
+        },
+        MakingCompletedTime: {
+            type: Sequelize.BIGINT(11)
+        },
+        MakingNote: {
+            type: Sequelize.STRING
         },
         ShippingSessionId: {
             type: Sequelize.INTEGER,
@@ -84,6 +90,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         DeliveryImageUrl: {
             type: Sequelize.STRING
+        },
+        DeliveryCompletedTime: {
+            type: Sequelize.BIGINT(11)
         },
         Index: {
             type: Sequelize.INTEGER
@@ -102,7 +111,6 @@ module.exports = (sequelize, Sequelize) => {
         PercentDiscount: {
             type: Sequelize.BIGINT
         }
-
     });
 
     return OrderDetail;

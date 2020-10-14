@@ -63,6 +63,11 @@ db.user.hasMany(db.shippingSession, {
     foreignKey: 'ShipperId',
     onDelete: 'CASCADE',
 });
+db.shippingSession.belongsTo(db.user, {
+    foreignKey: 'ShipperId',
+    onDelete: 'CASCADE',
+});
+
 
 db.product.hasMany(db.orderDetail, {
     foreignKey: 'ProductId',
@@ -79,19 +84,37 @@ db.shippingSession.hasMany(db.orderDetail, {
     onDelete: 'SET NULL',
 });
 
-db.user.belongsToMany(db.orderDetail, {
-    through: "orderDetailSeens",
-    foreignKey: "UserId",
-    otherKey: "OrderDetailId",
-    onDelete: 'CASCADE'
+db.user.hasMany(db.orderDetailSeen, {
+    foreignKey: 'UserId',
+    onDelete: 'CASCADE',
+});
+db.orderDetailSeen.belongsTo(db.user, {
+    foreignKey: 'UserId',
+    onDelete: 'CASCADE',
 });
 
-db.orderDetail.belongsToMany(db.user, {
-    through: "orderDetailSeens",
-    foreignKey: "OrderDetailId",
-    otherKey: "UserId",
-    onDelete: 'CASCADE'
+db.orderDetail.hasMany(db.orderDetailSeen, {
+    foreignKey: 'OrderDetailId',
+    onDelete: 'CASCADE',
 });
+db.orderDetailSeen.belongsTo(db.orderDetail, {
+    foreignKey: 'OrderDetailId',
+    onDelete: 'CASCADE',
+});
+
+// db.user.belongsToMany(db.orderDetail, {
+//     through: "orderDetailSeens",
+//     foreignKey: "UserId",
+//     otherKey: "OrderDetailId",
+//     onDelete: 'CASCADE'
+// });
+
+// db.orderDetail.belongsToMany(db.user, {
+//     through: "orderDetailSeens",
+//     foreignKey: "OrderDetailId",
+//     otherKey: "UserId",
+//     onDelete: 'CASCADE'
+// });
 
 db.customer.hasMany(db.customerReceiverInfo, {
     foreignKey: 'CustomerId',

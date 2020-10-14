@@ -399,7 +399,6 @@ exports.delete = (req, res) => {
     });
 }
 
-
 exports.deleteMany = (req, res) => {
 
     let ids = req.body.ids;
@@ -420,4 +419,19 @@ exports.deleteMany = (req, res) => {
             console.log(err);
             res.status(500).send({ message: err });
         });
+}
+
+exports.updateFields = (req, res) => {
+
+    let obj = req.body.obj;
+
+    Customer.update(obj, {
+        where: {
+            Id: req.body.customerId
+        }
+    }).then(val => {
+        res.send({ result: val });
+    }).catch(err => {
+        res.status(500).send({ message: err.message });
+    });
 }
