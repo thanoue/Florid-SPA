@@ -1,14 +1,15 @@
 {
-  "name": "florid-app",
+  "name": "florid",
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "heroku-postbuild": "ng build  --prod",
+    "start": "node server.js"
   },
   "private": true,
   "dependencies": {
