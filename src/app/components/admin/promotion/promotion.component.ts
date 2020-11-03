@@ -2,11 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { MenuItems } from 'src/app/models/enums';
-import { ExchangeService } from 'src/app/services/exchange.service';
 import { PromotionService } from 'src/app/services/Promotion.service';
 import { NgForm } from '@angular/forms';
 import { Promotion, PromotionType } from 'src/app/models/entities/Promotion.entity';
-import { retry } from 'rxjs/operators';
 
 declare function hideAdd(): any;
 declare function showPromotionEditPopup(): any;
