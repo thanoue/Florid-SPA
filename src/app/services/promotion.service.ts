@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './common/base.service';
-import { Promotion, PromotionType } from '../models/entities/Promotion.entity';
+import { Promotion, PromotionType } from '../models/entities/promotion.entity';
 import { GlobalService } from './common/global.service';
 import { StorageService } from './storage.service';
 import { HttpService } from './common/http.service';

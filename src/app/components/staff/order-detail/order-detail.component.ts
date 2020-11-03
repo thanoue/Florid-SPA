@@ -8,8 +8,8 @@ import { TempProductService } from 'src/app/services/tempProduct.service';
 import { TempProduct } from 'src/app/models/entities/file.entity';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { CategoryService } from 'src/app/services/category.service';
-import { Promotion, PromotionType } from 'src/app/models/entities/Promotion.entity';
-import { PromotionService } from 'src/app/services/Promotion.service';
+import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';
+import { PromotionService } from 'src/app/services/promotion.service';
 import { promise } from 'protractor';
 
 declare function getNumberInput(resCallback: (res: number) => void, placeHolder: string): any;

@@ -14,8 +14,8 @@ import { PrintSaleItem, PrintJob } from 'src/app/models/entities/printjob.entity
 import { Guid } from 'guid-typescript';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { LocalService } from 'src/app/services/common/local.service';
-import { Promotion, PromotionType } from 'src/app/models/entities/Promotion.entity';
-import { PromotionService } from 'src/app/services/Promotion.service';
+import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';
+import { PromotionService } from 'src/app/services/promotion.service';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
 declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string, dismissCallback?: () => void) => void) => void, placeHolder: string, oldValue: number): any;
