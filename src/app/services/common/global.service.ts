@@ -42,6 +42,7 @@ export class GlobalService {
     currentDistricts: District[];
     currentWards: Ward[];
     globalCustomer: Customer;
+    isEdittingOrder = false;
 
     navigateOnClick = new Subject<boolean>();
     navigateOnClickEmitter$ = this.navigateOnClick.asObservable;

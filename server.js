@@ -8,11 +8,11 @@ const http = require('http');
 
 const app = express();
 
-// var corsOptions = {
-//     origin: "http://localhost:4200"
-// };
+var corsOptions = {
+    origin: "http://192.168.0.126:4200"
+};
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(fileUpload({
     createParentPath: true
@@ -25,6 +25,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/file', express.static('uploads'));
 app.use('/user/avt', express.static('uploads/userAvt'));
 app.use('/product/img', express.static('uploads/productImg'));
+app.use('/orderDetail/resultImg', express.static('uploads/resultImg'));
+app.use('/orderDetail/shippingImg', express.static('uploads/shipppingImg'));
 
 require('./app/routes/admin.routes')(app);
 
@@ -61,24 +63,25 @@ io.on('connection', (socket) => {
 
     socket.on('doPrintJob', (data) => {
 
-        console.log('PRINT JOB:', data);
-
         var clients = io.sockets.clients();
 
-        const keys = Object.keys(clients.connected)
+        const keys = Object.keys(clients.connected);
 
+        let isHasPrinter = false;
         keys.forEach(key => {
 
             let itemSocket = clients.connected[key];
 
             if (itemSocket.isPrinter) {
-
                 itemSocket.emit('doPrintJob', { printJob: data.printJob });
-
-                return;
+                isHasPrinter = true;
             }
-
         });
+
+        if (!isHasPrinter) {
+            socket.emit('printingNoResponse');
+        }
+
     })
 
     socket.on('login', (data) => {

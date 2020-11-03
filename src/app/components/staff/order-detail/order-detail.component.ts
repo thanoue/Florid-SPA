@@ -8,11 +8,15 @@ import { TempProductService } from 'src/app/services/tempProduct.service';
 import { TempProduct } from 'src/app/models/entities/file.entity';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { CategoryService } from 'src/app/services/category.service';
+import { Promotion, PromotionType } from 'src/app/models/entities/Promotion.entity';
+import { PromotionService } from 'src/app/services/Promotion.service';
+import { promise } from 'protractor';
 
 declare function getNumberInput(resCallback: (res: number) => void, placeHolder: string): any;
 declare function getTextInput(resCallback: (res: string) => void, placeHolder: string, oldValue: string): any;
 declare function createNumbericElement(isDisabled: boolean, calback: (val: number) => void): any;
 declare function selectProductCategory(menuitems: { Name: string; Value: number; }[], callback: (index: any) => void): any;
+declare function hideReceiverPopup(): any;
 
 @Component({
   selector: 'app-order-detail',
@@ -23,35 +27,44 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   Title = 'Chi tiết đơn';
 
-  orderDetail: OrderDetailViewModel;
   detailIndex: number;
+
+  promotions: Promotion[];
 
   categories: {
     Value: number,
     Name: string
   }[];
 
-  constructor(private route: ActivatedRoute, private router: Router, private categoryService: CategoryService) {
+  constructor(private route: ActivatedRoute, private router: Router, private categoryService: CategoryService, private promotionService: PromotionService) {
     super();
     this.categories = [];
+    this.promotions = [];
+  }
+
+  getPromotionAmount(promotion: Promotion): string {
+    return promotion.PromotionType == PromotionType.Amount ? promotion.Amount + " ₫" : promotion.Amount + " %";
   }
 
   protected Init() {
+
+    this.promotionService.getAvailablePromotions((new Date()).getTime())
+      .then(promotions => {
+        this.promotions = promotions;
+      });
 
     this.route.params.subscribe(params => {
 
       this.detailIndex = + params.id;
 
-      this.orderDetail = this.globalOrderDetail;
+      this.globalOrderDetail.AdditionalFee /= 1000;
 
-      this.orderDetail.AdditionalFee /= 1000;
+      if (!this.globalOrderDetail.PurposeOf) this.globalOrderDetail.PurposeOf = 'Mua tặng';
 
-      if (!this.orderDetail.PurposeOf) this.orderDetail.PurposeOf = 'Mua tặng';
-
-      if (!this.orderDetail.ProductName) this.orderDetail.ProductName = '...';
+      if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '...';
 
       createNumbericElement(this.detailIndex > -1, (val) => {
-        this.orderDetail.Quantity = val;
+        this.globalOrderDetail.Quantity = val;
       });
 
       this.categoryService.getAll()
@@ -82,15 +95,31 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     }
   }
 
+  clearProductImg() {
+
+    if (!this.globalOrderDetail.ProductImageUrl)
+      return;
+
+    if (!this.globalOrderDetail.IsFromHardCodeProduct) {
+      this.openConfirm('Chắc chăc xoá ảnh này? ', () => {
+        this.globalOrderDetail.ProductImageUrl = '';
+
+      });
+    } else {
+      this.globalOrderDetail.ProductImageUrl = '';
+    }
+  }
+
   productNameChangeRequest() {
     getTextInput(res => {
-      this.orderDetail.ProductName = res;
-    }, 'Cập nhật tên sản phẩm...', this.orderDetail.ProductName);
+      this.globalOrderDetail.ProductName = res;
+      this.globalOrderDetail.IsFromHardCodeProduct = true;
+    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName);
   }
 
   insertModifiedValue() {
     getNumberInput(res => {
-      this.orderDetail.ModifiedPrice = res;
+      this.globalOrderDetail.ModifiedPrice = res;
     }, 'Cập nhật giá...');
   }
 
@@ -132,9 +161,8 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
     const viewModel = OrderDetailViewModel.DeepCopy(this.globalOrderDetail);
 
-    this.globalOrderDetail = null;
-
     this.insertOrderDetail(viewModel);
+
   }
 
   insertOrderDetail(viewModel: OrderDetailViewModel) {
@@ -168,4 +196,20 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
     super.OnBackNaviage();
   }
+
+  selectPromotion(index: number) {
+
+    this.globalOrderDetail.PercentDiscount = this.globalOrderDetail.AmountDiscount = 0;
+
+    let promotion = this.promotions[index];
+
+    if (promotion.PromotionType == PromotionType.Amount) {
+      this.globalOrderDetail.AmountDiscount = promotion.Amount;
+    } else {
+      this.globalOrderDetail.PercentDiscount = promotion.Amount;
+    }
+
+    hideReceiverPopup();
+
+  };
 }

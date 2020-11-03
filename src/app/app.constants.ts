@@ -37,6 +37,14 @@ export const API_END_POINT = {
     getCategories: '/category/getList',
     getAllCategories: '/category/getAll',
 
+    deletePromotion: '/promotion/delete',
+    deletePromotions: '/promotion/deletemany',
+    createPromotion: '/promotion/create',
+    updatePromotion: '/promotion/update',
+    getPromotions: '/promotion/getList',
+    getAllPromotions: '/promotion/getAll',
+    getAvailable: '/promotion/getAvailable',
+
     deleteProduct: '/product/delete',
     deleteManyProduct: '/product/deletemany',
     createProduct: '/product/create',
@@ -55,6 +63,7 @@ export const API_END_POINT = {
 
     getNormalDayOrdersCount: '/order/getNormalDayOrdersCount',
     addOrder: '/order/add',
+    editOrder: '/order/editOrder',
     addOrderDetails: '/order/addOrderDetails',
     deleteOrderDetailByOrderId: '/order/deleteOrderDetailByOrderId',
     getOrdersByStates: '/order/getByStates',
@@ -62,6 +71,7 @@ export const API_END_POINT = {
 
     getAllDistricts: '/address/getAllDistricts',
     getAllWards: '/address/getAllWards'
+
 
 };
 

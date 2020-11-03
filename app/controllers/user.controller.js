@@ -26,6 +26,25 @@ exports.getAll = (req, res) => {
         });
 }
 
+exports.getByRole = (req, res) => {
+    User.findAll({
+        include: [
+            {
+                model: Role,
+                where: {
+                    Name: req.body.role
+                }
+            }
+        ]
+    })
+        .then(users => {
+            res.send({ users: users });
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message });
+        });
+}
+
 exports.createUser = (req, res) => {
 
     const guid = require('guid');
@@ -47,7 +66,8 @@ exports.createUser = (req, res) => {
         Password: bcrypt.hashSync(req.body.password, 8),
         PhoneNumber: req.body.phoneNumber,
         AvtUrl: avtname,
-        IsPrinter: req.body.isPrinter
+        IsPrinter: req.body.isPrinter,
+        IsExternalShipper: req.body.isExternalShipper
     })
         .then(user => {
             if (req.body.role) {
@@ -100,7 +120,8 @@ exports.editUser = (req, res) => {
         LoginName: req.body.loginName,
         PhoneNumber: req.body.phoneNumber,
         AvtUrl: avtname,
-        IsPrinter: req.body.isPrinter
+        IsPrinter: req.body.isPrinter,
+        IsExternalShipper: req.body.isExternalShipper
     }
 
     if (req.body.password && req.body.password != '') {

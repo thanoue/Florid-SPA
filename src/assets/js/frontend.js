@@ -193,9 +193,10 @@ function openCompMenu() {
 function openCustMenu() {
 
     appendInBody();
-    jQuery("#recentInfo").slideDown(350);
 
-    jQuery(".overlay-dark:not(.layer2)").click(function () {
+    jQuery("#recentInfo").slideDown(250);
+
+    jQuery(".overlay-dark:not(.layer2)").one('click', function () {
         jQuery("#recentInfo").slideUp(250, function () {
             jQuery(".overlay-dark").remove();
         });
@@ -207,7 +208,10 @@ function selectSavedDeliveryInfo(e) {
     let index = parseInt(jQuery(e).attr('data-index'));
 
     window.DeliveryInfoReference.zone.run(() => { window.DeliveryInfoReference.selectDeliveryInfo(index); });
+    hideReceiverPopup();
+}
 
+function hideReceiverPopup() {
     jQuery("#recentInfo").slideUp(250, function () {
         jQuery(".overlay-dark").remove();
     });

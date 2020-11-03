@@ -12,6 +12,9 @@ export class Order extends BaseEntity {
     GainedScore = 0;
     ScoreUsed = 0;
 
+    PercentDiscount = 0;
+    AmountDiscount = 0;
+
     Index: number;
 }
 
@@ -49,6 +52,9 @@ export class OrderDetail {
 
     ResultImageUrl: string;
     DeliveryImageUrl: string;
+
+    PercentDiscount: number;
+    AmountDiscount: number
 
     constructor() {
 

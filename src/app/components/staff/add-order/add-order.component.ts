@@ -14,9 +14,12 @@ import { PrintSaleItem, PrintJob } from 'src/app/models/entities/printjob.entity
 import { Guid } from 'guid-typescript';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { LocalService } from 'src/app/services/common/local.service';
+import { Promotion, PromotionType } from 'src/app/models/entities/Promotion.entity';
+import { PromotionService } from 'src/app/services/Promotion.service';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
 declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string) => void) => void, placeHolder: string, oldValue: number): any;
+declare function hideReceiverPopup(): any;
 
 @Component({
   selector: 'app-add-order',
@@ -26,17 +29,12 @@ declare function getNumberValidateInput(resCallback: (res: number, validCallback
 export class AddOrderComponent extends BaseComponent {
 
   Title = 'Thêm Đơn';
-
   memberShipTitle = '';
-
   order: OrderViewModel;
-
   totalBalance = 0;
-
   isResetPaidAmount = false;
-  isEditting = false;
-
   originalOrderId = '';
+  promotions: Promotion[];
 
   constructor(private orderDetailService: OrderDetailService, private router: Router,
     // tslint:disable-next-line: align
@@ -45,16 +43,23 @@ export class AddOrderComponent extends BaseComponent {
     private customerService: CustomerService,
 
     // tslint:disable-next-line: align
-    private printJobService: PrintJobService) {
+    private printJobService: PrintJobService,
+    private promotionService: PromotionService) {
     super();
+    this.promotions = [];
   }
 
 
   protected Init() {
 
+    this.promotionService.getAvailablePromotions((new Date()).getTime())
+      .then(promotions => {
+        this.promotions = promotions;
+      });
+
     this.order = this.globalOrder;
 
-    if (!this.order.OrderId || this.order.OrderId == '') {
+    if (!this.isEdittingOrder) {
 
       this.memberShipTitle = 'New Customer';
 
@@ -69,7 +74,6 @@ export class AddOrderComponent extends BaseComponent {
 
     } else {
 
-      this.isEditting = true;
       this.originalOrderId = this.order.OrderId;
       this.onVATIncludedChange();
     }
@@ -94,6 +98,26 @@ export class AddOrderComponent extends BaseComponent {
 
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
   }
+
+  getPromotionAmount(promotion: Promotion): string {
+    return promotion.PromotionType == PromotionType.Amount ? promotion.Amount + " ₫" : promotion.Amount + " %";
+  }
+
+  selectPromotion(index: number) {
+
+    this.order.AmountDiscount = this.order.PercentDiscount = 0;
+
+    let promotion = this.promotions[index];
+
+    if (promotion.PromotionType == PromotionType.Amount) {
+      this.order.AmountDiscount = promotion.Amount;
+    } else {
+      this.order.PercentDiscount = promotion.Amount;
+    }
+
+    hideReceiverPopup();
+
+  };
 
   requestPaidInput() {
 
@@ -200,6 +224,7 @@ export class AddOrderComponent extends BaseComponent {
         scoreUsed: this.order.CustomerInfo.ScoreUsed,
         gainedScore: this.order.CustomerInfo.GainedScore,
         totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
+        customerName: this.order.CustomerInfo.Name
       };
 
       this.printJobService.addPrintJob(orderData);
@@ -244,8 +269,10 @@ export class AddOrderComponent extends BaseComponent {
     orderDB.ScoreUsed = this.order.CustomerInfo.ScoreUsed;
     orderDB.Index = this.order.Index;
     orderDB.OrderType = this.order.OrderType;
+    orderDB.PercentDiscount = this.order.PercentDiscount;
+    orderDB.AmountDiscount = this.order.AmountDiscount;
 
-    this.orderService.addOrder(orderDB)
+    this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {
 
         const orderDetails: OrderDetail[] = [];
@@ -268,9 +295,12 @@ export class AddOrderComponent extends BaseComponent {
           detail.IsVATIncluded = orderDB.VATIncluded;
           detail.PurposeOf = detailVM.PurposeOf;
           detail.Index = detailVM.Index;
+          detail.PercentDiscount = detailVM.PercentDiscount;
+          detail.AmountDiscount = detailVM.AmountDiscount;
 
           detail.CustomerName = this.order.CustomerInfo.Name;
           detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
+
 
           detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
 
@@ -325,7 +355,6 @@ export class AddOrderComponent extends BaseComponent {
         this.orderService.addOrderDetails(orderDetails)
           .then(() => {
 
-            console.log(receiverInfos);
             this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
 
               this.stopLoading();
@@ -357,6 +386,15 @@ export class AddOrderComponent extends BaseComponent {
         detail.AdditionalFee = 0;
       }
 
+      let amount = 0;
+
+      //member discount;
+      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent)
+        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * this.order.CustomerInfo.DiscountPercent;
+
+      if (detail.AmountDiscount && detail.AmountDiscount > 0)
+        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * this.order.CustomerInfo.DiscountPercent;
+
       this.order.TotalAmount += ExchangeService.getFinalPrice(detail.ModifiedPrice, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee);
 
     });
@@ -370,6 +408,8 @@ export class AddOrderComponent extends BaseComponent {
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
 
   }
+
+
 
   onVATIncludedChange() {
     this.totalAmountCalculate(this.order.VATIncluded);

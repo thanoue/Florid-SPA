@@ -1,6 +1,6 @@
 <div class="page-content" id="confirm">
     <div class="container">
-        <div class="row custBrow">
+        <div class="row custBrow" style="margin-bottom: 1vh;">
             <div class="col-10 custList ">
                 <a routerLink="/staff/select-customer" class="main-bg custListButton"><img
                         src="../../../../assets/images/cust.png" alt="">
@@ -13,10 +13,29 @@
                         class="main-filter"></a>
             </div>
         </div>
+
+        <label class="title-field">Mã đơn </label>
         <div class="form-group orderInfo borderless-field">
-            <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="!isEditting"
+            <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="isEdittingOrder"
                 class="orderField small-height" placeholder="Mã đơn...">
         </div>
+
+        <a href="javascript:void(0)" style="margin-bottom:1vh;" onclick="openCustMenu()" type="button"
+            class="btn main-btn w-100">Áp dụng
+            khuyến mãi</a>
+
+        <label class="title-field">Giảm giá phần trăm</label>
+        <div style="margin-bottom:1vh;" class="form-group orderInfo borderless-field">
+            <input type="text" name="PercentDiscount" id="PercentDiscount" [(ngModel)]="order.PercentDiscount"
+                class="orderField small-height" placeholder="%">
+        </div>
+
+        <label class="title-field">Giả giá tiền</label>
+        <div class="form-group orderInfo borderless-field">
+            <input type="text" name="AmountDiscount" id="AmountDiscount" [(ngModel)]="order.AmountDiscount"
+                class="orderField small-height" placeholder="000">
+        </div>
+
         <ul class=" orderDetail cusScroll">
             <li *ngFor="let orderDetail of order.OrderDetails" class="orderDetailItem">
                 <div class="itemNumb"><span>{{orderDetail.Index + 1}}</span></div>
@@ -95,4 +114,15 @@
             </div>
         </div>
     </form>
+</div>
+<div class="actionMenu2" id="recentInfo">
+    <ul>
+        <li *ngFor="let promotion of promotions; let i = index" (click)="selectPromotion(i)" [attr.data-index]="i"
+            style="height: 69px;text-align: left;">
+            <p class="recentInfo-name">{{promotion.Name}}</p>
+            <span style="width: 25%;" class="recentInfo-phone">{{getPromotionAmount(promotion)}}</span>
+            <span style="width: 75%;"
+                class="recentInfo-date">{{promotion.StartTime | date: 'dd/MM/yyyy'}}-{{promotion.EndTime | date: 'dd/MM/yyyy'}}</span>
+        </li>
+    </ul>
 </div>

@@ -21,17 +21,19 @@
                     </li>
                     <li [ngClass]="(currentMenu !== menus.ProductCategory)?'menuItem':'menuItem active'">
                         <a routerLink="/admin/product-categories" class="menuItem-link"><i class="fa fa-th-large">
-                            </i>Danh
-                            mục Sản phẩm</a>
+                            </i>Danh mục Sản phẩm</a>
                     </li>
                     <li [ngClass]="(currentMenu !== menus.ProductTag)?'menuItem':'menuItem active'">
                         <a routerLink="/admin/product-tags" class="menuItem-link"><i class="fa fa-tags"> </i>Tag Sản
-                            phẩm</a>
+                            phẩm</a>    
                     </li>
                 </ul>
             </li>
             <li [ngClass]="(currentMenu !== menus.Order)?'menuItem':'menuItem active'">
                 <a href="#" class="menuItem-link"><i class="fa fa-file-text"></i>Đơn Hàng</a>
+            </li>
+            <li [ngClass]="(currentMenu !== menus.Promotion)?'menuItem':'menuItem active'">
+                <a routerLink="/admin/promotion" class="menuItem-link"><i class="fa fa-star"></i>Khuyến mãi</a>
             </li>
             <li [ngClass]="(currentMenu !== menus.Summary)?'menuItem':'menuItem active'">
                 <a href="#" class="menuItem-link"><i class="fa fa-line-chart"></i>Thống Kê</a>

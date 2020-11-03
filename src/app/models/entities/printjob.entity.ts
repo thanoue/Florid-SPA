@@ -14,6 +14,7 @@ export class PrintJob extends BaseEntity {
     scoreUsed: number;
     gainedScore: number;
     totalScore: number;
+    customerName: string;
 
     constructor() {
         super();

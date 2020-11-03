@@ -15,6 +15,9 @@ export class OrderViewModel {
 
     Index: number;
 
+    PercentDiscount = 0;
+    AmountDiscount = 0;
+
     CustomerInfo: OrderCustomerInfoViewModel;
 
     OrderDetails: OrderDetailViewModel[];
@@ -31,6 +34,8 @@ export class OrderViewModel {
         vm.CreatedDate = new Date(entity.Created);
         vm.Index = entity.Index;
         vm.OrderType = entity.OrderType;
+        vm.AmountDiscount = entity.AmountDiscount;
+        vm.PercentDiscount = entity.PercentDiscount;
 
         vm.CustomerInfo.ScoreUsed = entity.ScoreUsed;
         vm.CustomerInfo.GainedScore = entity.GainedScore;
@@ -89,6 +94,9 @@ export class OrderDetailViewModel {
     ResultImageUrl: string;
     DeliveryImageUrl: string;
 
+    PercentDiscount: number;
+    AmountDiscount: number;
+
     SeenUsers: ODSeenUserInfo[];
 
     constructor() {
@@ -98,65 +106,65 @@ export class OrderDetailViewModel {
         this.SeenUsers = [];
     }
 
-    static ToViewModel(entity: OrderDetail) {
-        const vm = new OrderDetailViewModel();
+    // static ToViewModel(entity: OrderDetail) {
+    //     const vm = new OrderDetailViewModel();
 
-        vm.CustomerName = entity.CustomerName;
-        vm.CustomerPhoneNumber = entity.CustomerPhoneNumber;
-        vm.IsVATIncluded = entity.IsVATIncluded;
-        vm.OrderDetailId = entity.Id;
-        vm.OrderId = entity.OrderId;
-        vm.AdditionalFee = entity.AdditionalFee;
-        vm.Description = entity.Description;
-        vm.Index = entity.Index;
+    //     vm.CustomerName = entity.CustomerName;
+    //     vm.CustomerPhoneNumber = entity.CustomerPhoneNumber;
+    //     vm.IsVATIncluded = entity.IsVATIncluded;
+    //     vm.OrderDetailId = entity.Id;
+    //     vm.OrderId = entity.OrderId;
+    //     vm.AdditionalFee = entity.AdditionalFee;
+    //     vm.Description = entity.Description;
+    //     vm.Index = entity.Index;
 
-        vm.MakingSortOrder = entity.MakingSortOrder;
-        vm.ShippingSortOrder = entity.ShippingSortOrder;
+    //     vm.MakingSortOrder = entity.MakingSortOrder;
+    //     vm.ShippingSortOrder = entity.ShippingSortOrder;
 
-        vm.ModifiedPrice = entity.ProductModifiedPrice;
-        vm.ProductId = entity.Id;
-        vm.OriginalPrice = entity.ProductPrice;
-        vm.ProductImageUrl = entity.ProductImageUrl;
-        vm.ProductName = entity.ProductName;
+    //     vm.ModifiedPrice = entity.ProductModifiedPrice;
+    //     vm.ProductId = entity.Id;
+    //     vm.OriginalPrice = entity.ProductPrice;
+    //     vm.ProductImageUrl = entity.ProductImageUrl;
+    //     vm.ProductName = entity.ProductName;
 
-        vm.IsFromHardCodeProduct = entity.IsHardcodeProduct;
-        vm.HardcodeImageName = entity.HardcodeProductImageName;
+    //     vm.IsFromHardCodeProduct = entity.IsHardcodeProduct;
+    //     vm.HardcodeImageName = entity.HardcodeProductImageName;
 
-        vm.PurposeOf = entity.PurposeOf;
+    //     vm.PurposeOf = entity.PurposeOf;
 
-        vm.DeliveryInfo.DateTime = new Date(entity.DeliveryInfo.ReceivingTime);
-        vm.DeliveryInfo.Address = entity.DeliveryInfo.ReceiverDetail.Address;
-        vm.DeliveryInfo.FullName = entity.DeliveryInfo.ReceiverDetail.FullName;
-        vm.DeliveryInfo.PhoneNumber = entity.DeliveryInfo.ReceiverDetail.PhoneNumber;
+    //     vm.DeliveryInfo.DateTime = new Date(entity.DeliveryInfo.ReceivingTime);
+    //     vm.DeliveryInfo.Address = entity.DeliveryInfo.ReceiverDetail.Address;
+    //     vm.DeliveryInfo.FullName = entity.DeliveryInfo.ReceiverDetail.FullName;
+    //     vm.DeliveryInfo.PhoneNumber = entity.DeliveryInfo.ReceiverDetail.PhoneNumber;
 
-        vm.ResultImageUrl = entity.ResultImageUrl;
-        vm.DeliveryImageUrl = entity.DeliveryImageUrl;
+    //     vm.ResultImageUrl = entity.ResultImageUrl;
+    //     vm.DeliveryImageUrl = entity.DeliveryImageUrl;
 
-        vm.State = entity.State;
-        vm.Quantity = 1;
+    //     vm.State = entity.State;
+    //     vm.Quantity = 1;
 
-        if (entity.SeenUsers && entity.SeenUsers.length > 0) {
-            entity.SeenUsers.forEach(user => {
-                vm.SeenUsers.push(ODSeenUserInfo.DeepCopy(user));
-            });
-        }
+    //     if (entity.SeenUsers && entity.SeenUsers.length > 0) {
+    //         entity.SeenUsers.forEach(user => {
+    //             vm.SeenUsers.push(ODSeenUserInfo.DeepCopy(user));
+    //         });
+    //     }
 
-        if (entity.FloristInfo) {
-            vm.FloristInfo.Id = entity.FloristInfo.Id;
-            vm.FloristInfo.AssignTime = entity.FloristInfo.AssignTime;
-            vm.FloristInfo.CompletedTime = entity.FloristInfo.CompletedTime;
-            vm.FloristInfo.FullName = entity.FloristInfo.FullName;
-        }
+    //     if (entity.FloristInfo) {
+    //         vm.FloristInfo.Id = entity.FloristInfo.Id;
+    //         vm.FloristInfo.AssignTime = entity.FloristInfo.AssignTime;
+    //         vm.FloristInfo.CompletedTime = entity.FloristInfo.CompletedTime;
+    //         vm.FloristInfo.FullName = entity.FloristInfo.FullName;
+    //     }
 
-        if (entity.ShipperInfo) {
-            vm.ShipperInfo.Id = entity.ShipperInfo.Id;
-            vm.ShipperInfo.AssignTime = entity.ShipperInfo.AssignTime;
-            vm.ShipperInfo.CompletedTime = entity.ShipperInfo.CompletedTime;
-            vm.ShipperInfo.FullName = entity.ShipperInfo.FullName;
-        }
+    //     if (entity.ShipperInfo) {
+    //         vm.ShipperInfo.Id = entity.ShipperInfo.Id;
+    //         vm.ShipperInfo.AssignTime = entity.ShipperInfo.AssignTime;
+    //         vm.ShipperInfo.CompletedTime = entity.ShipperInfo.CompletedTime;
+    //         vm.ShipperInfo.FullName = entity.ShipperInfo.FullName;
+    //     }
 
-        return vm;
-    }
+    //     return vm;
+    // }
 
     static DeepCopy(model: OrderDetailViewModel) {
 
@@ -183,6 +191,8 @@ export class OrderDetailViewModel {
         viewModel.ShippingSortOrder = model.ShippingSortOrder;
         viewModel.MakingSortOrder = model.MakingSortOrder;
         viewModel.PurposeOf = model.PurposeOf;
+        viewModel.PercentDiscount = model.PercentDiscount;
+        viewModel.AmountDiscount = model.AmountDiscount;
 
         if (model.SeenUsers && model.SeenUsers.length > 0) {
             model.SeenUsers.forEach(user => {

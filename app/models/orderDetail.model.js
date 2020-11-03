@@ -72,8 +72,14 @@ module.exports = (sequelize, Sequelize) => {
         MakingRequestTime: {
             type: Sequelize.BIGINT(11)
         },
-        CompletedTime: {
+        MakingStartTime: {
             type: Sequelize.BIGINT(11)
+        },
+        MakingCompletedTime: {
+            type: Sequelize.BIGINT(11)
+        },
+        MakingNote: {
+            type: Sequelize.STRING
         },
         ShippingSessionId: {
             type: Sequelize.INTEGER,
@@ -85,6 +91,9 @@ module.exports = (sequelize, Sequelize) => {
         DeliveryImageUrl: {
             type: Sequelize.STRING
         },
+        DeliveryCompletedTime: {
+            type: Sequelize.BIGINT(11)
+        },
         Index: {
             type: Sequelize.INTEGER
         },
@@ -94,6 +103,19 @@ module.exports = (sequelize, Sequelize) => {
         },
         updatedAt: {
             type: Sequelize.DATE,
+            allowNull: true
+        },
+        AmountDiscount: {
+            type: Sequelize.BIGINT,
+        },
+        PercentDiscount: {
+            type: Sequelize.BIGINT
+        },
+        ShippingNote: {
+            type: Sequelize.STRING
+        },
+        FixingFloristId: {
+            type: Sequelize.INTEGER,
             allowNull: true
         }
     });

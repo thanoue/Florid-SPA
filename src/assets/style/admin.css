@@ -197,6 +197,7 @@ form#loginform {
 }
 .popup-content,
 div.actionMenu,
+div.actionMenu2,
 div.tagMenu{
     position: fixed;
     width: 90vw;
@@ -696,7 +697,7 @@ div#colorBoard
     display: -ms-flexbox;
     display: flex;
 }
-div.actionMenu,div.tagMenu {
+div.actionMenu,div.tagMenu, div.actionMenu2 {
     text-align: left;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -707,7 +708,7 @@ div.actionMenu,div.tagMenu {
     max-height: 50vh;
     overflow-y: scroll;
 }
-div.actionMenu a ,div.tagMenu a ,
+div.actionMenu a ,div.actionMenu2 a ,div.tagMenu a ,
 .checkMenu .form-check{
     display: block;
     padding: 10px 30px;
@@ -715,16 +716,16 @@ div.actionMenu a ,div.tagMenu a ,
     font-size: 14px;
     transition: 350ms;
 }
-div.actionMenu a:hover,div.tagMenu a:hover {
+div.actionMenu a:hover,div.actionMenu2 a:hover,div.tagMenu a:hover {
     color: #fff;
     background-image: -o-linear-gradient(45deg, rgb(31,201,219), rgb(31,232,203));
     background-image: linear-gradient(45deg, rgb(31,201,219), rgb(31,232,203));
 }
-.actionMenu.checkMenu, .tagMenu.checkMenu {
+.actionMenu.checkMenu,.actionMenu2.checkMenu, .tagMenu.checkMenu {
     padding-left: 30px;
     font-size: 14px;
 }
-.actionMenu input.form-check-input ,.tagMenu input.form-check-input{
+.actionMenu input.form-check-input ,.actionMenu2 input.form-check-input ,.tagMenu input.form-check-input{
     height: 20px;
     width: 20px;
     margin-top: 2px;
@@ -737,7 +738,7 @@ form.addOrderForm .form-group {
     border-radius: 20px;
     overflow: hidden;
     font-size: 14px;
-    margin-bottom: 2vh;
+    margin-bottom: 1.5vh;
 }
 
 
@@ -753,6 +754,7 @@ form.addOrderForm .form-group {
     -ms-flex-align: center;
     align-items: center
 }
+
 .prodInfo .prodImg img 
 {
     border-radius: 20px;
@@ -760,6 +762,15 @@ form.addOrderForm .form-group {
     height: 80px;
     object-fit: cover;
 }
+
+.prodInfo .prodImg .close-img{
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    left: 65px;
+    top: 14px;
+}
+
 .prodInfo h5.prodCode
 {
     text-transform: uppercase;
@@ -806,18 +817,19 @@ span.prodPrice
 }
 .orderInfo input,
 .orderDesc textarea {
-    height: 60px;
+    height: 40px;
     border: none;
     padding: 0 15px;
     width: 100%;
 }
+
 .orderDesc textarea
 {
     padding-top: 10px;
-    height: 220px;
+    height: 100px;
 }
 form.addOrderForm {
-    margin-top: 5vh;
+    margin-top: 2vh;
 }
 .prodQuantity input::-webkit-inner-spin-button,
 .prodQuantity input::-webkit-outer-spin-button
@@ -1292,7 +1304,6 @@ span.main-bg.vatCustom::before {
     content: "\f00c";
     font-family: fontawesome;
     position: absolute;
-    top: -2px;
     right: 2px;
     color: #fff;
     display: none;
@@ -1340,6 +1351,7 @@ input:checked + span.vatCustom.main-bg::before
 }
 .custBrow, .orderConfirm {
     margin-top: 2vh;
+    margin-bottom: 2vh;
 }
 .nameTable {
     background: #fff;
@@ -2656,9 +2668,14 @@ div.popupDialog select {
     overflow: hidden;
     font-size: 14px;
     margin-bottom: 2vh;
-    margin-top: 2vh;
 }
 
 .borderless-field .small-height{
-    height: 40px;
+    height: 35px;
 }
+
+.title-field{
+    color: #ffffff;
+    margin-bottom: 0.2rem;
+}
+

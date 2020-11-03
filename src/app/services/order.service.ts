@@ -31,11 +31,12 @@ export class OrderService {
       orderVM.OrderId = order.Id;
       orderVM.TotalAmount = order.TotalAmount;
       orderVM.TotalPaidAmount = order.TotalPaidAmount;
-      orderVM.CreatedDate = order.CreatedDate;
       orderVM.VATIncluded = order.VATIncluded;
       orderVM.OrderType = order.OrderType;
+      orderVM.CreatedDate = new Date(order.CreatedDate);
 
       orderVM.CustomerInfo = new OrderCustomerInfoViewModel();
+      orderVM.CustomerInfo.Id = order.CustomerId;
 
       if (order.orderDetails && order.orderDetails.length > 0) {
         orderVM.CustomerInfo.Name = order.orderDetails[0].CustomerName;
@@ -68,6 +69,8 @@ export class OrderService {
         orderDetailVM.CustomerName = orderDetail.CustomerName;
         orderDetailVM.CustomerPhoneNumber = orderDetail.CustomerPhoneNumber;
         orderDetailVM.HardcodeImageName = orderDetail.HardcodeImageName;
+        orderDetailVM.PercentDiscount = orderDetail.PercentDiscount;
+        orderDetailVM.AmountDiscount = orderDetail.AmountDiscount;
 
         orderVM.OrderDetails.push(orderDetailVM);
 
@@ -140,8 +143,9 @@ export class OrderService {
     });
   }
 
-  addOrder(order: Order): Promise<Order> {
-    return this.httpService.post(API_END_POINT.addOrder, {
+  addOrEditOrder(order: Order, isEdit: boolean): Promise<Order> {
+
+    return this.httpService.post(isEdit ? API_END_POINT.editOrder : API_END_POINT.addOrder, {
       customerId: order.CustomerId,
       id: order.Id,
       vatIncluded: order.VATIncluded,
@@ -153,11 +157,16 @@ export class OrderService {
       createdDate: order.Created
     })
       .then(data => {
+
         return order;
+
       })
       .catch(err => {
+
         this.httpService.handleError(err);
+
         throw err;
       });
+
   }
 }
