@@ -19,6 +19,7 @@ export const API_END_POINT = {
     logout: '/auth/signout',
 
     getAllUser: '/user/getAll',
+    getByRole: '/user/getByRole',
     createUser: '/user/createUser',
     updateUser: '/user/editUser',
     deleteUser: '/user/deleteUser',
@@ -60,30 +61,56 @@ export const API_END_POINT = {
     getCustomeById: '/customer/getById',
     updateReciverInfo: '/customer/updateReceiverList',
     getAllCustomer: '/customer/getAll',
+    updateCustomerFields: '/customer/updateFields',
 
     getNormalDayOrdersCount: '/order/getNormalDayOrdersCount',
     addOrder: '/order/add',
     editOrder: '/order/editOrder',
-    addOrderDetails: '/order/addOrderDetails',
-    deleteOrderDetailByOrderId: '/order/deleteOrderDetailByOrderId',
     getOrdersByStates: '/order/getByStates',
     getOrdersByCustomerId: '/order/getByCustomer',
+    getById: '/order/getById',
+    updateOrderFields: '/order/updateFields',
+    searchByPhoneNumberOrCustomerName: '/order/searchByPhoneNumberOrCustomerName',
 
     getAllDistricts: '/address/getAllDistricts',
-    getAllWards: '/address/getAllWards'
+    getAllWards: '/address/getAllWards',
 
+    getMaxMakingSortOrder: '/orderDetail/getMaxMakingSortOrder',
+    getMaxShippingSortOrder: '/orderDetail/getMaxShippingSortOrder',
+    updateODFields: '/orderDetail/updateFields',
+    getOrderDetailByState: '/orderDetail/getByState',
+    updateMakingSortOrder: '/orderDetail/updateMakingSortOrder',
+    updateShippingSortOrder: '/orderDetail/updateShippingSortOrder',
+    getDetailByStateAndFloristId: '/orderDetail/getDetailByStateAndFloristId',
+    getOrderDetailShipperAndFlorist: '/orderDetail/getOrderDetailShipperAndFlorist',
+    shippingConfirm: '/orderDetail/shippingConfirm',
+    resultConfirm: '/orderDetail/resultConfirm',
+    addOrderDetails: '/orderDetail/addOrderDetails',
+    deleteOrderDetailByOrderId: '/orderDetail/deleteOrderDetailByOrderId',
+    getProcessingOrderDetails: '/orderDetail/getProcessingOrderDetails',
+    getOrderDetailsByOrderId: '/orderDetail/getByOrderId',
 
+    updateDetailSeen: '/orderDetailSeener/updateDetailSeen',
+    getODSeeners: '/orderDetailSeener/getODSeeners',
+
+    assignSingleOD: '/shippingSession/assignSingleOD',
+    assignOrderDetails: '/shippingSession/assignOrderDetails',
+    getShippingOrderDetails: '/shippingSession/getShippingOrderDetails',
 };
 
 export const IMAGE_FOLDER_PATHS = {
     user_avt: '/user/avt/',
-    product_img: '/product/img/'
+    product_img: '/product/img/',
+    result_img: '/orderDetail/resultImg/',
+    shipping_img: '/orderDetail/shippingImg/'
 }
 
 export enum ImgType {
     UserAvt = 'UserAvt',
     ProductImg = "ProductImg",
     OrderImg = "OrderImg",
+    ResultImg = "ResultImg",
+    ShippingImg = "ShippingImg",
 }
 
 export const ROLES = [
@@ -128,15 +155,27 @@ export const ORDER_DETAIL_STATES = [
     },
     {
         State: OrderDetailStates.DeliveryWaiting,
-        DisplayName: 'Đã xác nhận SP, chưa có người giao'
+        DisplayName: 'Đã xác nhận SP, chưa có Shipper'
     },
     {
         State: OrderDetailStates.Delivering,
+        DisplayName: 'Đã chọn được Shipper'
+    },
+    {
+        State: OrderDetailStates.OnTheWay,
         DisplayName: 'Đang giao'
     },
     {
         State: OrderDetailStates.Deliveried,
         DisplayName: 'Đã giao, đang xác nhận giao'
+    },
+    {
+        State: OrderDetailStates.SentBack,
+        DisplayName: 'Đã trả đơn về'
+    },
+    {
+        State: OrderDetailStates.FixingRequest,
+        DisplayName: 'Đang yêu cầu sửa'
     },
     {
         State: OrderDetailStates.Completed,
@@ -145,7 +184,7 @@ export const ORDER_DETAIL_STATES = [
     {
         State: OrderDetailStates.Canceled,
         DisplayName: 'Đã huỷ'
-    },
+    }
 ]
 
 export const REQUEST_TIMEOUT = 30000;

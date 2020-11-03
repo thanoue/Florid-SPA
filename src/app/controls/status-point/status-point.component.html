@@ -25,6 +25,15 @@
     </div>
     <div *ngSwitchCase="states.Canceled" class="item-status x" (click)="pointClicked()">
         <span>{{index}}</span>
+    </div> 
+    <div *ngSwitchCase="states.OnTheWay" class="item-status on-the-way" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.SentBack" class="item-status send-back" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
+    <div *ngSwitchCase="states.FixingRequest" class="item-status fixing-request" (click)="pointClicked()">
+        <span>{{index}}</span>
     </div>
 </div>  
 <div *ngIf="index==-1" [ngSwitch]="state">
@@ -53,6 +62,15 @@
         <span></span>
     </div>
     <div *ngSwitchCase="states.Canceled" class="item-status x" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.OnTheWay" class="item-status on-the-way" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.SentBack" class="item-status send-back" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.FixingRequest" class="item-status fixing-request" (click)="pointClicked()">
         <span></span>
     </div>
 </div>

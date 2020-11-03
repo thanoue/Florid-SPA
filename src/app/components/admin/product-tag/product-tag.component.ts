@@ -4,7 +4,6 @@ import { PageComponent } from "../../../models/view.models/menu.model";
 import { MenuItems } from 'src/app/models/enums';
 import { Tag } from 'src/app/models/entities/tag.entity';
 import { TagService } from 'src/app/services/tag.service';
-import { FunctionsService } from 'src/app/services/common/functions.service';
 import { threadId } from 'worker_threads';
 import { NgForm } from '@angular/forms';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';

@@ -126,7 +126,15 @@ export class UsersComponent extends BaseComponent {
     if (!form.valid)
       return;
 
-    if (this.currrentEditUser.Password == '') {
+    if (this.currrentEditUser.Role == Roles.Shipper) {
+
+      this.currrentEditUser.IsPrinter = false;
+    }
+    else {
+      this.currrentEditUser.IsExternalShipper = false;
+    }
+
+    if (!this.currrentEditUser.IsExternalShipper && this.currrentEditUser.Password == '') {
 
       if (!this.currrentEditUser.Id) {
         this.showError('Thiếu mật khẩu!!');
@@ -134,6 +142,10 @@ export class UsersComponent extends BaseComponent {
       }
     }
 
+    if (this.currrentEditUser.IsExternalShipper) {
+      this.currrentEditUser.LoginName = '';
+      this.currrentEditUser.Password = '';
+    }
 
     if (this.currrentEditUser.Id) {
 

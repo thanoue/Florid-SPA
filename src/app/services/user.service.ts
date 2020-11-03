@@ -15,6 +15,45 @@ export class UserService {
     constructor(private httpService: HttpService, private globalService: GlobalService) {
     }
 
+    getByRole(role: Roles): Promise<User[]> {
+        return this.httpService.post(API_END_POINT.getByRole, {
+            role: role
+        })
+            .then(data => {
+
+                let users: User[] = [];
+
+                if (data && data.users) {
+                    data.users.forEach(rawUser => {
+
+                        let user = new User();
+
+                        user.Id = rawUser.Id.toString();
+                        user.AvtUrl = rawUser.AvtUrl;
+                        user.Email = rawUser.Email;
+                        user.PhoneNumber = rawUser.PhoneNumber;
+                        user.LoginName = rawUser.LoginName;
+                        user.FullName = rawUser.FullName;
+                        user.IsPrinter = rawUser.IsPrinter;
+                        user.IsExternalShipper = rawUser.IsExternalShipper
+
+                        if (rawUser.roles && rawUser.roles[0]) {
+                            user.Role = rawUser.roles[0].Name;
+                        } else {
+                            user.Role = Roles.User;
+                        }
+
+                        users.push(user);
+                    });
+                }
+
+                return users;
+            }).catch(err => {
+                this.httpService.handleError(err);
+                throw err;
+            });
+    }
+
     insertUser(user: User, avatarFile: any): Promise<User> {
         return this.httpService.postForm(API_END_POINT.createUser, {
             fullName: user.FullName,
@@ -24,7 +63,8 @@ export class UserService {
             phoneNumber: user.PhoneNumber,
             avatar: avatarFile,
             isPrinter: user.IsPrinter,
-            role: user.Role
+            role: user.Role,
+            isExternalShipper: user.IsExternalShipper
         }).then(severUser => {
             user.AvtUrl = severUser.user.AvtUrl;
             return user;
@@ -60,7 +100,8 @@ export class UserService {
             oldAvtUrl: user.AvtUrl,
             newAvatar: avatarFile,
             isPrinter: user.IsPrinter,
-            role: user.Role
+            role: user.Role,
+            isExternalShipper: user.IsExternalShipper
         }).then(data => {
             user.AvtUrl = data.avtUrl;
             return user;
@@ -78,6 +119,7 @@ export class UserService {
 
                 if (data && data.users) {
                     data.users.forEach(rawUser => {
+
                         let user = new User();
 
                         user.Id = rawUser.Id.toString();
@@ -87,6 +129,7 @@ export class UserService {
                         user.LoginName = rawUser.LoginName;
                         user.FullName = rawUser.FullName;
                         user.IsPrinter = rawUser.IsPrinter;
+                        user.IsExternalShipper = rawUser.IsExternalShipper
 
                         if (rawUser.roles && rawUser.roles[0]) {
                             user.Role = rawUser.roles[0].Name;
@@ -103,12 +146,5 @@ export class UserService {
                 this.httpService.handleError(err);
                 throw err;
             });
-    }
-
-    async getByLoginId(loginId: string): Promise<User> {
-
-        this.globalService.startLoading();
-
-        return new User();
     }
 }

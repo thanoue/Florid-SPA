@@ -1,0 +1,66 @@
+<div class="page-content" id="orderConfirm">
+    <div class="container">
+        <div class="prodDetail">
+            <div class="prodGen">
+                <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt="" class="item-detail-thumb">
+                <div class="item-detail-info">
+                    <h5 class="item-code">{{orderDetail.OrderId}}_{{orderDetail.Index +1}}</h5>
+                    <h5 class="item-code">{{orderDetail.ProductName}}</h5>
+                    <span
+                        class="prodPriceOld">{{orderDetail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <span class="prodCharge">Phụ phí:
+                        {{orderDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <span
+                        class="prodPrice">{{orderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                </div>
+            </div>
+            <div class="prodInfo cusScroll">
+                <div class="prodQuan infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
+                    <span class="itemlabel">VAT: </span>
+                    <span class="itemVal" *ngIf="orderDetail.IsVATIncluded">Đã bao gồm</span>
+                    <span class="itemVal" *ngIf="!orderDetail.IsVATIncluded">Chưa bao gồm</span>
+                </div>
+                <div *ngIf="CurrentUser.Role != 'Shipper'" class="prodName infoGroup">
+                    <span class="itemlabel">Tên KH</span>
+                    <span class="itemVal">{{orderDetail.CustomerName}}</span>
+                </div>
+                <div *ngIf="CurrentUser.Role == 'Shipper'" class="prodName infoGroup">
+                    <span class="itemlabel">Tên người nhận</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.FullName}}</span>
+                </div>
+                <div *ngIf="CurrentUser.Role != 'Shipper'" class="prodName infoGroup">
+                    <span class="itemlabel">SDT KH</span>
+                    <span class="itemVal">{{orderDetail.CustomerPhoneNumber}}</span>
+                </div>
+                <div *ngIf="CurrentUser.Role == 'Shipper'" class="prodName infoGroup">
+                    <span class="itemlabel">SDT người nhận</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.PhoneNumber}}</span>
+                </div>
+                <div class="prodAddr infoGroup">
+                    <span class="itemlabel">Địa chỉ giao:</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.Address}}</span>
+                </div>
+                <div class="prodTime infoGroup">
+                    <span class="itemlabel">Thời gian giao:</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.DateTime | date: 'hh:mm a dd/MM/yyyy'}}</span>
+                </div>
+                <div class="prodDesc infoGroup">
+                    <span class="itemlabel">Mô tả:</span>
+                    <span class="itemVal">{{orderDetail.Description}}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto text-center">
+                    <button type="button" *ngIf="CurrentUser.Role != 'Shipper'" class="btn main-btn w-100 mt-2"
+                        (click)="gotToCusConfirm()">Xác nhận với Khách
+                        hàng</button>
+                    <button type="button" *ngIf="CurrentUser.Role == 'Shipper'" class="btn main-btn w-100 mt-2"
+                        (click)="gotToCusConfirm()">Chụp ảnh</button>
+                </div>
+                <div class="col-10 mx-auto text-center">
+                    <button type="button" class="btn grey-btn w-100 mt-2" (click)="confirm()">Xong</button>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>

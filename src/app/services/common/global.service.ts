@@ -13,6 +13,7 @@ import { LocalService } from './local.service';
 import { Customer } from 'src/app/models/entities/customer.entity';
 
 declare function alert(message: string, alertType: number): any;
+declare function isOnMobile(): any;
 
 declare function confirmDialog(message: string, okCallback: () => void, noCallback: () => void, cancelCallback: () => void): any;
 declare function openConfirm(message: string, okCallback: () => void, noCallback: () => void, cancelCallback: () => void): any;
@@ -43,6 +44,7 @@ export class GlobalService {
     currentWards: Ward[];
     globalCustomer: Customer;
     isEdittingOrder = false;
+    isRememberPassWillCheck = false;
 
     navigateOnClick = new Subject<boolean>();
     navigateOnClickEmitter$ = this.navigateOnClick.asObservable;
@@ -58,9 +60,12 @@ export class GlobalService {
         window[key] = {
             component: this,
             zone: this.ngZone,
-            toastShowing: (message, alertType) => this.toastTrShowing(message, alertType)
+            toastShowing: (message, alertType) => this.toastTrShowing(message, alertType),
+
         };
     }
+
+
 
     startLoading() {
 
@@ -85,6 +90,10 @@ export class GlobalService {
         if (this.loadingCount <= 0) {
             this.loadingCount = 0;
         }
+    }
+
+    isOnMobile(): any {
+        return isOnMobile();
     }
 
     setStatusBarColor(isDark: boolean) {

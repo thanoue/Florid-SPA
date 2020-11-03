@@ -6,8 +6,9 @@ import html2canvas from 'html2canvas';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { LoginModel } from 'src/app/models/entities/user.entity';
-import { OnlineUserService } from 'src/app/services/online.user.service';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
+
+declare function getLocation(onSuccess: (location: any) => void, onFailed: (location: any) => void): any;
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,9 @@ export class LoginComponent extends BaseComponent {
 
   constructor(private router: Router, protected activatedRoute: ActivatedRoute) {
     super();
+
+    LocalService.clear();
+    
   }
 
   protected Init() {

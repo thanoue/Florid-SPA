@@ -7,8 +7,10 @@ import { OrderViewModel, OrderDetailViewModel } from 'src/app/models/view.models
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { ORDER_DETAIL_STATES } from 'src/app/app.constants';
+import { PrintJob, PrintSaleItem } from 'src/app/models/entities/printjob.entity';
+import { or } from 'sequelize/types';
+import { PrintJobService } from 'src/app/services/print-job.service';
 
-declare function cusOrdersBinding(): any;
 
 @Component({
   selector: 'app-customer-orders',
@@ -25,20 +27,71 @@ export class CustomerOrdersComponent extends BaseComponent {
 
   protected PageCompnent: PageComponent = new PageComponent('Đơn của khách', MenuItems.Customer);
 
-  constructor(private orderService: OrderService, private orderDetailService: OrderDetailService) { super(); }
+  constructor(private printJobService: PrintJobService, private orderService: OrderService, private orderDetailService: OrderDetailService) { super(); this.orders = []; }
 
   protected Init() {
-
-    this.orders = [];
-
     this.orderService.getOrderViewModelsByCusId(this.customer.Id)
       .then(orderVMs => {
         this.orders = orderVMs;
-        cusOrdersBinding();
       });
   }
 
   getState(state: OrderDetailStates): string {
     return ORDER_DETAIL_STATES.filter(p => p.State == state)[0].DisplayName;
+  }
+
+  getDetailDiscount(price: number, percentDiscount: number, amountDidcount: number): number {
+
+    let discount = 0;
+
+    if (percentDiscount && percentDiscount > 0)
+      discount = (price / 100) * percentDiscount;
+
+    if (amountDidcount && amountDidcount > 0)
+      discount = discount + amountDidcount;
+
+    return discount;
+  }
+
+  doPrintJob(order: OrderViewModel) {
+
+    console.log(order);
+
+    let tempSummary = 0;
+    const products: PrintSaleItem[] = [];
+
+    order.OrderDetails.forEach(product => {
+      products.push({
+        productName: product.ProductName,
+        index: product.Index + 1,
+        price: product.ModifiedPrice,
+        additionalFee: product.AdditionalFee,
+        discount: this.getDetailDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount)
+      });
+      tempSummary += product.ModifiedPrice;
+    });
+
+    const orderData: PrintJob = {
+      Created: (new Date()).getTime(),
+      Id: order.OrderId,
+      Active: true,
+      IsDeleted: false,
+      saleItems: products,
+      createdDate: order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
+      orderId: order.OrderId,
+      summary: tempSummary,
+      totalAmount: order.TotalAmount,
+      totalPaidAmount: order.TotalPaidAmount,
+      totalBalance: order.TotalAmount - order.TotalPaidAmount,
+      vatIncluded: order.VATIncluded,
+      memberDiscount: order.CustomerInfo.DiscountPercent,
+      scoreUsed: order.CustomerInfo.ScoreUsed,
+      gainedScore: order.CustomerInfo.GainedScore,
+      totalScore: order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
+      customerName: order.CustomerInfo.Name,
+      discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount)
+    };
+
+    this.printJobService.addPrintJob(orderData);
   }
 }

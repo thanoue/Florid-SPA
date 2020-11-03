@@ -25,7 +25,7 @@
                     </li>
                     <li [ngClass]="(currentMenu !== menus.ProductTag)?'menuItem':'menuItem active'">
                         <a routerLink="/admin/product-tags" class="menuItem-link"><i class="fa fa-tags"> </i>Tag Sản
-                            phẩm</a>    
+                            phẩm</a>
                     </li>
                 </ul>
             </li>
@@ -64,7 +64,7 @@
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
                     aria-expanded="false">
                     <span>{{userName}}</span>
-                    <img [src]="userAvt" alt="" class="rounded-circle mw-100">
+                    <img src="{{userAvt |  ImgPipe : 'UserAvt'}}" alt="" class="rounded-circle mw-100">
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="#">Account</a>

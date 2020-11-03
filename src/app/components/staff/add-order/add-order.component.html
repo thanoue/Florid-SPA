@@ -26,13 +26,15 @@
 
         <label class="title-field">Giảm giá phần trăm</label>
         <div style="margin-bottom:1vh;" class="form-group orderInfo borderless-field">
-            <input type="text" name="PercentDiscount" id="PercentDiscount" [(ngModel)]="order.PercentDiscount"
+            <input type="text" name="PercentDiscount" id="PercentDiscount"
+                (input)="onDiscountChanged($event.target.value)" [(ngModel)]="order.PercentDiscount"
                 class="orderField small-height" placeholder="%">
         </div>
 
         <label class="title-field">Giả giá tiền</label>
         <div class="form-group orderInfo borderless-field">
-            <input type="text" name="AmountDiscount" id="AmountDiscount" [(ngModel)]="order.AmountDiscount"
+            <input type="text" name="AmountDiscount" id="AmountDiscount"
+                (input)="onDiscountChanged($event.target.value)" [(ngModel)]="order.AmountDiscount"
                 class="orderField small-height" placeholder="000">
         </div>
 
@@ -47,12 +49,14 @@
                         <span
                             class="prodPriceOld">{{orderDetail.OriginalPrice | currency:'VND':'symbol-narrow':'':'vi-VN'}}
                         </span>
-                        <span class="prodCharge">Phụ phí:
-                            {{orderDetail.AdditionalFee | currency:'VND':'symbol-narrow':'':'vi-VN'}} </span>
                         <span
                             class="prodPrice">{{orderDetail.ModifiedPrice | currency:'VND':'symbol-narrow':'':'vi-VN'}}
                         </span>
-                    </div>
+                        <span class="prodCharge">Phụ phí:
+                            {{orderDetail.AdditionalFee | currency:'VND':'symbol-narrow':'':'vi-VN'}} </span>
+                        <span class="prodCharge">Giảm giá:
+                            {{getDetailDiscount(orderDetail) | currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    </div>  
                 </div>
                 <div class="itemAction">
 

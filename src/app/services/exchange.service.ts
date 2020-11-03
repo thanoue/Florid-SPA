@@ -13,6 +13,25 @@ import { environment } from 'src/environments/environment';
 })
 export class ExchangeService {
 
+    static detectMemberShipType(amount: number): MembershipTypes {
+
+        if (amount < 5000000) {
+            return MembershipTypes.NewCustomer;
+        }
+
+        if (amount >= 5000000 && amount < 10000000) {
+            return MembershipTypes.Member;
+        }
+
+        if (amount >= 10000000 && amount < 30000000) {
+            return MembershipTypes.Vip;
+        }
+
+        if (amount >= 30000000) {
+            return MembershipTypes.VVip;
+        }
+    }
+
     static getMemberDiscountPercent(membershipTypes: MembershipTypes): number {
         switch (membershipTypes) {
             case MembershipTypes.NewCustomer:
@@ -68,8 +87,12 @@ export class ExchangeService {
         }
     }
 
-    static getFinalPrice(requestPrice: number, discountPercent: number, additionalFee: number) {
-        return requestPrice - (requestPrice / 100) * discountPercent + additionalFee;
+    static getFinalPrice(requestPrice: number, discountPercent: number, additionalFee: number, isDiscount: boolean) {
+
+        if (isDiscount)
+            return requestPrice - (requestPrice / 100) * discountPercent + additionalFee;
+
+        return requestPrice + additionalFee;
     }
 
     static getGainedScore(totalAmount: number): number {

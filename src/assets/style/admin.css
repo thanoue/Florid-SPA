@@ -226,6 +226,7 @@ div.tagMenu{
 }
 .dialog-popup button {
     width: 100%;
+    height: 40px;
 }
 /* ============================================================HOME PAGE */
 /* div#home
@@ -468,18 +469,18 @@ ul.order-content {
     width: 100%;
     position: relative;
     float: left;
-    height: 50px;
+    height: 64px;
 }
 
 .order-content-item .item-top .item-code {
-    width: 28%;
+    width: 19%;
     text-align: center;
     float: left;
     font-size: 14px;
     font-weight: 600;
     color: #999;
-    height: 50px;
-    line-height: 50px;
+    height: 64px;
+    line-height: 64px;
     border-right: 1px solid;
     margin-right: 15px;
 }
@@ -524,7 +525,7 @@ ul.order-content {
     background: #97999c;
     padding: 0;
     font-size: 0;
-    top: 10px;
+    top: 17px;
     transition: 350ms;
 }
 .order-content-item .item-top button:not(.collapsed)
@@ -664,6 +665,19 @@ span.item-address {
 {
     background:#000000;
 }
+
+.item-status.on-the-way span{
+    background:#1effa1;
+}
+
+.item-status.send-back span{
+    background: #3e3e3e;
+}
+
+.item-status.fixing-request span{
+    background: #1fe8cb;
+}
+
 #colorBoard .item-status span
 {
     width: 20px;
@@ -705,7 +719,7 @@ div.actionMenu,div.tagMenu, div.actionMenu2 {
     top: auto;
     transform: translate(-50%,0);
     padding: 30px 0;
-    max-height: 50vh;
+    max-height: 55vh;
     overflow-y: scroll;
 }
 div.actionMenu a ,div.actionMenu2 a ,div.tagMenu a ,
@@ -1054,7 +1068,7 @@ div#infoRec
 input.mainForm,
 select.mainForm {
     width: 100%;
-    height: 50px;
+    height: 40px;
     border: none;
     border-bottom: 1px solid #ddd;
     font-size: 16px;
@@ -1145,7 +1159,7 @@ ul.orderDetail {
     margin-top: 1vh;
 }
 li.orderDetailItem {
-    height: 110px;
+    height: 103px;
     border-bottom: 1px solid var(--main-grey);
     padding-bottom: 5px;
     margin-bottom: 5px;
@@ -1187,7 +1201,7 @@ li.orderDetailItem:last-child {
 .itemDetail img.item-detail-thumb {
     width: 35%;
     margin-right: 5%;
-    height: 104px;
+    height: 98px;
 }
 .itemDetail .item-detail-info {
     width: 60%;
@@ -1720,7 +1734,7 @@ ul.viewedList li.viewItem span
 ul.viewedList li.viewItem span:last-child
 {
     display: inline-block;
-    width: 20%;
+    width: 31%;
 }
 .popup-content.prodDetail
 {
@@ -2679,3 +2693,13 @@ div.popupDialog select {
     margin-bottom: 0.2rem;
 }
 
+.selected-order-detail{
+    border: 4px solid #1fe8cb;
+}
+
+.custom-label{
+         width: 100%;
+        font-weight: bold;
+        text-align: left;
+        margin-bottom: 5px;
+}

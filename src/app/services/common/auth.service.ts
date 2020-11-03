@@ -7,9 +7,7 @@ import { GlobalService } from './global.service';
 import { UserService } from '../user.service';
 import { HttpService } from './http.service';
 import { API_END_POINT, LOCAL_STORAGE_VARIABLE } from 'src/app/app.constants';
-import { OnlineUserService } from '../online.user.service';
 import { OnlineUser } from 'src/app/models/entities/online.user.entity';
-import { FunctionsService } from './functions.service';
 import { RealtimeService } from '../realtime.service';
 
 @Injectable({
@@ -17,7 +15,7 @@ import { RealtimeService } from '../realtime.service';
 })
 export class AuthService {
 
-  constructor(private realTimeService: RealtimeService, private onlineUserService: OnlineUserService, private globalService: GlobalService, private userService: UserService, private httpService: HttpService) {
+  constructor(private realTimeService: RealtimeService, private globalService: GlobalService, private userService: UserService, private httpService: HttpService) {
   }
 
   static getCurrentRole(): any {

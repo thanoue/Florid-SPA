@@ -53,10 +53,13 @@ export enum OrderDetailStates {
     Added = 'Added',
     Waiting = 'Waiting',
     Making = 'Making',
+    FixingRequest = 'FixingRequest',
     Comfirming = 'Comfirming',
     DeliveryWaiting = 'DeliveryWaiting',
     Delivering = 'Delivering',
+    OnTheWay = 'OnTheWay',
     Deliveried = 'Deliveried',
+    SentBack = 'SentBack',
     Completed = 'Completed',
     Canceled = 'Canceled'
 }

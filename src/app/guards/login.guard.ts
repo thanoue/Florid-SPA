@@ -5,6 +5,8 @@ import { Roles } from '../models/enums';
 import { GlobalService } from '../services/common/global.service';
 import { LocalService } from '../services/common/local.service';
 
+declare function isOnMobile(): any;
+
 @Injectable({
     providedIn: 'root'
 })
@@ -37,7 +39,16 @@ export class LoggedInGuard implements CanActivate {
         if (LocalService.getUserId()) {
             return true;
         } else {
-            this.router.navigate(['login']);
+
+            // this.router.navigate(['login']);
+
+            if (!isOnMobile()) {
+                this.router.navigate(['login']);
+            } else {
+                console.log('is on mobile');
+                this.router.navigate(['staff-login']);
+            }
+
             return false;
         }
     }
@@ -59,10 +70,25 @@ export class AdminGuard implements CanActivate {
             return false;
 
         const role = (AuthService.getCurrentRole());
+
         if (role == Roles.Admin) {
             return true;
         } else {
-            this.router.navigate(['login']);
+
+            switch (role) {
+                case Roles.Admin:
+                case Roles.Account:
+                    this.router.navigate(['staff/orders-manage']);
+                    break;
+                case Roles.Florist:
+                    this.router.navigate(['staff/florist-main']);
+                    break;
+                case Roles.Shipper:
+                    this.router.navigate(['staff/shipper-main']);
+                    break;
+                default:
+                    break;
+            }
             return false;
         }
     }

@@ -5,7 +5,6 @@ import { map, filter, scan } from 'rxjs/operators';
 import { GlobalService } from 'src/app/services/common/global.service';
 import { Subscription } from 'rxjs';
 import { LocalService } from 'src/app/services/common/local.service';
-import { OnlineUserService } from 'src/app/services/online.user.service';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { RealtimeService } from 'src/app/services/realtime.service';
@@ -21,7 +20,7 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   title: string;
   headerUpdate: Subscription;
 
-  constructor(public router: Router, private globalService: GlobalService, private onlineUserService: OnlineUserService, private authService: AuthService
+  constructor(public router: Router, private globalService: GlobalService, private authService: AuthService
     , private printJobService: PrintJobService, private realtimeService: RealtimeService) {
 
     this.navigateClass = '';
@@ -42,7 +41,7 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
 
     this.realtimeService.forceLogoutRegister((message) => {
-      
+
       this.globalService.showError(message);
       this.authService.logOut((isSuccess) => {
         if (isSuccess) {

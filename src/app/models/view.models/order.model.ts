@@ -97,6 +97,16 @@ export class OrderDetailViewModel {
     PercentDiscount: number;
     AmountDiscount: number;
 
+    ShippingSessionId: number;
+
+    MakingRequestTime: number;
+    DeliveryCompletedTime: number;
+    MakingStartTime: number;
+    MakingCompletedTime: number;
+    MakingNote: string;
+    ShippingNote: string;
+    FixingFloristId: number;
+
     SeenUsers: ODSeenUserInfo[];
 
     constructor() {
@@ -170,6 +180,12 @@ export class OrderDetailViewModel {
 
         const viewModel = new OrderDetailViewModel();
 
+        viewModel.DeliveryCompletedTime = model.DeliveryCompletedTime;
+        viewModel.MakingNote = model.MakingNote;
+        viewModel.MakingCompletedTime = model.MakingCompletedTime;
+        viewModel.MakingStartTime = model.MakingStartTime;
+        viewModel.ShippingSessionId = model.ShippingSessionId;
+        viewModel.MakingRequestTime = model.MakingRequestTime;
         viewModel.ResultImageUrl = model.ResultImageUrl;
         viewModel.DeliveryImageUrl = model.DeliveryImageUrl;
         viewModel.CustomerName = model.CustomerName;
@@ -193,6 +209,8 @@ export class OrderDetailViewModel {
         viewModel.PurposeOf = model.PurposeOf;
         viewModel.PercentDiscount = model.PercentDiscount;
         viewModel.AmountDiscount = model.AmountDiscount;
+        viewModel.ShippingNote = model.ShippingNote;
+        viewModel.FixingFloristId = model.FixingFloristId;
 
         if (model.SeenUsers && model.SeenUsers.length > 0) {
             model.SeenUsers.forEach(user => {
@@ -265,17 +283,20 @@ export class OrderCustomerInfoViewModel {
         this.ReceiverInfos = [];
     }
 
-    static toViewModel(customer: Customer): OrderCustomerInfoViewModel {
-        const viewModel = new OrderCustomerInfoViewModel();
+    static toViewModel(customer: Customer, vm: OrderCustomerInfoViewModel = null): OrderCustomerInfoViewModel {
 
-        viewModel.Id = customer.Id;
-        viewModel.Name = customer.FullName;
-        viewModel.PhoneNumber = customer.PhoneNumber;
-        viewModel.MembershipType = customer.MembershipInfo.MembershipType;
-        viewModel.DiscountPercent = ExchangeService.getMemberDiscountPercent(customer.MembershipInfo.MembershipType);
-        viewModel.AvailableScore = customer.MembershipInfo.AvailableScore;
-        Object.assign(viewModel.ReceiverInfos, customer.ReceiverInfos);
+        if (!vm || vm == null)
+            vm = new OrderCustomerInfoViewModel();
 
-        return viewModel;
+        vm.Id = customer.Id;
+        vm.Name = customer.FullName;
+        vm.PhoneNumber = customer.PhoneNumber;
+        vm.MembershipType = customer.MembershipInfo.MembershipType;
+        vm.DiscountPercent = ExchangeService.getMemberDiscountPercent(customer.MembershipInfo.MembershipType);
+        vm.AvailableScore = customer.MembershipInfo.AvailableScore;
+
+        Object.assign(vm.ReceiverInfos, customer.ReceiverInfos);
+
+        return vm;
     }
 }

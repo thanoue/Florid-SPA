@@ -20,6 +20,7 @@ export class User {
     Email: string;
     IsPrinter = false;
     Password = "";
+    IsExternalShipper = false;
 
 
     constructor() {
