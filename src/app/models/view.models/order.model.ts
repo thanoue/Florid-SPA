@@ -104,6 +104,8 @@ export class OrderDetailViewModel {
     MakingStartTime: number;
     MakingCompletedTime: number;
     MakingNote: string;
+    ShippingNote: string;
+    FixingFloristId: number;
 
     SeenUsers: ODSeenUserInfo[];
 
@@ -207,6 +209,8 @@ export class OrderDetailViewModel {
         viewModel.PurposeOf = model.PurposeOf;
         viewModel.PercentDiscount = model.PercentDiscount;
         viewModel.AmountDiscount = model.AmountDiscount;
+        viewModel.ShippingNote = model.ShippingNote;
+        viewModel.FixingFloristId = model.FixingFloristId;
 
         if (model.SeenUsers && model.SeenUsers.length > 0) {
             model.SeenUsers.forEach(user => {

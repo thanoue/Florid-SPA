@@ -665,6 +665,19 @@ span.item-address {
 {
     background:#000000;
 }
+
+.item-status.on-the-way span{
+    background:#1effa1;
+}
+
+.item-status.send-back span{
+    background: #3e3e3e;
+}
+
+.item-status.fixing-request span{
+    background: #1fe8cb;
+}
+
 #colorBoard .item-status span
 {
     width: 20px;

@@ -155,15 +155,27 @@ export const ORDER_DETAIL_STATES = [
     },
     {
         State: OrderDetailStates.DeliveryWaiting,
-        DisplayName: 'Đã xác nhận SP, chưa có người giao'
+        DisplayName: 'Đã xác nhận SP, chưa có Shipper'
     },
     {
         State: OrderDetailStates.Delivering,
+        DisplayName: 'Đã chọn được Shipper'
+    },
+    {
+        State: OrderDetailStates.OnTheWay,
         DisplayName: 'Đang giao'
     },
     {
         State: OrderDetailStates.Deliveried,
         DisplayName: 'Đã giao, đang xác nhận giao'
+    },
+    {
+        State: OrderDetailStates.SentBack,
+        DisplayName: 'Đã trả đơn về'
+    },
+    {
+        State: OrderDetailStates.FixingRequest,
+        DisplayName: 'Đang yêu cầu sửa'
     },
     {
         State: OrderDetailStates.Completed,
@@ -172,7 +184,7 @@ export const ORDER_DETAIL_STATES = [
     {
         State: OrderDetailStates.Canceled,
         DisplayName: 'Đã huỷ'
-    },
+    }
 ]
 
 export const REQUEST_TIMEOUT = 30000;

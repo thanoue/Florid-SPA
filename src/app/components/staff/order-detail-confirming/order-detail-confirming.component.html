@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="prodInfo cusScroll">
-                <div class="prodQuan infoGroup">
+                <div class="prodQuan infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
                     <span class="itemlabel">VAT: </span>
                     <span class="itemVal" *ngIf="orderDetail.IsVATIncluded">Đã bao gồm</span>
                     <span class="itemVal" *ngIf="!orderDetail.IsVATIncluded">Chưa bao gồm</span>
@@ -60,7 +60,7 @@
                 <div class="col-10 mx-auto text-center">
                     <button type="button" class="btn grey-btn w-100 mt-2" (click)="confirm()">Xong</button>
                 </div>
-            </div>
+            </div>  
         </div>
     </div>
 </div>

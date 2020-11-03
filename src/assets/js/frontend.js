@@ -540,6 +540,68 @@ function getNumberInput(callback, placeHolder, oldValue) {
     });
 
 }
+
+function getShippingNoteDialog(btnTitle, callback) {
+
+    var html = `<div id="shipping-note-popup" class="popup-content">
+    <div class="form-group">
+
+        <label class="custom-label">Ghi chú: </label>
+
+        <textarea id="shippingNote" style="width:100%;height:130px"
+            name="shippingNote" class="mainForm" ></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-6 mx-auto text-center">
+            <button type="button" id="submit-btn" class="btn main-btn w-100 mt-3">${btnTitle}</button>
+        </div>
+        <div class="col-6 mx-auto text-center">
+            <button type="button" id="cancel-btn" class="btn grey-btn w-100 mt-3">Hủy</button>
+        </div>
+    </div>
+    
+    </div>`;
+
+    appendInBody();
+
+    jQuery("body").append(html);
+
+    jQuery("#shipping-note-popup").fadeIn(250);
+
+
+    jQuery(".overlay-dark").one('click', function () {
+        jQuery("#shipping-note-popup").hide(250, function () {
+            jQuery(".overlay-dark").remove();
+            jQuery(this).remove();
+        });
+    });
+
+    jQuery('#shipping-note-popup #cancel-button').one('click', function () {
+        jQuery("#shipping-note-popup").hide(250, function () {
+            jQuery(".overlay-dark").remove();
+            jQuery(this).remove();
+        });
+    });
+
+    jQuery('#shipping-note-popup #submit-btn').one('click', function () {
+
+        var val = jQuery('#shipping-note-popup #shippingNote').first().val();
+
+        if (!val) {
+            return;
+        }
+
+        jQuery("#shipping-note-popup").hide(250, function () {
+            jQuery(".overlay-dark").remove();
+            jQuery(this).remove();
+            callback(val);
+        });
+
+    });
+
+}
+
 function getTextInput(callback, placeHolder, oldValue) {
 
     var html = `<div id="inputDialog" class="popup-content dialog-popup"><div class="form-group">
@@ -680,18 +742,52 @@ function openTagMenu() {
     });
 }
 
-function makingTimeRequest(resCallback) {
+function chooseFlorist(callback) {
+
+    appendInBody();
+
+    jQuery("#viewed").fadeIn(250);
+
+    jQuery(".viewItem").one('click', function () {
+
+        var id = jQuery(this).attr('id');
+
+        jQuery('#viewed').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+            callback(id);
+        });
+
+    });
+
+    jQuery(".overlay-dark:not(.layer2)").one('click', function () {
+        jQuery('#viewed').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    });
+}
+
+function makingTimeRequest(saveCallback, chooseFloristCallback) {
 
     appendInBody();
 
     jQuery("#makingTimeRequest").fadeIn(350);
 
-    jQuery("#makingTimeRequest #submit-btn").on('click', function () {
-
-        resCallback();
+    jQuery("#makingTimeRequest #submit-btn").one('click', function () {
 
         jQuery('#makingTimeRequest').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();
+            saveCallback();
+
+        });
+
+    });
+
+    jQuery("#makingTimeRequest #choose-florist-btn").one('click', function () {
+
+        jQuery('#makingTimeRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+            chooseFloristCallback();
+
         });
 
     });
@@ -702,11 +798,12 @@ function makingTimeRequest(resCallback) {
         });
     })
 
-    jQuery(".overlay-dark:not(.layer2)").click(function () {
+    jQuery(".overlay-dark:not(.layer2)").one('click', function () {
         jQuery('#makingTimeRequest').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();
         });
     });
+
 }
 
 function addressRequest(districts, resCallback, requestNewWards) {
@@ -807,4 +904,12 @@ function rotateImage() {
 
     document.querySelector('#selected-image').style.transform = `rotate(${rotationAmount}deg)`;
 
+}
+
+
+function locationDetection(position) {
+
+    if (typeof Android !== "undefined" && Android !== null) {
+        return Android.locationDetected(JSON.stringify(position));
+    }
 }

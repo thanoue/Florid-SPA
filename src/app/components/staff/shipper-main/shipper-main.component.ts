@@ -5,9 +5,12 @@ import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { ODSeenUserInfo, ODShipperInfo } from 'src/app/models/entities/order.entity';
+import { OrderService } from 'src/app/services/order.service';
 
 declare function customerSupport(): any;
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
+declare function getShippingNoteDialog(btnTitle: string, callback: (note: string) => void): any;
+declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string) => void) => void, placeHolder: string, oldValue: number): any;
 
 @Component({
   selector: 'app-shipper-main',
@@ -28,11 +31,18 @@ export class ShipperMainComponent extends BaseComponent {
   ];
 
   shippingMenuItems = [
-    'Hoàn thành đơn',
+    'Giao đơn',
     'Xem chi tiết đơn',
   ];
 
-  constructor(private router: Router, private orderDetailService: OrderDetailService) {
+  onTheWayMenuItems = [
+    'Hoàn thành đơn',
+    'Chụp ảnh giao hàng',
+    'Trả hàng',
+    'Xem chi tiết đơn'
+  ];
+
+  constructor(private router: Router, private orderService: OrderService, private orderDetailService: OrderDetailService) {
     super();
     this.waitingOrderDetails = [];
     this.shippingOrderDetails = [];
@@ -92,6 +102,65 @@ export class ShipperMainComponent extends BaseComponent {
       });
   }
 
+  updateFinalState(orderDetail: OrderDetailViewModel, btnTitl: string, destState: OrderDetailStates) {
+
+    getShippingNoteDialog(btnTitl, (note) => {
+
+      this.orderService.getById(orderDetail.OrderId)
+        .then(order => {
+
+          let balance = order.TotalAmount - order.TotalPaidAmount;
+          if (balance > 0) {
+
+            getNumberValidateInput((res, validateCallback) => {
+
+              if (res > balance) {
+                validateCallback(false, 'Thanh toán vượt quá thành tiền!');
+                return;
+              } else if (res <= 0) {
+                validateCallback(false, 'Thanh toán phải lớn hơn 0!');
+                return;
+              }
+
+              validateCallback(true, '');
+
+              this.orderService.updateFields(orderDetail.OrderId, {
+                TotalPaidAmount: order.TotalPaidAmount + res
+              })
+                .then(() => {
+                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+                    DeliveryCompletedTime: (new Date()).getTime(),
+                    State: destState,
+                    MakingSortOrder: 0,
+                    ShippingSortOrder: 0,
+                    ShippingNote: note
+                  }).then(data => {
+                    this.loadShippingDetails();
+                  });
+                });
+
+            }, 'Số tiền thanh toán...', balance);
+
+          } else {
+
+            this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+              DeliveryCompletedTime: (new Date()).getTime(),
+              State: destState,
+              MakingSortOrder: 0,
+              ShippingSortOrder: 0,
+              ShippingNote: note
+            }).then(data => {
+              this.loadShippingDetails();
+            });
+
+          }
+
+        });
+
+    });
+
+  }
+
   getMenu(orderDetail: OrderDetailViewModel) {
 
     menuOpen((index) => {
@@ -113,19 +182,66 @@ export class ShipperMainComponent extends BaseComponent {
                 });
 
               break;
-            case OrderDetailStates.Delivering:
+
+            case OrderDetailStates.OnTheWay:
 
               this.openConfirm('Hoàn thành giao đơn?', () => {
 
-                this.globalOrderDetail = orderDetail;
-                this.router.navigate(['staff/order-detail-confirming']);
+                this.updateFinalState(orderDetail, 'Hoàn thành', OrderDetailStates.Deliveried);
 
-              })
+              });
+
+              break;
+
+            case OrderDetailStates.Delivering:
+
+              this.openConfirm('Bắt đầu giao đơn này?', () => {
+
+                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+                  State: OrderDetailStates.OnTheWay,
+                }).then(() => {
+                  this.loadShippingDetails();
+                });
+
+              });
 
               break;
           }
+
           break;
+
         case 1:
+
+          switch (orderDetail.State) {
+
+            case OrderDetailStates.OnTheWay:
+
+              this.globalOrderDetail = orderDetail;
+              this.router.navigate(['staff/customer-confirming']);
+
+              break;
+
+            default:
+
+              this.globalOrderDetail = orderDetail;
+              this.router.navigate(['staff/order-detail-view']);
+
+              break;
+          }
+
+          break;
+
+        case 2:
+
+          this.openConfirm('Trả đơn này?', () => {
+
+            this.updateFinalState(orderDetail, 'Trả đơn', OrderDetailStates.SentBack);
+
+          });
+
+          break;
+
+        case 3:
 
           this.globalOrderDetail = orderDetail;
           this.router.navigate(['staff/order-detail-view']);
@@ -133,7 +249,7 @@ export class ShipperMainComponent extends BaseComponent {
           break;
 
       }
-    }, orderDetail.State === OrderDetailStates.DeliveryWaiting ? this.waitingMenuItems : this.shippingMenuItems);
+    }, orderDetail.State === OrderDetailStates.DeliveryWaiting ? this.waitingMenuItems : orderDetail.State === OrderDetailStates.Delivering ? this.shippingMenuItems : this.onTheWayMenuItems);
 
   }
 }

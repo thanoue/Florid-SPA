@@ -153,6 +153,7 @@ export class CustomerConfirmComponent extends BaseComponent {
               const file = new File([blob], "shipping.png", { type: "image/png" });
               this.orderDetailService.shippingConfirm(this.orderDetail.OrderDetailId, file)
                 .then(res => {
+                  
                   this.router.navigate(['staff/shipper-main']);
                 });
 

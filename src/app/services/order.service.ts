@@ -79,6 +79,8 @@ export class OrderService {
       orderDetailVM.ResultImageUrl = orderDetail.ResultImageUrl;
       orderDetailVM.MakingNote = orderDetail.MakingNote;
       orderDetailVM.DeliveryImageUrl = orderDetail.DeliveryImageUrl;
+      orderDetailVM.ShippingNote = orderDetail.ShippingNote;
+      orderDetailVM.FixingFloristId = orderDetailVM.FixingFloristId;
 
       orderVM.OrderDetails.push(orderDetailVM);
 

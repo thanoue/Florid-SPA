@@ -54,7 +54,7 @@
             </div>
             <div class="tab-pane fade" id="giaohoa" role="tabpanel" aria-labelledby="nav2">
                 <ul class="order-content cusScroll">
-                    <div class="order-content-item product-item" *ngFor="let detail of shippingOrderDetails; let i = index">
+                    <div class="order-content-item product-item"  [ngClass]="detail.State === 'OnTheWay' ? 'selected-order-detail' : ''"  *ngFor="let detail of shippingOrderDetails; let i = index">
                         <div class="item-top">
                             <span class="item-code">{{detail.OrderId}}_{{detail.Index +1}}</span>
                             <div class="item-info">
@@ -95,6 +95,9 @@
         </div>
     </div>
 </div>
+
+
+
 <div class="customer-support">
     <img src="{{CurrentUser.Avt |  ImgPipe : 'UserAvt'}}" alt="" class="customer-avatar">
     <p class="customer-name">{{CurrentUser.FullName}}</p>

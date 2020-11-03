@@ -51,13 +51,17 @@
                     <span class="itemlabel">Yêu cầu xong trước:</span>
                     <span class="itemVal">{{orderDetail.MakingRequestTime | date: 'hh:mm a dd/MM/yyyy'}}</span>
                 </div>
-                <div class="prodDesc infoGroup">
+                <div *ngIf="orderDetail.Description != ''" class="prodDesc infoGroup">
                     <span class="itemlabel">Mô tả KH:</span>
                     <span class="itemVal">{{orderDetail.Description}}</span>
                 </div> 
-                <div class="prodDesc infoGroup">
+                <div class="prodDesc infoGroup" *ngIf="orderDetail.MakingNote != ''">
                     <span class="itemlabel">Ghi chú thực hiện:</span>
                     <span class="itemVal">{{orderDetail.MakingNote}}</span>
+                </div>
+                <div class="prodDesc infoGroup" *ngIf="orderDetail.ShippingNote != ''">
+                    <span class="itemlabel">Ghi chú giao hàng:</span>
+                    <span class="itemVal">{{orderDetail.ShippingNote}}</span>
                 </div>
             </div>
             <div *ngIf="CurrentUser.Role == 'Admin' || CurrentUser.Role == 'Account' " class="viewed" (click)="openViewed()"><img

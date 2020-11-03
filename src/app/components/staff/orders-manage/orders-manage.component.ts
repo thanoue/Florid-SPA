@@ -3,7 +3,7 @@ import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from '../../../models/view.models/order.model';
 import { OrderDetail } from 'src/app/models/entities/order.entity';
-import { OrderDetailStates } from 'src/app/models/enums';
+import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
@@ -17,13 +17,17 @@ import { DatePipe } from '@angular/common';
 import { shareReplay, timeout } from 'rxjs/operators';
 import { rejects } from 'assert';
 import { read } from 'fs';
+import { User } from 'src/app/models/entities/user.entity';
+import { UserService } from 'src/app/services/user.service';
 
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
-declare function makingTimeRequest(callBack: () => void): any;
+declare function makingTimeRequest(saveCallBack: () => void, chooseFloristCallBack: () => void): any;
+declare function chooseFlorist(saveCallBack: (id: number) => void,): any;
 declare function saveFile(url, productId, callback: () => void): any;
 declare function filterOrderByState(menuitems: { Name: string; Value: number; }[], callback: (val: any) => void): any;
+declare function locationDetection(location: any): any;
 
 export interface ISelectedDetail {
   FloristName: string;
@@ -48,6 +52,7 @@ export class OrdersManageComponent extends BaseComponent {
   orders: OrderViewModel[];
   states = OrderDetailStates;
   makingNote: string;
+  florists: User[];
 
   selectedDetail = {} as ISelectedDetail;
 
@@ -62,13 +67,14 @@ export class OrdersManageComponent extends BaseComponent {
     protected productService: ProductService,
     private orderDetailService: OrderDetailService,
     protected http: HttpClient,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe,
+    private userService: UserService) {
 
     super();
     this.globalService.currentOrderViewModel = new OrderViewModel();
     this.selectMakingRequestTime = new Date();
     this.orders = [];
-
+    this.florists = [];
   }
 
   filterByState() {
@@ -151,6 +157,24 @@ export class OrdersManageComponent extends BaseComponent {
         this.orders = orders;
 
       });
+
+    // navigator.geolocation.getCurrentPosition((pos) => {
+
+    //   console.log(pos);
+
+    //   locationDetection(pos);
+
+    // }, (err) => {
+
+    //   this.showError(err.message);
+    //   console.log(err);
+
+    // })
+
+    this.userService.getByRole(Roles.Florist)
+      .then(users => {
+        this.florists = users;
+      })
 
     this.askForRememberPassword();
 
@@ -258,7 +282,10 @@ export class OrdersManageComponent extends BaseComponent {
       case OrderDetailStates.Delivering:
         this.updateDeliveringetailState(orderDetail, selectedOrder);
         break;
-
+      case OrderDetailStates.Completed:
+        this.globalOrderDetail = orderDetail;
+        this.globalOrder = selectedOrder;
+        this.router.navigate(['staff/order-detail-view']);
     }
   }
 
@@ -266,6 +293,7 @@ export class OrdersManageComponent extends BaseComponent {
 
     let items = [
       'Xem chi tiết',
+      'Hoàn thành đơn',
       'Huỷ chi tiết đơn'
     ];
 
@@ -277,6 +305,15 @@ export class OrdersManageComponent extends BaseComponent {
           this.router.navigate(['staff/order-detail-view']);
 
           break;
+        case 1:
+
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+            State: OrderDetailStates.Deliveried,
+            ShippingSortOrder: 0,
+          })
+            .then(() => {
+              orderDetail.State = OrderDetailStates.Deliveried;
+            });
 
         case 2:
 
@@ -382,29 +419,13 @@ export class OrdersManageComponent extends BaseComponent {
           this.selectMakingRequestTime = orderDetail.DeliveryInfo.DateTime;
 
           makingTimeRequest(() => {
-
-            this.orderDetailService.getNextMakingSortOrder()
-              .then(sortOrder => {
-
-                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                  State: OrderDetailStates.Waiting,
-                  MakingSortOrder: sortOrder,
-                  MakingRequestTime: this.selectMakingRequestTime.getTime(),
-                  FloristId: 0,
-                  ResultImageUrl: '',
-                  CompletedTime: 0
-                })
-                  .then(() => {
-
-                    orderDetail.State = OrderDetailStates.Waiting;
-                    orderDetail.MakingSortOrder = sortOrder;
-                    orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-
-                  });
-
-              });
-
+            this.transferToFlorist(orderDetail, order)
+          }, () => {
+            chooseFlorist((floristId) => {
+              this.transferToFlorist(orderDetail, order, +floristId);
+            });
           });
+
           break;
         case 2:
 
@@ -533,6 +554,28 @@ export class OrdersManageComponent extends BaseComponent {
 
   }
 
+  transferToFlorist(orderDetail: OrderDetailViewModel, order: OrderViewModel, floristId?: number) {
+    this.orderDetailService.getNextMakingSortOrder()
+      .then(sortOrder => {
+        this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+          State: floristId ? OrderDetailStates.Making : OrderDetailStates.Waiting,
+          MakingSortOrder: sortOrder,
+          MakingRequestTime: this.selectMakingRequestTime.getTime(),
+          MakingNote: this.makingNote,
+          FloristId: floristId ? floristId : 0
+        })
+          .then(() => {
+
+            orderDetail.State = floristId ? OrderDetailStates.Waiting : OrderDetailStates.Waiting;
+            orderDetail.MakingSortOrder = sortOrder;
+            orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
+            orderDetail.MakingNote = this.makingNote;
+
+          });
+
+      });
+  }
+
   updateAddedDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
     let items = [
@@ -550,28 +593,13 @@ export class OrdersManageComponent extends BaseComponent {
           this.makingNote = orderDetail.MakingNote ? orderDetail.MakingNote : '';
 
           makingTimeRequest(() => {
+            this.transferToFlorist(orderDetail, order);
+          }, () => {
 
-            this.orderDetailService.getNextMakingSortOrder()
-              .then(sortOrder => {
-
-                console.log('next sort order:', sortOrder);
-
-                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                  State: OrderDetailStates.Waiting,
-                  MakingSortOrder: sortOrder,
-                  MakingRequestTime: this.selectMakingRequestTime.getTime(),
-                  MakingNote: this.makingNote
-                })
-                  .then(() => {
-
-                    orderDetail.State = OrderDetailStates.Waiting;
-                    orderDetail.MakingSortOrder = sortOrder;
-                    orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-                    orderDetail.MakingNote = this.makingNote;
-
-                  });
-
-              });
+            chooseFlorist((id) => {
+              console.log('selected: id', id);
+              this.transferToFlorist(orderDetail, order, +id);
+            });
 
           });
 
