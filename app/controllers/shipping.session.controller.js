@@ -39,6 +39,7 @@ exports.assignSingleOD = (req, res) => {
 }
 
 exports.getShippingOrderDetails = (req, res) => {
+
     let shipperId = req.body.shipperId;
 
     ShippingSession.findAll({
@@ -50,7 +51,9 @@ exports.getShippingOrderDetails = (req, res) => {
                 model: OrderDetail,
                 as: 'orderDetails',
                 where: {
-                    State: 'Delivering'
+                    State: {
+                        [Op.in]: ['Delivering', 'OnTheWay']
+                    }
                 }
             }
         ]

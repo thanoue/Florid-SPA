@@ -110,6 +110,13 @@ module.exports = (sequelize, Sequelize) => {
         },
         PercentDiscount: {
             type: Sequelize.BIGINT
+        },
+        ShippingNote: {
+            type: Sequelize.STRING
+        },
+        FixingFloristId: {
+            type: Sequelize.INTEGER,
+            allowNull: true
         }
     });
 
