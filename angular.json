@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "florid": {
+    "florid-app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -131,7 +131,7 @@
       }
     }
   },
-  "defaultProject": "florid",
+  "defaultProject": "florid-app",
   "cli": {
     "analytics": "7797043f-7a9b-4048-9d54-cf93793c6f90"
   }

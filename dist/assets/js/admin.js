@@ -1,6 +1,7 @@
 
 function initLeftMenu() {
     jQuery(".mainMenu li.hasChildren").append(`<span class="showSubMenu"></span>`);
+
     jQuery(".showSubMenu").click(function () {
         jQuery(this).parent().toggleClass("show");
     });
@@ -8,6 +9,8 @@ function initLeftMenu() {
     jQuery(".menuToggle").click(function () {
         jQuery(".adminWrapper").toggleClass("mini");
     });
+
+    jQuery(".showSubMenu").click();
 }
 
 function confirmDialog(message, yesCallback, noCallback, cancelCallback) {
@@ -114,12 +117,9 @@ function messageDialog(message, okCallback) {
     });
 }
 
-function cusOrdersBinding() {
 
-    jQuery(".openOrderProducts").click(function () {
-        jQuery(this).next().toggle(250);
-    });
-
+function showOrderDetail(e) {
+    jQuery(e).parent().parent().next().toggle(250);
 }
 
 //Add New Object
@@ -408,6 +408,10 @@ function showCategoryEditPopup() {
 
 function showUserEditPopup() {
     jQuery('#userAdd').slideDown(350);
+}
+
+function showPromotionEditPopup() {
+    jQuery('#promotionAddPopup').slideDown(350);
 }
 
 hideAdd = () => {

@@ -23,12 +23,6 @@ function setStatusBarColor(isDark) {
     }
 }
 
-function doPrintJob(data) {
-    console.log('do print job:', data);
-    if (typeof Android !== "undefined" && Android !== null) {
-        Android.doPrintJob(JSON.stringify(data));
-    }
-}
 
 
 function getInput(resCallback) {
@@ -66,6 +60,24 @@ function setDateTime(year, month, day, hour, minute) {
 
 function backNavigate() {
     window.BaseReference.zone.run(() => { window.BaseReference.forceBackNavigate(); });
+}
+
+function doPrintJob(data) {
+    if (typeof Android !== "undefined" && Android !== null) {
+        Android.doPrintJob(JSON.stringify(data));
+    } else {
+        errorToast('Không thể kết nối tới máy in!');
+    }
+}
+
+function reprintOrderConfirm() {
+    window.BaseReference.zone.run(() => {
+        window.BaseReference.printConfirm(function () {
+            if (typeof Android !== "undefined" && Android !== null) {
+                Android.doOldPrintJob();
+            }
+        });
+    })
 }
 
 function isOnTerminal() {
@@ -157,9 +169,143 @@ function shareImageCusWithData(img, contactInfo) {
         Android.shareNewImage(img, contactInfo);
 
     } else {
-        var res = `${contactInfo}FLORID${img}`;
-        webkit.messageHandlers.callback.postMessage(res);
+        // var res = `${contactInfo}FLORID${img}`;
+
+        var res = {
+            dataType: 'sharingImg',
+            data: JSON.stringify({
+                contactInfo: contactInfo,
+                imgData: img
+            })
+        }
+        webkit.messageHandlers.callback.postMessage(JSON.stringify(res));
     }
 
     return;
+}
+
+function isOnMobile() {
+
+    if (typeof Android !== "undefined" && Android !== null) {
+        return true;
+    }
+
+    if (typeof webkit !== "undefined" && webkit != null && webkit.messageHandlers && webkit.messageHandlers.callback) {
+        return true;
+    }
+
+    return false;
+
+}
+
+function savedLoginInforGettingRequest() {
+
+    if (!isOnMobile())
+        return;
+
+    if (typeof Android !== "undefined" && Android !== null) {
+
+        Android.savedLoginInforGettingRequest();
+
+    } else {
+
+        var res = {
+            dataType: 'savedLoginInforGettingRequest',
+            data: ''
+        }
+
+        webkit.messageHandlers.callback.postMessage(JSON.stringify(res));
+    }
+}
+
+function isRememberPassChecking() {
+
+    if (!isOnMobile())
+        return;
+
+    if (typeof Android !== "undefined" && Android !== null) {
+
+        Android.isRememberPassChecking();
+
+    } else {
+
+        var res = {
+            dataType: 'isRememberPassChecking',
+            data: ''
+        }
+
+        webkit.messageHandlers.callback.postMessage(JSON.stringify(res));
+    }
+}
+
+function savedLoginInforReturn(loginName, passcode) {
+    window.BaseReference.zone.run(() => { window.BaseReference.savedLoginInforReturn(loginName, passcode); });
+}
+
+function rememberPassConfirm() {
+    window.BaseReference.zone.run(() => { window.BaseReference.rememberPassConfirm(); });
+}
+
+function mobileLogin(loginName, passcode) {
+
+    if (!isOnMobile())
+        return;
+
+    if (typeof Android !== "undefined" && Android !== null) {
+
+        Android.mobileLogin(loginName, passcode);
+
+    } else {
+
+        var res = {
+            dataType: 'mobileLogin',
+            data: JSON.stringify({
+                loginName: loginName,
+                passcode: passcode
+            })
+        }
+
+        webkit.messageHandlers.callback.postMessage(JSON.stringify(res));
+    }
+
+}
+
+function passwordSaving() {
+
+    if (!isOnMobile())
+        return;
+
+    if (typeof Android !== "undefined" && Android !== null) {
+
+        Android.passwordSaving();
+
+    } else {
+
+        var res = {
+            dataType: 'passwordSaving',
+            data: ''
+        }
+
+        webkit.messageHandlers.callback.postMessage(JSON.stringify(res));
+    }
+}
+
+function passwordClearing() {
+
+    if (!isOnMobile())
+        return;
+
+    if (typeof Android !== "undefined" && Android !== null) {
+
+        Android.passwordClearing();
+
+    } else {
+
+        var res = {
+            dataType: 'passwordClearing',
+            data: ''
+        }
+
+        webkit.messageHandlers.callback.postMessage(JSON.stringify(res));
+    }
 }
