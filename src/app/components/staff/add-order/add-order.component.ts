@@ -11,7 +11,6 @@ import { CustomerService } from 'src/app/services/customer.service';
 import { District, Ward } from 'src/app/models/entities/address.entity';
 import { AddressService } from 'src/app/services/address.service';
 import { PrintSaleItem, PrintJob } from 'src/app/models/entities/printjob.entity';
-import { Guid } from 'guid-typescript';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { LocalService } from 'src/app/services/common/local.service';
 import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';

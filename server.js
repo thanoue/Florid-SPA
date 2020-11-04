@@ -27,6 +27,7 @@ app.use('/user/avt', express.static('uploads/userAvt'));
 app.use('/product/img', express.static('uploads/productImg'));
 app.use('/orderDetail/resultImg', express.static('uploads/resultImg'));
 app.use('/orderDetail/shippingImg', express.static('uploads/shipppingImg'));
+app.use('/ios/install', express.static('files/ios'))
 
 require('./app/routes/admin.routes')(app);
 
