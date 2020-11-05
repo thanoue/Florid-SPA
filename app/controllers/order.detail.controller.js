@@ -72,8 +72,10 @@ exports.shippingConfirm = (req, res) => {
     let updateObj = {
         State: 'Deliveried',
         ShippingSortOrder: 0,
+        MakingSortOrder: 0,
         DeliveryImageUrl: shippingImgName,
-        DeliveryCompletedTime: req.body.deliveryCompletedTime
+        DeliveryCompletedTime: req.body.deliveryCompletedTime,
+        ShippingNote: req.body.note
     };
 
     OrderDetail.update(updateObj, {
@@ -198,6 +200,7 @@ exports.getOrderDetailShipperAndFlorist = (req, res) => {
         }
 
         let floristId = data.FloristId;
+        let fixingFloristId = data.FixingFloristId;
         let shippingSessionId = data.ShippingSessionId;
 
         if (floristId && floristId != 0) {
@@ -209,12 +212,12 @@ exports.getOrderDetailShipperAndFlorist = (req, res) => {
             }).then(florist => {
 
                 if (!florist || florist == null) {
-                    res.status(200).send({ florist: {}, shipper: {} });
+                    res.status(200).send({ florist: {}, shipper: {}, fixingFlorist: {} });
                     return;
                 }
 
                 if (!shippingSessionId || shippingSessionId == 0) {
-                    res.status(200).send({ florist: florist, shipper: {} });
+                    res.status(200).send({ florist: florist, shipper: {}, fixingFlorist: {} });
                     return;
                 }
 
@@ -230,12 +233,24 @@ exports.getOrderDetailShipperAndFlorist = (req, res) => {
                 }).then(session => {
 
                     if (!session || session == null) {
-                        res.status(200).send({ florist: florist, shipper: {} });
+                        res.status(200).send({ florist: florist, shipper: {}, fixingFlorist: {} });
                         return;
                     }
 
-                    res.status(200).send({ florist: florist, shipper: session.user });
-                    return;
+                    User.findOne({
+                        where: {
+                            Id: fixingFloristId
+                        }
+                    }).then(fixing => {
+
+                        if (!fixing || fixing == null) {
+                            res.status(200).send({ florist: florist, shipper: session.user, fixingFlorist: {} });
+                            return;
+                        }
+
+                        res.status(200).send({ florist: florist, shipper: session.user, fixingFlorist: fixing });
+                        return;
+                    })
                 })
 
             });
@@ -365,6 +380,51 @@ exports.getDetailByStateAndFloristId = (req, res) => {
         where: {
             State: state,
             FloristId: req.body.floristId
+        }
+    }).then(data => {
+        res.send({ orderDetails: data });
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving information."
+        });
+    });
+};
+
+exports.getDetailByStates = (req, res) => {
+
+    let states = req.body.states
+
+    OrderDetail.findAll({
+        where: {
+            State: {
+                [Op.in]: states
+            }
+        }
+    }).then(data => {
+        res.send({ orderDetails: data });
+    }).catch(err => {
+        res.status(500).send({
+            message:
+                err.message || "Some error occurred while retrieving information."
+        });
+    });
+};
+
+exports.getDetailByStatesAndFlorist = (req, res) => {
+    let states = req.body.states
+    OrderDetail.findAll({
+        where: {
+            [Op.and]: [{
+                [Op.or]: [
+                    { FloristId: req.body.floristId },
+                    { FixingFloristId: req.body.floristId }
+                ]
+            }, {
+                State: {
+                    [Op.in]: states
+                }
+            }]
         }
     }).then(data => {
         res.send({ orderDetails: data });

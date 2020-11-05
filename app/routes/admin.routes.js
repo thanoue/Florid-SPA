@@ -114,6 +114,10 @@ module.exports = function (app) {
         [authJwt.verifyToken], orderDetailController.updateMakingSortOrder);
     app.post(`${orderDetailPrefix}getDetailByStateAndFloristId`,
         [authJwt.verifyToken], orderDetailController.getDetailByStateAndFloristId);
+    app.post(`${orderDetailPrefix}getDetailByStates`,
+        [authJwt.verifyToken], orderDetailController.getDetailByStates);
+    app.post(`${orderDetailPrefix}getDetailByStatesAndFlorist`,
+        [authJwt.verifyToken], orderDetailController.getDetailByStatesAndFlorist);
     app.post(`${orderDetailPrefix}getOrderDetailShipperAndFlorist`,
         [authJwt.verifyToken], orderDetailController.getOrderDetailShipperAndFlorist);
     app.post(`${orderDetailPrefix}resultConfirm`,
