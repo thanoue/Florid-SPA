@@ -79,6 +79,8 @@ export const API_END_POINT = {
     getMaxShippingSortOrder: '/orderDetail/getMaxShippingSortOrder',
     updateODFields: '/orderDetail/updateFields',
     getOrderDetailByState: '/orderDetail/getByState',
+    getOrderDetailByStates: '/orderDetail/getDetailByStates',
+    getOrderDetailByStatesAndFloristId: '/orderDetail/getDetailByStatesAndFlorist',
     updateMakingSortOrder: '/orderDetail/updateMakingSortOrder',
     updateShippingSortOrder: '/orderDetail/updateShippingSortOrder',
     getDetailByStateAndFloristId: '/orderDetail/getDetailByStateAndFloristId',
@@ -176,6 +178,10 @@ export const ORDER_DETAIL_STATES = [
     {
         State: OrderDetailStates.FixingRequest,
         DisplayName: 'Đang yêu cầu sửa'
+    },
+    {
+        State: OrderDetailStates.Fixing,
+        DisplayName: 'Đang sửa'
     },
     {
         State: OrderDetailStates.Completed,

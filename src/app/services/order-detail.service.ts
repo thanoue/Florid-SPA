@@ -59,12 +59,13 @@ export class OrderDetailService {
     });
   }
 
-  shippingConfirm(orderDetailId: number, shippingImg: File): Promise<any> {
+  shippingConfirm(orderDetailId: number, shippingImg: File, note: string): Promise<any> {
 
     return this.httpService.postForm(API_END_POINT.shippingConfirm, {
       orderDetailId: orderDetailId,
       shippingImg: shippingImg,
-      deliveryCompletedTime: (new Date()).getTime()
+      deliveryCompletedTime: (new Date()).getTime(),
+      note: note
     }).then(obj => {
 
       return obj;
@@ -154,14 +155,19 @@ export class OrderDetailService {
     orderDetailVM.ResultImageUrl = orderDetail.ResultImageUrl;
     orderDetailVM.DeliveryImageUrl = orderDetail.DeliveryImageUrl;
     orderDetailVM.MakingNote = orderDetail.MakingNote;
-    
+
 
     return orderDetailVM;
   }
 
   getByState(state: OrderDetailStates): Promise<OrderDetailViewModel[]> {
-    return this.httpService.post(API_END_POINT.getOrderDetailByState, {
-      state: state
+    return this.getByStates([state]);
+  }
+
+  getByStates(states: OrderDetailStates[]): Promise<OrderDetailViewModel[]> {
+
+    return this.httpService.post(API_END_POINT.getOrderDetailByStates, {
+      states: states
     }).then(data => {
       let orderDetailVMs: OrderDetailViewModel[] = [];
 
@@ -227,8 +233,12 @@ export class OrderDetailService {
   }
 
   getByStateAndFloristId(floristId: number, state: OrderDetailStates): Promise<OrderDetailViewModel[]> {
-    return this.httpService.post(API_END_POINT.getDetailByStateAndFloristId, {
-      state: state,
+    return this.getByStatesAndFloristId(floristId, [state]);
+  }
+
+  getByStatesAndFloristId(floristId: number, states: OrderDetailStates[]): Promise<OrderDetailViewModel[]> {
+    return this.httpService.post(API_END_POINT.getOrderDetailByStatesAndFloristId, {
+      states: states,
       floristId: floristId
     }).then(data => {
       let orderDetailVMs: OrderDetailViewModel[] = [];
@@ -295,7 +305,8 @@ export class OrderDetailService {
 
   getODFlorisAndShipper(orderDetailId: number): Promise<{
     Florist: any,
-    Shipper: any
+    Shipper: any,
+    FixingFlorist: any
   }> {
 
     return this.httpService.post(API_END_POINT.getOrderDetailShipperAndFlorist, {
@@ -304,7 +315,8 @@ export class OrderDetailService {
 
       return {
         Florist: data.florist,
-        Shipper: data.shipper
+        Shipper: data.shipper,
+        FixingFlorist: data.fixingFlorist
       };
 
     }).catch(err => {

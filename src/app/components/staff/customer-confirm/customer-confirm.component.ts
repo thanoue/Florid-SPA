@@ -18,6 +18,7 @@ import { basename } from 'path';
 declare function shareImageCus(contactInfo: string): any;
 declare function shareImageCusWithData(img: string, contactInfo: string): any;
 declare function deleteTempImage(): any;
+declare function getShippingNoteDialog(btnTitle: string, callback: (note: string) => void): any;
 declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string) => void) => void, placeHolder: string, oldValue: number): any;
 
 @Component({
@@ -107,12 +108,16 @@ export class CustomerConfirmComponent extends BaseComponent {
 
       validateCallback(true, '');
 
-      this.orderService.updateFields(this.order.OrderId, {
-        TotalPaidAmount: this.order.TotalPaidAmount + res
-      })
-        .then(() => {
-          this.confirm();
-        });
+      getShippingNoteDialog('Xác nhận', (note) => {
+
+        this.orderService.updateFields(this.order.OrderId, {
+          TotalPaidAmount: this.order.TotalPaidAmount + res
+        })
+          .then(() => {
+            this.confirm(note);
+          });
+
+      });
 
     }, 'Số tiền thanh toán...', this.totalBalance);
 
@@ -123,9 +128,16 @@ export class CustomerConfirmComponent extends BaseComponent {
     deleteTempImage();
   }
 
-  confirm() {
+  shipperCofirm() {
+    getShippingNoteDialog('Xác nhận', (note) => {
+      this.confirm(note);
+    });
+  }
+
+  confirm(note: string) {
 
     switch (this.CurrentUser.Role) {
+
       case Roles.Account:
       case Roles.Admin:
 
@@ -142,22 +154,36 @@ export class CustomerConfirmComponent extends BaseComponent {
         }
 
         break;
+
       case Roles.Shipper:
 
         if (this.edittingImageUrl != '') {
-          
+
           fetch(this.edittingImageUrl)
             .then(res => res.blob())
             .then(blob => {
 
               const file = new File([blob], "shipping.png", { type: "image/png" });
-              this.orderDetailService.shippingConfirm(this.orderDetail.OrderDetailId, file)
+
+              this.orderDetailService.shippingConfirm(this.orderDetail.OrderDetailId, file, note)
                 .then(res => {
-                  
                   this.router.navigate(['staff/shipper-main']);
                 });
 
             })
+
+        } else {
+
+          this.orderDetailService.updateFields(this.orderDetail.OrderDetailId, {
+            DeliveryCompletedTime: (new Date()).getTime(),
+            State: OrderDetailStates.Deliveried,
+            MakingSortOrder: 0,
+            ShippingSortOrder: 0,
+            ShippingNote: note
+          }).then(data => {
+            this.router.navigate(['staff/shipper-main']);
+          });
+
         }
 
         break;

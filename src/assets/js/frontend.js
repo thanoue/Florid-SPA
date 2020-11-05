@@ -543,25 +543,32 @@ function getNumberInput(callback, placeHolder, oldValue) {
 
 function getShippingNoteDialog(btnTitle, callback) {
 
-    var html = `<div id="shipping-note-popup" class="popup-content">
-    <div class="form-group">
+    var html =
+        `<div id="shipping-note-popup" class="popup-content">
+            <div class="form-group">
 
-        <label class="custom-label">Ghi chú: </label>
+                <label class="custom-label">Ghi chú: </label>
 
-        <textarea id="shippingNote" style="width:100%;height:130px"
-            name="shippingNote" class="mainForm" ></textarea>
-    </div>
+                <textarea id="shippingNote" style="width:100%;height:130px"
+                    name="shippingNote" class="mainForm" ></textarea>
+            </div>
 
-    <div class="row">
-        <div class="col-6 mx-auto text-center">
-            <button type="button" id="submit-btn" class="btn main-btn w-100 mt-3">${btnTitle}</button>
-        </div>
-        <div class="col-6 mx-auto text-center">
-            <button type="button" id="cancel-btn" class="btn grey-btn w-100 mt-3">Hủy</button>
-        </div>
-    </div>
+            <div class="row">
+                <div class="col-12 mx-auto text-center">
+                    <button type="button" id="no-note-btn" class="btn main-btn w-100 mt-3">Không ghi chú</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-6 mx-auto text-center">
+                    <button type="button" id="submit-btn" class="btn main-btn w-100 mt-3">${btnTitle}</button>
+                </div>
+                <div class="col-6 mx-auto text-center">
+                    <button type="button" id="cancel-btn" class="btn grey-btn w-100 mt-3">Hủy</button>
+                </div>
+            </div>
     
-    </div>`;
+        </div>`;
 
     appendInBody();
 
@@ -596,6 +603,16 @@ function getShippingNoteDialog(btnTitle, callback) {
             jQuery(".overlay-dark").remove();
             jQuery(this).remove();
             callback(val);
+        });
+
+    });
+
+    jQuery('#shipping-note-popup #no-note-btn').one('click', function () {
+
+        jQuery("#shipping-note-popup").hide(250, function () {
+            jQuery(".overlay-dark").remove();
+            jQuery(this).remove();
+            callback('');
         });
 
     });
@@ -746,13 +763,15 @@ function chooseFlorist(callback) {
 
     appendInBody();
 
-    jQuery("#viewed").fadeIn(250);
+    jQuery("#viewed.florist").fadeIn(250);
 
-    jQuery(".viewItem").one('click', function () {
+    jQuery("#viewed.florist .viewItem").one('click', function () {
+
+        jQuery("#viewed.florist .viewItem").off('click');
 
         var id = jQuery(this).attr('id');
 
-        jQuery('#viewed').hide(250, function () {
+        jQuery('#viewed.florist').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();
             callback(id);
         });
@@ -760,7 +779,34 @@ function chooseFlorist(callback) {
     });
 
     jQuery(".overlay-dark:not(.layer2)").one('click', function () {
-        jQuery('#viewed').hide(250, function () {
+        jQuery('#viewed.florist').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    });
+}
+
+
+function chooseShipper(callback) {
+
+    appendInBody();
+
+    jQuery("#viewed.shipper").fadeIn(250);
+
+    jQuery("#viewed.shipper .viewItem-three-column").on('click', function () {
+
+        jQuery("#viewed.shipper .viewItem-three-column").off('click');
+
+        var id = jQuery(this).attr('id');
+
+        jQuery('#viewed.shipper').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+            callback(id);
+        });
+
+    });
+
+    jQuery(".overlay-dark:not(.layer2)").one('click', function () {
+        jQuery('#viewed.shipper').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();
         });
     });

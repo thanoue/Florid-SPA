@@ -53,6 +53,7 @@ export enum OrderDetailStates {
     Added = 'Added',
     Waiting = 'Waiting',
     Making = 'Making',
+    Fixing = 'Fixing',
     FixingRequest = 'FixingRequest',
     Comfirming = 'Comfirming',
     DeliveryWaiting = 'DeliveryWaiting',

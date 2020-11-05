@@ -24,7 +24,8 @@ declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
 declare function makingTimeRequest(saveCallBack: () => void, chooseFloristCallBack: () => void): any;
-declare function chooseFlorist(saveCallBack: (id: number) => void,): any;
+declare function chooseFlorist(saveCallBack: (id: number) => void): any;
+declare function chooseShipper(saveCallBack: (id: number) => void): any;
 declare function saveFile(url, productId, callback: () => void): any;
 declare function filterOrderByState(menuitems: { Name: string; Value: number; }[], callback: (val: any) => void): any;
 declare function locationDetection(location: any): any;
@@ -34,6 +35,7 @@ export interface ISelectedDetail {
   State: OrderDetailStates;
   StateDisplay: string;
   ShipperName: string;
+  FixingFloristName: string;
 }
 
 @Component({
@@ -53,6 +55,7 @@ export class OrdersManageComponent extends BaseComponent {
   states = OrderDetailStates;
   makingNote: string;
   florists: User[];
+  shippers: User[];
 
   selectedDetail = {} as ISelectedDetail;
 
@@ -75,13 +78,14 @@ export class OrdersManageComponent extends BaseComponent {
     this.selectMakingRequestTime = new Date();
     this.orders = [];
     this.florists = [];
+    this.shippers = [];
   }
 
   filterByState() {
     var menuitems = [];
 
     menuitems.push({
-      Name: "Tất cả",
+      Name: "Đơn đang được xử lý",
       Value: 'ALL'
     });
 
@@ -102,6 +106,9 @@ export class OrdersManageComponent extends BaseComponent {
         OrderDetailStates.DeliveryWaiting,
         OrderDetailStates.Making,
         OrderDetailStates.Waiting,
+        OrderDetailStates.SentBack,
+        OrderDetailStates.Fixing,
+        OrderDetailStates.FixingRequest
       ] : [
           state
         ];
@@ -149,6 +156,9 @@ export class OrdersManageComponent extends BaseComponent {
       OrderDetailStates.DeliveryWaiting,
       OrderDetailStates.Making,
       OrderDetailStates.Waiting,
+      OrderDetailStates.SentBack,
+      OrderDetailStates.Fixing,
+      OrderDetailStates.FixingRequest
     ];
 
     this.orderService.getOrderViewModelsByStates(states)
@@ -174,6 +184,11 @@ export class OrdersManageComponent extends BaseComponent {
     this.userService.getByRole(Roles.Florist)
       .then(users => {
         this.florists = users;
+      });
+
+    this.userService.getByRole(Roles.Shipper)
+      .then(users => {
+        this.shippers = users;
       })
 
     this.askForRememberPassword();
@@ -181,7 +196,6 @@ export class OrdersManageComponent extends BaseComponent {
   }
 
   editOrder(orderId: string) {
-    // console.info(this.orders);
     this.globalOrder = this.orders.filter(p => p.OrderId === orderId)[0];
 
     this.customerService.getById(this.globalOrder.CustomerInfo.Id)
@@ -218,6 +232,7 @@ export class OrdersManageComponent extends BaseComponent {
               this.selectedDetail.FloristName = data.Florist ? data.Florist.FullName : '...';
               this.selectedDetail.ShipperName = data.Shipper ? data.Shipper.FullName : '...';
               this.selectedDetail.State = orderDetail.State;
+              this.selectedDetail.FixingFloristName = data.FixingFlorist ? data.FixingFlorist.FullName : '';
               this.selectedDetail.StateDisplay = ORDER_DETAIL_STATES.filter(p => p.State === orderDetail.State)[0].DisplayName;
 
               isGot = true;
@@ -264,29 +279,159 @@ export class OrdersManageComponent extends BaseComponent {
       case OrderDetailStates.Added:
         this.updateAddedDetailState(orderDetail, selectedOrder);
         break;
+
       case OrderDetailStates.Waiting:
         this.updateWaitingDetailState(orderDetail, selectedOrder);
         break;
+
       case OrderDetailStates.Making:
         this.updateMakingDetailState(orderDetail, selectedOrder);
         break;
+
       case OrderDetailStates.Comfirming:
         this.updatConfirmingDetailState(orderDetail, selectedOrder);
         break;
+
       case OrderDetailStates.Deliveried:
         this.updateDeliveriedDetailState(orderDetail, selectedOrder);
         break;
+
       case OrderDetailStates.DeliveryWaiting:
         this.updateDeliveryWaitingDetailState(orderDetail, selectedOrder);
         break;
+
       case OrderDetailStates.Delivering:
         this.updateDeliveringetailState(orderDetail, selectedOrder);
         break;
+
+      case OrderDetailStates.SentBack:
+        this.updateSentBackDetailState(orderDetail, selectedOrder);
+        break;
+
       case OrderDetailStates.Completed:
+      case OrderDetailStates.Fixing:
+
         this.globalOrderDetail = orderDetail;
         this.globalOrder = selectedOrder;
         this.router.navigate(['staff/order-detail-view']);
+
+        break;
+      case OrderDetailStates.FixingRequest:
+        this.updateFixingRequestDetailState(orderDetail, selectedOrder);
+        break;
+
     }
+  }
+
+  updateFixingRequestDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
+
+    let items = [
+      'Chọn Florist',
+      'Xem chi tiết',
+      'Huỷ  đơn'
+    ];
+
+    menuOpen((index) => {
+      switch ((+index)) {
+
+        case 1:
+
+          this.globalOrderDetail = orderDetail;
+          this.globalOrder = order;
+          this.router.navigate(['staff/order-detail-view']);
+
+          break;
+
+        case 0:
+
+          chooseFlorist((floristId) => {
+            this.transferToFloristToFix(orderDetail, +floristId);
+          });
+
+          break;
+
+        case 2:
+
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+            State: OrderDetailStates.Canceled,
+            ShippingSortOrder: 0,
+            MakingSortOrder: 0
+          })
+            .then(() => {
+              orderDetail.State = OrderDetailStates.Canceled;
+            });
+
+          break;
+
+      }
+    }, items);
+
+  }
+
+  updateSentBackDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
+
+    let items = [
+      'Giao sau',
+      'Làm lại đơn',
+      'Xem chi tiết',
+      'Huỷ  đơn'
+    ];
+
+    menuOpen((index) => {
+      switch ((+index)) {
+
+        case 2:
+
+          this.globalOrderDetail = orderDetail;
+          this.globalOrder = order;
+          this.router.navigate(['staff/order-detail-view']);
+
+          break;
+
+        case 0:
+
+          this.orderDetailService.getNextShippingSortOrder()
+            .then(shippingSortOrder => {
+              this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+                State: OrderDetailStates.DeliveryWaiting,
+                ShippingSortOrder: shippingSortOrder,
+              })
+                .then(() => {
+                  orderDetail.State = OrderDetailStates.DeliveryWaiting;
+                });
+            });
+
+          break;
+        case 1:
+
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "hh:mm a dd-MM-yyyy");
+          this.selectMakingRequestTime = new Date();
+          this.makingNote = orderDetail.MakingNote;
+
+          makingTimeRequest(() => {
+            this.transferToFloristToFix(orderDetail)
+          }, () => {
+            chooseFlorist((floristId) => {
+              this.transferToFloristToFix(orderDetail, +floristId);
+            });
+          });
+
+          break;
+
+        case 3:
+
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+            State: OrderDetailStates.Canceled,
+            ShippingSortOrder: 0
+          })
+            .then(() => {
+              orderDetail.State = OrderDetailStates.Canceled;
+            });
+
+          break;
+
+      }
+    }, items);
   }
 
   updateDeliveringetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
@@ -315,6 +460,8 @@ export class OrdersManageComponent extends BaseComponent {
               orderDetail.State = OrderDetailStates.Deliveried;
             });
 
+          break;
+
         case 2:
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
@@ -334,13 +481,26 @@ export class OrdersManageComponent extends BaseComponent {
   updateDeliveryWaitingDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
     let items = [
+      'Chọn Shipper',
       'Xem chi tiết',
       'Huỷ chi tiết đơn'
     ];
 
     menuOpen((index) => {
       switch ((+index)) {
+
         case 0:
+
+          chooseShipper((id) => {
+            this.orderDetailService.assignSingleOD(orderDetail.OrderDetailId, id, (new Date()).getTime())
+              .then(res => {
+                orderDetail.State = OrderDetailStates.Delivering;
+              });
+          });
+
+          break;
+
+        case 1:
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
@@ -417,6 +577,7 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "hh:mm a dd-MM-yyyy");
           this.selectMakingRequestTime = orderDetail.DeliveryInfo.DateTime;
+          this.makingNote = '';
 
           makingTimeRequest(() => {
             this.transferToFlorist(orderDetail, order)
@@ -432,6 +593,7 @@ export class OrdersManageComponent extends BaseComponent {
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
+
           break;
 
         case 3:
@@ -555,11 +717,12 @@ export class OrdersManageComponent extends BaseComponent {
   }
 
   transferToFlorist(orderDetail: OrderDetailViewModel, order: OrderViewModel, floristId?: number) {
+
     this.orderDetailService.getNextMakingSortOrder()
       .then(sortOrder => {
         this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
           State: floristId ? OrderDetailStates.Making : OrderDetailStates.Waiting,
-          MakingSortOrder: sortOrder,
+          MakingSortOrder: floristId ? 0 : sortOrder,
           MakingRequestTime: this.selectMakingRequestTime.getTime(),
           MakingNote: this.makingNote,
           FloristId: floristId ? floristId : 0
@@ -574,6 +737,31 @@ export class OrdersManageComponent extends BaseComponent {
           });
 
       });
+
+  }
+
+  transferToFloristToFix(orderDetail: OrderDetailViewModel, floristId?: number) {
+
+    this.orderDetailService.getNextMakingSortOrder()
+      .then(sortOrder => {
+        this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+          State: floristId ? OrderDetailStates.Fixing : OrderDetailStates.FixingRequest,
+          MakingSortOrder: floristId ? 0 : sortOrder,
+          MakingRequestTime: this.selectMakingRequestTime.getTime(),
+          MakingNote: this.makingNote,
+          FixingFloristId: floristId ? floristId : 0
+        })
+          .then(() => {
+
+            orderDetail.State = floristId ? OrderDetailStates.Fixing : OrderDetailStates.FixingRequest;
+            orderDetail.MakingSortOrder = floristId ? 0 : sortOrder;
+            orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
+            orderDetail.MakingNote = this.makingNote;
+
+          });
+
+      });
+
   }
 
   updateAddedDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
