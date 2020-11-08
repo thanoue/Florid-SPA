@@ -1,13 +1,9 @@
 const { role } = require("../models");
 const db = require("../models");
-const Order = db.order;
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
-const Sequelize = db.Sequelize;
-const ShippingSession = db.shippingSession;
-const User = db.user;
-const fs = require('fs');
-const commonService = require("../services/common.service");
+const Shipping = db.shipping;
+const ODStatuses = require('../config/app.config').ODStatuses;
 
 exports.assignSingleOD = (req, res) => {
 
@@ -15,14 +11,15 @@ exports.assignSingleOD = (req, res) => {
     let shipperId = req.body.shipperId;
     let assignTime = req.body.assignTime;
 
-    ShippingSession.create({
+    Shipping.create({
         ShipperId: shipperId,
-        AssignTime: assignTime
+        AssignTime: assignTime,
+        OrderDetailId: orderDetailId
     }).then(shippingSession => {
         if (shippingSession) {
+
             OrderDetail.update({
-                ShippingSessionId: shippingSession.Id,
-                State: 'Delivering'
+                State: ODStatuses.DeliverAssinged
             }, {
                 where: {
                     Id: orderDetailId
@@ -32,6 +29,7 @@ exports.assignSingleOD = (req, res) => {
             }).catch(err => {
                 res.status(500).send({ message: err.message });
             });
+
         }
     }).catch(err => {
         res.status(500).send({ message: err.message });
@@ -42,17 +40,17 @@ exports.getShippingOrderDetails = (req, res) => {
 
     let shipperId = req.body.shipperId;
 
-    ShippingSession.findAll({
+    Shipping.findAll({
         where: {
-            ShipperId: shipperId
+            ShipperId: shipperId,
         },
         include: [
             {
                 model: OrderDetail,
-                as: 'orderDetails',
+                as: 'orderDetail',
                 where: {
                     State: {
-                        [Op.in]: ['Delivering', 'OnTheWay']
+                        [Op.in]: [ODStatuses.DeliverAssinged, ODStatuses.OnTheWay]
                     }
                 }
             }
@@ -60,7 +58,8 @@ exports.getShippingOrderDetails = (req, res) => {
     }).then(sessions => {
         res.send(sessions)
     }).catch(err => {
-        res.status(500).send({ message: err.message });
+        console.log(err);
+        res.status(500).send({ message: err });
     });
 }
 
@@ -70,14 +69,22 @@ exports.assignOrderDetails = (req, res) => {
     let shipperId = req.body.shipperId;
     let assignTime = req.body.assignTime;
 
-    ShippingSession.create({
-        ShipperId: shipperId,
-        AssignTime: assignTime
+    let obj = [];
+    orderDetailIds.forEach(orderDetailId => {
+        obj.push({
+            ShipperId: shipperId,
+            AssignTime: assignTime,
+            OrderDetailId: orderDetailId
+        });
+    });
+
+    Shipping.bulkCreate(obj, {
+        returning: true
     }).then(shippingSession => {
         if (shippingSession) {
+
             OrderDetail.update({
-                ShippingSessionId: shippingSession.Id,
-                State: 'Delivering'
+                State: ODStatuses.DeliverAssinged
             }, {
                 where: {
                     Id: {
@@ -87,10 +94,13 @@ exports.assignOrderDetails = (req, res) => {
             }).then(data => {
                 res.send(shippingSession);
             }).catch(err => {
-                res.status(500).send({ message: err.message });
+                console.log(err);
+                res.status(500).send({ message: err });
             });
+
         }
     }).catch(err => {
-        res.status(500).send({ message: err.message });
+        console.log(err);
+        res.status(500).send({ message: err });
     });
 }

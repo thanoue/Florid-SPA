@@ -1,4 +1,5 @@
 const config = require("../config/db.config.js");
+const RoleTypes = require('../config/app.config').Roles;
 
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
@@ -38,16 +39,26 @@ db.customerReceiverInfo = require('./customer.receiverInfo.model')(sequelize, Se
 db.customerSpecialDay = require('./customer.specialDay.model')(sequelize, Sequelize);
 db.order = require('./order.model')(sequelize, Sequelize);
 db.orderDetail = require('./orderDetail.model')(sequelize, Sequelize);
-db.shippingSession = require('./shippingSession.model')(sequelize, Sequelize);
 db.orderDetailSeen = require('./orderDetailseen.model')(sequelize, Sequelize);
 db.districtAddress = require('./district.address.model')(sequelize, Sequelize);
 db.wardAddress = require('./ward.address.model')(sequelize, Sequelize);
 db.promotion = require('./promotion.model')(sequelize, Sequelize);
+db.shipping = require('./shipping.model')(sequelize, Sequelize);
+db.purchase = require('./purchase.model')(sequelize, Sequelize);
+
+db.order.hasMany(db.purchase, {
+    foreignKey: 'OrderId',
+    onDelete: 'CASCADE'
+});
+db.purchase.belongsTo(db.order, {
+    foreignKey: 'OrderId',
+    onDelete: 'CASCADE'
+})
 
 db.order.hasMany(db.orderDetail, {
     foreignKey: 'OrderId',
     onDelete: 'SET NULL'
-})
+});
 
 db.customer.hasMany(db.order, {
     foreignKey: 'CustomerId',
@@ -59,16 +70,6 @@ db.districtAddress.hasMany(db.wardAddress, {
     onDelete: 'CASCADE'
 });
 
-db.user.hasMany(db.shippingSession, {
-    foreignKey: 'ShipperId',
-    onDelete: 'CASCADE',
-});
-db.shippingSession.belongsTo(db.user, {
-    foreignKey: 'ShipperId',
-    onDelete: 'CASCADE',
-});
-
-
 db.product.hasMany(db.orderDetail, {
     foreignKey: 'ProductId',
     onDelete: 'SET NULL'
@@ -79,9 +80,26 @@ db.user.hasMany(db.orderDetail, {
     onDelete: 'SET NULL',
 });
 
-db.shippingSession.hasMany(db.orderDetail, {
-    foreignKey: 'ShippingSessionId',
-    onDelete: 'SET NULL',
+db.user.belongsToMany(db.orderDetail, {
+    through: "shippings",
+    foreignKey: "ShipperId",
+    otherKey: "OrderDetailId",
+    onDelete: 'CASCADE'
+});
+db.shipping.belongsTo(db.user, {
+    foreignKey: 'ShipperId',
+    onDelete: 'SET NULL'
+});
+
+db.orderDetail.belongsToMany(db.user, {
+    through: "shippings",
+    foreignKey: "OrderDetailId",
+    otherKey: "ShipperId",
+    onDelete: 'CASCADE'
+});
+db.shipping.belongsTo(db.orderDetail, {
+    foreignKey: 'OrderDetailId',
+    onDelete: 'SET NULL'
 });
 
 db.user.hasMany(db.orderDetailSeen, {
@@ -101,20 +119,6 @@ db.orderDetailSeen.belongsTo(db.orderDetail, {
     foreignKey: 'OrderDetailId',
     onDelete: 'CASCADE',
 });
-
-// db.user.belongsToMany(db.orderDetail, {
-//     through: "orderDetailSeens",
-//     foreignKey: "UserId",
-//     otherKey: "OrderDetailId",
-//     onDelete: 'CASCADE'
-// });
-
-// db.orderDetail.belongsToMany(db.user, {
-//     through: "orderDetailSeens",
-//     foreignKey: "OrderDetailId",
-//     otherKey: "UserId",
-//     onDelete: 'CASCADE'
-// });
 
 db.customer.hasMany(db.customerReceiverInfo, {
     foreignKey: 'CustomerId',
@@ -168,6 +172,6 @@ db.user.belongsToMany(db.role, {
     onDelete: 'CASCADE'
 });
 
-db.ROLES = ["Admin", "Account", "Florist", "Shipper", "User"];
+db.ROLES = [RoleTypes.Admin, RoleTypes.Account, RoleTypes.Florist, RoleTypes.Shipper, RoleTypes.User];
 
 module.exports = db;

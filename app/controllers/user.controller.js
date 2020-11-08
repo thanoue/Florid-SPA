@@ -6,6 +6,7 @@ const Role = db.role;
 const UsersRoles = db.user_role;
 const fs = require('fs');
 const commonService = require("../services/common.service");
+const RoleTypes = require('../config/app.config').Roles;
 
 const appConstant = require('../config/app.config');
 const userAvtFolderPath = appConstant.fileFolderPath.userAvt;

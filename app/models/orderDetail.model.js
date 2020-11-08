@@ -81,10 +81,6 @@ module.exports = (sequelize, Sequelize) => {
         MakingNote: {
             type: Sequelize.STRING
         },
-        ShippingSessionId: {
-            type: Sequelize.INTEGER,
-            allowNull: true
-        },
         ResultImageUrl: {
             type: Sequelize.STRING
         },

@@ -1,6 +1,5 @@
 const db = require("../models");
 const guid = require('guid');
-var bcrypt = require("bcryptjs");
 const commonService = require("../services/common.service");
 const Tag = db.tag;
 const Op = db.Sequelize.Op;

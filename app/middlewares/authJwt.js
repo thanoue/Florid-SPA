@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 const db = require("../models");
+const RoleTypes = require('../config/app.config').Roles;
 const User = db.user;
 const Session = db.session;
 
@@ -54,7 +55,7 @@ isAdmin = (req, res, next) => {
 
         user.getRoles().then(roles => {
             for (let i = 0; i < roles.length; i++) {
-                if (roles[i].Name === "Admin") {
+                if (roles[i].Name === RoleTypes.Admin) {
                     next();
                     return;
                 }
@@ -75,7 +76,7 @@ isAccount = (req, res, next) => {
 
         user.getRoles().then(roles => {
             for (let i = 0; i < roles.length; i++) {
-                if (roles[i].Name === "Account") {
+                if (roles[i].Name === RoleTypes.Account) {
                     next();
                     return;
                 }
@@ -97,7 +98,7 @@ isFlorist = (req, res, next) => {
         user.getRoles().then(roles => {
             for (let i = 0; i < roles.length; i++) {
 
-                if (roles[i].Name === "Florist") {
+                if (roles[i].Name === RoleTypes.Florist) {
                     next();
                     return;
                 }
@@ -120,7 +121,7 @@ isShipper = (req, res, next) => {
         user.getRoles().then(roles => {
             for (let i = 0; i < roles.length; i++) {
 
-                if (roles[i].Name === "Shipper") {
+                if (roles[i].Name === RoleTypes.Shipper) {
                     next();
                     return;
                 }
@@ -142,12 +143,12 @@ isAccountOrAdmin = (req, res, next) => {
 
             for (let i = 0; i < roles.length; i++) {
 
-                if (roles[i].Name === "Account") {
+                if (roles[i].Name === RoleTypes.Account) {
                     next();
                     return;
                 }
 
-                if (roles[i].Name === "Admin") {
+                if (roles[i].Name === RoleTypes.Admin) {
                     next();
                     return;
                 }

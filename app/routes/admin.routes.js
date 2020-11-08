@@ -11,6 +11,7 @@ const orderController = require('../controllers/order.controller');
 const orderDetailController = require('../controllers/order.detail.controller');
 const shippingSessionController = require('../controllers/shipping.session.controller')
 const orderDetailSeenerController = require('../controllers/order.detail.seener.controller');
+const purchaseController = require('../controllers/purchase.controller');
 
 const authJwt = middlewares.authJwt;
 const verifySignUp = middlewares.verifySignUp;
@@ -30,6 +31,7 @@ module.exports = function (app) {
     const orderDetailPrefix = "/api/orderDetail/";
     const orderDetailSeenerPrefix = "/api/orderDetailSeener/";
     const shippingSessionPrefix = "/api/shippingSession/";
+    const purchasePrefix = '/api/purchase/';
 
     app.use(function (req, res, next) {
         res.header(
@@ -38,6 +40,20 @@ module.exports = function (app) {
         );
         next();
     });
+
+    //purchase
+    app.post(`${purchasePrefix}add`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin, tableValidation.purchaseAmountValidation, tableValidation.orderIdValidation],
+        purchaseController.add
+    );
+    app.post(`${purchasePrefix}updateStatus`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        purchaseController.updateStatus
+    );
+    app.post(`${purchasePrefix}bulkAdd`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin, tableValidation.orderIdValidation],
+        purchaseController.bulkAdd
+    );
 
     //promotion
     app.get(`${promotionPrefix}getList`,

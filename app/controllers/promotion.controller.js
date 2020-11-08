@@ -51,6 +51,7 @@ exports.getList = (req, res) => {
 }
 
 exports.getAll = (req, res) => {
+
     Promotion.findAll()
         .then(promotions => {
             res.send(promotions);

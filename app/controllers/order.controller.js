@@ -1,14 +1,7 @@
-const { role } = require("../models");
 const db = require("../models");
-const commonService = require("../services/common.service");
 const Order = db.order;
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
-const Sequelize = db.Sequelize;
-const ShippingSession = db.shippingSession;
-const OrderDetailSeen = db.orderDetailSeen;
-const User = db.user;
-const Role = db.role;
 
 exports.getByCustomer = (req, res) => {
 

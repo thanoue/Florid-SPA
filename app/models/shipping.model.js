@@ -1,11 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
-    const ShippingSession = sequelize.define('shippingSessions', {
+    const ShippingSession = sequelize.define('shippings', {
         Id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
         ShipperId: {
+            type: Sequelize.INTEGER,
+            allowNull: false
+        },
+        OrderDetailId: {
             type: Sequelize.INTEGER,
             allowNull: false
         },

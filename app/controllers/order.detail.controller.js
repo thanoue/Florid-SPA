@@ -7,8 +7,8 @@ const Sequelize = db.Sequelize;
 const ShippingSession = db.shippingSession;
 const User = db.user;
 const fs = require('fs');
+const ODStatuses = require('../config/app.config').ODStatuses;
 const commonService = require("../services/common.service");
-
 const appConstant = require('../config/app.config');
 const resultImgFolderPath = appConstant.fileFolderPath.resultImg;
 const shippingImgFolderPath = appConstant.fileFolderPath.shipppingImg;
@@ -32,7 +32,7 @@ exports.resultConfirm = (req, res) => {
         let nextShippingOrder = value[0].maxShippingSortOrder + 1;
 
         let updateObj = {
-            State: 'DeliveryWaiting',
+            State: ODStatuses.DeliveryWaiting,
             ShippingSortOrder: nextShippingOrder,
             ResultImageUrl: resultImgName
         };
@@ -70,7 +70,7 @@ exports.shippingConfirm = (req, res) => {
     }
 
     let updateObj = {
-        State: 'Deliveried',
+        State: ODStatuses.Deliveried,
         ShippingSortOrder: 0,
         MakingSortOrder: 0,
         DeliveryImageUrl: shippingImgName,
@@ -264,7 +264,7 @@ exports.getOrderDetailShipperAndFlorist = (req, res) => {
 
 exports.getProcessingOrderDetails = (req, res) => {
 
-    let states = ['Completed', 'Canceled'];
+    let states = [ODStatuses.Completed, ODStatuses.Canceled];
 
     OrderDetail.findAll({
         where: {
@@ -317,6 +317,7 @@ exports.getProcessingOrderDetails = (req, res) => {
 exports.updateFields = (req, res) => {
 
     let obj = req.body.obj;
+    console.log(req.body);
 
     OrderDetail.update(obj, {
         where: {
@@ -325,7 +326,8 @@ exports.updateFields = (req, res) => {
     }).then(val => {
         res.send({ result: val });
     }).catch(err => {
-        res.status(500).send({ message: err.message });
+        console.log(err);
+        res.status(500).send({ message: err });
     });
 
 }

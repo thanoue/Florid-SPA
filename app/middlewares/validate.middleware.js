@@ -41,6 +41,33 @@ checkIfAliasIsDuplicate = (req, res, next) => {
     });
 }
 
+purchaseAmountValidation = (req, res, next) => {
+
+    if (!req.body.amount || req.body.amount <= 0) {
+        res.status(403).send({
+            message: 'Amount is not valid'
+        });
+
+        return;
+    }
+
+    next();
+}
+
+orderIdValidation = (req, res, next) => {
+
+    if (!req.body.orderId || req.body.orderId == '') {
+
+        res.status(403).send({
+            message: 'Order id is required'
+        });
+
+        return;
+    }
+
+    next();
+}
+
 checkIfCategoryNameIsDuplicate = (req, res, next) => {
 
     if (!req.body.name || req.body.name == '') {
@@ -83,6 +110,8 @@ checkIfCategoryNameIsDuplicate = (req, res, next) => {
 const tableValidation = {
     checkIfAliasIsDuplicate: checkIfAliasIsDuplicate,
     checkIfCategoryNameIsDuplicate: checkIfCategoryNameIsDuplicate,
+    purchaseAmountValidation, purchaseAmountValidation,
+    orderIdValidation, orderIdValidation
 };
 
 module.exports = tableValidation;
