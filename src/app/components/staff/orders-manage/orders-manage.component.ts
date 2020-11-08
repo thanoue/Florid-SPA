@@ -102,7 +102,7 @@ export class OrdersManageComponent extends BaseComponent {
         OrderDetailStates.Added,
         OrderDetailStates.Comfirming,
         OrderDetailStates.Deliveried,
-        OrderDetailStates.Delivering,
+        OrderDetailStates.DeliverAssinged,
         OrderDetailStates.DeliveryWaiting,
         OrderDetailStates.Making,
         OrderDetailStates.Waiting,
@@ -152,7 +152,7 @@ export class OrdersManageComponent extends BaseComponent {
       OrderDetailStates.Added,
       OrderDetailStates.Comfirming,
       OrderDetailStates.Deliveried,
-      OrderDetailStates.Delivering,
+      OrderDetailStates.DeliverAssinged,
       OrderDetailStates.DeliveryWaiting,
       OrderDetailStates.Making,
       OrderDetailStates.Waiting,
@@ -167,19 +167,6 @@ export class OrdersManageComponent extends BaseComponent {
         this.orders = orders;
 
       });
-
-    // navigator.geolocation.getCurrentPosition((pos) => {
-
-    //   console.log(pos);
-
-    //   locationDetection(pos);
-
-    // }, (err) => {
-
-    //   this.showError(err.message);
-    //   console.log(err);
-
-    // })
 
     this.userService.getByRole(Roles.Florist)
       .then(users => {
@@ -204,6 +191,8 @@ export class OrdersManageComponent extends BaseComponent {
         this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(customer, this.globalOrder.CustomerInfo);
         this.isEdittingOrder = true;
 
+        this.globalPurchases = [];
+
         this.router.navigate(['/staff/add-order']);
 
       });
@@ -214,6 +203,8 @@ export class OrdersManageComponent extends BaseComponent {
     this.globalOrder = new OrderViewModel();
     this.globalOrderDetail = new OrderDetailViewModel();
     this.isEdittingOrder = false;
+    this.globalPurchases = [];
+
     this.router.navigate(['/staff/add-order']);
 
   }
@@ -300,7 +291,7 @@ export class OrdersManageComponent extends BaseComponent {
         this.updateDeliveryWaitingDetailState(orderDetail, selectedOrder);
         break;
 
-      case OrderDetailStates.Delivering:
+      case OrderDetailStates.DeliverAssinged:
         this.updateDeliveringetailState(orderDetail, selectedOrder);
         break;
 
@@ -494,7 +485,7 @@ export class OrdersManageComponent extends BaseComponent {
           chooseShipper((id) => {
             this.orderDetailService.assignSingleOD(orderDetail.OrderDetailId, id, (new Date()).getTime())
               .then(res => {
-                orderDetail.State = OrderDetailStates.Delivering;
+                orderDetail.State = OrderDetailStates.DeliverAssinged;
               });
           });
 
@@ -720,13 +711,28 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.orderDetailService.getNextMakingSortOrder()
       .then(sortOrder => {
-        this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-          State: floristId ? OrderDetailStates.Making : OrderDetailStates.Waiting,
-          MakingSortOrder: floristId ? 0 : sortOrder,
-          MakingRequestTime: this.selectMakingRequestTime.getTime(),
-          MakingNote: this.makingNote,
-          FloristId: floristId ? floristId : 0
-        })
+
+        let obj = {};
+
+        if (!floristId) {
+          obj = {
+            State: OrderDetailStates.Waiting,
+            MakingSortOrder: sortOrder,
+            MakingRequestTime: this.selectMakingRequestTime.getTime(),
+            MakingNote: this.makingNote,
+          }
+        }
+        else {
+          obj = {
+            State: OrderDetailStates.Making,
+            MakingSortOrder: 0,
+            MakingRequestTime: this.selectMakingRequestTime.getTime(),
+            MakingNote: this.makingNote,
+            FloristId: floristId
+          }
+        }
+
+        this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj)
           .then(() => {
 
             orderDetail.State = floristId ? OrderDetailStates.Waiting : OrderDetailStates.Waiting;
@@ -744,13 +750,28 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.orderDetailService.getNextMakingSortOrder()
       .then(sortOrder => {
-        this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-          State: floristId ? OrderDetailStates.Fixing : OrderDetailStates.FixingRequest,
-          MakingSortOrder: floristId ? 0 : sortOrder,
-          MakingRequestTime: this.selectMakingRequestTime.getTime(),
-          MakingNote: this.makingNote,
-          FixingFloristId: floristId ? floristId : 0
-        })
+
+        let obj = {};
+
+        if (!floristId) {
+          obj = {
+            State: OrderDetailStates.FixingRequest,
+            MakingSortOrder: sortOrder,
+            MakingRequestTime: this.selectMakingRequestTime.getTime(),
+            MakingNote: this.makingNote,
+          }
+        }
+        else {
+          obj = {
+            State: OrderDetailStates.Fixing,
+            MakingSortOrder: 0,
+            MakingRequestTime: this.selectMakingRequestTime.getTime(),
+            MakingNote: this.makingNote,
+            FixingFloristId: floristId
+          }
+        }
+
+        this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj)
           .then(() => {
 
             orderDetail.State = floristId ? OrderDetailStates.Fixing : OrderDetailStates.FixingRequest;

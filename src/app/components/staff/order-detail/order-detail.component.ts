@@ -17,6 +17,7 @@ declare function getTextInput(resCallback: (res: string) => void, placeHolder: s
 declare function createNumbericElement(isDisabled: boolean, calback: (val: number) => void): any;
 declare function selectProductCategory(menuitems: { Name: string; Value: number; }[], callback: (index: any) => void): any;
 declare function hideReceiverPopup(): any;
+declare function moveCursor(id: string, pos: number);
 
 @Component({
   selector: 'app-order-detail',
@@ -46,6 +47,56 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     return promotion.PromotionType == PromotionType.Amount ? promotion.Amount + " ₫" : promotion.Amount + " %";
   }
 
+  onAmountDiscountChanged(value) {
+    this.onAcmountDiscountFocus();
+    this.globalOrderDetail.AmountDiscount = +this.globalOrderDetail.AmountDiscount;
+
+  }
+
+  onAcmountDiscountFocus() {
+
+    if (!this.globalOrderDetail.AmountDiscount) {
+      this.globalOrderDetail.AmountDiscount = 0;
+    }
+
+    if (this.globalOrderDetail.AmountDiscount < 1000) {
+      this.globalOrderDetail.AmountDiscount *= 1000;
+    }
+
+    var length = this.globalOrderDetail.AmountDiscount.toString().length;
+
+    setTimeout(() => {
+      moveCursor('AmountDiscount', length - 3);
+    }, 10);
+
+  }
+
+  onAddFeeChanged(value) {
+    this.onAddFeeFocus();
+
+    this.globalOrderDetail.AdditionalFee = +this.globalOrderDetail.AdditionalFee;
+
+  }
+
+  onAddFeeFocus() {
+
+    if (!this.globalOrderDetail.AdditionalFee) {
+      this.globalOrderDetail.AdditionalFee = 0;
+    }
+
+    if (this.globalOrderDetail.AdditionalFee < 1000) {
+      this.globalOrderDetail.AdditionalFee *= 1000;
+    }
+
+    var length = this.globalOrderDetail.AdditionalFee.toString().length;
+
+    setTimeout(() => {
+      moveCursor('AdditionalFee', length - 3);
+    }, 10);
+
+  }
+
+
   protected Init() {
 
     this.promotionService.getAvailablePromotions((new Date()).getTime())
@@ -56,8 +107,6 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     this.route.params.subscribe(params => {
 
       this.detailIndex = + params.id;
-
-      this.globalOrderDetail.AdditionalFee /= 1000;
 
       if (!this.globalOrderDetail.PurposeOf) this.globalOrderDetail.PurposeOf = 'Mua tặng';
 
@@ -87,12 +136,6 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
         });
     });
 
-  }
-
-  destroy() {
-    if (this.globalOrderDetail) {
-      this.globalOrderDetail.AdditionalFee *= 1000;
-    }
   }
 
   clearProductImg() {
@@ -143,17 +186,17 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       || !this.globalOrderDetail.DeliveryInfo.PhoneNumber
       || !this.globalOrderDetail.DeliveryInfo.FullName
       || !this.globalOrderDetail.DeliveryInfo.DateTime) {
-      this.showWarning('Thiếu thông in giao hàng!');
+      this.showError('Thiếu thông in giao hàng!');
       return;
     }
 
     if (this.globalOrderDetail.ModifiedPrice <= 0) {
-      this.showWarning('Chưa nhập giá tiền!');
+      this.showError('Chưa nhập giá tiền!');
       return;
     }
 
     if (!this.globalOrderDetail.IsFromHardCodeProduct && (!this.globalOrderDetail.ProductId || this.globalOrderDetail.ProductId <= 0)) {
-      this.showWarning('Chưa chọn sản phẩm');
+      this.showError('Chưa chọn sản phẩm');
       return;
     }
 
@@ -162,12 +205,10 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     const viewModel = OrderDetailViewModel.DeepCopy(this.globalOrderDetail);
 
     this.insertOrderDetail(viewModel);
-
   }
 
   insertOrderDetail(viewModel: OrderDetailViewModel) {
 
-    viewModel.AdditionalFee *= 1000;
     const newIndexes: number[] = [];
 
     if (this.detailIndex > -1) {

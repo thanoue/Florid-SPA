@@ -98,6 +98,10 @@ export const API_END_POINT = {
     assignSingleOD: '/shippingSession/assignSingleOD',
     assignOrderDetails: '/shippingSession/assignOrderDetails',
     getShippingOrderDetails: '/shippingSession/getShippingOrderDetails',
+
+    addPurchase: '/purchase/add',
+    updatePurchaseStatus: '/purchase/updateStatus',
+    bulkAddPurchase: '/purchase/bulkAdd'
 };
 
 export const IMAGE_FOLDER_PATHS = {
@@ -160,7 +164,7 @@ export const ORDER_DETAIL_STATES = [
         DisplayName: 'Đã xác nhận SP, chưa có Shipper'
     },
     {
-        State: OrderDetailStates.Delivering,
+        State: OrderDetailStates.DeliverAssinged,
         DisplayName: 'Đã chọn được Shipper'
     },
     {

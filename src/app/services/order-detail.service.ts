@@ -19,7 +19,7 @@ export class OrderDetailService {
   updateFields(id: number, value: any): Promise<any> {
     return this.httpService.post(API_END_POINT.updateODFields, {
       obj: value,
-      orderDetailId: id
+      orderDetailId: +id
     }).then(res => {
       return res.result;
     }).catch(err => {
@@ -270,12 +270,7 @@ export class OrderDetailService {
         return [];
 
       data.forEach(item => {
-        item.orderDetails.forEach(orderDetail => {
-
-          orderDetailVMs.push(this.getFromRaw(orderDetail));
-
-        });
-
+        orderDetailVMs.push(this.getFromRaw(item.orderDetail));
       });
 
       return orderDetailVMs;

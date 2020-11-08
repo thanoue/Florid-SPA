@@ -12,8 +12,6 @@ jQuery(document).ready(function () {
     });
 });
 
-
-
 function filterFocus() {
 
     let Filter = jQuery('.filterCate').parent();
@@ -193,6 +191,40 @@ function openCompMenu() {
     });
 }
 
+function openQR() {
+    jQuery("#purchase-dialog").slideUp(100, function () {
+        jQuery("#codeQR").slideDown(100);
+    });
+}
+
+function qrDone() {
+    jQuery("#codeQR").slideUp(100, function () {
+        jQuery("#purchase-dialog").slideDown(100);
+    });
+}
+
+function dismissPurchaseDialog() {
+    jQuery("#purchase-dialog").slideUp(250, function () {
+        jQuery(".overlay-dark").remove();
+    });
+}
+
+function purchaseDoing() {
+
+    appendInBody();
+
+    jQuery('#purchase-dialog').slideDown(250);
+
+    jQuery(".overlay-dark").click(function () {
+
+        jQuery("#purchase-dialog").slideUp(250, function () {
+            jQuery(".overlay-dark").remove();
+            jQuery("#codeQR").slideUp(250);
+        });
+
+    });
+}
+
 // Menu Danh sách Khách hàng
 function openCustMenu() {
 
@@ -287,16 +319,6 @@ function messageDialog(title, message) {
     });
 }
 // HIển thị quét QR
-function openQR() {
-    appendInBody();
-    jQuery("#codeQR").fadeIn(350);
-
-    jQuery(".overlay-dark:not(.layer2)").click(function () {
-        jQuery("#codeQR").hide(250, function () {
-            jQuery(".overlay-dark").remove();
-        });
-    });
-}
 
 // Hiển thị bảng màu
 function openColorBoard() {
@@ -685,13 +707,18 @@ function setSelectedCustomerItem(id) {
 }
 
 // HIển thị dialog xác nhận
-function openConfirm(message, okCallback, noCallback, cancelCallback) {
+function openConfirm(message, okCallback, noCallback, cancelCallback, yesBTitle, noTitle) {
+
+    if (yesBTitle == undefined)
+        yesBTitle = 'Có';
+    if (noTitle == undefined)
+        noTitle = 'Không';
 
     let html = `<div id="confirmDialog" class="popup-content dialog-popup">
                 <img src="../../../assets/images/confirm.png" alt="">
                 <p>${message}</p>
-                <div class="row"><div class="col-6"><button class=" main-btn btn" id="success-btn">Có</button></div>
-                <div class="col-6"><button class=" main-bg border btn" id="cancel-btn">Không</button></div></div>
+                <div class="row"><div class="col-6"><button class=" main-btn btn" id="success-btn">${yesBTitle}</button></div>
+                <div class="col-6"><button class=" main-bg border btn" id="cancel-btn">${noTitle}</button></div></div>
                 </div>`;
 
     appendInBody();

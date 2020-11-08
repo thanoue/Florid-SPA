@@ -24,8 +24,8 @@
             </div>
             <label class="title-field">Phụ phí</label>
             <div class="form-group orderInfo">
-                <input type="number" name="AdditionalFee" id="AdditionalFee" class="orderField"
-                    [(ngModel)]="globalOrderDetail.AdditionalFee" placeholder="Phụ phí (k)...">
+                <input type="text" name="AdditionalFee" id="AdditionalFee" class="orderField"
+                    [(ngModel)]="globalOrderDetail.AdditionalFee" (input)="onAddFeeChanged($event.target.value)" (focus)="onAddFeeFocus()" placeholder="Phụ phí (k)...">
             </div>
 
             <a href="javascript:void(0)" onclick="openCustMenu()" style="margin-bottom:1vh;font-size: 16px;"
@@ -38,8 +38,8 @@
             </div>
             <label class="title-field">Giảm giá tiền</label>
             <div class="form-group orderInfo">
-                <input type="number" name="AmountDiscount" id="AmountDiscount" class="orderField"
-                    [(ngModel)]="globalOrderDetail.AmountDiscount" placeholder="000">
+                <input type="tel" name="AmountDiscount" id="AmountDiscount" class="orderField"
+                    [(ngModel)]="globalOrderDetail.AmountDiscount" placeholder="0" (input)="onAmountDiscountChanged($event.target.value)" (focus)="onAcmountDiscountFocus()">
             </div>
             <label class="title-field">Mục đích mua hàng</label>
             <div class="form-group orderInfo">

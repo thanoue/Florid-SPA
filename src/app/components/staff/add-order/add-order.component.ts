@@ -1,24 +1,27 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderViewModel, OrderDetailViewModel } from 'src/app/models/view.models/order.model';
-import { OrderDetailStates, MembershipTypes, OrderType } from 'src/app/models/enums';
+import { OrderDetailStates, MembershipTypes, OrderType, PurchaseStatus, PurchaseMethods } from 'src/app/models/enums';
 import { Router } from '@angular/router';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { Order, OrderDetail, CustomerReceiverDetail } from 'src/app/models/entities/order.entity';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
-import { District, Ward } from 'src/app/models/entities/address.entity';
-import { AddressService } from 'src/app/services/address.service';
 import { PrintSaleItem, PrintJob } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
-import { LocalService } from 'src/app/services/common/local.service';
 import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';
 import { PromotionService } from 'src/app/services/promotion.service';
+import { Purchase } from 'src/app/models/view.models/purchase.entity';
+import { throwIfEmpty } from 'rxjs/operators';
+import { PurchaseService } from 'src/app/services/purchase.service';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
-declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string, dismissCallback?: () => void) => void) => void, placeHolder: string, oldValue: number): any;
+declare function dismissPurchaseDialog();
 declare function hideReceiverPopup(): any;
+declare function purchaseDoing(): any;
+declare function moveCursor(id: string, pos: number);
+declare function openQR(): any;
 
 @Component({
   selector: 'app-add-order',
@@ -35,16 +38,25 @@ export class AddOrderComponent extends BaseComponent {
   originalOrderId = '';
   orderDiscount = 0;
   promotions: Promotion[];
+  isPurchased = false;
+  currentPurStatus: PurchaseStatus;
+  currentPurType: PurchaseMethods;
+  purchaseType = PurchaseMethods;
+  currentPayAmount: number;
+  qrContent: string;
+  qrContentTemplate = "123456789";
 
-  constructor(private orderDetailService: OrderDetailService, private router: Router,
+  constructor(private router: Router,
     private orderService: OrderService,
     private customerService: CustomerService,
     private printJobService: PrintJobService,
-    private promotionService: PromotionService) {
+    private promotionService: PromotionService,
+    private purchaseService: PurchaseService) {
     super();
     this.promotions = [];
+    this.currentPayAmount = 0;
+    this.qrContent = "";
   }
-
 
   protected Init() {
 
@@ -73,6 +85,7 @@ export class AddOrderComponent extends BaseComponent {
     } else {
 
       this.originalOrderId = this.order.OrderId;
+
       this.onVATIncludedChange();
     }
 
@@ -121,69 +134,82 @@ export class AddOrderComponent extends BaseComponent {
   requestPaidInput() {
 
     if (!this.order.CustomerInfo.Id) {
-      this.showWarning('Thiếu thông tin Khách hàng!');
+      this.showError('Thiếu thông tin Khách hàng!');
       return;
     }
 
     if (!this.order.OrderDetails || this.order.OrderDetails.length <= 0) {
-      this.showWarning('Chưa chọn sản phẩm nào!');
+      this.showError('Chưa chọn sản phẩm nào!');
       return;
     }
 
     if (!this.order.TotalAmount || this.order.TotalAmount <= 0) {
-      this.showWarning('Thành tiền không hợp lệ!');
+      this.showError('Thành tiền không hợp lệ!');
       return;
     }
 
-    if (this.totalBalance < 0) {
+    if (this.order.TotalPaidAmount <= 0) {
 
-      this.openConfirm('Trả lại tiền thừa cho khách hàng : ' + this.totalBalance.toString(), () => {
+      this.openConfirm('Hoá đơn chưa được thanh toán, có muốn tiếp tục?', () => {
 
-        this.isResetPaidAmount = true;
-        this.totalBalance = 0;
+        purchaseDoing();
+
+      }, () => {
 
         this.printConfirm();
 
-      });
+      }, null, 'Thanh Toán', 'Tiếp tục');
 
-      return;
-    }
-
-    if (this.totalBalance === 0) {
+    } else {
       this.printConfirm();
+    }
+  }
+
+  selectPurType(purchaseType: PurchaseMethods) {
+
+    if (this.currentPayAmount <= 0) {
+      this.showError('Yêu cầu nhập số tiền trước');
       return;
     }
 
-    getNumberValidateInput((res, validateCallback) => {
+    this.currentPurType = purchaseType;
 
-      if (res > this.totalBalance) {
-        validateCallback(false, 'Thanh toán vượt quá thành tiền!');
-        return;
-
-      } else if (res <= 0) {
-        validateCallback(false, 'Thanh toán phải lớn hơn 0!');
-        return;
-      }
-
-      validateCallback(true, '', () => {
-        this.doingPay(res);
-      });
-
-    }, 'Số tiền đã thanh toán...', this.totalBalance);
+    if (purchaseType == PurchaseMethods.Momo) {
+      openQR();
+    }
 
   }
 
-  doingPay(res: number) {
+  purchaseConfirm() {
 
-    this.order.TotalPaidAmount += res;
+    if (this.currentPayAmount > this.totalBalance) {
+      this.showError('Số tiền không hợp lệ!');
+      return;
+    }
 
-    this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+    let purchase = new Purchase();
 
-    if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
+    this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
 
-    this.order.CustomerInfo.GainedScore = ExchangeService.getGainedScore(this.order.TotalAmount);
+    purchase.OrderId = this.order.OrderId;
+    purchase.Amount = this.currentPayAmount;
+    purchase.Method = this.currentPurType;
+    purchase.Status = this.currentPurStatus;
 
-    this.printConfirm();
+    this.globalPurchases.push(purchase);
+
+    this.order.TotalPaidAmount += purchase.Amount;
+
+    this.currentPayAmount = 0;
+
+    this.showSuccess('Đã thêm 1 thanh toán!');
+
+    this.totalAmountCalculate(this.order.VATIncluded);
+
+    if (this.order.TotalPaidAmount >= this.order.TotalAmount) {
+      dismissPurchaseDialog();
+    }
+
   }
 
   doPrintJob() {
@@ -230,6 +256,10 @@ export class AddOrderComponent extends BaseComponent {
 
   printConfirm() {
 
+    if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
+
+    this.order.CustomerInfo.GainedScore = ExchangeService.getGainedScore(this.order.TotalAmount);
+
     this.openConfirm('In hoá đơn?', () => {
 
       if (this.isResetPaidAmount) {
@@ -244,20 +274,13 @@ export class AddOrderComponent extends BaseComponent {
 
     }, () => {
 
-      if (this.isResetPaidAmount) {
-        this.isResetPaidAmount = false;
-        this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
-      }
+      this.orderConfirm();
 
     });
 
   }
 
   orderConfirm() {
-
-    if (this.isResetPaidAmount) {
-      this.order.TotalPaidAmount = this.order.TotalAmount;
-    }
 
     this.startLoading();
 
@@ -282,6 +305,14 @@ export class AddOrderComponent extends BaseComponent {
 
     this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {
+
+        if (this.globalPurchases.length > 0) {
+          console.log(this.globalPurchases);
+          this.purchaseService.bulkCreate(this.globalPurchases, orderDB.Id)
+            .then(data => {
+              this.globalPurchases = [];
+            });
+        }
 
         const orderDetails: OrderDetail[] = [];
         const receiverInfos: CustomerReceiverDetail[] = [];
@@ -308,7 +339,6 @@ export class AddOrderComponent extends BaseComponent {
 
           detail.CustomerName = this.order.CustomerInfo.Name;
           detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
-
 
           detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
 
@@ -392,13 +422,12 @@ export class AddOrderComponent extends BaseComponent {
 
     if (this.order.AmountDiscount > 0 || this.order.PercentDiscount > 0)
       isWillApplyMemberDiscount = false;
-    else {
-      this.order.OrderDetails.forEach(detail => {
-        if (detail.PercentDiscount > 0 || detail.AmountDiscount > 0) {
-          isWillApplyMemberDiscount = false;
-        }
-      });
-    }
+
+    this.order.OrderDetails.forEach(detail => {
+      if (detail.PercentDiscount > 0 || detail.AmountDiscount > 0) {
+        isWillApplyMemberDiscount = false;
+      }
+    });
 
     this.order.OrderDetails.forEach(detail => {
 
@@ -406,28 +435,26 @@ export class AddOrderComponent extends BaseComponent {
         detail.AdditionalFee = 0;
       }
 
-      let amount = 0;
+      let amount = detail.ModifiedPrice;
 
       if (detail.PercentDiscount && detail.PercentDiscount > 0)
-        amount = detail.ModifiedPrice - (detail.ModifiedPrice / 100) * detail.PercentDiscount;
+        amount -= (detail.ModifiedPrice / 100) * detail.PercentDiscount;
 
       if (detail.AmountDiscount && detail.AmountDiscount > 0)
-        amount = detail.ModifiedPrice - detail.AmountDiscount;
+        amount -= detail.AmountDiscount;
 
-      if (amount == 0)
-        amount = detail.ModifiedPrice;
-
-      this.order.TotalAmount += ExchangeService.getFinalPrice(amount, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee, isWillApplyMemberDiscount);
+      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent && this.order.CustomerInfo.DiscountPercent > 0)
+        this.order.TotalAmount += ExchangeService.getFinalPrice(amount, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee, isWillApplyMemberDiscount);
+      else
+        this.order.TotalAmount = amount + detail.AdditionalFee;
 
     });
 
     this.orderDiscount = 0;
 
     if (this.order.PercentDiscount && this.order.PercentDiscount > 0) {
-
       this.orderDiscount = (this.order.TotalAmount / 100) * this.order.PercentDiscount
-      this.order.TotalAmount = this.order.TotalAmount - this.orderDiscount;
-
+      this.order.TotalAmount -= this.orderDiscount;
     }
 
     if (this.order.AmountDiscount && this.order.AmountDiscount > 0) {
@@ -442,7 +469,6 @@ export class AddOrderComponent extends BaseComponent {
     this.order.TotalAmount -= ExchangeService.geExchangableAmount(this.order.CustomerInfo.ScoreUsed);
 
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
-
   }
 
   getDetailDiscount(orderDetail: OrderDetailViewModel): number {
@@ -460,6 +486,38 @@ export class AddOrderComponent extends BaseComponent {
 
   onDiscountChanged(value) {
     this.onVATIncludedChange();
+  }
+
+  onAmountDiscountChanged(value) {
+
+    this.onAcmountDiscountFocus();
+
+    this.order.AmountDiscount = +this.order.AmountDiscount;
+
+    this.onVATIncludedChange();
+
+  }
+
+  onAcmountDiscountFocus() {
+
+    if (!this.order.AmountDiscount) {
+      this.order.AmountDiscount = 0;
+    }
+
+    if (this.order.AmountDiscount < 1000) {
+      this.order.AmountDiscount *= 1000;
+    }
+
+    var length = this.order.AmountDiscount.toString().length;
+
+    setTimeout(() => {
+      moveCursor('AmountDiscount', length - 3);
+    }, 10);
+
+  }
+
+  onAcmountDiscountBlur() {
+
   }
 
   onVATIncludedChange() {

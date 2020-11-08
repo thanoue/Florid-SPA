@@ -1505,7 +1505,6 @@ span.checkouttext{
     margin-bottom: 20px;
     border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #ddd;
 }
 .methodGrid {
     clear: both;
@@ -2714,4 +2713,9 @@ div.popupDialog select {
         font-weight: bold;
         text-align: left;
         margin-bottom: 5px;
+}
+
+.img-purchase-selected{
+    border: 5px solid #1fe8cb;
+    border-radius: 20px;
 }
