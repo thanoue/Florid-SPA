@@ -24,7 +24,8 @@
                 (click)="partPay()">Thanh
                 toán</a>
 
-            <a href="javascript:void(0)" class="main-bg" (click)="confirm()">Xác nhận</a>
+            <a href="javascript:void(0)" class="main-bg" *ngIf="CurrentUser.Role != 'Shipper'"  (click)="confirm('')">Xác nhận</a>
+            <a href="javascript:void(0)" class="main-bg" *ngIf="CurrentUser.Role == 'Shipper'" (click)="shipperCofirm()">Xác nhận</a>
 
         </div>
     </div>

@@ -53,10 +53,11 @@ export enum OrderDetailStates {
     Added = 'Added',
     Waiting = 'Waiting',
     Making = 'Making',
+    Fixing = 'Fixing',
     FixingRequest = 'FixingRequest',
     Comfirming = 'Comfirming',
     DeliveryWaiting = 'DeliveryWaiting',
-    Delivering = 'Delivering',
+    DeliverAssinged = 'DeliverAssinged',
     OnTheWay = 'OnTheWay',
     Deliveried = 'Deliveried',
     SentBack = 'SentBack',
@@ -75,4 +76,17 @@ export enum AlertType {
     Error,
     Success,
     Warning
+}
+
+export enum PurchaseMethods {
+    Cash = 'Cash',
+    Banking = 'Banking',
+    Momo = 'Momo'
+}
+
+export enum PurchaseStatus {
+    Canceled = 'Canceled',
+    Waiting = 'Waiting',
+    SentBack = 'SentBack',
+    Completed = 'Completed'
 }

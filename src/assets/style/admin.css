@@ -678,6 +678,10 @@ span.item-address {
     background: #1fe8cb;
 }
 
+.item-status.fixing span{
+    background: #2222f2;
+}
+
 #colorBoard .item-status span
 {
     width: 20px;
@@ -719,7 +723,7 @@ div.actionMenu,div.tagMenu, div.actionMenu2 {
     top: auto;
     transform: translate(-50%,0);
     padding: 30px 0;
-    max-height: 55vh;
+    max-height: 73vh;
     overflow-y: scroll;
 }
 div.actionMenu a ,div.actionMenu2 a ,div.tagMenu a ,
@@ -1501,7 +1505,6 @@ span.checkouttext{
     margin-bottom: 20px;
     border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #ddd;
 }
 .methodGrid {
     clear: both;
@@ -1712,21 +1715,24 @@ div#viewed  h3,
     border-top-right-radius: 20px;
     text-align: center;
 }
-ul.viewedList li.viewItem {
+ul.viewedList li.viewItem ,
+ul.viewedList li.viewItem-three-column{
     margin-bottom: 10px;
     padding-bottom: 10px;
     font-size: 14px;
     border-bottom: 1px solid #ddd;
     position: relative;
 }
-ul.viewedList li.viewItem img.itemAva {
+ul.viewedList li.viewItem img.itemAva,
+ul.viewedList li.viewItem-three-column img.itemAva{
     width: 40px;
     height: 40px;
     object-fit: cover;
     display: inline-block;
     margin-right: 10px;
 }
-ul.viewedList li.viewItem span
+ul.viewedList li.viewItem span,
+ul.viewedList li.viewItem-three-column span
 {
     display: inline-block;
     width: 50%;
@@ -1734,7 +1740,12 @@ ul.viewedList li.viewItem span
 ul.viewedList li.viewItem span:last-child
 {
     display: inline-block;
-    width: 31%;
+    width: 50%;
+}
+ul.viewedList li.viewItem-three-column span:last-child
+{
+    display: inline-block;
+    width: 30%;
 }
 .popup-content.prodDetail
 {
@@ -2702,4 +2713,9 @@ div.popupDialog select {
         font-weight: bold;
         text-align: left;
         margin-bottom: 5px;
+}
+
+.img-purchase-selected{
+    border: 5px solid #1fe8cb;
+    border-radius: 20px;
 }

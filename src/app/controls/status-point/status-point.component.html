@@ -14,7 +14,7 @@
     <div *ngSwitchCase="states.DeliveryWaiting" class="item-status p" (click)="pointClicked()">
         <span>{{index}}</span>
     </div>
-    <div *ngSwitchCase="states.Delivering" class="item-status b" (click)="pointClicked()">
+    <div *ngSwitchCase="states.DeliverAssinged" class="item-status b" (click)="pointClicked()">
         <span>{{index}}</span>
     </div>
     <div *ngSwitchCase="states.Deliveried" class="item-status bl" (click)="pointClicked()">
@@ -35,6 +35,9 @@
     <div *ngSwitchCase="states.FixingRequest" class="item-status fixing-request" (click)="pointClicked()">
         <span>{{index}}</span>
     </div>
+    <div *ngSwitchCase="states.Fixing" class="item-status fixing" (click)="pointClicked()">
+        <span>{{index}}</span>
+    </div>
 </div>  
 <div *ngIf="index==-1" [ngSwitch]="state">
     <div *ngSwitchCase="states.Added" class="item-status pi" (click)="pointClicked()">
@@ -52,7 +55,7 @@
     <div *ngSwitchCase="states.DeliveryWaiting" class="item-status p" (click)="pointClicked()">
         <span></span>
     </div>
-    <div *ngSwitchCase="states.Delivering" class="item-status b" (click)="pointClicked()">
+    <div *ngSwitchCase="states.DeliverAssinged" class="item-status b" (click)="pointClicked()">
         <span></span>
     </div>
     <div *ngSwitchCase="states.Deliveried" class="item-status bl" (click)="pointClicked()">
@@ -71,6 +74,9 @@
         <span></span>
     </div>
     <div *ngSwitchCase="states.FixingRequest" class="item-status fixing-request" (click)="pointClicked()">
+        <span></span>
+    </div>
+    <div *ngSwitchCase="states.Fixing" class="item-status fixing" (click)="pointClicked()">
         <span></span>
     </div>
 </div>

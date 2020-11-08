@@ -54,7 +54,7 @@
                 <div *ngIf="orderDetail.Description != ''" class="prodDesc infoGroup">
                     <span class="itemlabel">Mô tả KH:</span>
                     <span class="itemVal">{{orderDetail.Description}}</span>
-                </div> 
+                </div>
                 <div class="prodDesc infoGroup" *ngIf="orderDetail.MakingNote != ''">
                     <span class="itemlabel">Ghi chú thực hiện:</span>
                     <span class="itemVal">{{orderDetail.MakingNote}}</span>
@@ -64,8 +64,8 @@
                     <span class="itemVal">{{orderDetail.ShippingNote}}</span>
                 </div>
             </div>
-            <div *ngIf="CurrentUser.Role == 'Admin' || CurrentUser.Role == 'Account' " class="viewed" (click)="openViewed()"><img
-                    src="../../../assets/images/eye.svg" alt="" class="main-filter">Đã xem
+            <div *ngIf="CurrentUser.Role == 'Admin' || CurrentUser.Role == 'Account' " class="viewed"
+                (click)="openViewed()"><img src="../../../assets/images/eye.svg" alt="" class="main-filter">Đã xem
             </div>
         </div>
     </div>
@@ -73,7 +73,7 @@
 <div class="popup-content" id="viewed">
     <h3 class="main-bg">Những người đã xem</h3>
     <ul class="viewedList">
-        <li class="viewItem" *ngFor="let user of orderDetail.SeenUsers">
+        <li class="viewItem-three-column" *ngFor="let user of orderDetail.SeenUsers">
             <img src="{{user.Avt | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
             <span class="itemName">{{user.FullName}}</span>
             <span class="itemRole">{{user.Role}}</span>

@@ -53,6 +53,7 @@ import { FloristMainComponent } from './components/staff/florist-main/florist-ma
 import { CustomerConfirmComponent } from './components/staff/customer-confirm/customer-confirm.component';
 import { ShipperMainComponent } from './components/staff/shipper-main/shipper-main.component';
 import { FinalConfirmComponent } from './components/staff/final-confirm/final-confirm.component';
+import { QRCodeModule } from 'angular2-qrcode';
 
 export class DefaultIntl extends OwlDateTimeIntl {
 
@@ -113,6 +114,7 @@ export class DefaultIntl extends OwlDateTimeIntl {
     FinalConfirmComponent,
   ],
   imports: [
+    QRCodeModule,
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,

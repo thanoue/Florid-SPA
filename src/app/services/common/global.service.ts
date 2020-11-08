@@ -11,12 +11,13 @@ import { Product } from 'src/app/models/entities/product.entity';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { LocalService } from './local.service';
 import { Customer } from 'src/app/models/entities/customer.entity';
+import { Purchase } from 'src/app/models/view.models/purchase.entity';
 
 declare function alert(message: string, alertType: number): any;
 declare function isOnMobile(): any;
 
 declare function confirmDialog(message: string, okCallback: () => void, noCallback: () => void, cancelCallback: () => void): any;
-declare function openConfirm(message: string, okCallback: () => void, noCallback: () => void, cancelCallback: () => void): any;
+declare function openConfirm(message: string, okCallback: () => void, noCallback: () => void, cancelCallback: () => void, yesTitle?: string, noTitle?: string): any;
 
 declare function messageDialog(message: string, okCallback: () => void): any;
 
@@ -41,6 +42,7 @@ export class GlobalService {
     currentOrderViewModel: OrderViewModel;
     currentOrderDetailViewModel: OrderDetailViewModel;
     currentDistricts: District[];
+    currentPurchases: Purchase[];
     currentWards: Ward[];
     globalCustomer: Customer;
     isEdittingOrder = false;
@@ -53,6 +55,7 @@ export class GlobalService {
 
         this.currentDistricts = [];
         this.currentWards = [];
+        this.currentPurchases = [];
 
         this.notifySetup = { timeOut: 5000, tapToDismiss: true, progressBar: false, progressAnimation: 'decreasing', positionClass: 'toast-bottom-full-width', closeButton: true, extendedTimeOut: 9000 };
 
@@ -64,7 +67,6 @@ export class GlobalService {
 
         };
     }
-
 
 
     startLoading() {
@@ -156,10 +158,9 @@ export class GlobalService {
         confirmDialog(message, okCallback, noCallback, cancelCallback);
     }
 
-    openMobileConfirm(message: string, okCallback: () => void, noCallback?: () => void, cancelCallback?: () => void) {
-        openConfirm(message, okCallback, noCallback, cancelCallback);
+    openMobileConfirm(message: string, okCallback: () => void, noCallback?: () => void, cancelCallback?: () => void, yesTitle?: string, noTitle?: string) {
+        openConfirm(message, okCallback, noCallback, cancelCallback, yesTitle, noTitle);
     }
-
 
     openMessage(message: string, okCallback?: () => void) {
         messageDialog(message, okCallback);
