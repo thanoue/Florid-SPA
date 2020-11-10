@@ -154,6 +154,17 @@ export class CustomerService {
       })
   }
 
+  updateList(obj: any[]): Promise<any> {
+    return this.httpService.post(API_END_POINT.updateCustomerList, obj)
+      .then((data) => {
+        return data;
+      })
+      .catch(err => {
+        this.httpService.handleError(err);
+        throw err;
+      })
+  }
+
   async createCustomers(customers: Customer[]): Promise<void> {
 
     let cuses = [];
