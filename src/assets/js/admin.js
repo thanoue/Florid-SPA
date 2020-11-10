@@ -2,7 +2,7 @@
 function initLeftMenu() {
     jQuery(".mainMenu li.hasChildren").append(`<span class="showSubMenu"></span>`);
 
-    jQuery(".showSubMenu").click(function () {
+    jQuery(".menuItem-link").click(function () {
         jQuery(this).parent().toggleClass("show");
     });
 
@@ -10,7 +10,7 @@ function initLeftMenu() {
         jQuery(".adminWrapper").toggleClass("mini");
     });
 
-    jQuery(".showSubMenu").click();
+    jQuery(".menuItem-link").click();
 }
 
 function confirmDialog(message, yesCallback, noCallback, cancelCallback) {

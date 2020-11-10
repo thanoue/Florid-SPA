@@ -55,6 +55,7 @@ export const API_END_POINT = {
     deleteCustomer: '/customer/delete',
     deleteManyCustomer: '/customer/deletemany',
     createCustomer: '/customer/create',
+    createCustomers: '/customer/createCustomers',
     updateCustomer: '/customer/update',
     getCustomers: '/customer/getList',
     getCustomeCount: '/customer/getCount',
@@ -70,6 +71,7 @@ export const API_END_POINT = {
     getOrdersByCustomerId: '/order/getByCustomer',
     getById: '/order/getById',
     updateOrderFields: '/order/updateFields',
+    getCompletedOrderByDayRange: '/order/getByDayRange',
     searchByPhoneNumberOrCustomerName: '/order/searchByPhoneNumberOrCustomerName',
 
     getAllDistricts: '/address/getAllDistricts',

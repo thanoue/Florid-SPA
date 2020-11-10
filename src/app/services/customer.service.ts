@@ -152,11 +152,49 @@ export class CustomerService {
         this.httpService.handleError(err);
         throw err;
       })
+  }
 
+  async createCustomers(customers: Customer[]): Promise<void> {
+
+    let cuses = [];
+
+    customers.forEach(customer => {
+      cuses.push({
+        fullName: customer.FullName,
+        phoneNumber: customer.PhoneNumber,
+        birthday: customer.Birthday,
+        sex: customer.Sex,
+        usedScoreTotal: customer.MembershipInfo.UsedScoreTotal,
+        availableScore: customer.MembershipInfo.AvailableScore,
+        accumulatedAmount: customer.MembershipInfo.AccumulatedAmount,
+        membershipType: customer.MembershipInfo.MembershipType,
+        facebook: customer.ContactInfo.Facebook,
+        zalo: customer.ContactInfo.Zalo,
+        skype: customer.ContactInfo.Skype,
+        viber: customer.ContactInfo.Viber,
+        instagram: customer.ContactInfo.Instagram,
+        mainContactInfo: customer.MainContactInfo,
+        homeAddress: customer.Address.Home,
+        workAddress: customer.Address.Work,
+        id: customer.Id
+      });
+    });
+
+    var i, j, chunk = 100;
+    let temparray: Customer[] = [];
+    for (i = 0, j = cuses.length; i < j; i += chunk) {
+      temparray = cuses.slice(i, i + chunk);
+      await this.httpService.post(API_END_POINT.createCustomers, {
+        customers: temparray
+      }).then(data => {
+        console.log(i);
+      });
+    }
   }
 
   createCustomer(customer: Customer): Promise<any> {
-    return this.httpService.post(API_END_POINT.createCustomer, {
+
+    let cus = {
       fullName: customer.FullName,
       phoneNumber: customer.PhoneNumber,
       birthday: customer.Birthday,
@@ -172,7 +210,9 @@ export class CustomerService {
       instagram: customer.ContactInfo.Instagram,
       mainContactInfo: customer.MainContactInfo,
       id: customer.Id
-    }).then((customer) => {
+    };
+
+    return this.httpService.post(API_END_POINT.createCustomer, cus).then((customer) => {
       return customer;
     })
       .catch(err => {

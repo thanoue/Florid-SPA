@@ -30,6 +30,9 @@ import { FloristMainComponent } from './components/staff/florist-main/florist-ma
 import { CustomerConfirmComponent } from './components/staff/customer-confirm/customer-confirm.component';
 import { ShipperMainComponent } from './components/staff/shipper-main/shipper-main.component';
 import { FinalConfirmComponent } from './components/staff/final-confirm/final-confirm.component';
+import { MonthlySummaryComponent } from './components/admin/monthly-summary/monthly-summary.component';
+import { ChartSummaryComponent } from './components/admin/chart-summary/chart-summary.component';
+import { MonthlyChartComponent } from './components/admin/monthly-chart/monthly-chart.component';
 
 const routes: Routes = [
   { path: 'staff-login', component: StaffLoginComponent },
@@ -153,6 +156,18 @@ const routes: Routes = [
       {
         path: 'promotion',
         component: PromotionComponent,
+      },
+      {
+        path: 'monthly-summary',
+        component: MonthlySummaryComponent,
+      },
+      {
+        path: 'chart-summary',
+        component: ChartSummaryComponent,
+      },
+      {
+        path: 'monthly-chart',
+        component: MonthlyChartComponent,
       }
     ]
   },

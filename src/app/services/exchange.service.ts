@@ -13,6 +13,10 @@ import { environment } from 'src/environments/environment';
 })
 export class ExchangeService {
 
+    static getPreVATVal(amount: number): number {
+        return amount / 1.1;
+    }
+
     static detectMemberShipType(amount: number): MembershipTypes {
 
         if (amount < 5000000) {
@@ -145,8 +149,10 @@ export class ExchangeService {
                 var nums = res.split('/', 3);
 
                 console.log(nums);
+
                 if (nums.length == 3) {
-                    let year = parseInt(nums[2]);
+
+                    let year = nums[2].indexOf('.') > -1 ? 0 : parseInt(nums[2]);
                     let month = parseInt(nums[1]) - 1;
                     let day = parseInt(nums[0]);
 
