@@ -120,175 +120,142 @@ export class HomeComponent extends BaseComponent {
 
   }
 
-  // onFileOrderChange(evt: any) {
+  onFileOrderChange(evt: any) {
 
-  //   /* wire up file reader */
-  //   const target: DataTransfer = <DataTransfer>(evt.target);
-  //   if (target.files.length !== 1) throw new Error('Cannot use multiple files');
-  //   const reader: FileReader = new FileReader();
-  //   reader.onload = (e: any) => {
-  //     /* read workbook */
-  //     const bstr: string = e.target.result;
-  //     const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+    /* wire up file reader */
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    const reader: FileReader = new FileReader();
+    reader.onload = async (e: any) => {
+      /* read workbook */
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
-  //     /* grab first sheet */
-  //     const wsname: string = wb.SheetNames[0];
-  //     const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
-  //     /* save data */
-  //     let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
+      /* save data */
+      let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
 
-  //     var orders: Order[] = [];
-  //     var orderDetails: OrderDetail[] = [];
+      var orders: Order[] = [];
+      var orderDetails: OrderDetail[] = [];
 
-  //     this.startLoading();
+      this.startLoading();
 
-  //     for (let i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i++) {
 
-  //       if (i == 0)
-  //         continue;
+        if (i == 0)
+          continue;
 
-  //       const row = data[i];
-  //       const order = new Order();
+        const row = data[i];
+        const order = new Order();
 
-  //       if (!row[0])
-  //         break;
+        if (!row[0]) {
+          continue;
+        }
 
-  //       order.CustomerId = row[0] ? row[0].toString() : Guid.create().toString();
-  //       order.Id = row[1] ? row[1].toString() : Guid.create().toString();
-  //       order.Created = ExchangeService.getTimeFromExcel(row[3]);
-  //       order.TotalAmount = row[6] && row[6] != '' ? parseInt(row[6]) : 0;
-  //       order.GainedScore = ExchangeService.getGainedScore(order.TotalAmount);
-  //       order.TotalPaidAmount = order.TotalAmount;
+        order.CustomerId = row[0].toString();
+        order.Id = row[1] ? row[1].toString() : Guid.create().toString();
+        order.Created = ExchangeService.getTimeFromExcel(row[3]);
+        order.TotalAmount = row[6] && row[6] != '' ? parseInt(row[6]) : 0;
+        order.GainedScore = ExchangeService.getGainedScore(order.TotalAmount);
+        order.TotalPaidAmount = order.TotalAmount;
 
-  //       order.Id = order.Id.replace('/', '-').replace('.', '_');
+        order.Id = order.Id.replace('/', '-').replace('.', '_');
 
-  //       let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
-  //       if (duplicates && duplicates.length > 0) {
-  //         order.Id += "_";
-  //       }
+        let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
 
-  //       var detail = new OrderDetail();
+        if (duplicates && duplicates.length > 0) {
+          order.Id += "_";
+        }
 
-  //       detail.TotalAmount = order.TotalAmount;
-  //       detail.OrderId = order.Id;
-  //       detail.Id = Guid.create().toString();
-  //       detail.PurposeOf = row[4] ? row[4] : '';
-  //       detail.Index = 0;
-  //       detail.State = OrderDetailStates.Completed;
-  //       detail.ProductModifiedPrice = order.TotalAmount;
+        var detail = new OrderDetail();
 
-  //       detail.ProductName = row[2] ? row[2] : '';
+        detail.TotalAmount = order.TotalAmount;
+        detail.OrderId = order.Id;
+        detail.PurposeOf = row[4] ? row[4] : '';
+        detail.State = OrderDetailStates.Completed;
+        detail.ProductModifiedPrice = row[5] ? parseInt(row[5]) : 0;
 
-  //       let productIdNum = this.getNumFromString(detail.ProductName);
+        detail.ProductName = row[2] ? row[2] : '';
 
-  //       var pros = products.filter(p => p.Name.indexOf(productIdNum) > -1);
+        detail.ProductImageUrl = 'https://firebasestorage.googleapis.com/v0/b/lorid-e9c34.appspot.com/o/products%2FLOGO%20FLORID.png?alt=media&token=be8bd572-4e06-44ba-aa3e-0a709c3e519c';
+        detail.IsHardcodeProduct = true;
+        detail.ProductPrice = detail.ProductModifiedPrice;
 
-  //       if (productIdNum != '' && pros && pros[0]) {
+        orderDetails.push(detail);
+        orders.push(order);
 
-  //         let product = pros[0];
+      };
 
-  //         detail.ProductImageUrl = product.ImageUrl;
-  //         detail.ProductPrice = ExchangeService.stringPriceToNumber(product.Price);
-  //         detail.ProductId = product.Id;
-  //         detail.IsHardcodeProduct = false;
+      let newOrders: Order[] = [];
 
-  //       } else {
+      orders.forEach(order => {
 
-  //         detail.ProductImageUrl = 'https://firebasestorage.googleapis.com/v0/b/lorid-e9c34.appspot.com/o/products%2FLOGO%20FLORID.png?alt=media&token=be8bd572-4e06-44ba-aa3e-0a709c3e519c';
-  //         detail.IsHardcodeProduct = true;
-  //         detail.ProductPrice = detail.ProductModifiedPrice;
+        let duplicates = newOrders.filter(p => p.CustomerId == order.CustomerId && p.Id == order.Id);
 
-  //       }
+        if (duplicates && duplicates[0]) {
 
-  //       orderDetails.push(detail);
-  //       orders.push(order);
+          duplicates[0].TotalAmount += order.TotalAmount;
+          duplicates[0].TotalPaidAmount += order.TotalPaidAmount;
+          duplicates[0].GainedScore += ExchangeService.getGainedScore(duplicates[0].TotalAmount);
 
-  //     };
+        }
+        else {
+          newOrders.push(order);
+        }
 
-  //     let newOrders: Order[] = [];
-  //     let index = 1;
+      });
 
-  //     orders.forEach(order => {
+      let cuses = await this.customerService.getAll();
 
-  //       let duplicates = newOrders.filter(p => p.CustomerId == order.CustomerId && p.Id == order.Id);
+      let editCustomers: {
+        Id: string,
+        TotalAmount: number,
+        MemberType: MembershipTypes,
+        TotalUsedScore: number
+      }[] = [];
 
-  //       if (duplicates && duplicates[0]) {
+      console.log(newOrders);
+      console.log(orderDetails);
 
-  //         duplicates[0].TotalAmount += order.TotalAmount;
-  //         duplicates[0].TotalPaidAmount += order.TotalPaidAmount;
-  //         duplicates[0].GainedScore = ExchangeService.getGainedScore(duplicates[0].TotalAmount);
+      newOrders.forEach(order => {
 
-  //       }
-  //       else {
-  //         order.Index = index;
-  //         newOrders.push(order);
-  //         index++;
-  //       }
+        let cus = editCustomers.filter(p => p.Id == order.CustomerId);
 
-  //     });
+        if (cus && cus.length > 0) {
 
-  //     let cuses = await this.customerService.getAll();
+          cus[0].TotalAmount += order.TotalAmount;
+          cus[0].MemberType = ExchangeService.detectMemberShipType(cus[0].TotalAmount);
 
-  //     let editCustomers: {
-  //       Id: string,
-  //       TotalAmount: number,
-  //       MemberType: MembershipTypes,
-  //       TotalUsedScore: number
-  //     }[] = [];
+        }
+        else {
 
-  //     console.log(newOrders);
-  //     console.log(orderDetails);
+          let currentCus = cuses.filter(p => p.Id == order.CustomerId);
 
-  //     newOrders.forEach(order => {
+          if (currentCus && currentCus.length > 0) {
 
-  //       let cus = editCustomers.filter(p => p.Id == order.CustomerId);
+            let memberInfo = currentCus[0].MembershipInfo ? currentCus[0].MembershipInfo : new MembershipInfo();
 
-  //       if (cus && cus.length > 0) {
+            editCustomers.push({
+              Id: order.CustomerId,
+              TotalAmount: order.TotalAmount,
+              MemberType: memberInfo.MembershipType,
+              TotalUsedScore: memberInfo.UsedScoreTotal
+            });
 
-  //         cus[0].TotalAmount += order.TotalAmount;
+          }
 
-  //       }
-  //       else {
+        }
 
-  //         let currentCus = cuses.filter(p => p.Id == order.CustomerId);
+      });
 
-  //         if (currentCus && currentCus.length > 0) {
+      console.log(editCustomers);
 
-  //           let memberInfo = currentCus[0].MembershipInfo ? currentCus[0].MembershipInfo : new MembershipInfo();
+    }
 
-  //           editCustomers.push({
-  //             Id: order.CustomerId,
-  //             TotalAmount: order.TotalAmount,
-  //             MemberType: memberInfo.MembershipType,
-  //             TotalUsedScore: memberInfo.UsedScoreTotal
-  //           });
-
-  //         }
-
-  //       }
-  //     });
-
-  //     console.log(editCustomers);
-
-  //     let updates = {};
-
-  //     editCustomers.forEach(customer => {
-
-  //       let infor = new MembershipInfo();
-
-  //       infor.AvailableScore = ExchangeService.getGainedScore(customer.TotalAmount);
-  //       infor.UsedScoreTotal = customer.TotalUsedScore;
-  //       infor.AccumulatedAmount = customer.TotalAmount;
-  //       infor.MembershipType = customer.MemberType;
-
-  //       updates[`/${customer.Id}/MembershipInfo`] = infor;
-
-  //     });
-
-  //   }
-
-  // }
+  }
 
   onFileChange(evt: any) { // customer
     /* wire up file reader */
