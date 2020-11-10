@@ -148,7 +148,7 @@ exports.addOrderDetails = (req, res) => {
             orderDetails.push({
                 Id: rawOrderDetail.Id,
                 OrderId: rawOrderDetail.OrderId,
-                ProductId: rawOrderDetail.ProductId ? rawOrderDetail.ProductId : 0,
+                ProductId: rawOrderDetail.ProductId ? rawOrderDetail.ProductId : null,
                 ProductName: rawOrderDetail.ProductName ? rawOrderDetail.ProductName : '',
                 ProductImageUrl: rawOrderDetail.ProductImageUrl ? rawOrderDetail.ProductImageUrl : '',
                 ProductPrice: rawOrderDetail.ProductPrice ? rawOrderDetail.ProductPrice : 0,

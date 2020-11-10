@@ -85,6 +85,34 @@ exports.getById = (req, res) => {
     });
 }
 
+exports.addBulk = (req, res) => {
+    let orders = req.body;
+    let obj = [];
+    orders.forEach(order => {
+        obj.push({
+            CustomerId: order.CustomerId,
+            Id: order.Id,
+            VATIncluded: order.VATIncluded,
+            TotalAmount: order.TotalAmount,
+            TotalPaidAmount: order.TotalPaidAmount,
+            GainedScore: order.GainedScore,
+            ScoreUsed: order.ScoreUsed,
+            OrderType: 'NormalDay',
+            CreatedDate: order.Created,
+            PercentDiscount: 0,
+            AmountDiscount: 0
+        });
+    });
+    Order.bulkCreate(obj, {
+        returning: true
+    }).then(orderRes => {
+        res.send({ message: "Some order are added" });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({ message: err.message });
+    });
+}
+
 exports.addOrder = (req, res) => {
 
     let body = req.body;
