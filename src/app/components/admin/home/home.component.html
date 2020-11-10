@@ -1,2 +1,8 @@
-<input type="file" (change)="onFileChange($event)" multiple="false">
-<input type="file" (change)="onFileOrderChange($event)" multiple="false">
+<div class="row">
+    <label>Tải lên danh sách Khách hàng</label>
+    <input type="file" (change)="onFileChange($event)" multiple="false" value="">
+</div>
+<div class="row">
+    <label>Tải lên danh sách Đơn hàng</label>
+    <input type="file" (change)="onFileOrderChange($event)" multiple="false">
+</div>

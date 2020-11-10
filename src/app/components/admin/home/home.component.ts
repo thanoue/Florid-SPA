@@ -180,7 +180,7 @@ export class HomeComponent extends BaseComponent {
 
         detail.ProductName = row[2] ? row[2] : '';
 
-        detail.ProductImageUrl = 'https://firebasestorage.googleapis.com/v0/b/lorid-e9c34.appspot.com/o/products%2FLOGO%20FLORID.png?alt=media&token=be8bd572-4e06-44ba-aa3e-0a709c3e519c';
+        detail.ProductImageUrl = 'https://images.vexels.com/media/users/3/156051/isolated/preview/72094c4492bc9c334266dc3049c15252-flat-flower-icon-flower-by-vexels.png';
         detail.IsHardcodeProduct = true;
         detail.ProductPrice = detail.ProductModifiedPrice;
 
@@ -228,7 +228,6 @@ export class HomeComponent extends BaseComponent {
 
           cus[0].TotalAmount += order.TotalAmount;
           cus[0].MemberType = ExchangeService.detectMemberShipType(cus[0].TotalAmount);
-
         }
         else {
 
@@ -241,7 +240,7 @@ export class HomeComponent extends BaseComponent {
             editCustomers.push({
               Id: order.CustomerId,
               TotalAmount: order.TotalAmount,
-              MemberType: memberInfo.MembershipType,
+              MemberType: ExchangeService.detectMemberShipType(order.TotalAmount),
               TotalUsedScore: memberInfo.UsedScoreTotal
             });
 
@@ -253,8 +252,48 @@ export class HomeComponent extends BaseComponent {
 
       console.log(editCustomers);
 
+      var i, j, chunk = 50;
+      let temparray = [];
+
+      for (i = 0, j = editCustomers.length; i < j; i += chunk) {
+
+        temparray = editCustomers.slice(i, i + chunk);
+
+        let update = await this.customerService.updateList(temparray);
+
+        console.log(update);
+
+      }
+
+      console.log('------------------------------');
+
+      for (i = 0, j = newOrders.length; i < j; i += chunk) {
+
+        temparray = newOrders.slice(i, i + chunk);
+
+        let update = await this.orderService.addBulk(temparray);
+
+        console.log(update);
+
+      }
+
+      console.log('------------------------------');
+
+      for (i = 0, j = newOrders.length; i < j; i += chunk) {
+
+        temparray = orderDetails.slice(i, i + chunk);
+
+        let update = await this.orderService.addOrderDetails(temparray);
+
+        console.log(update);
+
+      }
+
+      this.stopLoading();
+
     }
 
+    reader.readAsBinaryString(target.files[0]);
   }
 
   onFileChange(evt: any) { // customer

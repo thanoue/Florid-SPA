@@ -63,6 +63,7 @@ export const API_END_POINT = {
     updateReciverInfo: '/customer/updateReceiverList',
     getAllCustomer: '/customer/getAll',
     updateCustomerFields: '/customer/updateFields',
+    updateCustomerList: '/customer/updateList',
 
     getNormalDayOrdersCount: '/order/getNormalDayOrdersCount',
     addOrder: '/order/add',
@@ -73,6 +74,7 @@ export const API_END_POINT = {
     updateOrderFields: '/order/updateFields',
     getCompletedOrderByDayRange: '/order/getByDayRange',
     searchByPhoneNumberOrCustomerName: '/order/searchByPhoneNumberOrCustomerName',
+    addBulkOrder: '/order/addBulk',
 
     getAllDistricts: '/address/getAllDistricts',
     getAllWards: '/address/getAllWards',

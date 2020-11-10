@@ -97,6 +97,13 @@ export class OrderService {
     return orderVM;
   }
 
+  addBulk(orders: any[]): Promise<any> {
+    return this.httpService.post(API_END_POINT.addBulkOrder, orders)
+      .then(data => {
+        return data.message;
+      });
+  }
+
   getSaleModels(orderVMs: OrderViewModel[]): SaleTotalModel[] {
 
     var models: SaleTotalModel[] = [];
@@ -170,7 +177,6 @@ export class OrderService {
     return this.getSaleTotalByTimes(startTime.getTime(), endTime.getTime());
   }
 
-
   getSaleTotalByRange(times: number[]): Promise<SaleTotalModel[]> {
 
     let endDay = new Date(times[1]);
@@ -207,7 +213,6 @@ export class OrderService {
       throw err;
     });;
   }
-
 
   updateFields(id: string, value: any): Promise<any> {
     return this.httpService.post(API_END_POINT.updateOrderFields, {
