@@ -8,6 +8,9 @@ import { API_END_POINT } from '../app.constants';
 import { promise } from 'protractor';
 import { OrderViewModel, OrderCustomerInfoViewModel, OrderDetailViewModel } from '../models/view.models/order.model';
 import { or } from 'sequelize/types';
+import { ExchangeService } from './exchange.service';
+import { SaleTotalModel } from '../models/view.models/sale.total.model';
+import { NgModelGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -39,9 +42,14 @@ export class OrderService {
     orderVM.CustomerInfo.ScoreUsed = order.ScoreUsed;
     orderVM.CustomerInfo.GainedScore = order.GainedScore;
 
-    if (order.orderDetails && order.orderDetails.length > 0) {
-      orderVM.CustomerInfo.Name = order.orderDetails[0].CustomerName;
-      orderVM.CustomerInfo.PhoneNumber = order.orderDetails[0].CustomerPhoneNumber;
+    if (order.customer) {
+      orderVM.CustomerInfo.Name = order.customer.FullName;
+      orderVM.CustomerInfo.PhoneNumber = order.customer.PhoneNumber;
+      orderVM.CustomerInfo.AvailableScore = order.customer.AvailableScore;
+      orderVM.CustomerInfo.DiscountPercent = ExchangeService.getMemberDiscountPercent(order.customer.MembershipType);
+      orderVM.CustomerInfo.Id = order.customer.Id;
+      orderVM.CustomerInfo.GainedScore = order.GainedScore;
+      orderVM.CustomerInfo.ScoreUsed = order.ScoreUsed;
     }
 
     order.orderDetails.forEach(orderDetail => {
@@ -87,6 +95,88 @@ export class OrderService {
     });
 
     return orderVM;
+  }
+
+  getSaleModels(orderVMs: OrderViewModel[]): SaleTotalModel[] {
+
+    var models: SaleTotalModel[] = [];
+
+    orderVMs.forEach(orderVM => {
+      var model = new SaleTotalModel();
+
+      model.OrderId = orderVM.OrderId;
+      model.CreatedDate = orderVM.CreatedDate;
+      model.CustomerId = orderVM.CustomerInfo.Id;
+      model.CustomerName = orderVM.CustomerInfo.Name;
+      model.CustomerPhoneNumber = orderVM.CustomerInfo.PhoneNumber;
+      model.AmountTotal = orderVM.TotalAmount;
+      model.FeeTotal = 0;
+      model.DiscountTotal = 0;
+      model.PriceTotal = 0;
+      model.IsVATIncluded = orderVM.VATIncluded;
+
+      orderVM.OrderDetails.forEach(orderDetail => {
+        model.PriceTotal += orderDetail.ModifiedPrice;
+        model.FeeTotal += orderDetail.AdditionalFee;
+      });
+
+      if (!orderVM.VATIncluded) {
+
+        model.FinalTotal = model.AmountTotal;
+
+      }
+      else {
+
+        model.FinalTotal = ExchangeService.getPreVATVal(model.AmountTotal);
+
+      }
+
+      model.DiscountTotal = (model.PriceTotal + model.FeeTotal) - model.FinalTotal;
+
+      models.push(model);
+
+    });
+
+    models.sort((a, b) => a.CreatedDate < b.CreatedDate ? -1 : a.CreatedDate > b.CreatedDate ? 1 : 0);
+
+    return models;
+  }
+
+  getSaleTotalByTimes(startTime: number, endTime: number): Promise<SaleTotalModel[]> {
+    return this.httpService.post(API_END_POINT.getCompletedOrderByDayRange, {
+      startDate: startTime,
+      endDate: endTime
+    }).then(orders => {
+
+      var orderVMs = this.getOrderVMsByRaw(orders.orders);
+      return this.getSaleModels(orderVMs);
+
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+  }
+
+  getSaleTotalByYear(year: number): Promise<SaleTotalModel[]> {
+
+    let startTime = new Date();
+    startTime.setFullYear(year, 0, 1);
+    startTime.setHours(0, 0, 0, 0);
+
+    let endTime = new Date();
+    endTime.setFullYear(year, 11, 31);
+    endTime.setHours(23, 59, 59, 0);
+
+    return this.getSaleTotalByTimes(startTime.getTime(), endTime.getTime());
+  }
+
+
+  getSaleTotalByRange(times: number[]): Promise<SaleTotalModel[]> {
+
+    let endDay = new Date(times[1]);
+    endDay.setDate(endDay.getDate() + 1);
+
+    return this.getSaleTotalByTimes(times[0], endDay.getTime());
 
   }
 

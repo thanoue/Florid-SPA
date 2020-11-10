@@ -1,0 +1,18 @@
+<div class="listWrap">
+    <div class="listHeader" style="width:50%">
+        <div class="row listOptions">
+            <div class="col-md-12  optionSearch">
+                <app-search-box (searchTextInvoke)="searchByYear($event)" [delayTimeSpan]="1000" placeholder="Nhập năm">
+                </app-search-box>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div style="width:50%">
+            <canvas baseChart width="200" height="200" [datasets]="lineChartData" [labels]="lineChartLabels"
+                [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType"
+                [plugins]="lineChartPlugins">
+            </canvas>
+        </div>
+    </div>
+</div>

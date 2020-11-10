@@ -29,14 +29,32 @@
                     </li>
                 </ul>
             </li>
-            <li [ngClass]="(currentMenu !== menus.Order)?'menuItem':'menuItem active'">
+            <!-- <li [ngClass]="(currentMenu !== menus.Order)?'menuItem':'menuItem active'">
                 <a href="#" class="menuItem-link"><i class="fa fa-file-text"></i>Đơn Hàng</a>
-            </li>
+            </li> -->
             <li [ngClass]="(currentMenu !== menus.Promotion)?'menuItem':'menuItem active'">
                 <a routerLink="/admin/promotion" class="menuItem-link"><i class="fa fa-star"></i>Khuyến mãi</a>
             </li>
-            <li [ngClass]="(currentMenu !== menus.Summary)?'menuItem':'menuItem active'">
-                <a href="#" class="menuItem-link"><i class="fa fa-line-chart"></i>Thống Kê</a>
+            <li class="menuItem hasChildren">
+                <a href="javascript:void(0);" class="menuItem-link"><i class="fa fa-line-chart"></i>Thống kê</a>
+                <ul class="subMenu">
+                    <li [ngClass]="(currentMenu !== menus.Summary)?'menuItem':'menuItem active'">
+                        <a routerLink="/admin/monthly-summary" class="menuItem-link"><i class="fa fa-th-large">
+                            </i>Doanh thu</a>
+                    </li>
+                    <li [ngClass]="(currentMenu !== menus.DaysChart)?'menuItem':'menuItem active'">
+                        <a routerLink="/admin/chart-summary" class="menuItem-link"><i class="fa fa-bar-chart"> </i>Biểu
+                            đồ tháng</a>
+                    </li>
+                    <li [ngClass]="(currentMenu !== menus.MonthsChart)?'menuItem':'menuItem active'">
+                        <a routerLink="/admin/monthly-chart" class="menuItem-link"><i class="fa fa-bar-chart"> </i>Biểu
+                            đồ năm</a>
+                    </li>
+                    <li [ngClass]="(currentMenu !== menus.Purchase)?'menuItem':'menuItem active'">
+                        <a routerLink="/admin/product-tags" class="menuItem-link"><i class="fa fa-usd"> </i>Cập nhật
+                            thanh toán</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </nav>
