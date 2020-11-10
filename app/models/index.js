@@ -65,6 +65,11 @@ db.customer.hasMany(db.order, {
     onDelete: 'SET NULL'
 });
 
+db.order.belongsTo(db.customer, {
+    foreignKey: 'CustomerId',
+    onDelete: 'SET NULL'
+})
+
 db.districtAddress.hasMany(db.wardAddress, {
     foreignKey: 'DistrictId',
     onDelete: 'CASCADE'

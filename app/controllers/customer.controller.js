@@ -7,6 +7,41 @@ const Op = db.Sequelize.Op;
 const guid = require('guid');
 var fs = require('fs');
 
+exports.createCustomers = (req, res) => {
+
+    let rawCuses = req.body.customers;
+
+    let customers = [];
+
+    rawCuses.forEach(cus => {
+        customers.push({
+            FullName: cus.fullName,
+            PhoneNumber: cus.phoneNumber,
+            Birthday: cus.birthday,
+            Sex: cus.sex,
+            HomeAddress: cus.homeAddress,
+            WorkAddress: cus.workAddress,
+            UsedScoreTotal: cus.usedScoreTotal,
+            AvailableScore: cus.availableScore,
+            AccumulatedAmount: cus.accumulatedAmount,
+            MembershipType: cus.membershipType,
+            ContactInfo_Facebook: cus.facebook,
+            ContactInfo_Zalo: cus.zalo,
+            ContactInfo_Skype: cus.skype,
+            ContactInfo_Viberviber: cus.viber,
+            ContactInfo_Instagram: cus.instagram,
+            MainContactInfo: cus.mainContactInfo,
+            Id: cus.id
+        });
+    })
+
+    Customer.bulkCreate(customers, {
+        returning: true
+    }).then(data => {
+        res.send({ customers: customers });
+    });
+}
+
 exports.bulkAdd = (req, res) => {
 
     try {
