@@ -1,0 +1,24 @@
+<div class="listWrap">
+    <div class="listHeader">
+        <div class="row listOptions">
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label style="margin-bottom:0px;">Chọn Ngày</label>
+                    <input style="height: 33px;" [owlDateTime]="dt1" [selectMode]="'range'" [(ngModel)]="selectedDates"
+                        [owlDateTimeTrigger]="dt1" name="currentDate" class="mainForm"
+                        style="border-radius:0px;border-bottom: 2px solid #ddd;">
+                    <owl-date-time [pickerType]="'calendar'" (afterPickerClosed)="rangeSelected()" #dt1>
+                    </owl-date-time>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div style="width:50%">
+            <canvas baseChart width="200" height="200" [datasets]="lineChartData" [labels]="lineChartLabels"
+                [options]="lineChartOptions" [legend]="lineChartLegend" [chartType]="lineChartType"
+                [plugins]="lineChartPlugins">
+            </canvas>
+        </div>
+    </div>
+</div>

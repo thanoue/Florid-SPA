@@ -28,13 +28,15 @@ export class ProductsComponent extends BaseComponent {
 
   pageCount = 0;
   itemTotalCount = 0;
+  currentPage = 0;
+  searchTerm = '';
+
   newTagName = "";
   edittingFile: any;
   edittingImageUrl: any;
   isSelectAll = false;
   edittingProduct: Product;
-  currentPage = 0;
-  searchTerm = '';
+
 
   _selectedCategory: number = 0;
   get selectedCategory(): number {

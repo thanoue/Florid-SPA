@@ -463,7 +463,7 @@ export class AddOrderComponent extends BaseComponent {
     }
 
     if (isVATIncluded) {
-      this.order.TotalAmount += (this.order.TotalAmount / 100) * 10;
+      this.order.TotalAmount = this.order.TotalAmount + this.order.TotalAmount * 0.1;
     }
 
     this.order.TotalAmount -= ExchangeService.geExchangableAmount(this.order.CustomerInfo.ScoreUsed);

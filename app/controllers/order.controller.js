@@ -1,7 +1,10 @@
+const { user } = require("../models");
 const db = require("../models");
 const Order = db.order;
 const OrderDetail = db.orderDetail;
+const Customer = db.customer;
 const Op = db.Sequelize.Op;
+const sequelize = db.sequelize;
 
 exports.getByCustomer = (req, res) => {
 
@@ -20,8 +23,34 @@ exports.getByCustomer = (req, res) => {
         },
         include: [
             { model: OrderDetail },
+            { model: Customer }
         ]
 
+    }).then(orders => {
+        res.send({ orders: orders });
+    }).catch(err => {
+        res.status(500).send({ message: err.message });
+    });
+}
+
+exports.getByDayRange = (req, res) => {
+
+    var startTime = req.body.startDate;
+    var endTime = req.body.endDate;
+
+    Order.findAll({
+        where: {
+            CreatedDate: {
+                [Op.between]: [startTime, endTime]
+            },
+            TotalPaidAmount: {
+                [Op.gte]: sequelize.col('TotalAmount')
+            }
+        },
+        include: [
+            { model: Customer },
+            { model: OrderDetail }
+        ]
     }).then(orders => {
         res.send({ orders: orders });
     }).catch(err => {
@@ -46,11 +75,40 @@ exports.getById = (req, res) => {
         },
         include: [
             { model: OrderDetail },
+            { model: Customer }
         ]
 
     }).then(order => {
         res.send({ order: order });
     }).catch(err => {
+        res.status(500).send({ message: err.message });
+    });
+}
+
+exports.addBulk = (req, res) => {
+    let orders = req.body;
+    let obj = [];
+    orders.forEach(order => {
+        obj.push({
+            CustomerId: order.CustomerId,
+            Id: order.Id,
+            VATIncluded: order.VATIncluded,
+            TotalAmount: order.TotalAmount,
+            TotalPaidAmount: order.TotalPaidAmount,
+            GainedScore: order.GainedScore,
+            ScoreUsed: order.ScoreUsed,
+            OrderType: 'NormalDay',
+            CreatedDate: order.Created,
+            PercentDiscount: 0,
+            AmountDiscount: 0
+        });
+    });
+    Order.bulkCreate(obj, {
+        returning: true
+    }).then(orderRes => {
+        res.send({ message: "Some order are added" });
+    }).catch(err => {
+        console.log(err);
         res.status(500).send({ message: err.message });
     });
 }
@@ -151,6 +209,7 @@ exports.getByStates = (req, res) => {
                     }
                 }
             },
+            { model: Customer }
         ],
         order: [
             ['CreatedDate', 'DESC'],
@@ -194,6 +253,7 @@ exports.searchByPhoneNumberOrCustomerName = (req, res) => {
                 model: OrderDetail,
                 where: condition
             },
+            { model: Customer }
         ],
         order: [
             ['CreatedDate', 'DESC'],

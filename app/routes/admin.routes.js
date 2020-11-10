@@ -114,6 +114,10 @@ module.exports = function (app) {
         [authJwt.verifyToken], orderController.updateOrderFields)
     app.post(`${orderPrefix}searchByPhoneNumberOrCustomerName`,
         [authJwt.verifyToken], orderController.searchByPhoneNumberOrCustomerName)
+    app.post(`${orderPrefix}getByDayRange`,
+        [authJwt.verifyToken, authJwt.isAdmin], orderController.getByDayRange)
+    app.post(`${orderPrefix}addBulk`,
+        [authJwt.verifyToken, authJwt.isAdmin], orderController.addBulk)
 
     //order detail
     app.get(`${orderDetailPrefix}getMaxMakingSortOrder`,
@@ -227,6 +231,14 @@ module.exports = function (app) {
     app.post(`${customerPrefix}updateFields`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.updateFields
+    )
+    app.post(`${customerPrefix}createCustomers`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.createCustomers
+    )
+    app.post(`${customerPrefix}updateList`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.updateList
     )
 
     //product
