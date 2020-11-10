@@ -27,6 +27,11 @@ export class FloristMainComponent extends BaseComponent {
     'Xem chi tiết đơn',
   ];
 
+  fixingRequestMenuItems = [
+    'Sửa đơn',
+    'Xem chi tiết đơn',
+  ];
+
   makingMenuItems = [
     'Hoàn thành đơn',
     'Xem chi tiết đơn',
@@ -67,7 +72,7 @@ export class FloristMainComponent extends BaseComponent {
 
     this.waitingOrderDetails = [];
 
-    this.orderDetailService.getByState(OrderDetailStates.Waiting)
+    this.orderDetailService.getByStates([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest])
       .then(details => {
 
         this.waitingOrderDetails = details;
@@ -80,7 +85,7 @@ export class FloristMainComponent extends BaseComponent {
 
     this.makingOrderDetails = [];
 
-    this.orderDetailService.getByStateAndFloristId(this.CurrentUser.Id, OrderDetailStates.Making)
+    this.orderDetailService.getByStatesAndFloristId(this.CurrentUser.Id, [OrderDetailStates.Making, OrderDetailStates.Fixing])
       .then(details => {
 
         this.makingOrderDetails = details;
@@ -91,6 +96,21 @@ export class FloristMainComponent extends BaseComponent {
   }
 
   getMenu(orderDetail: OrderDetailViewModel) {
+
+    let menu: string[];
+
+    switch (orderDetail.State) {
+      case OrderDetailStates.Waiting:
+        menu = this.waitingMenuItems;
+        break;
+      case OrderDetailStates.Making:
+      case OrderDetailStates.Fixing:
+        menu = this.makingMenuItems;
+        break;
+      case OrderDetailStates.FixingRequest:
+        menu = this.fixingRequestMenuItems;
+        break;
+    }
 
     menuOpen((index) => {
 
@@ -103,12 +123,25 @@ export class FloristMainComponent extends BaseComponent {
               this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
                 .then(data => {
 
-                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                    State: OrderDetailStates.Making,
-                    MakingSortOrder: 0,
-                    FloristId: this.CurrentUser.Id,
-                    MakingStartTime: (new Date).getTime()
-                  }).then(() => {
+                  let obj = {};
+
+                  if (orderDetail.State == OrderDetailStates.Waiting) {
+                    obj = {
+                      State: OrderDetailStates.Making,
+                      MakingSortOrder: 0,
+                      FloristId: this.CurrentUser.Id,
+                      MakingStartTime: (new Date).getTime()
+                    }
+                  } else {
+                    obj = {
+                      State: OrderDetailStates.Fixing,
+                      MakingSortOrder: 0,
+                      FixingFloristId: this.CurrentUser.Id,
+                      MakingStartTime: (new Date).getTime()
+                    }
+                  }
+
+                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj).then(() => {
                     this.loadMakingDetails();
                     this.loadWaitingDetails();
                   });
@@ -116,7 +149,9 @@ export class FloristMainComponent extends BaseComponent {
                 });
 
               break;
+
             case OrderDetailStates.Making:
+            case OrderDetailStates.Fixing:
 
               this.openConfirm('chắc chắn hoàn thành đơn?', () => {
 
@@ -141,6 +176,6 @@ export class FloristMainComponent extends BaseComponent {
           break;
 
       }
-    }, orderDetail.State === OrderDetailStates.Waiting ? this.waitingMenuItems : this.makingMenuItems);
+    }, menu);
   }
 }

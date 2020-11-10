@@ -193,7 +193,7 @@ export class ShipperMainComponent extends BaseComponent {
 
               break;
 
-            case OrderDetailStates.Delivering:
+            case OrderDetailStates.DeliverAssinged:
 
               this.openConfirm('Bắt đầu giao đơn này?', () => {
 
@@ -249,7 +249,7 @@ export class ShipperMainComponent extends BaseComponent {
           break;
 
       }
-    }, orderDetail.State === OrderDetailStates.DeliveryWaiting ? this.waitingMenuItems : orderDetail.State === OrderDetailStates.Delivering ? this.shippingMenuItems : this.onTheWayMenuItems);
+    }, orderDetail.State === OrderDetailStates.DeliveryWaiting ? this.waitingMenuItems : orderDetail.State === OrderDetailStates.DeliverAssinged ? this.shippingMenuItems : this.onTheWayMenuItems);
 
   }
 }

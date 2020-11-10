@@ -79,6 +79,8 @@ export const API_END_POINT = {
     getMaxShippingSortOrder: '/orderDetail/getMaxShippingSortOrder',
     updateODFields: '/orderDetail/updateFields',
     getOrderDetailByState: '/orderDetail/getByState',
+    getOrderDetailByStates: '/orderDetail/getDetailByStates',
+    getOrderDetailByStatesAndFloristId: '/orderDetail/getDetailByStatesAndFlorist',
     updateMakingSortOrder: '/orderDetail/updateMakingSortOrder',
     updateShippingSortOrder: '/orderDetail/updateShippingSortOrder',
     getDetailByStateAndFloristId: '/orderDetail/getDetailByStateAndFloristId',
@@ -96,6 +98,10 @@ export const API_END_POINT = {
     assignSingleOD: '/shippingSession/assignSingleOD',
     assignOrderDetails: '/shippingSession/assignOrderDetails',
     getShippingOrderDetails: '/shippingSession/getShippingOrderDetails',
+
+    addPurchase: '/purchase/add',
+    updatePurchaseStatus: '/purchase/updateStatus',
+    bulkAddPurchase: '/purchase/bulkAdd'
 };
 
 export const IMAGE_FOLDER_PATHS = {
@@ -158,7 +164,7 @@ export const ORDER_DETAIL_STATES = [
         DisplayName: 'Đã xác nhận SP, chưa có Shipper'
     },
     {
-        State: OrderDetailStates.Delivering,
+        State: OrderDetailStates.DeliverAssinged,
         DisplayName: 'Đã chọn được Shipper'
     },
     {
@@ -176,6 +182,10 @@ export const ORDER_DETAIL_STATES = [
     {
         State: OrderDetailStates.FixingRequest,
         DisplayName: 'Đang yêu cầu sửa'
+    },
+    {
+        State: OrderDetailStates.Fixing,
+        DisplayName: 'Đang sửa'
     },
     {
         State: OrderDetailStates.Completed,

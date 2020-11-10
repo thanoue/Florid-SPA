@@ -29,8 +29,6 @@ export class SortOrderChangingComponent extends BaseComponent {
     IsSelect: boolean
   }[];
 
-  // shippingOrderDetails: OrderDetailViewModel[];
-
   constructor(private orderDetailService: OrderDetailService, private userService: UserService, private router: Router) {
     super();
     this.shippingODs = [];
@@ -80,7 +78,7 @@ export class SortOrderChangingComponent extends BaseComponent {
       });
   }
 
-  viewDetail(index: number) {
+  viewShippingDetail(index: number) {
 
     if (this.isAssigningShipper) {
 
@@ -90,6 +88,12 @@ export class SortOrderChangingComponent extends BaseComponent {
     }
 
     this.globalOrderDetail = this.shippingODs[index].ShippingOrderDetail;
+    this.router.navigate(['staff/order-detail-view']);
+
+  }
+
+  viewMakingDetail(index: number) {
+    this.globalOrderDetail = this.makingOrderDetails[index];
     this.router.navigate(['staff/order-detail-view']);
   }
 

@@ -113,6 +113,7 @@
 
 <div id="colorBoard" class="popup-content">
     <ul class="colorList">
+
         <li class="colorInfo colorItem">
             <app-status-point [state]="selectedDetail.State">
 
@@ -125,15 +126,30 @@
         <li class="colorInfo">
             <label>Người giao hoa: </label><span>{{selectedDetail.ShipperName}}</span>
         </li>
+        <li class="colorInfo" *ngIf="selectedDetail && selectedDetail.FixingFloristName !== undefined && selectedDetail.FixingFloristName !== ''">
+            <label>Người sửa hoa: </label><span>{{selectedDetail.FixingFloristName}}</span>
+        </li>
+
     </ul>
 </div>
 
-<div class="popup-content" id="viewed">
+<div class="popup-content florist" id="viewed">
     <h3 class="main-bg">Chọn Florist</h3>
     <ul class="viewedList">
         <li  class="viewItem" *ngFor="let user of florists"  id="{{user.Id}}" >
             <img src="{{user.AvtUrl | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
             <span class="itemName">{{user.FullName}}</span>
+        </li>
+    </ul>
+</div>
+
+<div class="popup-content shipper" id="viewed">
+    <h3 class="main-bg">Chọn Shipper</h3>
+    <ul class="viewedList">
+        <li class="viewItem-three-column" *ngFor="let user of shippers" id="{{user.Id}}"> 
+            <img src="{{user.AvtUrl | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
+            <span class="itemName">{{user.FullName}}</span>
+            <span class="itemRole">{{user.IsExternalShipper ?  'Shipper ngoài' : 'Nhân viên'}}</span>
         </li>
     </ul>
 </div>

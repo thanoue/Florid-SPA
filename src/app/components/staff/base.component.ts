@@ -10,6 +10,7 @@ import { AddressService } from '../../services/address.service';
 import { District, Ward } from '../../models/entities/address.entity';
 import { LocalService } from '../../services/common/local.service';
 import { Roles } from '../../models/enums';
+import { Purchase } from 'src/app/models/view.models/purchase.entity';
 
 declare function pickFile(isSaveUrl: boolean): any;
 declare function isRememberPassChecking(): any;
@@ -39,6 +40,13 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
     set isEdittingOrder(isEditting: boolean) {
         this.globalService.isEdittingOrder = isEditting;
+    }
+
+    get globalPurchases(): Purchase[] {
+        return this.globalService.currentPurchases;
+    }
+    set globalPurchases(value: Purchase[]) {
+        this.globalService.currentPurchases = value;
     }
 
     get globalOrder(): OrderViewModel {
@@ -254,7 +262,7 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
     }
 
-    protected openConfirm(message: string, okCallback: () => void, noCallback?: () => void, cancelCallback?: () => void) {
-        this.globalService.openMobileConfirm(message, okCallback, noCallback, cancelCallback);
+    protected openConfirm(message: string, okCallback: () => void, noCallback?: () => void, cancelCallback?: () => void, yesTitle?: string, noTitle?: string) {
+        this.globalService.openMobileConfirm(message, okCallback, noCallback, cancelCallback, yesTitle, noTitle);
     }
 }

@@ -108,6 +108,10 @@ function addProductsToCache(products) {
     return;
 }
 
+function moveCursor(id, pos) {
+    $(`#${id}`)[0].setSelectionRange(pos, pos);
+}
+
 function alert(message, alertType) {
 
     if (typeof Android !== "undefined" && Android !== null) {
