@@ -185,17 +185,10 @@ export class OrdersManageComponent extends BaseComponent {
   editOrder(orderId: string) {
     this.globalOrder = this.orders.filter(p => p.OrderId === orderId)[0];
 
-    this.customerService.getById(this.globalOrder.CustomerInfo.Id)
-      .then(customer => {
+    this.globalPurchases = this.globalOrder.PurchaseItems;
+    this.isEdittingOrder = true;
+    this.router.navigate(['/staff/add-order']);
 
-        this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(customer, this.globalOrder.CustomerInfo);
-        this.isEdittingOrder = true;
-
-        this.globalPurchases = [];
-
-        this.router.navigate(['/staff/add-order']);
-
-      });
   }
 
   addOrder() {

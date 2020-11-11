@@ -11,6 +11,7 @@ import { or } from 'sequelize/types';
 import { ExchangeService } from './exchange.service';
 import { SaleTotalModel } from '../models/view.models/sale.total.model';
 import { NgModelGroup } from '@angular/forms';
+import { Purchase } from '../models/view.models/purchase.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,23 @@ export class OrderService {
 
     orderVM.CustomerInfo.ScoreUsed = order.ScoreUsed;
     orderVM.CustomerInfo.GainedScore = order.GainedScore;
+
+    if (order.purchases) {
+
+      order.purchases.forEach(purchase => {
+
+        var purchaseEntity = new Purchase();
+
+        purchaseEntity.Id = purchase.Id;
+        purchaseEntity.OrderId = purchase.OrderId;
+        purchaseEntity.Amount = purchase.Amount;
+        purchaseEntity.Method = purchase.Method;
+        purchaseEntity.Status = purchase.Status;
+
+        orderVM.PurchaseItems.push(purchaseEntity);
+
+      });
+    }
 
     if (order.customer) {
       orderVM.CustomerInfo.Name = order.customer.FullName;
@@ -303,7 +321,6 @@ export class OrderService {
   }
 
   addOrEditOrder(order: Order, isEdit: boolean): Promise<Order> {
-    console.log(order);
     return this.httpService.post(isEdit ? API_END_POINT.editOrder : API_END_POINT.addOrder, {
       customerId: order.CustomerId,
       id: order.Id,

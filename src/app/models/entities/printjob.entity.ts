@@ -16,11 +16,19 @@ export class PrintJob extends BaseEntity {
     totalScore: number;
     customerName: string;
     discount: number;
+    purchaseItems: purchaseItem[];
 
     constructor() {
         super();
         this.saleItems = [];
+        this.purchaseItems = [];
     }
+}
+
+export class purchaseItem {
+    method: string;
+    amount: number;
+    status: string;
 }
 
 export class PrintSaleItem {

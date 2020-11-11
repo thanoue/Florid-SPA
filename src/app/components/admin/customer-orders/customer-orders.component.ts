@@ -7,7 +7,7 @@ import { OrderViewModel, OrderDetailViewModel } from 'src/app/models/view.models
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { ORDER_DETAIL_STATES } from 'src/app/app.constants';
-import { PrintJob, PrintSaleItem } from 'src/app/models/entities/printjob.entity';
+import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { or } from 'sequelize/types';
 import { PrintJobService } from 'src/app/services/print-job.service';
 
@@ -71,13 +71,26 @@ export class CustomerOrdersComponent extends BaseComponent {
       tempSummary += product.ModifiedPrice;
     });
 
+    let purhases: purchaseItem[] = [];
+
+    if (order.PurchaseItems)
+      order.PurchaseItems.forEach(purchase => {
+
+        purhases.push({
+          method: purchase.Method,
+          amount: purchase.Amount,
+          status: purchase.Status
+        });
+
+      });
+
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
       Id: order.OrderId,
       Active: true,
       IsDeleted: false,
       saleItems: products,
-      createdDate: order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
+      createdDate: order.CreatedDate.toLocaleString('en-US', { hour12: true }),
       orderId: order.OrderId,
       summary: tempSummary,
       totalAmount: order.TotalAmount,
@@ -89,7 +102,8 @@ export class CustomerOrdersComponent extends BaseComponent {
       gainedScore: order.CustomerInfo.GainedScore,
       totalScore: order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
       customerName: order.CustomerInfo.Name,
-      discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount)
+      discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
+      purchaseItems: purhases
     };
 
     this.printJobService.addPrintJob(orderData);
