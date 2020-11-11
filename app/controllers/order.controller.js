@@ -5,6 +5,7 @@ const OrderDetail = db.orderDetail;
 const Customer = db.customer;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
+const Purchase = db.purchase;
 
 exports.getByCustomer = (req, res) => {
 
@@ -23,7 +24,8 @@ exports.getByCustomer = (req, res) => {
         },
         include: [
             { model: OrderDetail },
-            { model: Customer }
+            { model: Customer },
+            { model: Purchase }
         ]
 
     }).then(orders => {
@@ -49,7 +51,8 @@ exports.getByDayRange = (req, res) => {
         },
         include: [
             { model: Customer },
-            { model: OrderDetail }
+            { model: OrderDetail },
+            { model: Purchase }
         ]
     }).then(orders => {
         res.send({ orders: orders });
@@ -75,7 +78,8 @@ exports.getById = (req, res) => {
         },
         include: [
             { model: OrderDetail },
-            { model: Customer }
+            { model: Customer },
+            { model: Purchase }
         ]
 
     }).then(order => {
@@ -209,7 +213,9 @@ exports.getByStates = (req, res) => {
                     }
                 }
             },
-            { model: Customer }
+            { model: Customer },
+            { model: Purchase }
+
         ],
         order: [
             ['CreatedDate', 'DESC'],
@@ -219,6 +225,7 @@ exports.getByStates = (req, res) => {
             orders: orders
         });
     }).catch(err => {
+        console.log(err);
         res.status(500).send({
             message:
                 err.message || "Some error occurred while retrieving orders"
@@ -253,7 +260,9 @@ exports.searchByPhoneNumberOrCustomerName = (req, res) => {
                 model: OrderDetail,
                 where: condition
             },
-            { model: Customer }
+            { model: Customer },
+            { model: Purchase }
+
         ],
         order: [
             ['CreatedDate', 'DESC'],
