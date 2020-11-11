@@ -133,6 +133,8 @@ export class AddOrderComponent extends BaseComponent {
 
   requestPaidInput() {
 
+    this.currentPayAmount = this.order.TotalAmount - this.order.TotalPaidAmount;
+
     if (!this.order.CustomerInfo.Id) {
       this.showError('Thiếu thông tin Khách hàng!');
       return;
@@ -488,6 +490,27 @@ export class AddOrderComponent extends BaseComponent {
     this.onVATIncludedChange();
   }
 
+  onPayChanged(value) {
+    this.onPayFocus();
+  }
+
+  onPayFocus() {
+    if (!this.currentPayAmount) {
+      this.currentPayAmount = 0;
+    }
+
+    if (this.currentPayAmount < 1000) {
+      this.currentPayAmount *= 1000;
+    }
+
+    var length = this.currentPayAmount.toString().length;
+
+    setTimeout(() => {
+      moveCursor('currentPayAmount', length - 3);
+    }, 10);
+
+  }
+
   onAmountDiscountChanged(value) {
 
     this.onAcmountDiscountFocus();
@@ -513,10 +536,6 @@ export class AddOrderComponent extends BaseComponent {
     setTimeout(() => {
       moveCursor('AmountDiscount', length - 3);
     }, 10);
-
-  }
-
-  onAcmountDiscountBlur() {
 
   }
 

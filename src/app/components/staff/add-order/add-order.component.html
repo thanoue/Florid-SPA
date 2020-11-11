@@ -26,16 +26,15 @@
 
         <label class="title-field">Giảm giá phần trăm</label>
         <div style="margin-bottom:1vh;" class="form-group orderInfo borderless-field">
-            <input type="text" name="PercentDiscount" id="PercentDiscount"
+            <input type="number" name="PercentDiscount" id="PercentDiscount"
                 (input)="onDiscountChanged($event.target.value)" [(ngModel)]="order.PercentDiscount"
                 class="orderField small-height" placeholder="%">
         </div>
 
         <label class="title-field">Giả giá tiền</label>
         <div class="form-group orderInfo borderless-field">
-            <input type="text" name="AmountDiscount" id="AmountDiscount"
-                (input)="onAmountDiscountChanged($event.target.value)" [(ngModel)]="order.AmountDiscount"
-                class="orderField small-height" placeholder="0" (blur)="onAcmountDiscountBlur()"
+            <input type="tel" name="AmountDiscount" id="AmountDiscount" [(ngModel)]="order.AmountDiscount"
+                class="orderField small-height" placeholder="0" (input)="onAmountDiscountChanged($event.target.value)"
                 (focus)="onAcmountDiscountFocus()">
         </div>
 
@@ -149,7 +148,8 @@
             <div class="form-group">
                 <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentPayAmount">Số tiền thanh
                     toán</label>
-                <input type="number" name="currentPayAmount" id="currentPayAmount" [(ngModel)]="currentPayAmount"
+                <input type="tel" name="currentPayAmount" id="currentPayAmount"
+                    (input)="onPayChanged($event.target.value)" (focus)="onPayFocus()" [(ngModel)]="currentPayAmount"
                     class="mainForm">
             </div>
             <div class=" form-group">
