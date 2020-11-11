@@ -8,7 +8,7 @@ import { OrderService } from 'src/app/services/order.service';
 import { Order, OrderDetail, CustomerReceiverDetail } from 'src/app/models/entities/order.entity';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
-import { PrintSaleItem, PrintJob } from 'src/app/models/entities/printjob.entity';
+import { PrintSaleItem, PrintJob, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';
 import { PromotionService } from 'src/app/services/promotion.service';
@@ -44,7 +44,7 @@ export class AddOrderComponent extends BaseComponent {
   purchaseType = PurchaseMethods;
   currentPayAmount: number;
   qrContent: string;
-  qrContentTemplate = "123456789";
+  qrContentTemplate = "";
 
   constructor(private router: Router,
     private orderService: OrderService,
@@ -67,7 +67,13 @@ export class AddOrderComponent extends BaseComponent {
 
     this.order = this.globalOrder;
 
-    if (!this.isEdittingOrder) {
+    if (this.isEdittingOrder) {
+
+      this.originalOrderId = this.order.OrderId;
+
+      this.onVATIncludedChange();
+
+    } else {
 
       this.memberShipTitle = 'New Customer';
 
@@ -82,11 +88,6 @@ export class AddOrderComponent extends BaseComponent {
 
       this.onVATIncludedChange();
 
-    } else {
-
-      this.originalOrderId = this.order.OrderId;
-
-      this.onVATIncludedChange();
     }
 
     switch (this.order.CustomerInfo.MembershipType) {
@@ -194,7 +195,7 @@ export class AddOrderComponent extends BaseComponent {
     this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
 
     purchase.OrderId = this.order.OrderId;
-    purchase.Amount = this.currentPayAmount;
+    purchase.Amount = +this.currentPayAmount;
     purchase.Method = this.currentPurType;
     purchase.Status = this.currentPurStatus;
 
@@ -202,13 +203,15 @@ export class AddOrderComponent extends BaseComponent {
 
     this.order.TotalPaidAmount += purchase.Amount;
 
+    console.log(this.order.TotalPaidAmount);
+
     this.currentPayAmount = 0;
 
     this.showSuccess('Đã thêm 1 thanh toán!');
 
     this.totalAmountCalculate(this.order.VATIncluded);
 
-    if (this.order.TotalPaidAmount >= this.order.TotalAmount) {
+    if (this.totalBalance <= 0) {
       dismissPurchaseDialog();
     }
 
@@ -230,13 +233,23 @@ export class AddOrderComponent extends BaseComponent {
       tempSummary += product.ModifiedPrice;
     });
 
+    let purhases: purchaseItem[] = [];
+
+    this.globalPurchases.forEach(purchase => {
+      purhases.push({
+        method: purchase.Method,
+        amount: purchase.Amount,
+        status: purchase.Status
+      });
+    });
+
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
       Id: this.order.OrderId,
       Active: true,
       IsDeleted: false,
       saleItems: products,
-      createdDate: this.order.CreatedDate.toLocaleString('vi-VN', { hour12: true }),
+      createdDate: this.order.CreatedDate.toLocaleString('en-US', { hour12: true }),
       orderId: this.order.OrderId,
       summary: tempSummary,
       totalAmount: this.order.TotalAmount,
@@ -248,7 +261,8 @@ export class AddOrderComponent extends BaseComponent {
       gainedScore: this.order.CustomerInfo.GainedScore,
       totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
       customerName: this.order.CustomerInfo.Name,
-      discount: this.orderDiscount
+      discount: this.orderDiscount,
+      purchaseItems: purhases
     };
 
     this.printJobService.addPrintJob(orderData);
@@ -309,7 +323,6 @@ export class AddOrderComponent extends BaseComponent {
       .then(async res => {
 
         if (this.globalPurchases.length > 0) {
-          console.log(this.globalPurchases);
           this.purchaseService.bulkCreate(this.globalPurchases, orderDB.Id)
             .then(data => {
               this.globalPurchases = [];

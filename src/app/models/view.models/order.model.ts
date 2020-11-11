@@ -3,6 +3,7 @@ import { MembershipTypes } from '../enums';
 import { Customer } from '../entities/customer.entity';
 import { ExchangeService } from '../../services/exchange.service';
 import { CustomerReceiverDetail, OrderDetail, Order, ODFloristInfo, ODShipperInfo, ODSeenUserInfo } from '../entities/order.entity';
+import { Purchase } from './purchase.entity';
 
 export class OrderViewModel {
 
@@ -22,6 +23,7 @@ export class OrderViewModel {
 
     OrderDetails: OrderDetailViewModel[];
 
+    PurchaseItems: Purchase[];
 
     static ToViewModel(entity: Order, customer: Customer): OrderViewModel {
 
@@ -51,6 +53,7 @@ export class OrderViewModel {
     }
 
     constructor() {
+        this.PurchaseItems = [];
         this.OrderDetails = [];
         this.CustomerInfo = new OrderCustomerInfoViewModel();
         this.TotalAmount = 0;
