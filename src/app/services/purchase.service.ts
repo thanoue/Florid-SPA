@@ -13,15 +13,25 @@ export class PurchaseService {
   constructor(private httpService: HttpService, private globalService: GlobalService) { }
 
   bulkCreate(purchases: Purchase[], orderId: string): Promise<any> {
+
+    let addingPurchase = [];
+    purchases.forEach(item => {
+      if (!item.Id || item.Id < 0)
+        addingPurchase.push(item);
+    });
+
+    if (addingPurchase.length <= 0)
+      return;
+
     return this.httpService.post(API_END_POINT.bulkAddPurchase, {
-      purchases: purchases,
-      orderId:orderId
+      purchases: addingPurchase,
+      orderId: orderId
     }).then(data => {
-        return data;
-      }).catch(err => {
-        this.httpService.handleError(err);
-        throw err;
-      });
+      return data;
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
   }
 
   create(purchase: Purchase): Promise<any> {
