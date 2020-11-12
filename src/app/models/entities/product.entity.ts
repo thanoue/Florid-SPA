@@ -5,7 +5,7 @@ import { ProductTagViewModel } from '../view.models/product.tag.model';
 export class Product {
     Id: number;
     Name: string;
-    Price: string;
+    Price: number;
     ImageUrl: string;
     Page: number;
     Index: number;
