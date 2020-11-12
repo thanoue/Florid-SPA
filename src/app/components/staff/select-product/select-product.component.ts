@@ -139,134 +139,6 @@ export class SelectProductComponent extends BaseComponent {
     this.getProductsByPage(1, tags);
   }
 
-
-  // onChange(event) {
-
-  //   const filesUpload: File = event.target.files[0];
-
-  //   this.globalOrderDetail.IsFromHardCodeProduct = true;
-  //   this.globalOrderDetail.OriginalPrice = 0;
-  //   this.globalOrderDetail.ModifiedPrice = 0;
-  //   this.globalOrderDetail.ProductName = '.....';
-
-  //   const newName = `temp_image_${(new Date().getTime().toString())}`;
-
-  //   const tempProduct = new TempProduct();
-  //   tempProduct.Name = newName;
-
-  //   this.startLoading();
-
-  //   if (this.globalOrderDetail.HardcodeImageName && this.currentHardcodeUsedCount === 1) {
-
-  //     this.tempProductService.deleteFile(this.globalOrderDetail.HardcodeImageName)
-  //       .then(() => {
-
-  //         this.tempProductService.addFile(filesUpload, tempProduct, (url) => {
-
-  //           this.stopLoading();
-
-  //           if (url === 'ERROR') {
-  //             this.showError('Upload hình lỗi!!');
-  //             return;
-  //           }
-
-  //           this.globalOrderDetail.ProductImageUrl = url;
-  //           this.globalOrderDetail.HardcodeImageName = tempProduct.Name;
-
-  //           this.OnBackNaviage();
-  //         });
-
-  //       })
-  //       .catch(error => {
-  //         this.stopLoading();
-  //         console.log(error);
-  //         return;
-  //       });
-
-  //   } else {
-
-  //     this.tempProductService.addFile(filesUpload, tempProduct, (url) => {
-
-  //       this.stopLoading();
-
-  //       if (url === 'ERROR') {
-  //         this.showError('Upload hình lỗi!!');
-  //         return;
-  //       }
-
-  //       this.globalOrderDetail.ProductImageUrl = url;
-  //       this.globalOrderDetail.HardcodeImageName = tempProduct.Name;
-
-  //       this.OnBackNaviage();
-
-  //     });
-
-  //   }
-  // }
-
-  // protected fileChosen(path: string) {
-
-  //   this.globalOrderDetail.IsFromHardCodeProduct = true;
-  //   this.globalOrderDetail.ProductImageUrl = 'data:image/png;base64,' + path;
-  //   this.globalOrderDetail.OriginalPrice = 0;
-  //   this.globalOrderDetail.ModifiedPrice = 0;
-  //   this.globalOrderDetail.ProductName = '.....';
-
-  //   const newName = `temp_image_${(new Date().getTime().toString())}`;
-
-  //   const tempProduct = new TempProduct();
-  //   tempProduct.Name = newName;
-
-  //   this.startLoading();
-
-  //   if (this.globalOrderDetail.HardcodeImageName && this.currentHardcodeUsedCount === 1) {
-
-  //     this.tempProductService.deleteFile(this.globalOrderDetail.HardcodeImageName)
-  //       .then(() => {
-
-  //         this.tempProductService.addFileFromBase64String(this.globalOrderDetail.ProductImageUrl, tempProduct, (url) => {
-
-  //           this.stopLoading();
-
-  //           if (url === 'ERROR') {
-  //             this.showError('Upload hình lỗi!!');
-  //             return;
-  //           }
-
-  //           this.globalOrderDetail.ProductImageUrl = url;
-  //           this.globalOrderDetail.HardcodeImageName = tempProduct.Name;
-
-  //           this.OnBackNaviage();
-  //         });
-
-  //       })
-  //       .catch(error => {
-  //         this.stopLoading();
-  //         console.log(error);
-  //         return;
-  //       });
-
-  //   } else {
-
-  //     this.tempProductService.addFileFromBase64String(this.globalOrderDetail.ProductImageUrl, tempProduct, (url) => {
-
-  //       this.stopLoading();
-
-  //       if (url === 'ERROR') {
-  //         this.showError('Upload hình lỗi!!');
-  //         return;
-  //       }
-
-  //       this.globalOrderDetail.ProductImageUrl = url;
-  //       this.globalOrderDetail.HardcodeImageName = tempProduct.Name;
-
-  //       this.OnBackNaviage();
-
-  //     });
-
-  //   }
-  // }
-
   setSelectedProduct(data: number) {
     this.selectedProduct = this.pagingProducts.filter(p => p.Id == data)[0];
   }
@@ -342,10 +214,8 @@ export class SelectProductComponent extends BaseComponent {
     this.globalOrderDetail.ProductId = this.selectedProduct.Id;
     this.globalOrderDetail.IsFromHardCodeProduct = false;
 
-    const price = ExchangeService.stringPriceToNumber(this.selectedProduct.Price);
-
-    this.globalOrderDetail.OriginalPrice = price;
-    this.globalOrderDetail.ModifiedPrice = price;
+    this.globalOrderDetail.OriginalPrice = this.selectedProduct.Price;
+    this.globalOrderDetail.ModifiedPrice = this.selectedProduct.Price;
 
     this.OnBackNaviage();
 

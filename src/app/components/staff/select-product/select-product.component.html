@@ -35,7 +35,7 @@
                 <div class="prodItem">
                     <img src="{{product.ImageUrl |  ImgPipe : 'ProductImg'}}" alt="">
                     <h4>{{product.Name}}</h4>
-                    <span>{{product.Price}}</span>
+                    <span>{{product.Price | currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
                 </div>
             </div>
         </div>
