@@ -266,6 +266,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         productController.addBulk
     )
+    app.post(`${productPrefix}addBulkFromFiles`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        productController.addBulkFromFiles
+    )
 
     //tag
     app.get(`${tagPrefix}getList`,
