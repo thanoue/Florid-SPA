@@ -12,6 +12,37 @@ const Op = db.Sequelize.Op;
 const appConstant = require('../config/app.config');
 const proudctImgFolderPath = appConstant.fileFolderPath.productImg;
 
+exports.addBulkFromFiles = (req, res) => {
+    try {
+
+        let rawProducts = req.body;
+        let products = [];
+
+        rawProducts.forEach(raw => {
+            products.push({
+                Name: raw.Name,
+                Price: raw.Price > 10 ? raw.Price * 1000 : 0,
+                ImageUrl: raw.ImageName,
+                Description: raw.Description,
+                Size: raw.Size,
+            });
+        });
+
+
+        Product.bulkCreate(products, {
+            returning: true
+        }).then(result => {
+            res.send({ products: result });
+        });
+
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "Some error occurred while create product."
+        });
+        return;
+    }
+}
+
 exports.addBulk = (req, res) => {
     try {
         let rawProducts = req.body;
@@ -81,6 +112,7 @@ function getProducts(countClause, page, limit, offset, res) {
 
         })
         .catch(err => {
+            console.log(err);
             res.status(500).send({
                 message:
                     err.message || "Some error occurred while retrieving products."
@@ -115,9 +147,14 @@ exports.getList = (req, res) => {
             let productIds = [];
 
             if (!prodCates || prodCates.length <= 0) {
-                res.status(500).send({
-                    message: "Product Category error!"
+
+                res.send({
+                    totalItemCount: 0,
+                    items: 0,
+                    totalPages: 0,
+                    currentPage: 0
                 });
+
                 return;
             }
 
@@ -137,10 +174,14 @@ exports.getList = (req, res) => {
                 }).then(productTags => {
 
                     if (!productTags || productTags.length <= 0) {
-                        res.status(500).send({
-                            message:
-                                err.message || "Some error occurred while retrieving products."
+
+                        res.send({
+                            totalItemCount: 0,
+                            items: 0,
+                            totalPages: 0,
+                            currentPage: 0
                         });
+
                         return;
                     }
 
@@ -173,10 +214,14 @@ exports.getList = (req, res) => {
             }).then(productTags => {
 
                 if (!productTags || productTags.length <= 0) {
-                    res.status(500).send({
-                        message:
-                            err.message || "Some error occurred while retrieving products."
+
+                    res.send({
+                        totalItemCount: 0,
+                        items: 0,
+                        totalPages: 0,
+                        currentPage: 0
                     });
+
                     return;
                 }
 
@@ -192,6 +237,7 @@ exports.getList = (req, res) => {
 
                 return;
             }).catch(err => {
+                console.log(err);
                 res.status(500).send({
                     message:
                         err.message || "Some error occurred while retrieving products."

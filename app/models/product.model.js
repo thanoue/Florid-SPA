@@ -9,12 +9,15 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         Price: {
-            type: Sequelize.STRING
+            type: Sequelize.BIGINT(11)
         },
         ImageUrl: {
             type: Sequelize.STRING
         },
         Description: {
+            type: Sequelize.STRING
+        },
+        Size: {
             type: Sequelize.STRING
         },
         createdAt: {
