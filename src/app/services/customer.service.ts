@@ -104,7 +104,7 @@ export class CustomerService {
   getCount(): Promise<number> {
     return this.httpService.get(API_END_POINT.getCustomeCount)
       .then(data => {
-        return data.count;
+        return data.max;
       })
       .catch(err => {
         this.httpService.handleError(err);

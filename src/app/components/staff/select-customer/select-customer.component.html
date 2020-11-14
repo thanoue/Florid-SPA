@@ -40,7 +40,7 @@
 
             <div *ngIf="Id.invalid && (Id.dirty || Id.touched)" class="alert alert-danger">
 
-                <div *ngIf="Name.errors.required">
+                <div *ngIf="Id.errors.required">
                     Mã là bắt buộc
                 </div>
                 <div *ngIf="Id.errors.minlength">
@@ -51,15 +51,15 @@
         </div>
 
         <div class="form-group">
-            <input type="text" name="Name" [(ngModel)]="newCustomer.Name" id="Name" required minlength="5"
-                class="mainForm" placeholder="Tên đầy đủ ..." #Name="ngModel">
+            <input type="text" name="FullName" [(ngModel)]="newCustomer.FullName" id="FullName" required minlength="5"
+                class="mainForm" placeholder="Tên đầy đủ ..." #FullName="ngModel">
 
-            <div *ngIf="Name.invalid && (Name.dirty || Name.touched)" class="alert alert-danger">
+            <div *ngIf="FullName.invalid && (FullName.dirty || FullName.touched)" class="alert alert-danger">
 
-                <div *ngIf="Name.errors.required">
+                <div *ngIf="FullName.errors.required">
                     Tên là bắt buộc
                 </div>
-                <div *ngIf="Name.errors.minlength">
+                <div *ngIf="FullName.errors.minlength">
                     Tên tối thiểu 5 ký tự
                 </div>
             </div>

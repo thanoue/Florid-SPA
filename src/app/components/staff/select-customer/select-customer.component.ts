@@ -19,7 +19,7 @@ declare function setSelectedCustomerItem(id: string): any;
 export class SelectCustomerComponent extends BaseComponent {
 
   Title = 'Chọn khách hàng';
-  newCustomer: CustomerViewModel;
+  newCustomer: Customer;
   customers: Customer[];
   selectedCustomer: Customer;
   protected IsDataLosingWarning = false;
@@ -29,7 +29,8 @@ export class SelectCustomerComponent extends BaseComponent {
     super();
 
     const key = 'searchProdReference';
-    this.newCustomer = new CustomerViewModel();
+    this.newCustomer = new Customer();
+    this.customers = [];
 
     window[key] = {
       component: this, zone: this._ngZone,
@@ -47,13 +48,18 @@ export class SelectCustomerComponent extends BaseComponent {
     this.customerService.getCount().then(res => {
 
       this.totalCount = res + 1;
-      this.newCustomer = new CustomerViewModel();
+      this.newCustomer = new Customer();
       this.newCustomer.Id = ExchangeService.detectCustomerId(this.totalCount);
 
     });
 
-    this.getCustomerList();
-    this.selectedCustomer = null;
+    this.selectedCustomer = new Customer();
+
+    if (this.globalOrder.CustomerInfo) {
+      console.log(this.globalOrder.CustomerInfo);
+      this.searchCustomer(this.globalOrder.CustomerInfo.PhoneNumber);
+    }
+
   }
 
   addCustomer(form: NgForm) {
@@ -66,8 +72,9 @@ export class SelectCustomerComponent extends BaseComponent {
 
     const customer = new Customer();
 
-    customer.FullName = this.newCustomer.Name;
+    customer.FullName = this.newCustomer.FullName;
     customer.PhoneNumber = this.newCustomer.PhoneNumber;
+
     customer.MembershipInfo.MembershipType = MembershipTypes.NewCustomer;
     customer.MembershipInfo.AccumulatedAmount = 0;
     customer.MembershipInfo.AvailableScore = 0;
@@ -76,18 +83,20 @@ export class SelectCustomerComponent extends BaseComponent {
 
     this.customerService.createCustomer(customer).then(res => {
 
-      this.newCustomer = new CustomerViewModel();
-
-      this.getCustomerList();
+      this.newCustomer = new Customer();
 
       this.selectedCustomer = customer;
 
+      this.customers.push(customer);
+
       this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(this.selectedCustomer);
+
+      setSelectedCustomerItem(this.globalOrder.CustomerInfo.Id);
 
       closeAddCustomerDialog();
 
       this.totalCount += 1;
-      this.newCustomer = new CustomerViewModel();
+      this.newCustomer = new Customer();
       this.newCustomer.Id = ExchangeService.detectCustomerId(this.totalCount);
 
     });
@@ -112,24 +121,10 @@ export class SelectCustomerComponent extends BaseComponent {
 
   }
 
-  getCustomerList() {
-
-    this.customerService.getAll().then(customers => {
-      this.customers = customers;
-      setTimeout(() => {
-        if (this.globalOrder.CustomerInfo.Id) {
-          setSelectedCustomerItem(this.globalOrder.CustomerInfo.Id);
-          this.selectedCustomer = customers.find(p => p.Id === this.globalOrder.CustomerInfo.Id);
-        }
-      }, 50);
-    });
-
-  }
-
   searchCustomer(term) {
 
     if (!term || term == '') {
-      this.getCustomerList();
+      this.customers = [];
       return;
     }
 
