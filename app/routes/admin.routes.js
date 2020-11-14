@@ -216,10 +216,6 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         customerController.deleteMany
     )
-    app.post(`${customerPrefix}bulkCreate`,
-        [authJwt.verifyToken, authJwt.isAdmin],
-        customerController.bulkAdd
-    )
     app.post(`${customerPrefix}updateReceiverList`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.updateReceiverList
