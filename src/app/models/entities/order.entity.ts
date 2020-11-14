@@ -8,6 +8,7 @@ export class Order extends BaseEntity {
     TotalAmount = 0;
     TotalPaidAmount = 0;
     OrderType: OrderType;
+    NumberId: number;
 
     GainedScore = 0;
     ScoreUsed = 0;
