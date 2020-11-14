@@ -7,6 +7,8 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { LoginModel } from 'src/app/models/entities/user.entity';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
+import { GoogleService } from 'src/app/services/google.service';
+import { NgZone } from '@angular/core';
 
 declare function getLocation(onSuccess: (location: any) => void, onFailed: (location: any) => void): any;
 
@@ -20,11 +22,13 @@ export class LoginComponent extends BaseComponent {
 
   model: LoginModel = new LoginModel();
 
-  constructor(private router: Router, protected activatedRoute: ActivatedRoute) {
+  constructor(private googleService: GoogleService,
+    private router: Router,
+    protected activatedRoute: ActivatedRoute) {
     super();
 
     LocalService.clear();
-    
+
   }
 
   protected Init() {
@@ -43,7 +47,17 @@ export class LoginComponent extends BaseComponent {
 
       if (isSuccess) {
 
-        this.router.navigate(['/admin/home']);
+        if (!this.googleService.isSignedIn) {
+          this.googleService.signIn()
+            .then(data => {
+              console.log(data);
+              this.ngZone.run(() => {
+                this.router.navigate(['/admin/home']);
+              });
+            });
+        } else {
+          this.router.navigate(['/admin/home']);
+        }
 
       } else {
 
