@@ -18,6 +18,7 @@ exports.updateList = (req, res) => {
             AccumulatedAmount: item.TotalAmount,
             MembershipType: item.MemberType,
             UsedScoreTotal: item.TotalUsedScore,
+            AvailableScore: item.AvailableScore
         });
     });
 
