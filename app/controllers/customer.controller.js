@@ -4,6 +4,7 @@ const Customer = db.customer;
 const CustomerReciverInfo = db.customerReceiverInfo;
 const CustomerSpecialDay = db.customerSpecialDay;
 const Sequelize = db.sequelize;
+const sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 const guid = require('guid');
 var fs = require('fs');
@@ -41,6 +42,11 @@ exports.createCustomers = (req, res) => {
     let customers = [];
 
     rawCuses.forEach(cus => {
+
+        var idParts = cus.id.split('-');
+
+        var numberId = idParts.length > 1 ? parseInt(idParts[1]) : -1;
+
         customers.push({
             FullName: cus.fullName,
             PhoneNumber: cus.phoneNumber,
@@ -58,7 +64,8 @@ exports.createCustomers = (req, res) => {
             ContactInfo_Viberviber: cus.viber,
             ContactInfo_Instagram: cus.instagram,
             MainContactInfo: cus.mainContactInfo,
-            Id: cus.id
+            Id: cus.id,
+            NumberId: numberId
         });
     })
 
@@ -67,77 +74,6 @@ exports.createCustomers = (req, res) => {
     }).then(data => {
         res.send({ customers: customers });
     });
-}
-
-exports.bulkAdd = (req, res) => {
-
-    try {
-
-        let specialDays = [];
-        let customers = [];
-
-        fs.readFile('hardcodes/customers.json', { encoding: 'utf8' }, (err, data) => {
-
-            let rawCustomers = JSON.parse(data);
-
-            rawCustomers.forEach(rawCustomer => {
-
-                let customer = {
-                    Id: rawCustomer.Id,
-                    FullName: rawCustomer.FullName,
-                    PhoneNumber: rawCustomer.PhoneNumber ? rawCustomer.PhoneNumber : '',
-                    Birthday: rawCustomer.Birthday ? rawCustomer.Birthday : 0,
-                    HomeAddress: rawCustomer.Address && rawCustomer.Address.Home ? rawCustomer.Address.Home : '',
-                    WorkAddress: rawCustomer.Address && rawCustomer.Address.Work ? rawCustomer.Address.Work : '',
-                    ContactInfo_Facebook: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Facebook ? rawCustomer.ContactInfo.Facebook : '',
-                    ContactInfo_Zalo: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Zalo ? rawCustomer.ContactInfo.Zalo : '',
-                    ContactInfo_Skype: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Skype ? rawCustomer.ContactInfo.Skype : '',
-                    ContactInfo_Viber: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Viber ? rawCustomer.ContactInfo.Viber : '',
-                    ContactInfo_Instagram: rawCustomer.ContactInfo && rawCustomer.ContactInfo.Instagram ? rawCustomer.ContactInfo.Instagram : '',
-                    Sex: rawCustomer.Sex ? rawCustomer.Sex : 'Male',
-                    MainContactInfo: rawCustomer.MainContactInfo,
-                    UsedScoreTotal: rawCustomer.MembershipInfo.UsedScoreTotal,
-                    AvailableScore: rawCustomer.MembershipInfo.AvailableScore,
-                    AccumulatedAmount: rawCustomer.MembershipInfo.AccumulatedAmount,
-                    MembershipType: rawCustomer.MembershipInfo.MembershipType
-                };
-
-                customers.push(customer);
-
-                if (rawCustomer.SpecialDays && rawCustomer.SpecialDays.length > 0) {
-
-                    rawCustomer.SpecialDays.forEach(rawSpecialDay => {
-
-                        specialDays.push({
-                            Date: rawSpecialDay.Date,
-                            Description: rawSpecialDay.Description,
-                            CustomerId: rawCustomer.Id
-                        });
-
-                    });
-                }
-
-            });
-
-
-            Customer.bulkCreate(customers, {
-                returning: true
-            }).then(result => {
-                CustomerSpecialDay.bulkCreate(specialDays, {
-                    returning: true
-                }).then(done => {
-                    res.send({ customers: customers });
-                });
-            });
-
-        });
-
-    } catch (err) {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create bulk customer."
-        });
-        return;
-    }
 }
 
 exports.updateReceiverList = (req, res) => {
@@ -309,11 +245,14 @@ exports.getList = (req, res) => {
 }
 
 exports.getCount = (req, res) => {
-    Customer.count()
+    Customer.findAll({
+        attributes: [
+            [sequelize.fn('MAX', sequelize.col('NumberId')), 'max']
+        ],
+    })
         .then(count => {
-            res.send({
-                count: count
-            });
+            console.log('value is:', count[0].dataValues);
+            res.send(count[0].dataValues);
         }).catch(err => {
             res.status(500).send({
                 message:
@@ -406,6 +345,10 @@ exports.create = (req, res) => {
 
     let id = body.id ? body.id : guid.create().toString();
 
+    var idParts = id.split('-');
+
+    var numberId = idParts.length > 1 ? parseInt(idParts[1]) : -1;
+
     Customer.create({
         Id: id,
         FullName: body.fullName,
@@ -422,6 +365,7 @@ exports.create = (req, res) => {
         ContactInfo_Viber: body.viber,
         ContactInfo_Instagram: body.instagram,
         MainContactInfo: body.mainContactInfo,
+        NumberId: numberId
 
     }).then(customer => {
 
