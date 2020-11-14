@@ -25,7 +25,7 @@ exports.updateList = (req, res) => {
     let rawCommand = "";
 
     obj.forEach(item => {
-        let command = "UPDATE `customers` SET `AccumulatedAmount` = " + item.AccumulatedAmount + " , `MembershipType` =\"" + item.MembershipType + "\", `UsedScoreTotal` = " + item.UsedScoreTotal + " WHERE `Id` = \"" + item.Id + "\";";
+        let command = "UPDATE `customers` SET `AccumulatedAmount` = " + item.AccumulatedAmount + " , `AvailableScore` = " + item.AvailableScore + " , `MembershipType` =\"" + item.MembershipType + "\", `UsedScoreTotal` = " + item.UsedScoreTotal + " WHERE `Id` = \"" + item.Id + "\";";
         rawCommand += command;
     });
 

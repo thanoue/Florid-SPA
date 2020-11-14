@@ -90,34 +90,29 @@ exports.getById = (req, res) => {
 }
 
 exports.addBulk = (req, res) => {
+
     let orders = req.body;
     let obj = [];
     orders.forEach(order => {
 
-        let numberId = 0;;
-        let orderType = 'NormalDay';
+        if (order.Id) {
 
-        if (parseInt(order.Id) != undefined && parseInt(order.Id) != NaN) {
-            numberId = parseInt(order.Id);
-        } else {
-            numberId = -1;
-            orderType = 'SpecialDay';
+            obj.push({
+                CustomerId: order.CustomerId,
+                Id: order.Id,
+                VATIncluded: order.VATIncluded,
+                TotalAmount: order.TotalAmount,
+                TotalPaidAmount: order.TotalPaidAmount,
+                GainedScore: order.GainedScore,
+                ScoreUsed: order.ScoreUsed,
+                OrderType: order.OrderType,
+                CreatedDate: order.Created,
+                PercentDiscount: 0,
+                AmountDiscount: 0,
+                NumberId: order.NumberId
+            });
         }
 
-        obj.push({
-            CustomerId: order.CustomerId,
-            Id: order.Id,
-            VATIncluded: order.VATIncluded,
-            TotalAmount: order.TotalAmount,
-            TotalPaidAmount: order.TotalPaidAmount,
-            GainedScore: order.GainedScore,
-            ScoreUsed: order.ScoreUsed,
-            OrderType: orderType,
-            CreatedDate: order.Created,
-            PercentDiscount: 0,
-            AmountDiscount: 0,
-            NumberId: numberId
-        });
     });
     Order.bulkCreate(obj, {
         returning: true
