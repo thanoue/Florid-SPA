@@ -22,7 +22,7 @@ exports.addBulkFromFiles = (req, res) => {
             products.push({
                 Name: raw.Name,
                 Price: raw.Price > 10 ? raw.Price * 1000 : 0,
-                ImageUrl: raw.ImageName,
+                ImageUrl: `https://drive.google.com/uc?export=view&id=${raw.ImageName}`,
                 Description: raw.Description,
                 Size: raw.Size,
             });

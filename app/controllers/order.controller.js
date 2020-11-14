@@ -93,6 +93,17 @@ exports.addBulk = (req, res) => {
     let orders = req.body;
     let obj = [];
     orders.forEach(order => {
+
+        let numberId = 0;;
+        let orderType = 'NormalDay';
+
+        if (parseInt(order.Id) != undefined && parseInt(order.Id) != NaN) {
+            numberId = parseInt(order.Id);
+        } else {
+            numberId = -1;
+            orderType = 'SpecialDay';
+        }
+
         obj.push({
             CustomerId: order.CustomerId,
             Id: order.Id,
@@ -101,10 +112,11 @@ exports.addBulk = (req, res) => {
             TotalPaidAmount: order.TotalPaidAmount,
             GainedScore: order.GainedScore,
             ScoreUsed: order.ScoreUsed,
-            OrderType: 'NormalDay',
+            OrderType: orderType,
             CreatedDate: order.Created,
             PercentDiscount: 0,
-            AmountDiscount: 0
+            AmountDiscount: 0,
+            NumberId: numberId
         });
     });
     Order.bulkCreate(obj, {
@@ -120,6 +132,17 @@ exports.addBulk = (req, res) => {
 exports.addOrder = (req, res) => {
 
     let body = req.body;
+
+    let numberId = 0;;
+    let orderType = '';
+
+    if (parseInt(body.id) != undefined && parseInt(body.id) != NaN) {
+        numberId = parseInt(body.id);
+    } else {
+        numberId = -1;
+        orderType = 'SpecialDay';
+    }
+
     let order = {
         CustomerId: body.customerId,
         Id: body.id,
@@ -128,10 +151,11 @@ exports.addOrder = (req, res) => {
         TotalPaidAmount: body.totalPaidAmount,
         GainedScore: body.gaindedScore,
         ScoreUsed: body.scoreUsed,
-        OrderType: body.orderType,
+        OrderType: orderType,
         CreatedDate: body.createdDate,
         PercentDiscount: body.percentDiscount ? body.percentDiscount : 0,
-        AmountDiscount: body.amountDiscount ? body.amountDiscount : 0
+        AmountDiscount: body.amountDiscount ? body.amountDiscount : 0,
+        NumberId: numberId
     }
 
     try {
@@ -139,9 +163,11 @@ exports.addOrder = (req, res) => {
             .then(orderRes => {
                 res.send({ order: orderRes });
             }).catch(err => {
+                console.log(err);
                 res.status(500).send({ message: err.message });
             });
     } catch (err) {
+        console.log(err);
         res.status(500).send({ message: err.message });
     }
 }
@@ -182,15 +208,19 @@ exports.editOrder = (req, res) => {
 
 exports.getNormalDayOrdersCount = (req, res) => {
 
-    Order.count({
+    Order.findAll({
+        attributes: [
+            [sequelize.fn('MAX', sequelize.col('NumberId')), 'max']
+        ],
         where: {
-            OrderType: 'NormalDay'
+            NumberId: {
+                [Op.gt]: -1
+            }
         }
     })
         .then(count => {
-            res.send({
-                count: count
-            });
+            console.log('value is:', count[0].dataValues);
+            res.send(count[0].dataValues);
         }).catch(err => {
             res.status(500).send({
                 message:
