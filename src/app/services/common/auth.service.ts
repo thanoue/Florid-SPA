@@ -24,10 +24,10 @@ export class AuthService {
 
   logOut(signedOutCallback: (isSuccess: boolean) => void) {
 
-    this.realTimeService.disConnect();
-
     this.httpService.post(API_END_POINT.logout)
       .then(() => {
+
+        this.realTimeService.disConnect();
 
         LocalService.clear();
 

@@ -173,19 +173,24 @@ export class SelectProductComponent extends BaseComponent {
     if (this.currentMaxPage < page) {
       return;
     }
-    
+
 
     this.productService.getRecords(page, this.itemsPerPage, this.productCategory, tagIds, this.searchTerm).then(res => {
+
       this.pagingProducts = [];
 
-      res.products.forEach(product => {
-        this.pagingProducts.push(product.Product);
-      });
+      if (res && res.products) {
 
-      console.log(this.pagingProducts);
+        res.products.forEach(product => {
+          this.pagingProducts.push(product.Product);
+        });
+
+        this.currentMaxPage = res.totalPages;
+
+      } else
+        this.currentMaxPage = 1;
 
       this.currentPage = page;
-      this.currentMaxPage = res.totalPages;
 
       this.selectedProduct = new Product();
 

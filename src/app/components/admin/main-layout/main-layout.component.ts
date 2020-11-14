@@ -28,19 +28,30 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
   menus = MenuItems;
 
-  constructor(private globalService: GlobalService, public router: Router, private realtimeService: RealtimeService,  private authService: AuthService) {
+  constructor(private globalService: GlobalService, public router: Router, private realtimeService: RealtimeService, private authService: AuthService) {
   }
 
   ngOnInit(): void {
 
-    this.realtimeService.forceLogoutRegister((message) => {
-      this.globalService.showError(message);
-      this.authService.logOut((isSuccess) => {
-        if (isSuccess) {
-          this.router.navigate(['/login']);
-        }
+    let userId = LocalService.getUserId();
+    let isPrinter = LocalService.isPrinter();
+
+    if (userId) {
+
+      this.realtimeService.connect(+userId, isPrinter, () => {
+
       });
-    });
+
+    }
+
+    // this.realtimeService.forceLogoutRegister((message) => {
+    //   this.globalService.showError(message);
+    //   this.authService.logOut((isSuccess) => {
+    //     if (isSuccess) {
+    //       this.router.navigate(['/login']);
+    //     }
+    //   });
+    // });
 
     this.currentMenu = MenuItems.None;
 
