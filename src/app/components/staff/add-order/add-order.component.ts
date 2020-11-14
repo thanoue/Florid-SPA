@@ -34,7 +34,6 @@ export class AddOrderComponent extends BaseComponent {
   memberShipTitle = '';
   order: OrderViewModel;
   totalBalance = 0;
-  isResetPaidAmount = false;
   originalOrderId = '';
   orderDiscount = 0;
   promotions: Promotion[];
@@ -278,10 +277,6 @@ export class AddOrderComponent extends BaseComponent {
 
     this.openConfirm('In hoá đơn?', () => {
 
-      if (this.isResetPaidAmount) {
-        this.order.TotalPaidAmount = this.order.TotalAmount;
-      }
-
       this.doPrintJob();
 
     }, () => {
@@ -323,10 +318,9 @@ export class AddOrderComponent extends BaseComponent {
       .then(async res => {
 
         if (this.globalPurchases.length > 0) {
-          this.purchaseService.bulkCreate(this.globalPurchases, orderDB.Id)
-            .then(data => {
-              this.globalPurchases = [];
-            });
+          this.purchaseService.bulkCreate(this.globalPurchases, orderDB.Id, () => {
+            this.globalPurchases = [];
+          });
         }
 
         const orderDetails: OrderDetail[] = [];
@@ -458,10 +452,13 @@ export class AddOrderComponent extends BaseComponent {
       if (detail.AmountDiscount && detail.AmountDiscount > 0)
         amount -= detail.AmountDiscount;
 
+
       if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent && this.order.CustomerInfo.DiscountPercent > 0)
         this.order.TotalAmount += ExchangeService.getFinalPrice(amount, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee, isWillApplyMemberDiscount);
       else
-        this.order.TotalAmount = amount + detail.AdditionalFee;
+        this.order.TotalAmount += amount + detail.AdditionalFee;
+
+      console.log('item total:', amount + detail.AdditionalFee)
 
     });
 

@@ -3,13 +3,11 @@ var socket;
 
 function connectSocket(host, connectedCallback) {
 
-    console.log('connect to socket');
-
-
     socket = io.connect(host);
 
     socket.on('connected', (data) => {
         connectedCallback();
+        console.log('socket is connected');
     });
 
     socket.on('printingNoResponse', () => {
@@ -32,8 +30,16 @@ function forceLogoutRegister(callback, notConnectedCallback) {
 }
 
 function disConnectSocket() {
-    if (socket)
+
+    if (socket) {
+
         socket.disconnect();
+        socket.off('connected');
+        socket.off('printingNoResponse');
+        socket.off('doPrintJob');
+
+        socket = undefined;
+    }
 }
 
 function login(userId, isPrinter) {
@@ -44,7 +50,6 @@ function login(userId, isPrinter) {
 function registerPrintEvent(callback) {
 
     if (socket) {
-        console.log('do print register');
         socket.on('doPrintJob', (data) => {
             callback(data.printJob);
         });

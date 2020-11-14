@@ -289,7 +289,6 @@ export class OrderService {
 
     return this.httpService.get(API_END_POINT.getNormalDayOrdersCount)
       .then(data => {
-        console.log(data);
         return data.max;
       })
       .catch(err => {

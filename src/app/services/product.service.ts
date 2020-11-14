@@ -109,6 +109,7 @@ export class ProductService {
             tagIds: tagIds
         }).then(data => {
             this.globalService.stopLoading();
+            
             if (!data) {
                 return null;
             }

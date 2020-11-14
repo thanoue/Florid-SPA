@@ -40,25 +40,29 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   }
   ngOnInit(): void {
 
-    this.realtimeService.forceLogoutRegister((message) => {
+    let userId = LocalService.getUserId();
+    let isPrinter = LocalService.isPrinter();
 
-      this.globalService.showError(message);
-      this.authService.logOut((isSuccess) => {
-        if (isSuccess) {
-          this.router.navigate(['/staff-login']);
-        }
+    if (userId) {
+
+      this.realtimeService.connect(+userId, isPrinter, () => {
+
       });
 
-    });
+    }
+
+    // this.realtimeService.forceLogoutRegister((message) => {
+
+    //   this.globalService.showError(message);
+    //   this.authService.logOut((isSuccess) => {
+    //     if (isSuccess) {
+    //       this.router.navigate(['/staff-login']);
+    //     }
+    //   });
+
+    // });
 
     this.globalService.setStatusBarColor(false);
-
-    // if (LocalService.isPrinter()) {
-    //   this.printJobService.printJobAdd(data => {
-    //     console.log('print data:', data);
-    //     doPrintJob(data);
-    //   });
-    // }
 
   }
 

@@ -17,15 +17,17 @@ export class RealtimeService {
   constructor(private printJobService: PrintJobService) { }
 
   connect(userId: number, isPrinter: boolean, callback: () => void) {
+    disConnectSocket();
     connectSocket(environment.base_domain, () => {
 
-      login(userId, isPrinter);
-
       callback();
+
+      login(userId, isPrinter);
 
       if (isPrinter) {
 
         registerPrintEvent((printJob) => {
+          console.log(printJob);
           this.printJobService.doPrintJob(printJob);
         });
 
