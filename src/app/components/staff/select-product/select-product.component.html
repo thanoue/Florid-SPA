@@ -33,7 +33,7 @@
             <div *ngFor='let product of pagingProducts' onclick="selectItem(this,'.product-item')"
                 class="col-4 product-item" [attr.data-id]="product.Id">
                 <div class="prodItem">
-                    <img src="{{product.ImageUrl |  ImgPipe : 'ProductImg'}}" alt="">
+                    <img src="{{product.ImageUrl | ImgPipe : 'ProductImg'}}" alt="">
                     <h4>{{product.Name}}</h4>
                     <span>{{product.Price | currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
                 </div>
