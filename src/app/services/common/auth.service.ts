@@ -36,6 +36,7 @@ export class AuthService {
         LocalService.clear();
 
         this.globalService.stopLoading();
+        
         signedOutCallback(true);
 
       })

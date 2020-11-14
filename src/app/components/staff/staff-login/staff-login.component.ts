@@ -85,7 +85,7 @@ export class StaffLoginComponent extends BaseComponent {
     this.authService.login(this.model, isSuccess => {
       if (isSuccess) {
 
-        if (!this.googleService.isSignedIn) {
+        if (!this.globalService.isOnMobile() && !this.googleService.isSignedIn) {
           this.googleService.signIn()
             .then(data => {
 
