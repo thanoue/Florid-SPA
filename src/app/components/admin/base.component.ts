@@ -18,7 +18,7 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
     protected authService: AuthService;
     protected location: Location;
     private addressService: AddressService;
-    private ngZone: NgZone;
+    protected ngZone: NgZone;
 
     get globalCustomer(): Customer {
         return this.globalService.globalCustomer;

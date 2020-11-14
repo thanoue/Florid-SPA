@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { map, filter, scan } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/common/auth.service';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { MenuItems } from 'src/app/models/enums';
 import { RealtimeService } from 'src/app/services/realtime.service';
+import { GoogleService } from 'src/app/services/google.service';
 
 declare function initLeftMenu(): any;
 
@@ -28,7 +29,11 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
   menus = MenuItems;
 
-  constructor(private globalService: GlobalService, public router: Router, private realtimeService: RealtimeService, private authService: AuthService) {
+  constructor(private googleService: GoogleService,
+    private globalService: GlobalService,
+    public router: Router,
+    private realtimeService: RealtimeService,
+    private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -78,6 +83,8 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
   logout() {
 
     this.authService.logOut(isSuccess => {
+
+      this.googleService.signOut();
 
       if (isSuccess) {
         this.router.navigate(['login']);

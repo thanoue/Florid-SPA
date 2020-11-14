@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { LocalService } from './local.service';
 import { Roles } from 'src/app/models/enums';
 import { Local } from 'protractor/built/driverProviders';
@@ -15,7 +15,11 @@ import { RealtimeService } from '../realtime.service';
 })
 export class AuthService {
 
-  constructor(private realTimeService: RealtimeService, private globalService: GlobalService, private userService: UserService, private httpService: HttpService) {
+  constructor(private realTimeService: RealtimeService,
+    private globalService: GlobalService,
+    private userService: UserService,
+    private httpService: HttpService,
+    private ngZone: NgZone) {
   }
 
   static getCurrentRole(): any {
@@ -53,7 +57,6 @@ export class AuthService {
       }, true)
         .then(result => {
 
-          this.globalService.stopLoading();
           LocalService.clear();
 
           LocalService.setUserEmail(result.email);
@@ -66,7 +69,10 @@ export class AuthService {
           LocalService.setUserId(result.id);
 
           this.realTimeService.connect(result.id, result.isPrinter, () => {
-            loginCallback(true);
+            this.ngZone.run(() => {
+              this.globalService.stopLoading();
+              loginCallback(true);
+            });
           });
         })
         .catch(err => {
