@@ -3,7 +3,7 @@ import { BaseComponent } from '../base.component';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
-import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates } from 'src/app/models/enums';
+import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates, OrderType } from 'src/app/models/enums';
 import { Tag } from 'src/app/models/entities/tag.entity';
 import { TagService } from 'src/app/services/tag.service';
 import { Guid } from 'guid-typescript';
@@ -149,20 +149,55 @@ export class HomeComponent extends BaseComponent {
           continue;
 
         const row = data[i];
-        const order = new Order();
+        let order = new Order();
 
         if (!row[0]) {
           continue;
         }
 
+        if (row[1]) {
+
+          order.Id = row[1].toString();
+
+          order.Id = order.Id.replace('/', '-').replace('.', '_');
+
+          if (order.Id.indexOf('_') > -1) {
+
+            order.NumberId = -1;
+            order.OrderType = OrderType.SpecialDay;
+
+          } else {
+
+            order.OrderType = OrderType.NormalDay;
+
+            var int = parseInt(order.Id);
+
+            if (int != undefined && int != undefined && int != NaN) {
+
+              order.NumberId = int;
+
+            } else {
+
+              console.log('error id:', order.Id);
+
+              order.NumberId = -1;
+              order.OrderType = OrderType.SpecialDay;
+
+            }
+
+          }
+
+        } else {
+          order.Id = Guid.create().toString();
+          order.NumberId = -1;
+          order.OrderType = OrderType.SpecialDay;
+        }
+
         order.CustomerId = row[0].toString();
-        order.Id = row[1] ? row[1].toString() : Guid.create().toString();
         order.Created = ExchangeService.getTimeFromExcel(row[3]);
         order.TotalAmount = row[6] && row[6] != '' ? parseInt(row[6]) : 0;
         order.GainedScore = ExchangeService.getGainedScore(order.TotalAmount);
         order.TotalPaidAmount = order.TotalAmount;
-
-        order.Id = order.Id.replace('/', '-').replace('.', '_');
 
         let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
 
@@ -226,6 +261,7 @@ export class HomeComponent extends BaseComponent {
 
           cus[0].TotalAmount += order.TotalAmount;
           cus[0].MemberType = ExchangeService.detectMemberShipType(cus[0].TotalAmount);
+          console.log(cus[0].Id);
         }
         else {
 
@@ -270,11 +306,13 @@ export class HomeComponent extends BaseComponent {
 
       console.log('------------------------------');
 
+      let prodArray: Order[] = [];
+
       for (i = 0, j = newOrders.length; i < j; i += chunk) {
 
-        temparray = newOrders.slice(i, i + chunk);
+        prodArray = newOrders.slice(i, i + chunk);
 
-        let update = await this.orderService.addBulk(temparray);
+        let update = await this.orderService.addBulk(prodArray);
 
         console.log(update);
 
@@ -282,11 +320,13 @@ export class HomeComponent extends BaseComponent {
 
       console.log('------------------------------');
 
-      for (i = 0, j = newOrders.length; i < j; i += chunk) {
+      let orderDetailArray: OrderDetail[] = [];
 
-        temparray = orderDetails.slice(i, i + chunk);
+      for (i = 0, j = orderDetails.length; i < j; i += chunk) {
 
-        let update = await this.orderService.addOrderDetails(temparray);
+        orderDetailArray = orderDetails.slice(i, i + chunk);
+
+        let update = await this.orderService.addOrderDetails(orderDetailArray);
 
         console.log(update);
 
