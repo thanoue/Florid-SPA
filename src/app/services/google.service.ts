@@ -1,5 +1,5 @@
 import { Injectable, EventEmitter } from "@angular/core";
-import { from } from 'rxjs';
+import { GlobalService } from './common/global.service';
 const CLIENT_ID = "133667086103-hrctr1jpgcdkj9jsa51khl5vdugn7d99.apps.googleusercontent.com";
 const API_KEY = "AIzaSyACbWlpyxwgjaT8Tefm8LSU9H2dWOmKDcU";
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
@@ -12,7 +12,7 @@ export class GoogleService {
 
   googleAuth: gapi.auth2.GoogleAuth;
 
-  constructor() { }
+  constructor(private globalResource: GlobalService) { }
 
   get isSignedIn(): boolean {
     return this.googleAuth.isSignedIn.get();
@@ -27,6 +27,10 @@ export class GoogleService {
   }
 
   signOut(): void {
+    
+    if (this.globalResource.isOnMobile())
+      return;
+
     this.googleAuth.signOut();
   }
 
