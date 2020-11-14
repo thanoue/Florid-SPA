@@ -286,9 +286,11 @@ export class OrderService {
   }
 
   getNormalDayOrdersCount(): Promise<number> {
+
     return this.httpService.get(API_END_POINT.getNormalDayOrdersCount)
       .then(data => {
-        return data.count;
+        console.log(data);
+        return data.max;
       })
       .catch(err => {
         this.httpService.handleError(err);
