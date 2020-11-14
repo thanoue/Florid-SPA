@@ -214,11 +214,9 @@ export class HomeComponent extends BaseComponent {
         Id: string,
         TotalAmount: number,
         MemberType: MembershipTypes,
-        TotalUsedScore: number
+        TotalUsedScore: number,
+        AvailableScore: number
       }[] = [];
-
-      console.log(newOrders);
-      console.log(orderDetails);
 
       newOrders.forEach(order => {
 
@@ -241,13 +239,18 @@ export class HomeComponent extends BaseComponent {
               Id: order.CustomerId,
               TotalAmount: order.TotalAmount,
               MemberType: ExchangeService.detectMemberShipType(order.TotalAmount),
-              TotalUsedScore: memberInfo.UsedScoreTotal
+              TotalUsedScore: memberInfo.UsedScoreTotal,
+              AvailableScore: 0
             });
 
           }
 
         }
 
+      });
+
+      editCustomers.forEach(cus => {
+        cus.AvailableScore = ExchangeService.getGainedScore(cus.TotalAmount) - cus.TotalUsedScore;
       });
 
       console.log(editCustomers);
