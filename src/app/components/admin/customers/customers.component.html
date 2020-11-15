@@ -24,8 +24,20 @@
                     </app-search-box>
                     <button type="submit" class="btn btn-info position-absolute "><i class="fa fa-search"></i></button>
                 </div>
-
             </div>
+            <!-- <div class="col-md-2 col-xs-12  cateFilter">
+                <div class="form-group">
+                    <select class="form-control d-inline" [(ngModel)]="selectedCategory" name="selectedCategory"
+                        id="selectedCategory">
+                        <option [ngValue]="0">
+                            Tất cả
+                        </option>
+                        <option *ngFor="let category of globalCategories" [ngValue]="category.Category.Id">
+                            {{category.Category.Name}}
+                        </option>
+                    </select>
+                </div>
+            </div> -->
             <div class="col-md-4 col-xs-12  text-right optionPerPage">
                 <div class="form-group">
                     <label>Hiển thị </label>
@@ -46,10 +58,10 @@
             <thead class="table-info">
                 <tr>
                     <th scope="col" style="width: 10%">ID</th>
+                    <th scope="col">Danh Xưng</th>
                     <th scope="col">Họ và Tên</th>
                     <th scope="col">Số điện thoại</th>
                     <th scope="col">Sinh nhật</th>
-                    <th scope="col">Xưng danh</th>
                     <th scope="col">Giá trị mua hàng</th>
                     <th scope="col">Hạng thẻ</th>
                     <th scope="col">Thao tác</th>
@@ -66,15 +78,16 @@
                             </label>
                         </div>
                     </td>
+                    <td *ngIf="customer.Customer.Sex == sexes.Male">Anh</td>
+                    <td *ngIf="customer.Customer.Sex == sexes.Female">Chị</td>
+                    <td *ngIf="customer.Customer.Sex == sexes.Others">Khác</td>
                     <td>
                         <a (click)="viewCusDetail(customer.Customer)" class="tdName">{{customer.Customer.FullName}}</a>
                     </td>
                     <td>{{customer.Customer.PhoneNumber}}</td>
                     <td *ngIf="customer.Customer.Birthday">{{customer.Customer.Birthday |  date: 'dd/MM'}}</td>
                     <td *ngIf="!customer.Customer.Birthday">--</td>
-                    <td *ngIf="customer.Customer.Sex == sexes.Male">Anh</td>
-                    <td *ngIf="customer.Customer.Sex == sexes.Female">Chị</td>
-                    <td *ngIf="customer.Customer.Sex == sexes.Others">Khác</td>
+
                     <td>{{customer.Customer.MembershipInfo.AccumulatedAmount | currency:'VND':'symbol-narrow':'':'vi-VN' }}
                     </td>
                     <td>

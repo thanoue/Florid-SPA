@@ -58,6 +58,7 @@ import { MonthlySummaryComponent } from './components/admin/monthly-summary/mont
 import { ChartSummaryComponent } from './components/admin/chart-summary/chart-summary.component';
 import { ChartsModule } from 'ng2-charts';
 import { MonthlyChartComponent } from './components/admin/monthly-chart/monthly-chart.component';
+import { AdminModule } from './admin/admin.module';
 
 // here is the default text string
 export class DefaultIntl extends OwlDateTimeIntl {
@@ -188,7 +189,8 @@ export class DefaultIntl extends OwlDateTimeIntl {
     }),
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
-    DragDropModule
+    DragDropModule,
+    AdminModule
   ],
   providers: [
     { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi' },
