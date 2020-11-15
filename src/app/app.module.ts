@@ -58,7 +58,6 @@ import { MonthlySummaryComponent } from './components/admin/monthly-summary/mont
 import { ChartSummaryComponent } from './components/admin/chart-summary/chart-summary.component';
 import { ChartsModule } from 'ng2-charts';
 import { MonthlyChartComponent } from './components/admin/monthly-chart/monthly-chart.component';
-import { GoogleService } from './services/google.service';
 
 // here is the default text string
 export class DefaultIntl extends OwlDateTimeIntl {
@@ -122,11 +121,6 @@ export class DefaultIntl extends OwlDateTimeIntl {
   /** A label for the hour12 button (PM) */
   hour12PMLabel = 'CH';
 };
-
-
-export function initGapi(gapiSession: GoogleService) {
-  return () => gapiSession.initClient();
-}
 
 
 @NgModule({
@@ -197,7 +191,6 @@ export function initGapi(gapiSession: GoogleService) {
     DragDropModule
   ],
   providers: [
-    { provide: APP_INITIALIZER, useFactory: initGapi, deps: [GoogleService], multi: true },
     { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi' },
     { provide: OwlDateTimeIntl, useClass: DefaultIntl },
     DatePipe

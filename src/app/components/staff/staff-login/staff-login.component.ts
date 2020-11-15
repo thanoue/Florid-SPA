@@ -8,7 +8,6 @@ import { AuthService } from 'src/app/services/common/auth.service';
 import { LoginModel } from 'src/app/models/entities/user.entity';
 import { Roles } from 'src/app/models/enums';
 import { RealtimeService } from 'src/app/services/realtime.service';
-import { GoogleService } from 'src/app/services/google.service';
 declare function deviceLogin(email: string, pasword: string, isPrinter: boolean, idToken: string): any;
 declare function mobileLogin(email: string, pasword: string): any;
 declare function savedLoginInforGettingRequest(): any;
@@ -24,7 +23,7 @@ export class StaffLoginComponent extends BaseComponent {
 
   model: LoginModel = new LoginModel();
 
-  constructor(private router: Router, private googleService: GoogleService, private realtimeService: RealtimeService) {
+  constructor(private router: Router, private realtimeService: RealtimeService) {
     super();
 
     LocalService.clear();
@@ -84,19 +83,9 @@ export class StaffLoginComponent extends BaseComponent {
 
     this.authService.login(this.model, isSuccess => {
       if (isSuccess) {
-
-        if (!this.globalService.isOnMobile() && !this.googleService.isSignedIn) {
-          this.googleService.signIn()
-            .then(data => {
-
-              this.ngZone.run(() => {
-                this.afterLogin();
-              });
-
-            });
-        } else {
+        this.ngZone.run(() => {
           this.afterLogin();
-        }
+        });
       }
     });
   }

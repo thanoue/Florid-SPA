@@ -9,7 +9,6 @@ import { AuthService } from 'src/app/services/common/auth.service';
 import { PrintJobService } from 'src/app/services/print-job.service';
 import { MenuItems } from 'src/app/models/enums';
 import { RealtimeService } from 'src/app/services/realtime.service';
-import { GoogleService } from 'src/app/services/google.service';
 
 declare function initLeftMenu(): any;
 
@@ -29,7 +28,7 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
   menus = MenuItems;
 
-  constructor(private googleService: GoogleService,
+  constructor(
     private globalService: GlobalService,
     public router: Router,
     private realtimeService: RealtimeService,
@@ -83,8 +82,6 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
   logout() {
 
     this.authService.logOut(isSuccess => {
-
-      this.googleService.signOut();
 
       if (isSuccess) {
         this.router.navigate(['login']);
