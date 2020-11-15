@@ -6,7 +6,7 @@ const Category = db.category;
 checkIfAliasIsDuplicate = (req, res, next) => {
 
     if (!req.body.alias || req.body.alias == '' || req.body.alias.indexOf(' ') > 0) {
-        res.status(403).send({
+        res.status(400).send({
             message: 'Tag không hợp lệ!'
         });
         return;
@@ -27,8 +27,8 @@ checkIfAliasIsDuplicate = (req, res, next) => {
     }).then((tag) => {
 
         if (tag) {
-            res.status(403).send({
-                message: 'Tag bị trùng!'
+            res.status(400).send({
+                message: 'Tag bị trùng tên!'
             });
             return;
         }
@@ -44,7 +44,7 @@ checkIfAliasIsDuplicate = (req, res, next) => {
 purchaseAmountValidation = (req, res, next) => {
 
     if (!req.body.amount || req.body.amount <= 0) {
-        res.status(403).send({
+        res.status(400).send({
             message: 'Amount is not valid'
         });
 
