@@ -34,8 +34,7 @@
               "src/assets/js/admin.js",
               "src/assets/js/binding.native.js",
               "src/assets/js/frontend.js",
-              "src/assets/js/socket.client.js",
-              "src/assets/js/googleuploader.js"
+              "src/assets/js/socket.client.js"
             ]
           },
           "configurations": {
