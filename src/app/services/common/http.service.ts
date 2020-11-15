@@ -65,10 +65,7 @@ export class HttpService {
       }
     }
 
-    if (err.message) {
-      this.globalService.showError(err.message);
-      return;
-    }
+    console.log(err);
 
     if (err.error && err.error.message) {
       this.globalService.showError(err.error.message);
@@ -77,6 +74,12 @@ export class HttpService {
 
     if (err.error) {
       this.globalService.showError(err.error);
+      return;
+    }
+
+
+    if (err.message) {
+      this.globalService.showError(err.message);
       return;
     }
 

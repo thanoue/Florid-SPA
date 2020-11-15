@@ -137,8 +137,7 @@ export class UsersComponent extends BaseComponent {
     if (!this.currrentEditUser.IsExternalShipper && this.currrentEditUser.Password == '') {
 
       if (!this.currrentEditUser.Id) {
-        this.showError('Thiếu mật khẩu!!');
-        return;
+        this.currrentEditUser.Password = '123456';
       }
     }
 
