@@ -47,7 +47,7 @@ export class LoginComponent extends BaseComponent {
       if (isSuccess) {
 
         this.ngZone.run(() => {
-          this.router.navigate(['/admin/home']);
+          this.router.navigate(['/admin']);
         });
 
       }

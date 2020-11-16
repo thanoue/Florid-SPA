@@ -46,7 +46,7 @@ export class FloristMainComponent extends BaseComponent {
     this.authService.logOut(isSuccess => {
 
       if (isSuccess) {
-        this.router.navigate(['staff-login']);
+        this.router.navigate(['staff/login']);
       }
 
     });
