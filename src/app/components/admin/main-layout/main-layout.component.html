@@ -5,7 +5,7 @@
         </div>
         <ul class="mainMenu">
             <li [ngClass]="(currentMenu !== menus.Home)?'menuItem':'menuItem active'">
-                <a routerLink="" class="menuItem-link"><i class="fa fa-dashboard"></i>Trang chủ</a>
+                <a routerLink="/admin" class="menuItem-link"><i class="fa fa-dashboard"></i>Trang chủ</a>
             </li>
             <li [ngClass]="(currentMenu !== menus.User)?'menuItem':'menuItem active'">
                 <a routerLink="/admin/users" class="menuItem-link"><i class="fa fa-user-circle-o"></i>Nhân Viên</a>

@@ -20,7 +20,7 @@ export class LoggedInMobileGuard implements CanActivate {
         if (LocalService.getUserId()) {
             return true;
         } else {
-            this.router.navigate(['staff-login']);
+            this.router.navigate(['staff/login']);
             return false;
         }
     }
@@ -40,13 +40,10 @@ export class LoggedInGuard implements CanActivate {
             return true;
         } else {
 
-            // this.router.navigate(['login']);
-
             if (!isOnMobile()) {
-                this.router.navigate(['login']);
+                this.router.navigate(['admin/login']);
             } else {
-                console.log('is on mobile');
-                this.router.navigate(['staff-login']);
+                this.router.navigate(['staff/login']);
             }
 
             return false;
@@ -76,7 +73,6 @@ export class AdminGuard implements CanActivate {
         } else {
 
             switch (role) {
-                case Roles.Admin:
                 case Roles.Account:
                     this.router.navigate(['staff/orders-manage']);
                     break;
@@ -98,6 +94,41 @@ export class AdminGuard implements CanActivate {
 @Injectable({
     providedIn: 'root'
 })
+export class MobileHomeGuard implements CanActivate {
+
+    constructor(private router: Router, private globalServie: GlobalService) {
+    }
+
+    canActivate() {
+
+        let loggedInGuard = new LoggedInGuard(this.router, this.globalServie);
+
+        if (!loggedInGuard.canActivate())
+            return false;
+
+        const role = AuthService.getCurrentRole();
+
+        switch (role) {
+            case Roles.Account:
+            case Roles.Admin:
+                this.router.navigate(['staff/orders-manage']);
+                break;
+            case Roles.Florist:
+                this.router.navigate(['staff/florist-main']);
+                break;
+            case Roles.Shipper:
+                this.router.navigate(['staff/shipper-main']);
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class AccountMobileGuard implements CanActivate {
 
     constructor(private router: Router, private globalServie: GlobalService) {
@@ -114,7 +145,7 @@ export class AccountMobileGuard implements CanActivate {
         if (role == Roles.Admin || role == Roles.Account) {
             return true;
         } else {
-            this.router.navigate(['staff-login']);
+            this.router.navigate(['staff/login']);
             return false;
         }
     }
@@ -140,7 +171,7 @@ export class AccountAndShipperMobileGuard implements CanActivate {
         if (role == Roles.Admin || role == Roles.Account || role == Roles.Shipper) {
             return true;
         } else {
-            this.router.navigate(['staff-login']);
+            this.router.navigate(['staff/login']);
             return false;
         }
     }
@@ -161,11 +192,11 @@ export class FloristMobileGuard implements CanActivate {
         if (!loggedInGuard.canActivate())
             return false;
 
-        const role = (AuthService.getCurrentRole());
+        const role = AuthService.getCurrentRole();
         if (role == Roles.Florist) {
             return true;
         } else {
-            this.router.navigate(['staff-login']);
+            this.router.navigate(['staff/login']);
             return false;
         }
     }
@@ -191,7 +222,7 @@ export class ShipperMobileGuard implements CanActivate {
         if (role == Roles.Shipper) {
             return true;
         } else {
-            this.router.navigate(['staff-login']);
+            this.router.navigate(['staff/login']);
             return false;
         }
     }
