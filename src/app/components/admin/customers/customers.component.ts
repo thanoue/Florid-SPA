@@ -118,7 +118,7 @@ export class CustomersComponent extends BaseComponent {
     }
 
     this.searchTerm = term;
-    this.selectedMemberType = MembershipTypes.All;
+    this._selectedMemberType = MembershipTypes.All;
     this.pageChanged(1);
 
   }

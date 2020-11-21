@@ -22,7 +22,6 @@ export class CustomerService {
       customerId: id,
       obj: obj
     }).then(res => {
-      console.log(res);
       return res;
     }).catch(err => {
       this.httpService.handleError(err);
@@ -89,12 +88,12 @@ export class CustomerService {
     });
   }
 
-  updateReceiverList(customerId: string, receiverDetails: CustomerReceiverDetail[]): Promise<any> {
+  updateReceiverList(customerId: string, receiverDetails: CustomerReceiverDetail[], isBlockUI: boolean = true): Promise<any> {
 
     return this.httpService.post(API_END_POINT.updateReciverInfo, {
       customerId: customerId,
       receiverList: receiverDetails
-    }).then(res => {
+    }, isBlockUI).then(res => {
       return res;
     }).catch(err => {
       this.httpService.handleError(err);
@@ -295,10 +294,13 @@ export class CustomerService {
         item.customerReceivers.forEach(receiver => {
 
           let item = new CustomerReceiverDetail();
+
           item.PhoneNumber = receiver.PhoneNumber;
           item.FullName = receiver.FullName;
+          item.Address = receiver.Address;
 
           customer.ReceiverInfos.push(item);
+
         });
       }
 

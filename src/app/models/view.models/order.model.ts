@@ -1,6 +1,6 @@
 import { OrderDetailStates, OrderType } from '../../models/enums';
 import { MembershipTypes } from '../enums';
-import { Customer } from '../entities/customer.entity';
+import { Customer, SpecialDay } from '../entities/customer.entity';
 import { ExchangeService } from '../../services/exchange.service';
 import { CustomerReceiverDetail, OrderDetail, Order, ODFloristInfo, ODShipperInfo, ODSeenUserInfo } from '../entities/order.entity';
 import { Purchase } from './purchase.entity';
@@ -24,33 +24,6 @@ export class OrderViewModel {
     OrderDetails: OrderDetailViewModel[];
 
     PurchaseItems: Purchase[];
-
-    static ToViewModel(entity: Order, customer: Customer): OrderViewModel {
-
-        const vm = new OrderViewModel();
-
-        vm.OrderId = entity.Id;
-        vm.TotalAmount = entity.TotalAmount;
-        vm.TotalPaidAmount = entity.TotalPaidAmount;
-        vm.VATIncluded = entity.VATIncluded;
-        vm.CreatedDate = new Date(entity.Created);
-        vm.Index = entity.Index;
-        vm.OrderType = entity.OrderType;
-        vm.AmountDiscount = entity.AmountDiscount;
-        vm.PercentDiscount = entity.PercentDiscount;
-
-        vm.CustomerInfo.ScoreUsed = entity.ScoreUsed;
-        vm.CustomerInfo.GainedScore = entity.GainedScore;
-        vm.CustomerInfo.Id = entity.CustomerId;
-        vm.CustomerInfo.MembershipType = customer.MembershipInfo.MembershipType;
-        vm.CustomerInfo.DiscountPercent = ExchangeService.getMemberDiscountPercent(vm.CustomerInfo.MembershipType);
-        vm.CustomerInfo.Name = customer.FullName;
-        vm.CustomerInfo.PhoneNumber = customer.PhoneNumber;
-        vm.CustomerInfo.AvailableScore = customer.MembershipInfo.AvailableScore;
-        Object.assign(vm.CustomerInfo.ReceiverInfos, customer.ReceiverInfos);// customer.ReceiverInfos;
-
-        return vm;
-    }
 
     constructor() {
         this.PurchaseItems = [];
@@ -278,12 +251,17 @@ export class OrderCustomerInfoViewModel {
     ScoreUsed = 0; // điểm KH muốn sử dụng cho hoá đơn này
     GainedScore = 0; // điểm kiếm được từ hoá đơn
     ReceiverInfos: CustomerReceiverDetail[];
+    SpecialDays: SpecialDay[];
     AvailableScore = 0;
     PhoneNumber: string;
     MembershipType: MembershipTypes;
+    Address: string;
+    AccumulatedAmount: number;
+    CustomerScoreUsedTotal: number;
 
     constructor() {
         this.ReceiverInfos = [];
+        this.SpecialDays = [];
     }
 
     static toViewModel(customer: Customer, vm: OrderCustomerInfoViewModel = null): OrderCustomerInfoViewModel {
@@ -291,14 +269,23 @@ export class OrderCustomerInfoViewModel {
         if (!vm || vm == null)
             vm = new OrderCustomerInfoViewModel();
 
+        console.log(customer.ReceiverInfos);
+
         vm.Id = customer.Id;
         vm.Name = customer.FullName;
         vm.PhoneNumber = customer.PhoneNumber;
         vm.MembershipType = customer.MembershipInfo.MembershipType;
         vm.DiscountPercent = ExchangeService.getMemberDiscountPercent(customer.MembershipInfo.MembershipType);
         vm.AvailableScore = customer.MembershipInfo.AvailableScore;
+        vm.AccumulatedAmount = customer.MembershipInfo.AccumulatedAmount;
+        vm.Address = customer.Address.Home ? customer.Address.Home : customer.Address.Work ? customer.Address.Work : '';
+        vm.CustomerScoreUsedTotal = customer.MembershipInfo.UsedScoreTotal;
 
         Object.assign(vm.ReceiverInfos, customer.ReceiverInfos);
+        Object.assign(vm.SpecialDays, customer.SpecialDays);
+
+
+        console.info(vm);
 
         return vm;
     }

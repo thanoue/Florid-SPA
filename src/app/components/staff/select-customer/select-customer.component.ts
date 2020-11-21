@@ -56,7 +56,6 @@ export class SelectCustomerComponent extends BaseComponent {
     this.selectedCustomer = new Customer();
 
     if (this.globalOrder.CustomerInfo) {
-      console.log(this.globalOrder.CustomerInfo);
       this.searchCustomer(this.globalOrder.CustomerInfo.PhoneNumber);
     }
 
@@ -128,7 +127,7 @@ export class SelectCustomerComponent extends BaseComponent {
       return;
     }
 
-    this.customerService.getList(0, -1, term)
+    this.customerService.getList(-1, -1, MembershipTypes.All, term)
       .then(data => {
 
         this.customers = data.Customers;

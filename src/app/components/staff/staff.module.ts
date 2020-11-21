@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AccountAndShipperMobileGuard, AccountMobileGuard, AdminGuard, FloristMobileGuard, LoggedInGuard, LoggedInMobileGuard, MobileHomeGuard } from 'src/app/guards/login.guard';
+import { AccountAndShipperMobileGuard, AccountMobileGuard, FloristMobileGuard, LoggedInGuard, LoggedInMobileGuard, MobileHomeGuard } from 'src/app/guards/login.guard';
 import { SharedModule } from 'src/app/shared.module';
 import { AddOrderComponent } from './add-order/add-order.component';
 import { CustomerConfirmComponent } from './customer-confirm/customer-confirm.component';

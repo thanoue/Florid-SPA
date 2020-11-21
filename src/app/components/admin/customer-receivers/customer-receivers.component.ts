@@ -25,19 +25,27 @@ export class CustomerReceiversComponent extends BaseComponent {
   }
 
   addReceiverShow() {
-    showReceiverSetupPopup();
+
     this.currentReceiver = new CustomerReceiverDetail();
+    showReceiverSetupPopup();
     this.currentIndex = -1;
+
   }
 
   editReceiver(index) {
+
     Object.assign(this.currentReceiver, this.receivers[index]);
     showReceiverSetupPopup();
+
     this.currentIndex = index;
+
   }
 
   protected destroy() {
+
     this.globalCustomer.ReceiverInfos = this.receivers;
+
+    this.customerService.updateReceiverList(this.globalCustomer.Id, this.receivers, false);
 
   }
 

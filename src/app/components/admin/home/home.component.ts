@@ -1,24 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BaseComponent } from '../base.component';
-import { AuthService } from 'src/app/services/common/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates, OrderType } from 'src/app/models/enums';
-import { Tag } from 'src/app/models/entities/tag.entity';
-import { TagService } from 'src/app/services/tag.service';
 import { Guid } from 'guid-typescript';
 import { ProductService } from 'src/app/services/product.service';
-import { Product } from 'src/app/models/entities/product.entity';
-import * as XLSX from 'xlsx';
-import { isatty } from 'tty';
-import { single } from 'rxjs/operators';
+import { utils, WorkBook, WorkSheet, read, writeFile } from 'xlsx';
 import { Customer, MembershipInfo } from 'src/app/models/entities/customer.entity';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Order, OrderDetail } from 'src/app/models/entities/order.entity';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
-import { info } from 'console';
 
 @Component({
   selector: 'app-home',
@@ -35,66 +28,6 @@ export class HomeComponent extends BaseComponent {
   protected Init() {
 
   }
-
-  // onFileChange(evt: any) {
-
-  //   /* wire up file reader */
-  //   const target: DataTransfer = <DataTransfer>(evt.target);
-  //   if (target.files.length !== 1) throw new Error('Cannot use multiple files');
-  //   const reader: FileReader = new FileReader();
-  //   reader.onload = (e: any) => {
-  //     /* read workbook */
-  //     const bstr: string = e.target.result;
-  //     const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-
-  //     /* grab first sheet */
-  //     const wsname: string = wb.SheetNames[0];
-  //     const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-  //     /* save data */
-  //     let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
-
-  //     var orders: Order[] = [];
-  //     var orderDetails: OrderDetail[] = [];
-
-  //     this.startLoading();
-
-  //     this.productService.getAll()
-  //       .then(products => {
-
-  //         for (let i = 0; i < data.length; i++) {
-
-  //           if (i == 0)
-  //             continue;
-
-  //           const row = data[i];
-  //           const order = new Order();
-
-  //           if (!row[0])
-  //             break;
-
-  //           var lines = row[0].split(/\r?\n/g);
-
-  //           console.log(lines);
-
-  //         };
-
-  //         this.orderDetailService.setList(orderDetails)
-  //           .then(() => {
-  //             this.stopLoading();
-  //           });
-
-  //         this.orderService.setList(orders)
-  //           .then(() => {
-  //             this.stopLoading();
-  //           });
-
-  //       });
-  //   }
-
-  //   reader.readAsBinaryString(target.files[0]);
-
-  // }
 
   getNumFromString(src: string): string {
 
@@ -120,6 +53,43 @@ export class HomeComponent extends BaseComponent {
 
   }
 
+  exportProducts() {
+    this.productService.getAll().then(products => {
+
+      let raw: string[][] = [];
+
+      products.forEach(product => {
+
+        let item: string[] = [];
+
+        item.push(product.Product.Id.toString(), product.Product.Name, product.Product.Price.toString(), product.Product.ImageUrl);
+        let tagVal = '';
+
+        product.Tags.forEach(tag => {
+          tagVal = tagVal + tag.Alias + ',';
+        });
+
+        item.push(tagVal);
+
+        raw.push(item);
+
+      });
+
+      console.log(raw);
+
+      /* generate worksheet */
+      const ws: WorkSheet = utils.aoa_to_sheet(raw);
+      /* generate workbook and add the worksheet */
+      const wb: WorkBook = utils.book_new();
+      utils.book_append_sheet(wb, ws, 'produts');
+
+      /* save to file */
+      writeFile(wb, 'products.xlsx');
+
+    });
+
+  }
+
   onFileOrderChange(evt: any) {
 
     /* wire up file reader */
@@ -129,14 +99,14 @@ export class HomeComponent extends BaseComponent {
     reader.onload = async (e: any) => {
       /* read workbook */
       const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wb: WorkBook = read(bstr, { type: 'binary' });
 
       /* grab first sheet */
       const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      const ws: WorkSheet = wb.Sheets[wsname];
 
       /* save data */
-      let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
+      let data = (utils.sheet_to_json(ws, { header: 1 })) as string[][];
 
       var orders: Order[] = [];
       var orderDetails: OrderDetail[] = [];
@@ -347,14 +317,14 @@ export class HomeComponent extends BaseComponent {
     reader.onload = (e: any) => {
       /* read workbook */
       const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+      const wb: WorkBook = read(bstr, { type: 'binary' });
 
       /* grab first sheet */
       const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      const ws: WorkSheet = wb.Sheets[wsname];
 
       /* save data */
-      let data = (XLSX.utils.sheet_to_json(ws, { header: 1 })) as string[][];
+      let data = (utils.sheet_to_json(ws, { header: 1 })) as string[][];
 
       var customers: Customer[] = [];
 
@@ -442,7 +412,6 @@ export class HomeComponent extends BaseComponent {
 
     reader.readAsBinaryString(target.files[0]);
   }
-
 
   goToPrintJob() {
   }

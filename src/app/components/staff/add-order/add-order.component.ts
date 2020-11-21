@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { BaseComponent } from '../base.component';
-import { OrderViewModel, OrderDetailViewModel } from 'src/app/models/view.models/order.model';
+import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from 'src/app/models/view.models/order.model';
 import { OrderDetailStates, MembershipTypes, OrderType, PurchaseStatus, PurchaseMethods } from 'src/app/models/enums';
 import { Router } from '@angular/router';
 import { ExchangeService } from 'src/app/services/exchange.service';
@@ -15,6 +15,7 @@ import { PromotionService } from 'src/app/services/promotion.service';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
 import { throwIfEmpty } from 'rxjs/operators';
 import { PurchaseService } from 'src/app/services/purchase.service';
+import { MembershipInfo } from 'src/app/models/entities/customer.entity';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
 declare function dismissPurchaseDialog();
@@ -131,13 +132,19 @@ export class AddOrderComponent extends BaseComponent {
     this.onVATIncludedChange();
   };
 
-  requestPaidInput() {
+  completingOrder() {
+    this.placeOrder(true);
+  }
+
+  placeOrder(isCompleting: boolean) {
 
     this.currentPayAmount = this.order.TotalAmount - this.order.TotalPaidAmount;
 
-    if (!this.order.CustomerInfo.Id) {
-      this.showError('Thiếu thông tin Khách hàng!');
-      return;
+    if (!this.order.CustomerInfo || !this.order.CustomerInfo.Id) {
+
+      this.order.CustomerInfo = new OrderCustomerInfoViewModel();
+      this.order.CustomerInfo.Id = 'KHACH_LE';
+
     }
 
     if (!this.order.OrderDetails || this.order.OrderDetails.length <= 0) {
@@ -158,65 +165,39 @@ export class AddOrderComponent extends BaseComponent {
 
       }, () => {
 
-        this.printConfirm();
+        this.printConfirmation(isCompleting);
 
       }, null, 'Thanh Toán', 'Tiếp tục');
 
     } else {
-      this.printConfirm();
-    }
-  }
-
-  selectPurType(purchaseType: PurchaseMethods) {
-
-    if (this.currentPayAmount <= 0) {
-      this.showError('Yêu cầu nhập số tiền trước');
-      return;
-    }
-
-    this.currentPurType = purchaseType;
-
-    if (purchaseType == PurchaseMethods.Momo) {
-      openQR();
+      this.printConfirmation(isCompleting);
     }
 
   }
 
-  purchaseConfirm() {
+  printConfirmation(isCompleting: boolean) {
 
-    if (this.currentPayAmount > this.totalBalance) {
-      this.showError('Số tiền không hợp lệ!');
-      return;
-    }
+    if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
 
-    let purchase = new Purchase();
+    this.order.CustomerInfo.GainedScore = ExchangeService.getGainedScore(this.order.TotalAmount);
 
-    this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
+    this.openConfirm('In hoá đơn?', () => {
 
-    purchase.OrderId = this.order.OrderId;
-    purchase.Amount = +this.currentPayAmount;
-    purchase.Method = this.currentPurType;
-    purchase.Status = this.currentPurStatus;
+      this.doPrintJob(isCompleting);
 
-    this.globalPurchases.push(purchase);
+    }, () => {
 
-    this.order.TotalPaidAmount += purchase.Amount;
+      this.orderConfirm(isCompleting);
 
-    console.log(this.order.TotalPaidAmount);
+    }, () => {
 
-    this.currentPayAmount = 0;
+      this.orderConfirm(isCompleting);
 
-    this.showSuccess('Đã thêm 1 thanh toán!');
-
-    this.totalAmountCalculate(this.order.VATIncluded);
-
-    if (this.totalBalance <= 0) {
-      dismissPurchaseDialog();
-    }
+    });
 
   }
 
-  doPrintJob() {
+  doPrintJob(isCompleting: boolean) {
 
     let tempSummary = 0;
     const products: PrintSaleItem[] = [];
@@ -266,32 +247,10 @@ export class AddOrderComponent extends BaseComponent {
 
     this.printJobService.addPrintJob(orderData);
 
-    this.orderConfirm();
+    this.orderConfirm(isCompleting);
   }
 
-  printConfirm() {
-
-    if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
-
-    this.order.CustomerInfo.GainedScore = ExchangeService.getGainedScore(this.order.TotalAmount);
-
-    this.openConfirm('In hoá đơn?', () => {
-
-      this.doPrintJob();
-
-    }, () => {
-
-      this.orderConfirm();
-
-    }, () => {
-
-      this.orderConfirm();
-
-    });
-
-  }
-
-  orderConfirm() {
+  orderConfirm(isCompleting: boolean) {
 
     this.startLoading();
 
@@ -339,7 +298,7 @@ export class AddOrderComponent extends BaseComponent {
           detail.AdditionalFee = detailVM.AdditionalFee;
           detail.ProductName = detailVM.ProductName;
           detail.Description = detailVM.Description;
-          detail.State = OrderDetailStates.Added;
+          detail.State = isCompleting ? OrderDetailStates.Completed : OrderDetailStates.Added;
           detail.IsVATIncluded = orderDB.VATIncluded;
           detail.PurposeOf = detailVM.PurposeOf;
           detail.Index = detailVM.Index;
@@ -349,13 +308,31 @@ export class AddOrderComponent extends BaseComponent {
           detail.CustomerName = this.order.CustomerInfo.Name;
           detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
 
-          detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
-
           const receiverInfo = new CustomerReceiverDetail();
 
-          receiverInfo.Address = detailVM.DeliveryInfo.Address;
-          receiverInfo.PhoneNumber = detailVM.DeliveryInfo.PhoneNumber;
-          receiverInfo.FullName = detailVM.DeliveryInfo.FullName;
+          if (!detailVM.DeliveryInfo.Address) {
+            receiverInfo.Address = this.order.CustomerInfo.Address ? this.order.CustomerInfo.Address : '';
+          } else {
+            receiverInfo.Address = detailVM.DeliveryInfo.Address;
+          }
+
+          if (!detailVM.DeliveryInfo.FullName) {
+            receiverInfo.FullName = this.order.CustomerInfo.Name ? this.order.CustomerInfo.Name : '';
+          } else {
+            receiverInfo.FullName = detailVM.DeliveryInfo.FullName;
+          }
+
+          if (!detailVM.DeliveryInfo.PhoneNumber) {
+            receiverInfo.PhoneNumber = this.order.CustomerInfo.PhoneNumber ? this.order.CustomerInfo.PhoneNumber : '';
+          } else {
+            receiverInfo.PhoneNumber = detailVM.DeliveryInfo.PhoneNumber;
+          }
+
+          if (!detailVM.DeliveryInfo.DateTime) {
+            detail.DeliveryInfo.ReceivingTime = (new Date()).getTime();
+          } else {
+            detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
+          }
 
           detail.DeliveryInfo.ReceiverDetail = receiverInfo;
 
@@ -407,7 +384,12 @@ export class AddOrderComponent extends BaseComponent {
               this.stopLoading();
 
               if (isSuccess) {
-                this.OnBackNaviage();
+                if (isCompleting) {
+                  this.fastCompleteOrder();
+                }
+                else {
+                  this.OnBackNaviage();
+                }
               }
 
             });
@@ -422,6 +404,57 @@ export class AddOrderComponent extends BaseComponent {
           });
       });
   }
+
+  selectPurType(purchaseType: PurchaseMethods) {
+
+    if (this.currentPayAmount <= 0) {
+      this.showError('Yêu cầu nhập số tiền trước');
+      return;
+    }
+
+    this.currentPurType = purchaseType;
+
+    if (purchaseType == PurchaseMethods.Momo) {
+      openQR();
+    }
+
+  }
+
+  purchaseConfirm() {
+
+    if (this.currentPayAmount > this.totalBalance) {
+      this.showError('Số tiền không hợp lệ!');
+      return;
+    }
+
+    let purchase = new Purchase();
+
+    this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
+
+    purchase.OrderId = this.order.OrderId;
+    purchase.Amount = +this.currentPayAmount;
+    purchase.Method = this.currentPurType;
+    purchase.Status = this.currentPurStatus;
+
+    this.globalPurchases.push(purchase);
+
+    this.order.TotalPaidAmount += purchase.Amount;
+
+    console.log(this.order.TotalPaidAmount);
+
+    this.currentPayAmount = 0;
+
+    this.showSuccess('Đã thêm 1 thanh toán!');
+
+    this.totalAmountCalculate(this.order.VATIncluded);
+
+    if (this.totalBalance <= 0) {
+      dismissPurchaseDialog();
+    }
+
+  }
+
+
 
   totalAmountCalculate(isVATIncluded: boolean) {
 
@@ -620,6 +653,31 @@ export class AddOrderComponent extends BaseComponent {
 
       this.onVATIncludedChange();
 
+    });
+  }
+
+  fastCompleteOrder() {
+
+    if (this.order.CustomerInfo.Id == 'KHACH_LE')
+      return;
+
+    let newMemberInfo = new MembershipInfo();
+
+    newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + this.order.TotalAmount;
+    newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + ExchangeService.getGainedScore(this.order.TotalAmount);
+    newMemberInfo.UsedScoreTotal = this.order.CustomerInfo.CustomerScoreUsedTotal + this.order.CustomerInfo.ScoreUsed;
+
+    newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);
+
+    console.log(newMemberInfo);
+
+    this.customerService.updateFields(this.order.CustomerInfo.Id, {
+      UsedScoreTotal: newMemberInfo.UsedScoreTotal,
+      AvailableScore: newMemberInfo.AvailableScore,
+      AccumulatedAmount: newMemberInfo.AccumulatedAmount,
+      MembershipType: newMemberInfo.MembershipType,
+    }).then((res) => {
+      this.OnBackNaviage();
     });
   }
 }
