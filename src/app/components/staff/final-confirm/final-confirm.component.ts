@@ -64,9 +64,7 @@ export class FinalConfirmComponent extends BaseComponent {
 
         if (notCompletedDetails && notCompletedDetails.length > 0) {
 
-          setTimeout(() => {
-            this.router.navigate(['staff/orders-manage']);
-          }, 200);
+          this.router.navigate(['staff/orders-manage']);
 
           return;
 
@@ -76,7 +74,7 @@ export class FinalConfirmComponent extends BaseComponent {
 
           orderDetails.forEach(detail => {
             if (detail.State == OrderDetailStates.Canceled) {
-              totalAmount -= detail.ModifiedPrice;
+              totalAmount -= (detail.ModifiedPrice + detail.AdditionalFee);
             }
           });
 

@@ -51,6 +51,7 @@ export const API_END_POINT = {
     createProduct: '/product/create',
     updateProduct: '/product/update',
     getProducts: '/product/getList',
+    getAllProducts: '/product/getAll',
 
     deleteCustomer: '/customer/delete',
     deleteManyCustomer: '/customer/deletemany',

@@ -15,7 +15,6 @@ export class Customer extends BaseEntity {
     Index = 0;
     Sex: Sexes = Sexes.Male;
     MainContactInfo: CusContactInfoTypes;
-
    
     constructor() {
         super();

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './common/base.service';
-import { Customer } from '../models/entities/customer.entity';
+import { Customer, SpecialDay } from '../models/entities/customer.entity';
 import { Order, OrderDetail, CustomerReceiverDetail } from '../models/entities/order.entity';
 import { HttpService } from './common/http.service';
 import { GlobalService } from './common/global.service';
@@ -23,6 +23,39 @@ export class OrderService {
   constructor(private httpService: HttpService, private globalService: GlobalService) {
   }
 
+  getCustomerInfo(customer: Customer, order: OrderViewModel): OrderCustomerInfoViewModel {
+    let info = new OrderCustomerInfoViewModel();
+
+    info.Name = customer.FullName;
+    info.PhoneNumber = customer.PhoneNumber;
+    info.AvailableScore = customer.MembershipInfo.AvailableScore;
+    info.DiscountPercent = ExchangeService.getMemberDiscountPercent(customer.MembershipInfo.MembershipType);
+    info.Id = customer.Id;
+    info.GainedScore = order.CustomerInfo.GainedScore;
+    info.ScoreUsed = order.CustomerInfo.ScoreUsed;
+    info.AccumulatedAmount = customer.MembershipInfo.AccumulatedAmount;
+    info.Address = customer.Address.Home ? customer.Address.Home : customer.Address.Work ? customer.Address.Work : '';
+    info.CustomerScoreUsedTotal = customer.MembershipInfo.UsedScoreTotal;
+
+    info.ReceiverInfos = [];
+    info.ReceiverInfos = [];
+
+    customer.ReceiverInfos.forEach(receiver => {
+      let item = new CustomerReceiverDetail();
+      item.PhoneNumber = receiver.PhoneNumber;
+      item.FullName = receiver.FullName;
+      info.ReceiverInfos.push(item);
+    });
+
+    customer.SpecialDays.forEach(date => {
+      let item = new SpecialDay();
+      item.Date = date.Date;
+      item.Description = date.Description;
+      info.SpecialDays.push(item);
+    });
+
+    return info;
+  }
 
   getOrderVMByRaw(order: any): OrderViewModel {
 
@@ -37,11 +70,6 @@ export class OrderService {
     orderVM.PercentDiscount = order.PercentDiscount;
     orderVM.AmountDiscount = order.AmountDiscount;
 
-    orderVM.CustomerInfo = new OrderCustomerInfoViewModel();
-    orderVM.CustomerInfo.Id = order.CustomerId;
-
-    orderVM.CustomerInfo.ScoreUsed = order.ScoreUsed;
-    orderVM.CustomerInfo.GainedScore = order.GainedScore;
 
     if (order.purchases) {
 
@@ -60,7 +88,10 @@ export class OrderService {
       });
     }
 
+    orderVM.CustomerInfo = new OrderCustomerInfoViewModel();
+
     if (order.customer) {
+
       orderVM.CustomerInfo.Name = order.customer.FullName;
       orderVM.CustomerInfo.PhoneNumber = order.customer.PhoneNumber;
       orderVM.CustomerInfo.AvailableScore = order.customer.AvailableScore;
@@ -68,6 +99,13 @@ export class OrderService {
       orderVM.CustomerInfo.Id = order.customer.Id;
       orderVM.CustomerInfo.GainedScore = order.GainedScore;
       orderVM.CustomerInfo.ScoreUsed = order.ScoreUsed;
+      orderVM.CustomerInfo.AccumulatedAmount = order.customer.AccumulatedAmount;
+      orderVM.CustomerInfo.Address = order.customer.HomeAddress ? order.customer.HomeAddress : order.customer.WorkAddress ? order.customer.WorkAddress : '';
+      orderVM.CustomerInfo.CustomerScoreUsedTotal = order.customer.UsedScoreTotal;
+
+      orderVM.CustomerInfo.ReceiverInfos = [];
+      orderVM.CustomerInfo.ReceiverInfos = [];
+      
     }
 
     order.orderDetails.forEach(orderDetail => {

@@ -72,6 +72,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
   }
 
   onAddFeeChanged(value) {
+
     this.onAddFeeFocus();
 
     this.globalOrderDetail.AdditionalFee = +this.globalOrderDetail.AdditionalFee;
@@ -110,7 +111,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
       if (!this.globalOrderDetail.PurposeOf) this.globalOrderDetail.PurposeOf = 'Mua tặng';
 
-      if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '...';
+      if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '....';
 
       createNumbericElement(this.detailIndex > -1, (val) => {
         this.globalOrderDetail.Quantity = val;
@@ -157,7 +158,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     getTextInput(res => {
       this.globalOrderDetail.ProductName = res;
       this.globalOrderDetail.IsFromHardCodeProduct = true;
-    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName);
+    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName = '....' ? '' : this.globalOrderDetail.ProductName);
   }
 
   insertModifiedValue() {
@@ -182,13 +183,13 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       return;
     }
 
-    if (!this.globalOrderDetail.DeliveryInfo.Address
-      || !this.globalOrderDetail.DeliveryInfo.PhoneNumber
-      || !this.globalOrderDetail.DeliveryInfo.FullName
-      || !this.globalOrderDetail.DeliveryInfo.DateTime) {
-      this.showError('Thiếu thông in giao hàng!');
-      return;
-    }
+    // if (!this.globalOrderDetail.DeliveryInfo.Address
+    //   || !this.globalOrderDetail.DeliveryInfo.PhoneNumber
+    //   || !this.globalOrderDetail.DeliveryInfo.FullName
+    //   || !this.globalOrderDetail.DeliveryInfo.DateTime) {
+
+    //   return;
+    // }
 
     if (this.globalOrderDetail.ModifiedPrice <= 0) {
       this.showError('Chưa nhập giá tiền!');

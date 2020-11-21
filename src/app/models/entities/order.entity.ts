@@ -113,7 +113,7 @@ export class OrderReceiverDetail {
 }
 
 export class CustomerReceiverDetail {
-    FullName = '';
-    PhoneNumber = '';
-    Address = '';
+    FullName: string = '';
+    PhoneNumber: string = '';
+    Address: string = '';
 }

@@ -91,6 +91,73 @@ export class ProductService {
         });
     }
 
+    getProductsFromRaw(items: any): {
+        Product: Product,
+        Tags: Tag[],
+        Categories: Category[]
+    }[] {
+
+        let products: {
+            Product: Product,
+            Tags: Tag[],
+            Categories: Category[]
+        }[] = [];
+
+        items.forEach(item => {
+
+            let product = new Product();
+
+            product.Id = item.Id;
+            product.Name = item.Name;
+            product.Price = item.Price;
+            product.ImageUrl = item.ImageUrl;
+            product.Description = item.Description;
+
+            let tags: Tag[] = [];
+            item.tags.forEach(rawTag => {
+
+                let tag = new Tag();
+                tag.Name = rawTag.Name;
+                tag.Description = rawTag.Description;
+                tag.Alias = rawTag.Alias;
+                tag.Id = rawTag.Id;
+
+                tags.push(tag);
+            });
+
+            let categories: Category[] = [];
+            item.categories.forEach(rawCategory => {
+                let category = new Category();
+                category.Id = rawCategory.Id;
+                category.Description = rawCategory.Description;
+                category.Name = rawCategory.Name;
+
+                categories.push(category);
+            });
+
+            products.push({
+                Product: product,
+                Tags: tags,
+                Categories: categories
+            })
+
+        });
+
+        return products;
+
+    }
+
+    getAll(): Promise<{
+        Product: Product,
+        Tags: Tag[],
+        Categories: Category[]
+    }[]> {
+        return this.htttService.post(API_END_POINT.getAllProducts)
+            .then(data => {
+                return this.getProductsFromRaw(data.products);
+            });
+    }
+
     getRecords(page: number, itemsPerPage: number, categoryId: number, tagIds: number[] = [], name: string = ''): Promise<{
         products: {
             Product: Product,
@@ -108,8 +175,7 @@ export class ProductService {
             categoryId: categoryId,
             tagIds: tagIds
         }).then(data => {
-            this.globalService.stopLoading();
-            
+
             if (!data) {
                 return null;
             }
@@ -134,46 +200,7 @@ export class ProductService {
 
             res.totalItemCount = data.totalItemCount;
             res.totalPages = data.totalPages;
-
-            data.items.forEach(item => {
-
-                let product = new Product();
-
-                product.Id = item.Id;
-                product.Name = item.Name;
-                product.Price = item.Price;
-                product.ImageUrl = item.ImageUrl;
-                product.Description = item.Description;
-
-                let tags: Tag[] = [];
-                item.tags.forEach(rawTag => {
-
-                    let tag = new Tag();
-                    tag.Name = rawTag.Name;
-                    tag.Description = rawTag.Description;
-                    tag.Alias = rawTag.Alias;
-                    tag.Id = rawTag.Id;
-
-                    tags.push(tag);
-                });
-
-                let categories: Category[] = [];
-                item.categories.forEach(rawCategory => {
-                    let category = new Category();
-                    category.Id = rawCategory.Id;
-                    category.Description = rawCategory.Description;
-                    category.Name = rawCategory.Name;
-
-                    categories.push(category);
-                });
-
-                res.products.push({
-                    Product: product,
-                    Tags: tags,
-                    Categories: categories
-                })
-
-            });
+            res.products = this.getProductsFromRaw(data.items);
 
             return res;
 

@@ -90,16 +90,19 @@
         <a href="javascript:void(0)" style="margin-top:2vh;" type="button" onClick="purchaseDoing()"
             class="btn main-btn w-100">
             Thanh toán</a>
+
+        <a href="javascript:void(0)" style="margin-top:2vh;" type="button" (click)="completingOrder()"
+            class="btn main-btn w-100">
+            Kết thúc đơn</a>
         <div class="row orderConfirm text-center">
             <div class="col-4 exchange">
                 <button class="btn main-bg w-100" (click)="scoreExchange()"><img
                         src="../../../../assets/images/money.svg" alt="Đổi điểm" class="main-filter"></button>
             </div>
             <div class="col-8 pl-0">
-                <a href="javascript:void(0)" (click)="requestPaidInput()" type="submit"
+                <a href="javascript:void(0)" (click)="placeOrder(false)" type="submit"
                     class="btn main-btn w-100">Xong</a>
             </div>
-            <span>Xác nhận thanh toán</span>
         </div>
     </div>
 </div>
