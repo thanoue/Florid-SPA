@@ -242,6 +242,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         productController.getList
     )
+    app.post(`${productPrefix}getAll`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        productController.getAll
+    )
     app.post(`${productPrefix}create`,
         [authJwt.verifyToken, authJwt.isAdmin],
         productController.createProduct
