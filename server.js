@@ -36,7 +36,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-const { user, role, category } = require("./app/models/index");
+const { user, role, category, customer } = require("./app/models/index");
 const db = require("./app/models/index");
 db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
@@ -109,6 +109,32 @@ io.on('connection', (socket) => {
 });
 
 function initial() {
+
+    let id = 'KHACH_LE';
+
+    customer.findOne({
+        where: {
+            Id: id
+        }
+    })
+        .then((cus) => {
+
+            if (cus) {
+                return;
+            }
+
+            customer.create({
+                Id: 'KHACH_LE',
+                Sex: 'Male',
+                FullName: 'Khách lẻ',
+                BirthDay: 0,
+                AccumulatedAmount: 0,
+                AvailableScore: 0,
+                UsedScoreTotal: 0,
+                MembershipType: 'NewCustomer',
+                NumberId: 0
+            })
+        });
 
     role.findAll()
         .then((roles) => {

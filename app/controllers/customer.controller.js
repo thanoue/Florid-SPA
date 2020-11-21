@@ -167,7 +167,9 @@ exports.getAll = (req, res) => {
 
 exports.getList = (req, res) => {
 
-    const { page, size, term } = req.query;
+    const { page, size, term, memberShipType } = req.query;
+
+    console.info(page, size, term, memberShipType);
 
     var condition = term ? {
         [Op.or]: [
@@ -183,7 +185,9 @@ exports.getList = (req, res) => {
             }
         ]
 
-    } : {};
+    } : memberShipType == 'All' ? {} : {
+        MembershipType: memberShipType
+    };
 
     if (page == -1 && size == -1) {
 
@@ -206,6 +210,7 @@ exports.getList = (req, res) => {
             })
 
     } else {
+
         const { limit, offset } = commonService.getPagination(page, size);
 
         let countClause = {
@@ -218,6 +223,8 @@ exports.getList = (req, res) => {
                 const count = data;
 
                 Customer.findAndCountAll({
+                    subQuery: false,
+                    order: [['Id', 'DESC']],
                     where: condition,
                     include: [
                         { model: CustomerReciverInfo },
@@ -236,6 +243,7 @@ exports.getList = (req, res) => {
 
             })
             .catch(err => {
+                console.log(err);
                 res.status(500).send({
                     message:
                         err.message || "Some error occurred while retrieving customers."
