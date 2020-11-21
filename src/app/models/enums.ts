@@ -17,6 +17,7 @@ export enum Roles {
 };
 
 export enum MembershipTypes {
+    All = 'All',
     NewCustomer = 'NewCustomer',
     Member = 'Member',
     Vip = 'Vip',

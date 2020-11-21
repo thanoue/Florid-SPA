@@ -17,7 +17,7 @@
                         Xóa</button>
                 </div>
             </div>
-            <div class="col-md-6 col-xs-12  optionSearch">
+            <div class="col-md-4 col-xs-12  optionSearch">
                 <div class="form-group">
                     <app-search-box (searchTextInvoke)="searchCustomer($event)" [delayTimeSpan]="1000"
                         placeholder="Nhập tên hoặc SDT">
@@ -25,19 +25,28 @@
                     <button type="submit" class="btn btn-info position-absolute "><i class="fa fa-search"></i></button>
                 </div>
             </div>
-            <!-- <div class="col-md-2 col-xs-12  cateFilter">
+            <div class="col-md-2 col-xs-12  cateFilter">
                 <div class="form-group">
-                    <select class="form-control d-inline" [(ngModel)]="selectedCategory" name="selectedCategory"
-                        id="selectedCategory">
-                        <option [ngValue]="0">
+                    <select class="form-control d-inline" [(ngModel)]="selectedMemberType" name="selectedMemberType"
+                        id="">
+                        <option [ngValue]="'All'">
                             Tất cả
                         </option>
-                        <option *ngFor="let category of globalCategories" [ngValue]="category.Category.Id">
-                            {{category.Category.Name}}
+                        <option [ngValue]="'NewCustomer'">
+                            NewCustomer
+                        </option>
+                        <option [ngValue]="'Member'">
+                            Member
+                        </option>
+                        <option [ngValue]="'Vip'">
+                            Vip
+                        </option>
+                        <option [ngValue]="'VVip'">
+                            VVip
                         </option>
                     </select>
                 </div>
-            </div> -->
+            </div>
             <div class="col-md-4 col-xs-12  text-right optionPerPage">
                 <div class="form-group">
                     <label>Hiển thị </label>

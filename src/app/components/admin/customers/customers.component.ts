@@ -27,6 +27,17 @@ export class CustomersComponent extends BaseComponent {
   searchTerm = '';
   totalCount = 0;
 
+  _selectedMemberType: MembershipTypes = MembershipTypes.All;
+  public get selectedMemberType(): MembershipTypes {
+    return this._selectedMemberType;
+  }
+
+  public set selectedMemberType(val: MembershipTypes) {
+    this._selectedMemberType = val;
+    this.searchTerm = '';
+    this.pageChanged(1);
+  }
+
   currentCustomer: Customer;
 
   customers: {
@@ -37,7 +48,7 @@ export class CustomersComponent extends BaseComponent {
   pageCount = 0;
   itemTotalCount = 0;
 
-  _itemsPerPage: number;
+  _itemsPerPage: number = 10;
 
   get itemPerpage(): number {
     return this._itemsPerPage;
@@ -52,6 +63,8 @@ export class CustomersComponent extends BaseComponent {
   constructor(private customerService: CustomerService, private router: Router) {
     super();
     this.currentCustomer = new Customer();
+    this.selectedMemberType = MembershipTypes.All;
+    this._itemsPerPage = 10;
   }
 
   addRequest() {
@@ -99,26 +112,30 @@ export class CustomersComponent extends BaseComponent {
     this.customers = [];
 
     if (term == '') {
+      this.searchTerm = '';
       this.pageChanged(1);
       return;
     }
 
     this.searchTerm = term;
+    this.selectedMemberType = MembershipTypes.All;
     this.pageChanged(1);
 
   }
 
   protected Init() {
-    this._itemsPerPage = 10;
-    this.pageChanged(1);
-    this.customerService.getCount().then(res => {
-      this.totalCount = res + 1
+
+    this.pageChanged(1, () => {
+      this.customerService.getCount().then(res => {
+        this.totalCount = res + 1;
+      });
     });
   }
 
-  pageChanged(page: number) {
+  pageChanged(page: number, callbac?: () => void) {
+
     this.currentPage = page;
-    this.customerService.getList(page, this._itemsPerPage, this.searchTerm)
+    this.customerService.getList(page, this._itemsPerPage, this.selectedMemberType, this.searchTerm)
       .then(data => {
         this.customers = [];
         this.itemTotalCount = data.totalItemCount;
@@ -132,7 +149,11 @@ export class CustomersComponent extends BaseComponent {
 
         });
 
+        if (callbac)
+          callbac();
+
       });
+
   }
 
   checkAllChange(isCheck: boolean) {
