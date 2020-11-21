@@ -6,6 +6,7 @@ import { HttpService } from './common/http.service';
 import { GlobalService } from './common/global.service';
 import { API_END_POINT } from '../app.constants';
 import { Product } from '../models/entities/product.entity';
+import { MembershipTypes } from '../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -328,7 +329,7 @@ export class CustomerService {
       });
   }
 
-  getList(page: number, itemsPerPage: number, term: string = ''): Promise<{
+  getList(page: number, itemsPerPage: number, memberShipType: MembershipTypes, term: string = ''): Promise<{
     Customers: Customer[],
     totalItemCount: number,
     totalPages: number
@@ -336,7 +337,8 @@ export class CustomerService {
     return this.httpService.get(API_END_POINT.getCustomers, {
       page: page - 1,
       size: itemsPerPage,
-      term: term
+      term: term,
+      memberShipType: memberShipType
     }).then(data => {
 
       let res: {
