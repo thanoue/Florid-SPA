@@ -120,6 +120,19 @@ function getProducts(countClause, page, limit, offset, res) {
         });
 }
 
+exports.getAll = (req, res) => {
+
+    Product.findAll({
+        include: [
+            { model: Category },
+            { model: Tag },
+        ],
+    }).then(products => {
+        res.send({ products: products });
+    })
+
+}
+
 exports.getList = (req, res) => {
 
     const page = req.body.page;

@@ -189,10 +189,16 @@ exports.getList = (req, res) => {
         MembershipType: memberShipType
     };
 
-    if (page == -1 && size == -1) {
+    if (page == -1 || size == -1) {
 
         Customer.findAll({
-            where: condition
+            where: condition,
+            subQuery: false,
+            order: [['createdAt', 'DESC']],
+            include: [
+                { model: CustomerReciverInfo },
+                { model: CustomerSpecialDay },
+            ],
         })
             .then(customers => {
                 res.send({
@@ -224,12 +230,12 @@ exports.getList = (req, res) => {
 
                 Customer.findAndCountAll({
                     subQuery: false,
-                    order: [['Id', 'DESC']],
-                    where: condition,
+                    order: [['createdAt', 'DESC']],
                     include: [
                         { model: CustomerReciverInfo },
                         { model: CustomerSpecialDay },
                     ],
+                    where: condition,
                     limit: limit,
                     offset: offset
                 }).then(newData => {
