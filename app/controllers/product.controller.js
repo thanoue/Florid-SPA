@@ -133,6 +133,59 @@ exports.getAll = (req, res) => {
 
 }
 
+exports.getByPrice = (req, res) => {
+
+    const page = req.body.page;
+    const size = req.body.size;
+    const price = req.body.price;
+    const categoryId = req.body.categoryId ? req.body.categoryId : -1;
+
+    var condition = price ? { Price: { [Op.eq]: price } } : {};
+
+    const { limit, offset } = commonService.getPagination(page, size);
+
+    let countClause = {
+        where: condition
+    }
+
+    if (categoryId > -1) {
+
+        ProductCategory.findAll({
+            where: {
+                CategoryId: categoryId
+            }
+        }).then(prodCates => {
+
+            let productIds = [];
+
+            if (!prodCates || prodCates.length <= 0) {
+
+                res.send({
+                    totalItemCount: 0,
+                    items: 0,
+                    totalPages: 0,
+                    currentPage: 0
+                });
+
+                return;
+            }
+
+            prodCates.forEach((prodCate) => {
+                productIds.push(prodCate.ProductId);
+            });
+
+            countClause.where.Id = { [Op.in]: productIds };
+
+            getProducts(countClause, page, limit, offset, res);
+
+        });
+
+    } else
+        getProducts(countClause, page, limit, offset, res);
+
+    return;
+}
+
 exports.getList = (req, res) => {
 
     const page = req.body.page;
@@ -268,14 +321,6 @@ exports.createProduct = (req, res) => {
 
     const body = req.body;
 
-    if (!body.categoryIds) {
-
-        res.status(403).send({
-            message: 'Category is required'
-        });
-        return;
-    }
-
     var defaultImgName = 'https://images.vexels.com/media/users/3/156051/isolated/preview/72094c4492bc9c334266dc3049c15252-flat-flower-icon-flower-by-vexels.png';
 
     if (req.files) {
@@ -285,40 +330,52 @@ exports.createProduct = (req, res) => {
         req.files.productImg.mv(proudctImgFolderPath + defaultImgName);
     }
 
+    let priceList = body.priceList ? body.priceList : '';
+
     Product.create({
         Name: body.name,
         ImageUrl: defaultImgName,
         Description: body.description,
         Price: body.price,
+        PriceList: priceList
     }).then(product => {
 
         if (!product) {
+
             res.status(500).send({
                 message: "Create product err"
             });
+
             return;
         }
 
-        let categories = JSON.parse(body.categoryIds);
-        product.setCategories(categories).then(() => {
+        if (body.categoryIds) {
 
-            if (body.tagIds) {
-                let tags = JSON.parse(body.tagIds);
-                product.setTags(tags).then(() => {
-                    res.send({ product: product });
-                });
-            } else {
-                res.send({ product: product });
-            }
+            let categories = JSON.parse(body.categoryIds);
 
-        });
+            product.setCategories(categories);
+        }
+
+
+        if (body.tagIds) {
+
+            let tags = JSON.parse(body.tagIds);
+
+            product.setTags(tags);
+
+        }
+
+        res.send({ product: product });
 
     }).catch(err => {
+
         res.status(500).send({
             message: err.message || "Some error occurred while create product."
         });
+
         return;
-    })
+
+    });
 }
 
 exports.deleteManyProduct = (req, res) => {
@@ -388,16 +445,6 @@ exports.updateProduct = (req, res) => {
 
     const body = req.body;
 
-    if (!body.categoryIds) {
-
-        if (!product) {
-            res.status(403).send({
-                message: 'Category is required'
-            });
-            return;
-        }
-    }
-
     var defaultImgName = body.oldProductImg ? body.oldProductImg : '';
 
     if (req.files) {
@@ -413,26 +460,40 @@ exports.updateProduct = (req, res) => {
         }
     }
 
+    let priceList = body.priceList ? body.priceList : '';
+
     Product.update({
         Name: body.name,
         Price: body.price,
         Description: body.description,
-        ImageUrl: defaultImgName
+        ImageUrl: defaultImgName,
+        PriceList: priceList
     }, {
         where: {
             Id: body.id
         }
     }).then(() => {
 
-        Product.findByPk(body.id).then((product) => {
+        if ((body.categoryIds && body.categoryIds.length > 0) || (body.tagIds && body.tagIds.length > 0)) {
 
-            ProductCategory.destroy({
-                where: {
-                    ProductId: body.id
+            Product.findByPk(body.id).then((product) => {
+
+                if ((body.categoryIds && body.categoryIds.length > 0)) {
+
+                    ProductCategory.destroy({
+                        where: {
+                            ProductId: body.id
+                        }
+                    }).then(() => {
+
+                        let categories = JSON.parse(body.categoryIds);
+
+                        product.setCategories(categories);
+
+                    });
                 }
-            }).then(() => {
-                let categories = JSON.parse(body.categoryIds);
-                product.setCategories(categories).then(() => {
+
+                if (body.tagIds && body.tagIds.length > 0) {
 
                     ProductTag.destroy({
                         where: {
@@ -440,28 +501,26 @@ exports.updateProduct = (req, res) => {
                         }
                     }).then(() => {
 
-                        if (body.tagIds && body.tagIds.length > 0) {
-                            let tags = JSON.parse(body.tagIds);
-                            product.setTags(tags).then(() => {
-                                console.log('tags are updated');
+                        let tags = JSON.parse(body.tagIds);
 
-                                res.send({
-                                    message: 'Product is updated'
-                                });
-                            });
+                        product.setTags(tags);
 
-                        } else {
-
-                            res.send({
-                                message: 'Product is updated'
-                            });
-                        }
                     });
+                }
+
+                res.send({
+                    message: 'Product is updated'
                 });
+
             });
 
-        });
+        } else {
 
+            res.send({
+                message: 'Product is updated'
+            });
+
+        }
     }).catch(err => {
         res.status(500).send({
             message: err.message || "Some error occurred while create product."
