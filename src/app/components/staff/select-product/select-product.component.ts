@@ -10,6 +10,7 @@ import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { Tag } from 'src/app/models/entities/tag.entity';
 import { TagService } from 'src/app/services/tag.service';
 import { CategoryService } from 'src/app/services/category.service';
+import { ProductSearchingMode } from 'src/app/models/enums';
 
 declare function selectProductCategory(menuitems: { Name: string; Value: number; }[], callback: (index: any) => void): any;
 declare function filterFocus(): any;
@@ -33,6 +34,8 @@ export class SelectProductComponent extends BaseComponent {
   selectedProduct: Product;
   currentHardcodeUsedCount = -1;
   searchTerm = '';
+  priceSearchTerm = 0;
+  productSearchingMode: ProductSearchingMode;
 
   categories: {
     Value: number,
@@ -58,6 +61,7 @@ export class SelectProductComponent extends BaseComponent {
     this.pagingProducts = [];
     this.categories = [];
     this.globalTags = [];
+    this.productSearchingMode = ProductSearchingMode.None;
   }
 
   protected async Init() {
@@ -132,20 +136,28 @@ export class SelectProductComponent extends BaseComponent {
 
   filterByTags(tags: number[]) {
 
-    this.pagingProducts = [];
-    this.productCategory;
     this.searchTerm = '';
+    this.priceSearchTerm = 0;
+    this.productSearchingMode = ProductSearchingMode.Name;
 
     this.getProductsByPage(1, tags);
   }
 
   setSelectedProduct(data: number) {
     this.selectedProduct = this.pagingProducts.filter(p => p.Id == data)[0];
+
+    // if (this.selectedProduct.PriceList.length > 1) {
+
+    // }
+
   }
 
   getProductByCategory(category: number) {
 
     this.productCategory = category;
+    this.searchTerm = '';
+    this.priceSearchTerm = 0;
+    this.productSearchingMode = ProductSearchingMode.Name;
 
     this.categoryName = this.categories.filter(p => p.Value === this.productCategory)[0].Name;
 
@@ -160,7 +172,7 @@ export class SelectProductComponent extends BaseComponent {
     });
   }
 
-  getProductsByPage(page: number, tagIds: number[] = []) {
+  async getProductsByPage(page: number, tagIds: number[] = []) {
 
     this.globalTags.forEach(tag => {
       tag.IsSelected = false;
@@ -170,42 +182,67 @@ export class SelectProductComponent extends BaseComponent {
       return;
     }
 
-    if (this.currentMaxPage < page) {
+    if (this.currentMaxPage < page && this.currentMaxPage > 0) {
       return;
     }
 
+    this.pagingProducts = [];
+    this.currentPage = page;
+    this.selectedProduct = new Product();
 
-    this.productService.getRecords(page, this.itemsPerPage, this.productCategory, tagIds, this.searchTerm).then(res => {
+    let prods: any;
 
-      this.pagingProducts = [];
+    if (this.productSearchingMode != ProductSearchingMode.Price) {
+      prods = await this.productService.getRecords(page, this.itemsPerPage, this.productCategory, tagIds, this.searchTerm)
+    } else {
+      prods = await this.productService.getRecordsByPrice(page, this.itemsPerPage, this.productCategory, this.priceSearchTerm);
+    }
 
-      if (res && res.products) {
+    if (prods && prods.products) {
 
-        res.products.forEach(product => {
-          this.pagingProducts.push(product.Product);
-        });
+      prods.products.forEach(product => {
+        this.pagingProducts.push(product.Product);
+      });
 
-        this.currentMaxPage = res.totalPages;
+      this.currentMaxPage = prods.totalPages;
 
-      } else
-        this.currentMaxPage = 1;
-
-      this.currentPage = page;
-
-      this.selectedProduct = new Product();
-
-    });
+    } else
+      this.currentMaxPage = 1;
 
   }
 
   searchProduct(term: string) {
 
-    this.pagingProducts = [];
+    if (term.indexOf('k') == term.length - 1 || term.indexOf('K') == term.length - 1) {
+      let newTerm = term.toLowerCase().split('k')[0];
 
-    this.searchTerm = term;
+      var price = parseInt(newTerm);
 
-    this.currentPage = 1;
-    this.getProductsByPage(this.currentPage);
+      if (price != NaN && price > 0) {
+
+        this.productSearchingMode = ProductSearchingMode.Price;
+        this.priceSearchTerm = price * 1000;
+        this.searchTerm = '';
+        console.log(this.priceSearchTerm);
+
+      } else {
+
+        this.productSearchingMode = ProductSearchingMode.Name;
+        this.searchTerm = '';
+        this.priceSearchTerm = 0;
+
+      }
+
+    }
+    else {
+
+      this.productSearchingMode = ProductSearchingMode.Name;
+      this.priceSearchTerm = 0;
+      this.searchTerm = term;
+
+    }
+
+    this.getProductsByPage(1);
 
   }
 

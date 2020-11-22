@@ -24,6 +24,12 @@ export enum MembershipTypes {
     VVip = 'VVip'
 }
 
+export enum ProductSearchingMode {
+    None = 'None',
+    Name = 'Name',
+    Price = 'Price'
+}
+
 export enum CusContactInfoTypes {
     Zalo = 'Zalo',
     Viber = 'Viber',

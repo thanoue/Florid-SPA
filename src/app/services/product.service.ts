@@ -46,7 +46,29 @@ export class ProductService {
         });
     }
 
+
+    validateProductPrices(product: Product): Product {
+
+        if (!product.PriceList || product.PriceList.length < 1) {
+            product.PriceList = [product.Price && product.Price > 0 ? product.Price : 0];
+        }
+
+        if (!product.Price || product.Price <= 0)
+            product.Price = product.PriceList[0];
+
+        if (product.PriceList.indexOf(product.Price) < 0) {
+            product.PriceList.push(product.Price);
+            console.log(product.Price, product.PriceList);
+        }
+
+        product.PriceList = product.PriceList.filter((item, pos, self) => self.indexOf(item) == pos);
+
+        return product;
+    }
+
     updateProduct(product: Product, categoryIds: number[] = [], tagIds: number[] = [], productImg: File): Promise<any> {
+
+        product = this.validateProductPrices(product);
 
         let par = {
             categoryIds: JSON.stringify(categoryIds),
@@ -56,7 +78,8 @@ export class ProductService {
             name: product.Name,
             productImg: productImg,
             id: product.Id,
-            oldProductImg: product.ImageUrl
+            oldProductImg: product.ImageUrl,
+            priceList: JSON.stringify(product.PriceList)
         }
 
         return this.htttService.postForm(API_END_POINT.updateProduct, par).then(data => {
@@ -72,13 +95,16 @@ export class ProductService {
 
     createProduct(product: Product, categoryIds: number[] = [], tagIds: number[] = [], productImg: File): Promise<any> {
 
+        product = this.validateProductPrices(product);
+
         let par = {
             categoryIds: JSON.stringify(categoryIds),
             tagIds: JSON.stringify(tagIds),
             description: product.Description,
             price: product.Price,
             name: product.Name,
-            productImg: productImg
+            productImg: productImg,
+            priceList: JSON.stringify(product.PriceList)
         }
 
         return this.htttService.postForm(API_END_POINT.createProduct, par).then(data => {
@@ -111,6 +137,7 @@ export class ProductService {
             product.Name = item.Name;
             product.Price = item.Price;
             product.ImageUrl = item.ImageUrl;
+            product.PriceList = item.PriceList ? JSON.parse(item.PriceList) : [];
             product.Description = item.Description;
 
             let tags: Tag[] = [];
@@ -158,7 +185,7 @@ export class ProductService {
             });
     }
 
-    getRecords(page: number, itemsPerPage: number, categoryId: number, tagIds: number[] = [], name: string = ''): Promise<{
+    get(path: string, obj: any): Promise<{
         products: {
             Product: Product,
             Tags: Tag[],
@@ -167,14 +194,7 @@ export class ProductService {
         totalItemCount: number,
         totalPages: number
     }> {
-
-        return this.htttService.post(API_END_POINT.getProducts, {
-            page: page - 1,
-            size: itemsPerPage,
-            name: name,
-            categoryId: categoryId,
-            tagIds: tagIds
-        }).then(data => {
+        return this.htttService.post(path, obj).then(data => {
 
             if (!data) {
                 return null;
@@ -208,7 +228,43 @@ export class ProductService {
             this.htttService.handleError(err);
             throw err;
         })
+    }
 
+    getRecords(page: number, itemsPerPage: number, categoryId: number, tagIds: number[] = [], name: string = ''): Promise<{
+        products: {
+            Product: Product,
+            Tags: Tag[],
+            Categories: Category[]
+        }[],
+        totalItemCount: number,
+        totalPages: number
+    }> {
+
+        return this.get(API_END_POINT.getProducts, {
+            page: page - 1,
+            size: itemsPerPage,
+            name: name,
+            categoryId: categoryId,
+            tagIds: tagIds
+        });
+    }
+
+    getRecordsByPrice(page: number, itemsPerPage: number, categoryId: number, price: number): Promise<{
+        products: {
+            Product: Product,
+            Tags: Tag[],
+            Categories: Category[]
+        }[],
+        totalItemCount: number,
+        totalPages: number
+    }> {
+
+        return this.get(API_END_POINT.getProductsByPrice, {
+            page: page - 1,
+            size: itemsPerPage,
+            price: price,
+            categoryId: categoryId,
+        });
     }
 
 }

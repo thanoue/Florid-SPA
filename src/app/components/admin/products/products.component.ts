@@ -3,7 +3,7 @@ import { BaseComponent } from '../base.component';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/models/entities/product.entity';
-import { MenuItems } from 'src/app/models/enums';
+import { MenuItems, ProductSearchingMode } from 'src/app/models/enums';
 import { NgForm } from '@angular/forms';
 import { TagService } from 'src/app/services/tag.service';
 import { Tag } from 'src/app/models/entities/tag.entity';
@@ -16,6 +16,11 @@ import { typeWithParameters } from '@angular/compiler/src/render3/util';
 
 declare function showProductSetupPopup();
 declare function hideAdd();
+
+export class PriceItem {
+  Price: number;
+  Index: number;
+}
 
 @Component({
   selector: 'app-products',
@@ -36,14 +41,21 @@ export class ProductsComponent extends BaseComponent {
   edittingImageUrl: any;
   isSelectAll = false;
   edittingProduct: Product;
-
+  priceSearchTerm = 0;
+  productSearchingMode: ProductSearchingMode;
+  priceList: PriceItem[];
 
   _selectedCategory: number = 0;
   get selectedCategory(): number {
     return this._selectedCategory;
   }
   set selectedCategory(val: number) {
+
     this._selectedCategory = val;
+    this.searchTerm = '';
+    this.priceSearchTerm = 0;
+    this.productSearchingMode = ProductSearchingMode.Name;
+
     this.categoryChange();
   }
 
@@ -81,6 +93,9 @@ export class ProductsComponent extends BaseComponent {
     this._itemsPerPage = 10;
     this.globalCategories = [];
     this.globalTags = [];
+    this.productSearchingMode = ProductSearchingMode.None;
+    this.priceList = [];
+
   }
 
   protected Init() {
@@ -150,6 +165,13 @@ export class ProductsComponent extends BaseComponent {
         tagIds.push(tag.Tag.Id);
     });
 
+    this.edittingProduct.PriceList = [];
+
+    this.priceList.forEach(priceItem => {
+      if (priceItem.Price > 0) {
+        this.edittingProduct.PriceList.push(+priceItem.Price);
+      }
+    });
 
     this.productService.updateProduct(this.edittingProduct, categoryIds, tagIds, this.edittingFile)
       .then(res => {
@@ -182,6 +204,13 @@ export class ProductsComponent extends BaseComponent {
         tagIds.push(tag.Tag.Id);
     });
 
+    this.edittingProduct.PriceList = [];
+
+    this.priceList.forEach(priceItem => {
+      if (priceItem.Price > 0) {
+        this.edittingProduct.PriceList.push(+priceItem.Price);
+      }
+    });
 
     this.productService.createProduct(this.edittingProduct, categoryIds, tagIds, this.edittingFile)
       .then(res => {
@@ -189,6 +218,14 @@ export class ProductsComponent extends BaseComponent {
         hideAdd();
       });
 
+  }
+
+  addPrice() {
+    this.priceList.push({ Price: 0, Index: this.priceList.length });
+  }
+
+  subPriceItem(index: number) {
+    this.priceList.splice(index, 1);
   }
 
   deleteProduct(id: number) {
@@ -203,32 +240,39 @@ export class ProductsComponent extends BaseComponent {
     });
   }
 
-  pageChanged(page: number) {
+  async pageChanged(page: number) {
+
     this.products = [];
     this.currentPage = page;
 
-    this.productService.getRecords(page, this.itemPerpage, this._selectedCategory, [], this.searchTerm)
-      .then(data => {
+    if (page <= 0) {
+      return;
+    }
 
-        this.stopLoading();
 
-        if (data == null)
-          return;
+    let prods: any;
 
-        this.itemTotalCount = data.totalItemCount;
-        this.pageCount = data.totalPages;
+    if (this.productSearchingMode != ProductSearchingMode.Price) {
+      prods = await this.productService.getRecords(page, this.itemPerpage, this._selectedCategory, [], this.searchTerm)
+    } else {
+      prods = await this.productService.getRecordsByPrice(page, this.itemPerpage, this._selectedCategory, this.priceSearchTerm);
+    }
 
-        data.products.forEach(rawProduct => {
-          this.products.push({
-            Product: rawProduct.Product,
-            Categories: rawProduct.Categories,
-            IsSelect: false,
-            Tags: rawProduct.Tags
-          });
+    if (prods == null)
+      return;
 
-        });
+    this.itemTotalCount = prods.totalItemCount;
+    this.pageCount = prods.totalPages;
 
+    prods.products.forEach(rawProduct => {
+      this.products.push({
+        Product: rawProduct.Product,
+        Categories: rawProduct.Categories,
+        IsSelect: false,
+        Tags: rawProduct.Tags
       });
+
+    });
 
   }
 
@@ -273,6 +317,7 @@ export class ProductsComponent extends BaseComponent {
   }
 
   resetData() {
+
     this.edittingProduct = new Product();
 
     this.globalCategories.forEach(category => {
@@ -285,7 +330,7 @@ export class ProductsComponent extends BaseComponent {
 
     this.edittingImageUrl = '';
     this.edittingFile = null;
-
+    this.priceList = [];
   }
 
 
@@ -322,6 +367,10 @@ export class ProductsComponent extends BaseComponent {
       else {
         tag.IsSelected = false;
       }
+    });
+
+    this.edittingProduct.PriceList.forEach(price => {
+      this.priceList.push({ Price: price, Index: this.priceList.length });
     });
 
     showProductSetupPopup();
@@ -383,7 +432,38 @@ export class ProductsComponent extends BaseComponent {
 
 
   searchProduct(term) {
-    this.searchTerm = term;
+
+    if (term.indexOf('k') == term.length - 1 || term.indexOf('K') == term.length - 1) {
+
+      let newTerm = term.toLowerCase().split('k')[0];
+
+      var price = parseInt(newTerm);
+
+      console.log(price);
+
+      if (price != NaN && price > 0) {
+
+        this.productSearchingMode = ProductSearchingMode.Price;
+        this.priceSearchTerm = price * 1000;
+        this.searchTerm = '';
+
+      } else {
+
+        this.productSearchingMode = ProductSearchingMode.Name;
+        this.searchTerm = '';
+        this.priceSearchTerm = 0;
+
+      }
+
+    }
+    else {
+
+      this.productSearchingMode = ProductSearchingMode.Name;
+      this.priceSearchTerm = 0;
+      this.searchTerm = term;
+
+    }
+
     this.pageChanged(1);
 
   }
