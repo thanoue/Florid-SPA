@@ -10,11 +10,13 @@ export class Product {
     Page: number;
     Index: number;
     CategoryIndex: number;
+    PriceList: number[];
 
     Description: string;
 
     constructor() {
         this.Description = '';
+        this.PriceList = [];
     }
 
 }

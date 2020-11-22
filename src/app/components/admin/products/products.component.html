@@ -132,15 +132,15 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group col-md-6">
-                <label>Giá Gốc (vnđ)</label>
-                <input type="number" class="form-control" name="Price" [(ngModel)]="edittingProduct.Price" id="Price"
-                    required #Price="ngModel">
-
-                <div *ngIf="Price.invalid && (Price.dirty || Price.touched)" class="alert alert-danger">
-
-                    <div *ngIf="Price.errors.required">
-                        Giá là bắt buộc
+            <div class="col-md-6">
+                <label>Giá(vnđ)</label>
+                <div class="row">
+                    <div class="col-md-10">
+                        <input type="number" class="form-control" name="Price" [(ngModel)]="edittingProduct.Price"
+                            id="Price">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-info d-block w-100" type="button" (click)="addPrice()">+</button>
                     </div>
                 </div>
             </div>
@@ -151,6 +151,19 @@
                 <label for="inputDesc">Mô tả</label>
                 <textarea [(ngModel)]="edittingProduct.Description" name="Description" id="Description"
                     class="form-control" cols="100" rows="5" placeholder="Mô tả sản phẩm"></textarea>
+            </div>
+            <div class="col-md-6" *ngIf="priceList && priceList.length>0">
+                <label>Danh sách giá(vnđ)</label>
+                <div class="row" *ngFor="let subPrice of priceList;let i = index" style="margin-bottom: 5px;">
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" [(ngModel)]="subPrice.Price" [id]="'SubPrice' + i"
+                            [name]="'SubPrice' + i">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-danger d-block w-100" type="button"
+                            (click)="subPriceItem(i)">-</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="form-row">
@@ -167,10 +180,15 @@
             </div>
             <div class="form-group col-md-6">
                 <label for="inputTag">Tag</label>
-                <div class="tagAdd">
-                    <input type="text" class="form-control" value="" [(ngModel)]="newTagName" name="newTagName"
-                        placeholder="Nhập tag mới">
-                    <span class="addTagBtn" (click)="addTag()">Thêm</span>
+                <div class="row">
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" value="" [(ngModel)]="newTagName" name="newTagName"
+                            placeholder="Nhập tag mới">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-success d-block w-100" role="button"
+                            (click)="addTag()">+</button>
+                    </div>
                 </div>
                 <ul class="tagList cusScroll">
                     <li *ngFor="let tag of globalTags">
