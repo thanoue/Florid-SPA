@@ -14,25 +14,30 @@
     <div class="container order-list">
         <div class="row order-list-top">
             <div class="col-2 order-filter text-left" (click)="filterByState()">
-                <a class="main-bg"><img src="../../../assets/images/filter.svg" alt=""
-                        class="main-filter"></a>
+                <a class="main-bg"><img src="../../../assets/images/filter.svg" alt="" class="main-filter"></a>
             </div>
             <div class="col-8 order-search">
                 <mobile-search-box (searchTextInvoke)="searchOrder($event)" [delayTimeSpan]="1000"
-                 placeholder ="Tên hoặc số điện thoại KH...">
-              </mobile-search-box>
+                    placeholder="Tên hoặc số điện thoại KH...">
+                </mobile-search-box>
             </div>
             <div class="col-2 order-check text-right">
                 <a class="main-bg" routerLink="/staff/sort-order-changing"><img src="../../../assets/images/check.svg"
                         alt="" class="main-filter"></a>
             </div>
         </div>
+        <ul class="paging">
+            <li class="paging-arrow paging-prev main-bg" (click)="goToPage(currentPage -1)"><i
+                    class="fa fa-angle-left"></i></li>
+            <li class="paging-arrow paging-next main-bg" (click)="goToPage(currentPage +1)"><i
+                    class="fa fa-angle-right"></i></li>
+        </ul>
         <div class="row order-list-bot">
             <ul class="col-12 order-content accordion  cusScroll" id="accordionOrder">
                 <li *ngFor="let order of orders; let orderIndex = index" class="order-content-item"
                     [id]="'order' + orderIndex">
                     <div class="item-top" [id]="'heading' + orderIndex">
-                        <span class="item-code">{{order.OrderId}}</span>
+                        <span class="item-code" (click)="viewPurchase(order.OrderId)">{{order.OrderId}}</span>
                         <div class="item-info">
                             <h4 class="item-name">{{order.CustomerInfo.Name}}</h4>
                             <h4 class="item-name" style="
@@ -75,9 +80,9 @@
                     </div>
                 </li>
             </ul>
-
         </div>
     </div>
+
 </div>
 <div id="makingTimeRequest" class="popup-content">
     <label>Thời gian giao: </label> <span style="
@@ -86,15 +91,15 @@
     margin-left:3px;
    ">{{selectDeliveryTime}}</span>
     <div class="form-group">
-        <label class="custom-label" >Thời gian hoàn thành: </label>
+        <label class="custom-label">Thời gian hoàn thành: </label>
         <input [owlDateTime]="dt1" id="request-time" [owlDateTimeTrigger]="dt1" [(ngModel)]="selectMakingRequestTime"
             name="DateTime" class="mainForm">
         <owl-date-time [stepMinute]="5" #dt1></owl-date-time>
-    </div> 
+    </div>
     <div class="form-group">
         <label class="custom-label">Ghi chú: </label>
-        <textarea id="makingNote" style="width:100%;height:130px" [(ngModel)]="makingNote"
-            name="makingNote" class="mainForm" ></textarea>
+        <textarea id="makingNote" style="width:100%;height:130px" [(ngModel)]="makingNote" name="makingNote"
+            class="mainForm"></textarea>
     </div>
     <div class="row">
         <div class="col-12 mx-auto text-center">
@@ -126,7 +131,8 @@
         <li class="colorInfo">
             <label>Người giao hoa: </label><span>{{selectedDetail.ShipperName}}</span>
         </li>
-        <li class="colorInfo" *ngIf="selectedDetail && selectedDetail.FixingFloristName !== undefined && selectedDetail.FixingFloristName !== ''">
+        <li class="colorInfo"
+            *ngIf="selectedDetail && selectedDetail.FixingFloristName !== undefined && selectedDetail.FixingFloristName !== ''">
             <label>Người sửa hoa: </label><span>{{selectedDetail.FixingFloristName}}</span>
         </li>
 
@@ -136,7 +142,7 @@
 <div class="popup-content florist" id="viewed">
     <h3 class="main-bg">Chọn Florist</h3>
     <ul class="viewedList">
-        <li  class="viewItem" *ngFor="let user of florists"  id="{{user.Id}}" >
+        <li class="viewItem" *ngFor="let user of florists" id="{{user.Id}}">
             <img src="{{user.AvtUrl | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
             <span class="itemName">{{user.FullName}}</span>
         </li>
@@ -146,7 +152,7 @@
 <div class="popup-content shipper" id="viewed">
     <h3 class="main-bg">Chọn Shipper</h3>
     <ul class="viewedList">
-        <li class="viewItem-three-column" *ngFor="let user of shippers" id="{{user.Id}}"> 
+        <li class="viewItem-three-column" *ngFor="let user of shippers" id="{{user.Id}}">
             <img src="{{user.AvtUrl | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
             <span class="itemName">{{user.FullName}}</span>
             <span class="itemRole">{{user.IsExternalShipper ?  'Shipper ngoài' : 'Nhân viên'}}</span>
@@ -161,4 +167,3 @@
     <p class="customer-position">{{CurrentUser.Role}}</p>
     <p class="customer-position" id="logoutBtn" (click)="logout()">Đăng xuất</p>
 </div>
-

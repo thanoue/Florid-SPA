@@ -12,11 +12,8 @@ import { StorageService } from 'src/app/services/storage.service';
 import { ProductService } from 'src/app/services/product.service';
 import { promise } from 'protractor';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { shareReplay, timeout } from 'rxjs/operators';
-import { rejects } from 'assert';
-import { read } from 'fs';
 import { User } from 'src/app/models/entities/user.entity';
 import { UserService } from 'src/app/services/user.service';
 
@@ -56,6 +53,25 @@ export class OrdersManageComponent extends BaseComponent {
   makingNote: string;
   florists: User[];
   shippers: User[];
+  pageSize = 20;
+  currentPage = 0;
+  totalPage = 0;
+  statuses: any[] = [];
+  searchTerm: string = "";
+  allStatuses: any[] = [
+    OrderDetailStates.Added,
+    OrderDetailStates.Comfirming,
+    OrderDetailStates.Deliveried,
+    OrderDetailStates.DeliverAssinged,
+    OrderDetailStates.DeliveryWaiting,
+    OrderDetailStates.Making,
+    OrderDetailStates.Waiting,
+    OrderDetailStates.SentBack,
+    OrderDetailStates.Fixing,
+    OrderDetailStates.FixingRequest,
+    OrderDetailStates.Completed,
+    OrderDetailStates.Canceled
+  ];
 
   selectedDetail = {} as ISelectedDetail;
 
@@ -85,7 +101,7 @@ export class OrdersManageComponent extends BaseComponent {
     var menuitems = [];
 
     menuitems.push({
-      Name: "Đơn đang được xử lý",
+      Name: "Tất cả",
       Value: 'ALL'
     });
 
@@ -98,25 +114,16 @@ export class OrdersManageComponent extends BaseComponent {
 
     filterOrderByState(menuitems, (state) => {
 
-      let states = state == 'ALL' ? [
-        OrderDetailStates.Added,
-        OrderDetailStates.Comfirming,
-        OrderDetailStates.Deliveried,
-        OrderDetailStates.DeliverAssinged,
-        OrderDetailStates.DeliveryWaiting,
-        OrderDetailStates.Making,
-        OrderDetailStates.Waiting,
-        OrderDetailStates.SentBack,
-        OrderDetailStates.Fixing,
-        OrderDetailStates.FixingRequest
-      ] : [
-          state
-        ];
+      this.currentPage = 0;
 
-      this.orderService.getOrderViewModelsByStates(states)
+      this.statuses = state == 'ALL' ? this.allStatuses : [
+        state
+      ];
+
+      this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
         .then(orders => {
-
-          this.orders = orders;
+          this.totalPage = orders.totalPages;
+          this.orders = orders.orders;
 
         });
     });
@@ -124,9 +131,31 @@ export class OrdersManageComponent extends BaseComponent {
   }
 
   searchOrder(phoneNumber) {
-    this.orderService.searchByPhoneNumberOrCustomerName(phoneNumber)
+
+    this.currentPage = 0;
+    this.searchTerm = phoneNumber;
+
+    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses, this.searchTerm)
       .then(orders => {
-        this.orders = orders;
+        this.totalPage = orders.totalPages;
+        this.orders = orders.orders;
+      });
+
+  }
+
+  goToPage(page: number) {
+
+    if (page >= this.totalPage || page < 0)
+      return;
+
+    this.currentPage = page;
+
+    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses, this.searchTerm)
+      .then(orders => {
+
+        this.totalPage = orders.totalPages;
+        this.orders = orders.orders;
+
       });
   }
 
@@ -145,26 +174,13 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.setStatusBarColor(false);
 
-    const orderIds: string[] = [];
-    const orderDetailVMs: OrderDetailViewModel[] = [];
+    this.statuses = this.allStatuses;
 
-    let states = [
-      OrderDetailStates.Added,
-      OrderDetailStates.Comfirming,
-      OrderDetailStates.Deliveried,
-      OrderDetailStates.DeliverAssinged,
-      OrderDetailStates.DeliveryWaiting,
-      OrderDetailStates.Making,
-      OrderDetailStates.Waiting,
-      OrderDetailStates.SentBack,
-      OrderDetailStates.Fixing,
-      OrderDetailStates.FixingRequest
-    ];
-
-    this.orderService.getOrderViewModelsByStates(states)
+    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
       .then(orders => {
 
-        this.orders = orders;
+        this.totalPage = orders.totalPages;
+        this.orders = orders.orders;
 
       });
 
@@ -198,6 +214,16 @@ export class OrdersManageComponent extends BaseComponent {
         this.router.navigate(['/staff/add-order']);
 
       });
+  }
+
+  viewPurchase(orderId: string) {
+
+    this.globalOrder = this.orders.filter(p => p.OrderId === orderId)[0];
+
+    this.globalPurchases = this.globalOrder.PurchaseItems;
+
+    this.router.navigate(['staff/view-purchase']);
+
   }
 
   addOrder() {

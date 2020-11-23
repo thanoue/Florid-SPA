@@ -18,6 +18,7 @@ import { StaffLoginComponent } from './staff-login/staff-login.component';
 import { StaffMainLayoutComponent } from './staff-main-layout/staff-main-layout.component';
 import { ViewOrderDetailComponent } from './view-order-detail/view-order-detail.component';
 import { HomeComponent } from './home/home.component';
+import { ViewPurchaseComponent } from './view-purchase/view-purchase.component';
 
 // routes
 export const ROUTES: Routes = [
@@ -36,7 +37,11 @@ export const ROUTES: Routes = [
                 component: FinalConfirmComponent,
                 canActivate: [AccountMobileGuard]
             },
-
+            {
+                path: 'view-purchase',
+                component: ViewPurchaseComponent,
+                canActivate: [AccountMobileGuard]
+            },
             {
                 path: 'customer-confirming',
                 component: CustomerConfirmComponent,
@@ -124,6 +129,7 @@ export const ROUTES: Routes = [
         CustomerConfirmComponent,
         ShipperMainComponent,
         FinalConfirmComponent,
-        HomeComponent]
+        HomeComponent,
+        ViewPurchaseComponent]
 })
 export class StaffModule { }

@@ -13,14 +13,16 @@
         </div>
         <div class="nameTable">
             <div class="tableHead">
-                <div class="tableLeft">Tên Khách Hàng</div>
-                <div class="tableRight">Số điện thoại</div>
+                <div class="tableLeft">Họ tên</div>
+                <div class="tableCenter">SDT</div>
+                <div class="tableRight">Thành viên</div>
             </div>
             <div class="tableBody cusScroll" id="customer-list">
                 <div class="tableRow main-bg customer-item" onclick="selectItem(this,'.customer-item')"
                     *ngFor="let customer of customers" [attr.data-id]="customer.Id">
                     <div class="tableLeft">{{customer.FullName}}</div>
-                    <div class="tableRight">{{customer.PhoneNumber}}</div>
+                    <div class="tableCenter">{{customer.PhoneNumber}}</div>
+                    <div class="tableRight">{{customer.MembershipInfo.MembershipType}}</div>
                 </div>
             </div>
         </div>

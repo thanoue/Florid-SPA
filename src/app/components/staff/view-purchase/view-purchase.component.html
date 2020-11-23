@@ -1,0 +1,92 @@
+<div class="page-content" id="customerInfo">
+    <div class="container">
+        <div class="row checkTop search">
+            <div class="col-12 mx-auto text-center">
+                <button type="button" (click)="addPurchase()" class="btn main-btn w-100">Thêm thanh toán</button>
+            </div>
+        </div>
+        <div class="nameTable">
+            <div class="tableHead">
+                <div class="tableLeft">Hình thức</div>
+                <div class="tableCenter">Số tiền</div>
+                <div class="tableRight">Trạng Thái</div>
+            </div>
+            <div class="tableBody cusScroll" id="customer-list">
+                <div class="tableRow main-bg customer-item" *ngFor="let purchaseItem of purchaseItems"
+                    (click)="selectItem(purchaseItem)">
+                    <div class="tableLeft">{{purchaseItem.Method}}</div>
+                    <div class="tableCenter">{{purchaseItem.Amount|currency:'VND':'symbol-narrow':'':'vi-VN'}}</div>
+                    <div class="tableRight">{{purchaseItem.Status}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="orderTotal">
+            <p class="totalOld">Còn lại: <span
+                    class="orderPrice">{{order.TotalAmount - order.TotalPaidAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                </span>
+            </p>
+            <p class="totalNew">Thành tiền: <span
+                    class="orderPrice">{{order.TotalAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
+<div class="popup-content" id="purchase-dialog">
+    <div class="container">
+        <div class="checkOut" style="margin-top: 0px;padding: 0px">
+            <div class="checkOutTotal">
+                <h3>Tổng</h3>
+                <p>{{order.TotalAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}</p>
+            </div>
+            <div class="checkOutLeft mb-2">
+                <h4>Số tiền còn lại</h4>
+                <p>{{order.TotalAmount-order.TotalPaidAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}</p>
+            </div>
+            <div class="form-group">
+                <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentPayAmount">Số tiền thanh
+                    toán</label>
+                <input type="tel" name="currentPayAmount" id="currentPayAmount"
+                    (input)="onPayChanged($event.target.value)" (focus)="onPayFocus()" [(ngModel)]="currentPayAmount"
+                    class="mainForm">
+            </div>
+            <div class=" form-group">
+                <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentPurStatus">Tình trạng thanh
+                    toán</label>
+                <select class="mainForm" id="currentPurStatus" name="currentPurStatus" [(ngModel)]="currentPurStatus">
+                    <option selected>Chọn...</option>
+                    <option [ngValue]="'Waiting'">Đang đợi</option>
+                    <option [ngValue]="'Completed'">Hoàn tất</option>
+                    <option [ngValue]="'Canceled'">Đã Huỷ</option>
+                </select>
+            </div>
+            <div class="form-group methodGrid mb-0">
+                <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Momo)" class="methodItem"
+                    [ngClass]="currentPurType==='Momo' ? ' img-purchase-selected' : '' "><img
+                        src="../../../../assets/images/momo.jpg" alt="" /></a>
+                <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Banking)"
+                    [ngClass]="currentPurType==='Banking' ? ' img-purchase-selected' :''" class="methodItem"><img
+                        src="../../../../assets/images/banking.jpg" alt="" /></a>
+                <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Cash)"
+                    [ngClass]="currentPurType==='Cash' ? ' img-purchase-selected' :''" class="methodItem"><img
+                        src="../../../../assets/images/cash.png" alt="" /></a>
+            </div>
+            <div class="row">
+                <div class="col-12 mx-auto text-center">
+                    <button type="button" (click)="purchaseConfirm()" class="btn main-btn w-100">Xác nhận</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="codeQR" class="popup-content">
+    <span>Quét mã QR để thanh toán </span>
+    <div>
+        <qr-code [value]="qrContent" [size]="290"></qr-code>
+    </div>
+    <div class="row">
+        <div class="col-12 mx-auto text-center">
+            <button type="button" id="submit-btn" onClick="qrDone()" class="btn main-btn w-100 mt-3">Xong</button>
+        </div>
+    </div>
+</div>

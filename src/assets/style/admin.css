@@ -55,7 +55,7 @@ font-style: italic;
 ul.paging {
     width: 100%;
     text-align: center;
-    margin-bottom: 2vh;
+    margin-bottom: 1vh;
 }
 ul.paging li{
     display: inline-block;
@@ -448,7 +448,7 @@ img.white-filter
     filter: brightness(3);
 }
 .order-list-top {
-    margin-bottom: 3vh;
+    margin-bottom: 1vh;
 }
 ul.order-content {
     /* height: 420px; */
@@ -1386,17 +1386,21 @@ input:checked + span.vatCustom.main-bg::before
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
 }
-.nameTable .tableLeft, .nameTable .tableRight {
-    width: 49%;
+.nameTable .tableLeft, .nameTable .tableRight, .nameTable .tableCenter{
+    width: 33%;
     display: inline-block;
-    padding: 7px 0 7px 20px;
+    padding: 7px 0 7px 7px;
     word-break: break-word;
     vertical-align: top;
 }
+.nameTable .tableHead .tableLeft 
+{
+    border-right: 2px solid;
+}
+
 .nameTable .tableHead .tableRight 
 {
     border-left: 2px solid;
-    padding: 10px 20px;
 }
 .tableBody.cusScroll {
     height: 400px;
