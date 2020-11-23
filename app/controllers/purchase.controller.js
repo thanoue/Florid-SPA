@@ -2,6 +2,7 @@ const db = require("../models");
 const Purchase = db.purchase;
 const PurchaseStatuses = require('../config/app.config').PurchaseStatus;
 const PurchaseMethods = require('../config/app.config').PurchaseMethods;
+const Order = db.order;
 
 exports.getByOrderId = (req, res) => {
 
@@ -42,7 +43,15 @@ exports.add = (req, res) => {
 
     Purchase.create(obj)
         .then(purchase => {
-            res.send({ purchase: purchase });
+            Order.update({
+                TotalPaidAmount: req.body.newtotalPaidAmount
+            }, {
+                where: {
+                    Id: req.body.orderId
+                }
+            }).then(() => {
+                res.send({ purchase: purchase });
+            })
         })
         .catch((err) => {
             console.log(err);

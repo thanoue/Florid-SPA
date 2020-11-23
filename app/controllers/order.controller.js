@@ -5,6 +5,7 @@ const OrderDetail = db.orderDetail;
 const Customer = db.customer;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
+const commonService = require('../services/common.service');
 const Purchase = db.purchase;
 
 exports.getByCustomer = (req, res) => {
@@ -259,19 +260,34 @@ exports.getByStates = (req, res) => {
 
 }
 
-exports.searchByPhoneNumberOrCustomerName = (req, res) => {
+exports.searchOrders = (req, res) => {
 
     let term = req.body.term;
+    let page = req.body.page;
+    let size = req.body.size;
+    let statuses = req.body.statuses;
 
-    var condition = term ? {
+    if (!page || page < 0)
+        page = 0;
+
+    if (!size || size < 0)
+        size = 20;
+
+    var orderDetailCond = {
+        State: {
+            [Op.in]: statuses
+        }
+    }
+
+    var cusCondition = term ? {
         [Op.or]: [
             {
-                CustomerName: {
+                FullName: {
                     [Op.like]: `%${term}%`
                 }
             },
             {
-                CustomerPhoneNumber: {
+                PhoneNumber: {
                     [Op.like]: `%${term}%`
                 }
             }
@@ -279,30 +295,53 @@ exports.searchByPhoneNumberOrCustomerName = (req, res) => {
 
     } : {};
 
-    Order.findAll({
+    const { limit, offset } = commonService.getPagination(page, size);
+
+    Order.count({
         include: [
             {
                 model: OrderDetail,
-                where: condition
+                where: orderDetailCond
             },
-            { model: Customer },
-            { model: Purchase }
-
-        ],
-        order: [
-            ['CreatedDate', 'DESC'],
+            {
+                model: Customer,
+                where: cusCondition
+            }
         ]
-    }).then(orders => {
-        res.send({
-            orders: orders
-        });
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving orders"
+    }).then(count => {
+
+        Order.findAndCountAll({
+            subQuery: false,
+            order: [['CreatedDate', 'DESC']],
+            include: [
+                { model: Purchase },
+                {
+                    model: OrderDetail,
+                    where: orderDetailCond
+                },
+                {
+                    model: Customer,
+                    where: cusCondition
+                }
+            ],
+            limit: limit,
+            offset: offset
+
+        }).then(newData => {
+
+            newData.count = count;
+
+            const newResponse = commonService.getPagingData(newData, page, limit);
+
+            res.send(newResponse);
+
+        }).catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving orders"
+            });
         });
     });
-
 }
 
 exports.updateOrderFields = (req, res) => {
