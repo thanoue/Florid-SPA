@@ -169,8 +169,6 @@ exports.getList = (req, res) => {
 
     const { page, size, term, memberShipType } = req.query;
 
-    console.info(page, size, term, memberShipType);
-
     var condition = term ? {
         [Op.or]: [
             {

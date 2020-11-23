@@ -112,8 +112,8 @@ module.exports = function (app) {
     )
     app.post(`${orderPrefix}updateFields`,
         [authJwt.verifyToken], orderController.updateOrderFields)
-    app.post(`${orderPrefix}searchByPhoneNumberOrCustomerName`,
-        [authJwt.verifyToken], orderController.searchByPhoneNumberOrCustomerName)
+    app.post(`${orderPrefix}searchOrders`,
+        [authJwt.verifyToken], orderController.searchOrders)
     app.post(`${orderPrefix}getByDayRange`,
         [authJwt.verifyToken, authJwt.isAdmin], orderController.getByDayRange)
     app.post(`${orderPrefix}addBulk`,
