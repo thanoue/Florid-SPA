@@ -144,6 +144,7 @@ export class SelectProductComponent extends BaseComponent {
   }
 
   setSelectedProduct(data: number) {
+
     this.selectedProduct = this.pagingProducts.filter(p => p.Id == data)[0];
 
     // if (this.selectedProduct.PriceList.length > 1) {

@@ -34,14 +34,15 @@ export class PurchaseService {
     });
   }
 
-  create(purchase: Purchase): Promise<any> {
+  create(purchase: Purchase, newtotalPaidAmount: number): Promise<any> {
     return this.httpService.post(API_END_POINT.addPurchase, {
       orderId: purchase.OrderId,
       amount: purchase.Amount,
       method: purchase.Method,
-      Status: purchase.Method
+      status: purchase.Status,
+      newtotalPaidAmount: newtotalPaidAmount
     }).then(data => {
-      return data;
+      return data.purchase;
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;

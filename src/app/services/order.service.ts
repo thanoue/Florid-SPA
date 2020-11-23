@@ -12,6 +12,7 @@ import { ExchangeService } from './exchange.service';
 import { SaleTotalModel } from '../models/view.models/sale.total.model';
 import { NgModelGroup } from '@angular/forms';
 import { Purchase } from '../models/view.models/purchase.entity';
+import { OrderDetailStates } from '../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -105,7 +106,7 @@ export class OrderService {
 
       orderVM.CustomerInfo.ReceiverInfos = [];
       orderVM.CustomerInfo.ReceiverInfos = [];
-      
+
     }
 
     order.orderDetails.forEach(orderDetail => {
@@ -293,28 +294,34 @@ export class OrderService {
     });
   }
 
-  getOrderViewModelsByStates(states: string[]): Promise<OrderViewModel[]> {
+  searchOrders(page: number, size: number, statues: OrderDetailStates[], term?: string): Promise<{
+    orders: OrderViewModel[],
+    totalItemCount: number,
+    totalPages: number
+  }> {
 
-    return this.httpService.post(API_END_POINT.getOrdersByStates, {
-      states: states
-    }).then(orders => {
+    return this.httpService.post(API_END_POINT.searchOrders, {
+      term: term,
+      page: page,
+      size: size,
+      statuses: statues
+    }).then(data => {
 
-      return this.getOrderVMsByRaw(orders.orders);
+      let res: {
+        orders: OrderViewModel[],
+        totalItemCount: number,
+        totalPages: number
+      } = {
+        totalItemCount: 0,
+        totalPages: 0,
+        orders: []
+      };
 
-    }).catch(err => {
-      this.httpService.handleError(err);
-      throw err;
-    });
+      res.totalItemCount = data.totalItemCount;
+      res.totalPages = data.totalPages;
+      res.orders = this.getOrderVMsByRaw(data.items);
 
-  }
-
-  searchByPhoneNumberOrCustomerName(term: string[]): Promise<OrderViewModel[]> {
-
-    return this.httpService.post(API_END_POINT.searchByPhoneNumberOrCustomerName, {
-      term: term
-    }).then(orders => {
-
-      return this.getOrderVMsByRaw(orders.orders);
+      return res;//this.getOrderVMsByRaw(orders.orders);
 
     }).catch(err => {
       this.httpService.handleError(err);

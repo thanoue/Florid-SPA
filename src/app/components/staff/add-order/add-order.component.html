@@ -87,7 +87,7 @@
             </p>
             <p class="totalExc">Đổi điểm: <span class="orderPrice">{{order.CustomerInfo.ScoreUsed}}</span></p>
         </div>
-        <a href="javascript:void(0)" style="margin-top:2vh;" type="button" onClick="purchaseDoing()"
+        <a href="javascript:void(0)" style="margin-top:2vh;" type="button" (click)="addPurchase()"
             class="btn main-btn w-100">
             Thanh toán</a>
 
@@ -101,7 +101,7 @@
             </div>
             <div class="col-8 pl-0">
                 <a href="javascript:void(0)" (click)="placeOrder(false)" type="submit"
-                    class="btn main-btn w-100">Xong</a>
+                    class="btn main-btn w-100">Lưu</a>
             </div>
         </div>
     </div>
@@ -177,11 +177,8 @@
                         src="../../../../assets/images/cash.png" alt="" /></a>
             </div>
             <div class="row">
-                <div class="col-6 mx-auto text-center">
+                <div class="col-12 mx-auto text-center">
                     <button type="button" (click)="purchaseConfirm()" class="btn main-btn w-100">Xác nhận</button>
-                </div>
-                <div class="col-6 mx-auto text-center">
-                    <button type="button" onClick="dismissPurchaseDialog()" class="btn main-btn w-100">Đóng</button>
                 </div>
             </div>
         </div>

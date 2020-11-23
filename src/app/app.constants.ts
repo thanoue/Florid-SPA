@@ -75,7 +75,7 @@ export const API_END_POINT = {
     getById: '/order/getById',
     updateOrderFields: '/order/updateFields',
     getCompletedOrderByDayRange: '/order/getByDayRange',
-    searchByPhoneNumberOrCustomerName: '/order/searchByPhoneNumberOrCustomerName',
+    searchOrders: '/order/searchOrders',
     addBulkOrder: '/order/addBulk',
 
     getAllDistricts: '/address/getAllDistricts',

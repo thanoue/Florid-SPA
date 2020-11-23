@@ -161,7 +161,7 @@ export class AddOrderComponent extends BaseComponent {
 
       this.openConfirm('Hoá đơn chưa được thanh toán, có muốn tiếp tục?', () => {
 
-        purchaseDoing();
+        this.addPurchase();
 
       }, () => {
 
@@ -173,6 +173,15 @@ export class AddOrderComponent extends BaseComponent {
       this.printConfirmation(isCompleting);
     }
 
+  }
+
+  addPurchase() {
+
+    this.currentPayAmount = this.totalBalance;
+    this.currentPurType = PurchaseMethods.Cash;
+    this.currentPurStatus = PurchaseStatus.Completed;
+
+    purchaseDoing();
   }
 
   printConfirmation(isCompleting: boolean) {
@@ -407,29 +416,27 @@ export class AddOrderComponent extends BaseComponent {
 
   selectPurType(purchaseType: PurchaseMethods) {
 
-    if (this.currentPayAmount <= 0) {
-      this.showError('Yêu cầu nhập số tiền trước');
-      return;
-    }
-
     this.currentPurType = purchaseType;
 
-    if (purchaseType == PurchaseMethods.Momo) {
+
+    if (purchaseType == PurchaseMethods.Momo && this.currentPayAmount > 0) {
+
+      this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
+
       openQR();
+
     }
 
   }
 
   purchaseConfirm() {
 
-    if (this.currentPayAmount > this.totalBalance) {
+    if (this.currentPayAmount > this.totalBalance || this.currentPayAmount <= 0) {
       this.showError('Số tiền không hợp lệ!');
       return;
     }
 
     let purchase = new Purchase();
-
-    this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
 
     purchase.OrderId = this.order.OrderId;
     purchase.Amount = +this.currentPayAmount;
@@ -440,8 +447,6 @@ export class AddOrderComponent extends BaseComponent {
 
     this.order.TotalPaidAmount += purchase.Amount;
 
-    console.log(this.order.TotalPaidAmount);
-
     this.currentPayAmount = 0;
 
     this.showSuccess('Đã thêm 1 thanh toán!');
@@ -449,12 +454,18 @@ export class AddOrderComponent extends BaseComponent {
     this.totalAmountCalculate(this.order.VATIncluded);
 
     if (this.totalBalance <= 0) {
+
       dismissPurchaseDialog();
+
+    } else {
+
+      this.currentPayAmount = this.totalBalance;
+      this.currentPurType = PurchaseMethods.Cash;
+      this.currentPurStatus = PurchaseStatus.Completed;
+
     }
 
   }
-
-
 
   totalAmountCalculate(isVATIncluded: boolean) {
 
@@ -658,8 +669,10 @@ export class AddOrderComponent extends BaseComponent {
 
   fastCompleteOrder() {
 
-    if (this.order.CustomerInfo.Id == 'KHACH_LE')
+    if (this.order.CustomerInfo.Id == 'KHACH_LE') {
+      this.OnBackNaviage();
       return;
+    }
 
     let newMemberInfo = new MembershipInfo();
 
@@ -668,8 +681,6 @@ export class AddOrderComponent extends BaseComponent {
     newMemberInfo.UsedScoreTotal = this.order.CustomerInfo.CustomerScoreUsedTotal + this.order.CustomerInfo.ScoreUsed;
 
     newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);
-
-    console.log(newMemberInfo);
 
     this.customerService.updateFields(this.order.CustomerInfo.Id, {
       UsedScoreTotal: newMemberInfo.UsedScoreTotal,
