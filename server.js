@@ -20,7 +20,7 @@ app.use(fileUpload({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/file', express.static('uploads'));
 app.use('/user/avt', express.static('uploads/userAvt'));
@@ -31,10 +31,10 @@ app.use('/ios/install', express.static('files/ios'))
 
 require('./app/routes/admin.routes')(app);
 
-// Catch all other routes and return the index file
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
+// // Catch all other routes and return the index file
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'dist/index.html'));
+// });
 
 const { user, role, category, customer } = require("./app/models/index");
 const db = require("./app/models/index");
