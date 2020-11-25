@@ -9,7 +9,7 @@ const http = require('http');
 const app = express();
 
 var corsOptions = {
-    origin: "http://localhost:4200"
+    origin: "https://floridstorage.web.app"
 };
 
 app.use(cors(corsOptions));
@@ -20,7 +20,7 @@ app.use(fileUpload({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, 'dist')));
+// app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/file', express.static('uploads'));
 app.use('/user/avt', express.static('uploads/userAvt'));
