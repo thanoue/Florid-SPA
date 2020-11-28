@@ -7,7 +7,6 @@ import { GlobalService } from './common/global.service';
 import { API_END_POINT } from '../app.constants';
 import { promise } from 'protractor';
 import { OrderViewModel, OrderCustomerInfoViewModel, OrderDetailViewModel } from '../models/view.models/order.model';
-import { or } from 'sequelize/types';
 import { ExchangeService } from './exchange.service';
 import { SaleTotalModel } from '../models/view.models/sale.total.model';
 import { NgModelGroup } from '@angular/forms';

@@ -8,7 +8,6 @@ import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { ORDER_DETAIL_STATES } from 'src/app/app.constants';
 import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
-import { or } from 'sequelize/types';
 import { PrintJobService } from 'src/app/services/print-job.service';
 
 

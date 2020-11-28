@@ -131,7 +131,7 @@ export class HttpService {
       .pipe(timeout(REQUEST_TIMEOUT));
 
     var promise = request.toPromise();
-
+ 
     return promise.then((res) => {
       if (loader) {
         this.globalService.stopLoading();

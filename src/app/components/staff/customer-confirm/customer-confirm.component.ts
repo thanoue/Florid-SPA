@@ -6,7 +6,6 @@ import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { StorageService } from 'src/app/services/storage.service';
 import { ResultImage, DeliveryImage } from 'src/app/models/entities/file.entity';
 import html2canvas from 'html2canvas';
-import { Role } from 'functions/src/helper/role';
 import { Router } from '@angular/router';
 import { Order } from 'src/app/models/entities/order.entity';
 import { OrderService } from 'src/app/services/order.service';
