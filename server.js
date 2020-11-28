@@ -8,8 +8,10 @@ const http = require('http');
 
 const app = express();
 
+const env = process.env.NODE_ENV || 'development';
+
 var corsOptions = {
-    origin: "https://floridstorage.web.app"
+    origin: env === 'development' ? "http://localhost:4200" : "https://floridstorage.web.app"
 };
 
 app.use(cors(corsOptions));
@@ -42,7 +44,6 @@ db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
     initial();
 });
-
 
 /**
  * Get port from environment and store in Express.
