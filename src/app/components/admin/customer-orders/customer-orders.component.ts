@@ -101,6 +101,7 @@ export class CustomerOrdersComponent extends BaseComponent {
       gainedScore: order.CustomerInfo.GainedScore,
       totalScore: order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
       customerName: order.CustomerInfo.Name,
+      customerId: order.CustomerInfo.Id,
       discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
       purchaseItems: purhases
     };
