@@ -6,12 +6,10 @@
                 <div class="item-detail-info">
                     <h5 class="item-code">{{orderDetail.OrderId}}_{{orderDetail.Index +1}}</h5>
                     <h5 class="item-code">{{orderDetail.ProductName}}</h5>
-                    <span
-                        class="prodPriceOld">{{orderDetail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <span class="prodPriceOld">{{orderDetail.OriginalPrice| myCurrPipe}}</span>
                     <span class="prodCharge">Phụ phí:
-                        {{orderDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                    <span
-                        class="prodPrice">{{orderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                        {{orderDetail.AdditionalFee| myCurrPipe}}</span>
+                    <span class="prodPrice">{{orderDetail.ModifiedPrice| myCurrPipe}}</span>
                 </div>
             </div>
             <div class="prodInfo cusScroll">
@@ -60,7 +58,7 @@
                 <div class="col-10 mx-auto text-center">
                     <button type="button" class="btn grey-btn w-100 mt-2" (click)="confirm()">Xong</button>
                 </div>
-            </div>  
+            </div>
         </div>
     </div>
 </div>

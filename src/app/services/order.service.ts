@@ -18,8 +18,6 @@ import { OrderDetailStates } from '../models/enums';
 })
 export class OrderService {
 
-
-
   constructor(private httpService: HttpService, private globalService: GlobalService) {
   }
 
@@ -132,6 +130,7 @@ export class OrderService {
       orderDetailVM.IsVATIncluded = orderDetail.IsVATIncluded;
       orderDetailVM.Description = orderDetail.Description;
       orderDetailVM.CustomerName = orderDetail.CustomerName;
+      orderDetailVM.IsFromHardCodeProduct = orderDetail.IsHardcodeProduct;
       orderDetailVM.CustomerPhoneNumber = orderDetail.CustomerPhoneNumber;
       orderDetailVM.HardcodeImageName = orderDetail.HardcodeImageName;
       orderDetailVM.PercentDiscount = orderDetail.PercentDiscount;
@@ -363,6 +362,22 @@ export class OrderService {
       this.httpService.handleError(err);
       throw err;
     });
+  }
+
+  updateOrderInfos(orderId: string, orderDetails: OrderDetail[], totalPaidAmount: number, customerId: string): Promise<any> {
+
+    return this.httpService.post(API_END_POINT.updateOrderInfos, {
+      orderDetails: orderDetails,
+      orderId: orderId,
+      totalPaidAmount: totalPaidAmount,
+      customerId: customerId
+    }).then(data => {
+      return data;
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+
   }
 
   addOrEditOrder(order: Order, isEdit: boolean): Promise<Order> {

@@ -13,6 +13,7 @@ export class PrintJob extends BaseEntity {
     memberDiscount: number;
     scoreUsed: number;
     gainedScore: number;
+    customerId: string;
     totalScore: number;
     customerName: string;
     discount: number;

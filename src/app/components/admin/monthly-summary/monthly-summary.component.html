@@ -43,7 +43,7 @@
                         </div>
                     </td>
                     <td>
-                        {{saleItem.CreatedDate | date: 'dd/MM/yyyy'}}
+                        {{saleItem.CreatedDate | myDatePipe}}
                     </td>
                     <td>
                         <a href="javascript:void(0)" class="tdName">{{saleItem.CustomerName}}</a>
@@ -51,19 +51,19 @@
                     <td>{{saleItem.CustomerPhoneNumber}}</td>
                     <td>{{saleItem.IsVATIncluded? 'Có VAT':''}}</td>
                     <td>
-                        {{saleItem.PriceTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{saleItem.PriceTotal| myCurrPipe}}
                     </td>
                     <td>
-                        {{saleItem.FeeTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{saleItem.FeeTotal| myCurrPipe}}
                     </td>
                     <td>
-                        {{saleItem.DiscountTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{saleItem.DiscountTotal| myCurrPipe}}
                     </td>
                     <td>
-                        {{saleItem.AmountTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{saleItem.AmountTotal| myCurrPipe}}
                     </td>
                     <td>
-                        {{saleItem.FinalTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{saleItem.FinalTotal| myCurrPipe}}
                     </td>
 
                 </tr>
@@ -78,19 +78,19 @@
                     <td></td>
                     <td></td>
                     <td style="border: 5px solid #1fe8cb;">
-                        {{priceTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{priceTotal| myCurrPipe}}
                     </td>
                     <td style="border: 5px solid #1fe8cb;">
-                        {{feeTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{feeTotal| myCurrPipe}}
                     </td>
                     <td style="border: 5px solid #1fe8cb;">
-                        {{discountTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{discountTotal| myCurrPipe}}
                     </td>
                     <td style="border: 5px solid #1fe8cb;">
-                        {{amountTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{amountTotal| myCurrPipe}}
                     </td>
                     <td style="border: 5px solid #1fe8cb;">
-                        {{finalTotal| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        {{finalTotal| myCurrPipe}}
                     </td>
                 </tr>
             </tbody>

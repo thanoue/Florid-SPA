@@ -209,7 +209,7 @@ function dismissPurchaseDialog() {
     });
 }
 
-function purchaseDoing() {
+function purchaseDoing(cancel) {
 
     appendInBody();
 
@@ -220,6 +220,34 @@ function purchaseDoing() {
         jQuery("#purchase-dialog").slideUp(250, function () {
             jQuery(".overlay-dark").remove();
             jQuery("#codeQR").slideUp(250);
+            if (cancel != undefined)
+                cancel();
+        });
+
+    });
+}
+
+function dissmissAddPurchaseDialog() {
+
+    jQuery("#addPurchase").slideUp(250, function () {
+
+        jQuery(".overlay-dark").remove();
+
+    });
+}
+
+function openAddPurchaseDialog() {
+
+    appendInBody();
+
+    jQuery('#addPurchase').slideDown(250);
+
+    jQuery(".overlay-dark").click(function () {
+
+        jQuery("#addPurchase").slideUp(250, function () {
+
+            jQuery(".overlay-dark").remove();
+
         });
 
     });
@@ -515,6 +543,27 @@ function getNumberValidateInput(callback, placeHolder, oldValue) {
 
 }
 
+function dismissFixPriceDialog() {
+
+    jQuery("#inputDialog").hide(250, function () {
+        jQuery(".overlay-dark").remove();
+    });
+
+}
+
+function openFixPriceDialog() {
+
+    appendInBody();
+
+    jQuery("#inputDialog").fadeIn(350);
+
+    jQuery(".overlay-dark").one('click', function () {
+        jQuery("#inputDialog").hide(250, function () {
+            jQuery(".overlay-dark").remove();
+        });
+    });
+}
+
 function getNumberInput(callback, placeHolder, oldValue) {
 
     var html = `<div id="inputDialog" class="popup-content dialog-popup"><div class="form-group">
@@ -643,7 +692,7 @@ function getShippingNoteDialog(btnTitle, callback) {
 
 function getTextInput(callback, placeHolder, oldValue) {
 
-    var html = `<div id="inputDialog" class="popup-content dialog-popup"><div class="form-group">
+    var html = `<div id="inputDialog-name" class="popup-content dialog-popup"><div class="form-group">
     <input type="text" name="" id="input-value" class="mainForm" value="${oldValue}" placeholder="${placeHolder}"></div>
     <div class="row"><div class="col-6"><button id="confirm-button" class=" main-btn btn">Xác nhận</button></div>
     <div class="col-6"><button  id="cancel-button" class=" main-bg border btn">Hủy</button></div></div></div>`;
@@ -651,31 +700,31 @@ function getTextInput(callback, placeHolder, oldValue) {
     appendInBody();
 
     jQuery("body").append(html);
-    jQuery("#inputDialog").fadeIn(350);
+    jQuery("#inputDialog-name").fadeIn(350);
 
     jQuery(".overlay-dark").one('click', function () {
-        jQuery("#inputDialog").hide(250, function () {
+        jQuery("#inputDialog-name").hide(250, function () {
             jQuery(".overlay-dark").remove();
             jQuery(this).remove();
         });
     });
 
-    jQuery('#inputDialog #cancel-button').one('click', function () {
-        jQuery("#inputDialog").hide(250, function () {
+    jQuery('#inputDialog-name #cancel-button').one('click', function () {
+        jQuery("#inputDialog-name").hide(250, function () {
             jQuery(".overlay-dark").remove();
             jQuery(this).remove();
         });
     });
 
-    jQuery('#inputDialog #confirm-button').one('click', function () {
+    jQuery('#inputDialog-name #confirm-button').one('click', function () {
 
-        var val = jQuery('#inputDialog #input-value').first().val();
+        var val = jQuery('#inputDialog-name #input-value').first().val();
 
         if (!val) {
             return;
         }
 
-        jQuery("#inputDialog").hide(250, function () {
+        jQuery("#inputDialog-name").hide(250, function () {
             jQuery(".overlay-dark").remove();
             jQuery(this).remove();
             callback(val);

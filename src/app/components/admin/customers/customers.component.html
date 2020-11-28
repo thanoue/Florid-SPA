@@ -97,7 +97,7 @@
                     <td *ngIf="customer.Customer.Birthday">{{customer.Customer.Birthday |  date: 'dd/MM'}}</td>
                     <td *ngIf="!customer.Customer.Birthday">--</td>
 
-                    <td>{{customer.Customer.MembershipInfo.AccumulatedAmount | currency:'VND':'symbol-narrow':'':'vi-VN' }}
+                    <td>{{customer.Customer.MembershipInfo.AccumulatedAmount | myCurrPipe }}
                     </td>
                     <td>
                         {{customer.Customer.MembershipInfo.MembershipType}}

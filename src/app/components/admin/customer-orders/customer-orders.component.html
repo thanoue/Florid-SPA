@@ -15,9 +15,9 @@
                         <tbody>
                             <tr class=" table-info">
                                 <th>#{{order.OrderId}}</th>
-                                <th>Ngày tạo: {{order.CreatedDate | date: 'dd/MM/yyyy'}}</th>
+                                <th>Ngày tạo: {{order.CreatedDate | myDatePipe}}</th>
                                 <th>Phần chưa thanh toán:
-                                    {{order.TotalAmount - order.TotalPaidAmount | currency:'VND':'symbol-narrow':'':'vi-VN' }}
+                                    {{order.TotalAmount - order.TotalPaidAmount | myCurrPipe }}
                                 </th>
                             </tr>
                             <tr>
@@ -26,10 +26,10 @@
                                     <div class="orderDetail">
                                         <ul>
                                             <li><label for="">Thành tiền:
-                                                </label><span>{{order.TotalAmount| currency:'VND':'symbol-narrow':'':'vi-VN' }}</span>
+                                                </label><span>{{order.TotalAmount| myCurrPipe }}</span>
                                             </li>
                                             <li><label for="">Số tiền đã thanh toán:
-                                                </label><span>{{order.TotalPaidAmount| currency:'VND':'symbol-narrow':'':'vi-VN' }}</span>
+                                                </label><span>{{order.TotalPaidAmount| myCurrPipe }}</span>
                                             </li>
                                             <li><label for="">Số điểm sử dụng:
                                                 </label><span>{{order.CustomerInfo.ScoreUsed}}</span>
@@ -71,13 +71,13 @@
                                                     <div class="itemBotInfo">
                                                         <label for="">Giá gốc: </label>
                                                         <span
-                                                            class="left-margin-10">{{orderDetail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span><br />
+                                                            class="left-margin-10">{{orderDetail.OriginalPrice| myCurrPipe}}</span><br />
                                                         <label for="">Giá mua: </label>
                                                         <span
-                                                            class="left-margin-10">{{orderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span><br />
+                                                            class="left-margin-10">{{orderDetail.ModifiedPrice| myCurrPipe}}</span><br />
                                                         <label for="">Phụ phí: </label>
                                                         <span
-                                                            class="left-margin-10">{{orderDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span><br />
+                                                            class="left-margin-10">{{orderDetail.AdditionalFee| myCurrPipe}}</span><br />
                                                         <label for="">Tình trạng: </label>
                                                         <span
                                                             class="left-margin-10">{{getState(orderDetail.State)}}</span>

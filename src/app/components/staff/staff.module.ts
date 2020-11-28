@@ -19,6 +19,7 @@ import { StaffMainLayoutComponent } from './staff-main-layout/staff-main-layout.
 import { ViewOrderDetailComponent } from './view-order-detail/view-order-detail.component';
 import { HomeComponent } from './home/home.component';
 import { ViewPurchaseComponent } from './view-purchase/view-purchase.component';
+import { AddPurchaseComponent } from './add-purchase/add-purchase.component';
 
 // routes
 export const ROUTES: Routes = [
@@ -31,6 +32,11 @@ export const ROUTES: Routes = [
                 path: '',
                 component: HomeComponent,
                 canActivate: [MobileHomeGuard]
+            },
+            {
+                path: 'add-purchse',
+                component: AddPurchaseComponent,
+                canActivate: [AccountMobileGuard]
             },
             {
                 path: 'final-confirm',
@@ -130,6 +136,7 @@ export const ROUTES: Routes = [
         ShipperMainComponent,
         FinalConfirmComponent,
         HomeComponent,
-        ViewPurchaseComponent]
+        ViewPurchaseComponent,
+        AddPurchaseComponent]
 })
 export class StaffModule { }

@@ -39,17 +39,14 @@
                                         <img src="{{makDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt=""
                                             class="item-detail-thumb">
                                         <div class="item-detail-info">
-                                            <span
-                                                class="prodPriceOld">{{makDetail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                                            <span
-                                                class="prodCharge">{{makDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                                            <span
-                                                class="prodPrice">{{makDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                                            <span class="prodPriceOld">{{makDetail.OriginalPrice| myCurrPipe}}</span>
+                                            <span class="prodCharge">{{makDetail.AdditionalFee| myCurrPipe}}</span>
+                                            <span class="prodPrice">{{makDetail.ModifiedPrice| myCurrPipe}}</span>
                                             <span class="item-address">{{makDetail.DeliveryInfo.Address}}</span>
-                                            <span class="item-time">{{makDetail.MakingRequestTime | date: 'hh:mm a'}}
+                                            <span class="item-time">{{makDetail.MakingRequestTime | myTimePipe}}
                                             </span>
                                             <span class="item-date">
-                                                {{makDetail.MakingRequestTime | date: 'dd/MM/yyyy'}}</span>
+                                                {{makDetail.MakingRequestTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>
@@ -89,17 +86,17 @@
                                             alt="" class="item-detail-thumb">
                                         <div class="item-detail-info">
                                             <span
-                                                class="prodPriceOld">{{shipDetail.ShippingOrderDetail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                                                class="prodPriceOld">{{shipDetail.ShippingOrderDetail.OriginalPrice| myCurrPipe}}</span>
                                             <span
-                                                class="prodCharge">{{shipDetail.ShippingOrderDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                                                class="prodCharge">{{shipDetail.ShippingOrderDetail.AdditionalFee| myCurrPipe}}</span>
                                             <span
-                                                class="prodPrice">{{shipDetail.ShippingOrderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                                                class="prodPrice">{{shipDetail.ShippingOrderDetail.ModifiedPrice| myCurrPipe}}</span>
                                             <span
                                                 class="item-address">{{shipDetail.ShippingOrderDetail.DeliveryInfo.Address}}</span>
                                             <span
-                                                class="item-time">{{shipDetail.ShippingOrderDetail.DeliveryInfo.DateTime | date: 'hh:mm a'}}</span>
+                                                class="item-time">{{shipDetail.ShippingOrderDetail.DeliveryInfo.DateTime | myTimePipe}}</span>
                                             <span
-                                                class="item-date">{{shipDetail.ShippingOrderDetail.DeliveryInfo.DateTime | date: 'dd/MM/yyyy'}}</span>
+                                                class="item-date">{{shipDetail.ShippingOrderDetail.DeliveryInfo.DateTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>

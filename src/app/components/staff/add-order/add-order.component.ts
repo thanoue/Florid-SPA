@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { Order, OrderDetail, CustomerReceiverDetail } from 'src/app/models/entities/order.entity';
-import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { PrintSaleItem, PrintJob, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
@@ -136,6 +135,105 @@ export class AddOrderComponent extends BaseComponent {
     this.placeOrder(true);
   }
 
+  editOrder() {
+
+    const orderDetails: OrderDetail[] = [];
+    const receiverInfos: CustomerReceiverDetail[] = [];
+
+    this.order.OrderDetails.forEach(detailVM => {
+
+      const detail = new OrderDetail();
+
+      detail.OrderId = this.globalOrder.OrderId;
+      detail.Id = detailVM.OrderDetailId;
+
+      detail.CustomerName = this.globalOrder.CustomerInfo.Name;
+      detail.CustomerPhoneNumber = this.globalOrder.CustomerInfo.PhoneNumber;
+
+      const receiverInfo = new CustomerReceiverDetail();
+
+      if (!detailVM.DeliveryInfo.Address) {
+        receiverInfo.Address = this.order.CustomerInfo.Address ? this.order.CustomerInfo.Address : '';
+      } else {
+        receiverInfo.Address = detailVM.DeliveryInfo.Address;
+      }
+
+      if (!detailVM.DeliveryInfo.FullName) {
+        receiverInfo.FullName = this.order.CustomerInfo.Name ? this.order.CustomerInfo.Name : '';
+      } else {
+        receiverInfo.FullName = detailVM.DeliveryInfo.FullName;
+      }
+
+      if (!detailVM.DeliveryInfo.PhoneNumber) {
+        receiverInfo.PhoneNumber = this.order.CustomerInfo.PhoneNumber ? this.order.CustomerInfo.PhoneNumber : '';
+      } else {
+        receiverInfo.PhoneNumber = detailVM.DeliveryInfo.PhoneNumber;
+      }
+
+      if (!detailVM.DeliveryInfo.DateTime) {
+        detail.DeliveryInfo.ReceivingTime = (new Date()).getTime();
+      } else {
+        detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
+      }
+
+      detail.DeliveryInfo.ReceiverDetail = receiverInfo;
+
+      orderDetails.push(detail);
+
+      let isAdd = true;
+
+      receiverInfos.forEach(info => {
+
+        if (ExchangeService.receiverInfoCompare(info, receiverInfo)) {
+          isAdd = false;
+          return;
+        }
+
+      });
+
+      if (isAdd) {
+        receiverInfos.push(receiverInfo);
+      }
+
+    });
+
+    this.globalOrder.CustomerInfo.ReceiverInfos.forEach(receiver => {
+
+      let isAdd = true;
+
+      receiverInfos.forEach(item => {
+
+        if (ExchangeService.receiverInfoCompare(receiver, item)) {
+          isAdd = false;
+          return;
+        }
+
+      });
+
+      if (isAdd) {
+        receiverInfos.push(receiver);
+      }
+
+    });
+
+    if (this.globalPurchases.length > 0) {
+      this.purchaseService.bulkCreate(this.globalPurchases, this.order.OrderId, () => {
+        this.globalPurchases = [];
+      });
+    }
+
+    this.orderService.updateOrderInfos(this.order.OrderId, orderDetails, this.order.TotalPaidAmount, this.order.CustomerInfo.Id)
+      .then(() => {
+        if (this.order.CustomerInfo.Id != 'KHACH_LE') {
+          this.customerService.updateReceiverList(this.order.CustomerInfo.Id, receiverInfos).then(isSuccess => {
+            this.OnBackNaviage();
+          });
+        } else {
+          this.OnBackNaviage();
+        }
+      });
+  }
+
   placeOrder(isCompleting: boolean) {
 
     this.currentPayAmount = this.order.TotalAmount - this.order.TotalPaidAmount;
@@ -144,7 +242,13 @@ export class AddOrderComponent extends BaseComponent {
 
       this.order.CustomerInfo = new OrderCustomerInfoViewModel();
       this.order.CustomerInfo.Id = 'KHACH_LE';
+      this.order.CustomerInfo.Name = 'Khách lẻ';
 
+    }
+
+    if (this.isEdittingOrder) {
+      this.editOrder();
+      return;
     }
 
     if (!this.order.OrderDetails || this.order.OrderDetails.length <= 0) {
@@ -188,7 +292,7 @@ export class AddOrderComponent extends BaseComponent {
 
     if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
 
-    this.order.CustomerInfo.GainedScore = ExchangeService.getGainedScore(this.order.TotalAmount);
+    this.order.CustomerInfo.GainedScore = ExchangeService.getScoreFromOrder(this.order);
 
     this.openConfirm('In hoá đơn?', () => {
 
@@ -250,6 +354,7 @@ export class AddOrderComponent extends BaseComponent {
       gainedScore: this.order.CustomerInfo.GainedScore,
       totalScore: this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + this.order.CustomerInfo.GainedScore,
       customerName: this.order.CustomerInfo.Name,
+      customerId: this.order.CustomerInfo.Id,
       discount: this.orderDiscount,
       purchaseItems: purhases
     };
@@ -388,21 +493,43 @@ export class AddOrderComponent extends BaseComponent {
         this.orderService.addOrderDetails(orderDetails)
           .then(() => {
 
-            this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
+            if (orderDB.CustomerId != 'KHACH_LE') {
+              this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
 
-              this.stopLoading();
+                this.stopLoading();
 
-              if (isSuccess) {
-                if (isCompleting) {
-                  this.fastCompleteOrder();
+                if (isSuccess) {
+
+                  if (isCompleting) {
+
+                    this.fastCompleteOrder();
+
+                  }
+                  else {
+
+                    this.OnBackNaviage();
+
+                  }
+
                 }
-                else {
-                  this.OnBackNaviage();
-                }
+
+              });
+
+            }
+            else {
+
+              if (isCompleting) {
+
+                this.fastCompleteOrder();
+
+              }
+              else {
+
+                this.OnBackNaviage();
+
               }
 
-            });
-
+            }
           })
           .catch(error => {
 
@@ -442,6 +569,7 @@ export class AddOrderComponent extends BaseComponent {
     purchase.Amount = +this.currentPayAmount;
     purchase.Method = this.currentPurType;
     purchase.Status = this.currentPurStatus;
+    purchase.AddingTime = new Date().getTime();
 
     this.globalPurchases.push(purchase);
 
@@ -501,9 +629,6 @@ export class AddOrderComponent extends BaseComponent {
         this.order.TotalAmount += ExchangeService.getFinalPrice(amount, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee, isWillApplyMemberDiscount);
       else
         this.order.TotalAmount += amount + detail.AdditionalFee;
-
-      console.log('item total:', amount + detail.AdditionalFee)
-
     });
 
     this.orderDiscount = 0;
@@ -546,6 +671,7 @@ export class AddOrderComponent extends BaseComponent {
 
   onPayChanged(value) {
     this.onPayFocus();
+    this.currentPayAmount = +this.currentPayAmount;
   }
 
   onPayFocus() {
@@ -677,7 +803,7 @@ export class AddOrderComponent extends BaseComponent {
     let newMemberInfo = new MembershipInfo();
 
     newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + this.order.TotalAmount;
-    newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + ExchangeService.getGainedScore(this.order.TotalAmount);
+    newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + ExchangeService.getScoreFromOrder(this.order);
     newMemberInfo.UsedScoreTotal = this.order.CustomerInfo.CustomerScoreUsedTotal + this.order.CustomerInfo.ScoreUsed;
 
     newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);
@@ -691,4 +817,5 @@ export class AddOrderComponent extends BaseComponent {
       this.OnBackNaviage();
     });
   }
+
 }

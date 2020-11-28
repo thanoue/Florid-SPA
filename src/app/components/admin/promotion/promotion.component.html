@@ -66,8 +66,8 @@
                     <td>{{promotion.Promotion.Name}}</td>
                     <td>{{getPromotionAmount(promotion.Promotion)}}
                     </td>
-                    <td>{{promotion.Promotion.StartTime | date :'dd/MM/yyyy'}} -
-                        {{promotion.Promotion.EndTime | date :'dd/MM/yyyy'}}</td>
+                    <td>{{promotion.Promotion.StartTime | myDatePipe}} -
+                        {{promotion.Promotion.EndTime | myDatePipe}}</td>
                     <td> <input type="checkbox" style="margin-top:20px;width: 20px;
                         height: 20px;
                         transform: translateY(-50%);" [checked]="promotion.Promotion.IsEnable"></td>

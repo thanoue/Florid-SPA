@@ -32,8 +32,6 @@ export class LoginComponent extends BaseComponent {
 
   protected Init() {
 
-    this.model.passcode = '123456';
-    this.model.userName = 'admin';
   }
 
   login(form: NgForm) {

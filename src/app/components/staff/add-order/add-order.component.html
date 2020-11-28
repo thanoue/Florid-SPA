@@ -24,18 +24,24 @@
             class="btn main-btn w-100">Áp dụng
             khuyến mãi</a>
 
-        <label class="title-field">Giảm giá phần trăm</label>
-        <div style="margin-bottom:1vh;" class="form-group orderInfo borderless-field">
-            <input type="number" name="PercentDiscount" id="PercentDiscount"
-                (input)="onDiscountChanged($event.target.value)" [(ngModel)]="order.PercentDiscount"
-                class="orderField small-height" placeholder="%">
-        </div>
+        <div class="row col-xs-12" style="height: 62px;padding-left:15px;padding-right:15px;">
+            <div class="addInfo" style="width:50%;padding-right: 5px;">
+                <label class="title-field">Giảm giá phần trăm</label>
+                <div style="margin-bottom:1vh;" class="form-group orderInfo borderless-field">
+                    <input type="number" name="PercentDiscount" id="PercentDiscount"
+                        (input)="onDiscountChanged($event.target.value)" [(ngModel)]="order.PercentDiscount"
+                        class="orderField small-height" placeholder="%">
+                </div>
+            </div>
+            <div class="addInfo" style="width:50%;padding-left: 5px;">
 
-        <label class="title-field">Giả giá tiền</label>
-        <div class="form-group orderInfo borderless-field">
-            <input type="tel" name="AmountDiscount" id="AmountDiscount" [(ngModel)]="order.AmountDiscount"
-                class="orderField small-height" placeholder="0" (input)="onAmountDiscountChanged($event.target.value)"
-                (focus)="onAcmountDiscountFocus()">
+                <label class="title-field">Giả giá tiền</label>
+                <div class="form-group orderInfo borderless-field">
+                    <input type="tel" name="AmountDiscount" id="AmountDiscount" [(ngModel)]="order.AmountDiscount"
+                        class="orderField small-height" placeholder="0"
+                        (input)="onAmountDiscountChanged($event.target.value)" (focus)="onAcmountDiscountFocus()">
+                </div>
+            </div>
         </div>
 
         <ul class=" orderDetail cusScroll">
@@ -46,16 +52,14 @@
                         class="item-detail-thumb">
                     <div class="item-detail-info">
                         <h5 class="item-code">{{orderDetail.ProductName}}</h5>
-                        <span
-                            class="prodPriceOld">{{orderDetail.OriginalPrice | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        <span class="prodPriceOld">{{orderDetail.OriginalPrice | myCurrPipe}}
                         </span>
-                        <span
-                            class="prodPrice">{{orderDetail.ModifiedPrice | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                        <span class="prodPrice">{{orderDetail.ModifiedPrice | myCurrPipe}}
                         </span>
                         <span class="prodCharge">Phụ phí:
-                            {{orderDetail.AdditionalFee | currency:'VND':'symbol-narrow':'':'vi-VN'}} </span>
+                            {{orderDetail.AdditionalFee | myCurrPipe}} </span>
                         <span class="prodCharge">Giảm giá:
-                            {{getDetailDiscount(orderDetail) | currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                            {{getDetailDiscount(orderDetail) | myCurrPipe}}</span>
                     </div>
                 </div>
 
@@ -77,12 +81,10 @@
             </div>
         </div>
         <div class="orderTotal">
-            <p class="totalOld">Còn lại: <span
-                    class="orderPrice">{{totalBalance| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+            <p class="totalOld">Còn lại: <span class="orderPrice">{{totalBalance| myCurrPipe}}
                 </span>
             </p>
-            <p class="totalNew">Thành tiền: <span
-                    class="orderPrice">{{order.TotalAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+            <p class="totalNew">Thành tiền: <span class="orderPrice">{{order.TotalAmount | myCurrPipe}}
                 </span>
             </p>
             <p class="totalExc">Đổi điểm: <span class="orderPrice">{{order.CustomerInfo.ScoreUsed}}</span></p>
@@ -133,7 +135,7 @@
             <p class="recentInfo-name">{{promotion.Name}}</p>
             <span style="width: 25%;" class="recentInfo-phone">{{getPromotionAmount(promotion)}}</span>
             <span style="width: 75%;"
-                class="recentInfo-date">{{promotion.StartTime | date: 'dd/MM/yyyy'}}-{{promotion.EndTime | date: 'dd/MM/yyyy'}}</span>
+                class="recentInfo-date">{{promotion.StartTime | myDatePipe}}-{{promotion.EndTime | myDatePipe}}</span>
         </li>
     </ul>
 </div>
@@ -142,11 +144,11 @@
         <div class="checkOut" style="margin-top: 0px;padding: 0px">
             <div class="checkOutTotal">
                 <h3>Tổng</h3>
-                <p>{{order.TotalAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}</p>
+                <p>{{order.TotalAmount | myCurrPipe}}</p>
             </div>
             <div class="checkOutLeft mb-2">
                 <h4>Số tiền còn lại</h4>
-                <p>{{totalBalance | currency:'VND':'symbol-narrow':'':'vi-VN'}}</p>
+                <p>{{totalBalance | myCurrPipe}}</p>
             </div>
             <div class="form-group">
                 <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentPayAmount">Số tiền thanh

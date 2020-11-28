@@ -15,6 +15,7 @@ export class PurchaseService {
   bulkCreate(purchases: Purchase[], orderId: string, callback: () => void): void {
 
     let addingPurchase = [];
+
     purchases.forEach(item => {
       if (!item.Id || item.Id == 0)
         addingPurchase.push(item);
@@ -34,13 +35,15 @@ export class PurchaseService {
     });
   }
 
-  create(purchase: Purchase, newtotalPaidAmount: number): Promise<any> {
+  createOrUpdate(purchase: Purchase, newtotalPaidAmount: number): Promise<any> {
     return this.httpService.post(API_END_POINT.addPurchase, {
       orderId: purchase.OrderId,
       amount: purchase.Amount,
       method: purchase.Method,
       status: purchase.Status,
-      newtotalPaidAmount: newtotalPaidAmount
+      newtotalPaidAmount: newtotalPaidAmount,
+      id: purchase.Id,
+      addingTime: purchase.AddingTime
     }).then(data => {
       return data.purchase;
     }).catch(err => {

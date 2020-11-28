@@ -10,12 +10,10 @@
                 <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt="" class="item-detail-thumb">
                 <div class="item-detail-info">
                     <h5 class="item-code">{{orderDetail.ProductName}}</h5>
-                    <span
-                        class="prodPriceOld">{{orderDetail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <span class="prodPriceOld">{{orderDetail.OriginalPrice| myCurrPipe}}</span>
                     <span class="prodCharge">Phụ phí:
-                        {{orderDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                    <span
-                        class="prodPrice">{{orderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                        {{orderDetail.AdditionalFee| myCurrPipe}}</span>
+                    <span class="prodPrice">{{orderDetail.ModifiedPrice| myCurrPipe}}</span>
                 </div>
             </div>
             <div class="prodInfo cusScroll">
@@ -23,13 +21,13 @@
                     <span class="itemlabel">Trạng thái:</span>
                     <span class="itemVal">{{state}}</span>
                 </div>
-                <div class="prodName infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
+                <div class="prodName infoGroup" *ngIf="CurrentUser.Role == 'Admin'  || CurrentUser.Role == 'Account'">
                     <span class="itemlabel">Tên KH</span>
-                    <span class="itemVal">{{orderDetail.CustomerName}}</span>
+                    <span class="itemVal">{{order.CustomerInfo.Name}}</span>
                 </div>
-                <div class="prodName infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
+                <div class="prodName infoGroup" *ngIf="CurrentUser.Role == 'Admin'  || CurrentUser.Role == 'Account'">
                     <span class="itemlabel">SDT KH</span>
-                    <span class="itemVal">{{orderDetail.CustomerPhoneNumber}}</span>
+                    <span class="itemVal">{{order.CustomerInfo.PhoneNumber}}</span>
                 </div>
                 <div class="prodName infoGroup" *ngIf="CurrentUser.Role != 'Florist'">
                     <span class="itemlabel">Tên người nhận:</span>
@@ -45,11 +43,11 @@
                 </div>
                 <div class="prodTime infoGroup">
                     <span class="itemlabel">Thời gian giao:</span>
-                    <span class="itemVal">{{orderDetail.DeliveryInfo.DateTime | date: 'hh:mm a dd/MM/yyyy'}}</span>
+                    <span class="itemVal">{{orderDetail.DeliveryInfo.DateTime | myDatePipe: 'HH:mm dd/MM/yyyy'}}</span>
                 </div>
                 <div class="prodMakingTime infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
                     <span class="itemlabel">Yêu cầu xong trước:</span>
-                    <span class="itemVal">{{orderDetail.MakingRequestTime | date: 'hh:mm a dd/MM/yyyy'}}</span>
+                    <span class="itemVal">{{orderDetail.MakingRequestTime | myDatePipe: 'HH:mm  dd/MM/yyyy'}}</span>
                 </div>
                 <div *ngIf="orderDetail.Description != ''" class="prodDesc infoGroup">
                     <span class="itemlabel">Mô tả KH:</span>

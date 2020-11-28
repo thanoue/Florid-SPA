@@ -13,9 +13,9 @@ import { ProductService } from 'src/app/services/product.service';
 import { promise } from 'protractor';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
 import { User } from 'src/app/models/entities/user.entity';
 import { UserService } from 'src/app/services/user.service';
+import { MyDatepipe } from 'src/app/pipes/date.pipe';
 
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
 declare function openColorBoard(): any;
@@ -86,7 +86,7 @@ export class OrdersManageComponent extends BaseComponent {
     protected productService: ProductService,
     private orderDetailService: OrderDetailService,
     protected http: HttpClient,
-    private datePipe: DatePipe,
+    private datePipe: MyDatepipe,
     private userService: UserService) {
 
     super();
@@ -199,6 +199,7 @@ export class OrdersManageComponent extends BaseComponent {
   }
 
   editOrder(orderId: string) {
+
     this.globalOrder = this.orders.filter(p => p.OrderId === orderId)[0];
 
     this.globalPurchases = this.globalOrder.PurchaseItems;
@@ -332,6 +333,7 @@ export class OrdersManageComponent extends BaseComponent {
 
         this.globalOrderDetail = orderDetail;
         this.globalOrder = selectedOrder;
+
         this.router.navigate(['staff/order-detail-view']);
 
         break;
@@ -464,6 +466,7 @@ export class OrdersManageComponent extends BaseComponent {
     menuOpen((index) => {
       switch ((+index)) {
         case 0:
+
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
@@ -657,7 +660,9 @@ export class OrdersManageComponent extends BaseComponent {
         case 1:
 
           this.globalOrderDetail = orderDetail;
+          this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
+
           break;
 
         case 2:
@@ -825,7 +830,7 @@ export class OrdersManageComponent extends BaseComponent {
       switch ((+index)) {
         case 0:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "hh:mm a dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd/MM/yyyy");
           this.selectMakingRequestTime = orderDetail.MakingRequestTime ? new Date(orderDetail.MakingRequestTime) : orderDetail.DeliveryInfo.DateTime;
           this.makingNote = orderDetail.MakingNote ? orderDetail.MakingNote : '';
 
@@ -834,7 +839,6 @@ export class OrdersManageComponent extends BaseComponent {
           }, () => {
 
             chooseFlorist((id) => {
-              console.log('selected: id', id);
               this.transferToFlorist(orderDetail, order, +id);
             });
 
@@ -845,6 +849,7 @@ export class OrdersManageComponent extends BaseComponent {
         case 1:
 
           this.globalOrderDetail = orderDetail;
+          this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
           break;
 

@@ -7,7 +7,7 @@ import { BaseComponent } from '../base.component';
 
 declare function openQR(): any;
 declare function moveCursor(id: string, pos: number);
-declare function purchaseDoing(): any;
+declare function purchaseDoing(cancel: () => void): any;
 declare function dismissPurchaseDialog(): any;
 
 @Component({
@@ -20,76 +20,92 @@ export class ViewPurchaseComponent extends BaseComponent {
   Title = 'Cập nhật thanh toán';
   purchaseItems: Purchase[];
   order: OrderViewModel;
-  currentPurType: PurchaseMethods;
   purchaseType = PurchaseMethods;
-  currentPurStatus: PurchaseStatus;
   protected IsDataLosingWarning = false;
   qrContent: string;
-  currentPayAmount: number;
   qrContentTemplate = "";
-  totalBalance = 0;
+  currTotalPaidAmount = 0;
+  currentPurchase: Purchase;
+
+  get totalBalance(): number {
+    return this.order ? this.order.TotalAmount - this.order.TotalPaidAmount : 0;
+  }
 
   constructor(private purchaseService: PurchaseService) {
     super();
     this.purchaseItems = [];
     this.order = this.globalOrder;
-    this.currentPurType = PurchaseMethods.Cash;
     this.qrContent = "";
-    this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+    this.currentPurchase = new Purchase();
   }
 
   protected Init() {
     this.purchaseItems = this.globalPurchases;
-
   }
 
   selectItem(purchase: Purchase) {
-    if (purchase.Status == PurchaseStatus.Waiting) {
-      this.openConfirm('Xác nhận đã nhận tiền?', () => {
 
-        this.purchaseService.updateStatus(purchase.Id, PurchaseStatus.Completed)
-          .then(data => {
-            purchase.Status = PurchaseStatus.Completed;
-          });
+    this.currTotalPaidAmount = this.order.TotalPaidAmount;
 
-      });
-    }
+    this.order.TotalPaidAmount -= purchase.Amount;
+
+    this.currentPurchase = new Purchase();
+    this.currentPurchase.Id = purchase.Id;
+
+    this.currentPurchase.Amount = purchase.Amount;
+    this.currentPurchase.Method = purchase.Method;
+    this.currentPurchase.Status = purchase.Status;
+
+    purchaseDoing(() => {
+
+      this.order.TotalPaidAmount = this.currTotalPaidAmount;
+
+    });
+
   }
 
   addPurchase() {
 
-    this.currentPayAmount = this.totalBalance;
-    this.currentPurType = PurchaseMethods.Cash;
-    this.currentPurStatus = PurchaseStatus.Completed;
+    this.currTotalPaidAmount = this.order.TotalPaidAmount;
 
-    purchaseDoing();
+    this.currentPurchase = new Purchase();
+    this.currentPurchase.Id = -1;
+
+    this.currentPurchase.Amount = this.totalBalance;
+    this.currentPurchase.Method = PurchaseMethods.Cash;
+    this.currentPurchase.Status = PurchaseStatus.Completed;
+
+    purchaseDoing(() => {
+
+    });
   }
 
   onPayChanged(value) {
     this.onPayFocus();
+    this.currentPurchase.Amount = + this.currentPurchase.Amount;
   }
 
   onPayFocus() {
 
-    if (!this.currentPayAmount) {
-      this.currentPayAmount = 0;
+    if (!this.currentPurchase.Amount) {
+      this.currentPurchase.Amount = 0;
     }
 
-    if (this.currentPayAmount < 1000) {
-      this.currentPayAmount *= 1000;
+    if (this.currentPurchase.Amount < 1000) {
+      this.currentPurchase.Amount *= 1000;
     }
 
-    var length = this.currentPayAmount.toString().length;
+    var length = this.currentPurchase.Amount.toString().length;
 
     setTimeout(() => {
-      moveCursor('currentPayAmount', length - 3);
+      moveCursor('Amount', length - 3);
     }, 10);
 
   }
 
   purchaseConfirm() {
 
-    if (this.currentPayAmount > this.totalBalance || this.currentPayAmount <= 0) {
+    if (this.currentPurchase.Amount > this.totalBalance || this.currentPurchase.Amount <= 0) {
       this.showError('Số tiền không hợp lệ!');
       return;
     }
@@ -97,31 +113,42 @@ export class ViewPurchaseComponent extends BaseComponent {
     let purchase = new Purchase();
 
     purchase.OrderId = this.order.OrderId;
-    purchase.Amount = +this.currentPayAmount;
-    purchase.Method = this.currentPurType;
-    purchase.Status = this.currentPurStatus;
+    purchase.Id = this.currentPurchase.Id;
+    purchase.Amount = +this.currentPurchase.Amount;
+    purchase.Method = this.currentPurchase.Method;
+    purchase.Status = this.currentPurchase.Status;
+    purchase.AddingTime = new Date().getTime();
 
     this.order.TotalPaidAmount += purchase.Amount;
 
-    this.purchaseService.create(purchase, this.order.TotalPaidAmount).then(item => {
+    this.purchaseService.createOrUpdate(purchase, this.order.TotalPaidAmount).then(item => {
 
-      this.globalPurchases.push(purchase);
+      if (purchase.Id > 0) {
 
-      this.currentPayAmount = 0;
+        let item = this.purchaseItems.filter(p => p.Id == purchase.Id)[0];
 
-      this.showSuccess('Đã thêm 1 thanh toán!');
+        item.OrderId = purchase.OrderId;
+        item.Id = purchase.Id;
+        item.Amount = +purchase.Amount;
+        item.Method = purchase.Method;
+        item.Status = purchase.Status;
 
-      this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
-
-      if (this.totalBalance <= 0) {
+        this.showSuccess('Đã cập nhật 1 thanh toán!');
 
         dismissPurchaseDialog();
 
       } else {
 
-        this.currentPayAmount = this.totalBalance;
-        this.currentPurType = PurchaseMethods.Cash;
-        this.currentPurStatus = PurchaseStatus.Completed;
+        this.globalPurchases.push(purchase);
+        this.showSuccess('Đã thêm 1 thanh toán!');
+
+        this.currentPurchase.Amount = 0;
+
+        if (this.totalBalance <= 0) {
+
+          dismissPurchaseDialog();
+
+        }
 
       }
 
@@ -131,11 +158,11 @@ export class ViewPurchaseComponent extends BaseComponent {
 
   selectPurType(purchaseType: PurchaseMethods) {
 
-    this.currentPurType = purchaseType;
+    this.currentPurchase.Method = purchaseType;
 
-    if (purchaseType == PurchaseMethods.Momo && this.currentPayAmount > 0) {
+    if (purchaseType == PurchaseMethods.Momo && this.currentPurchase.Amount > 0) {
 
-      this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
+      this.qrContent = this.qrContentTemplate + this.currentPurchase.Amount.toString();
 
       openQR();
 

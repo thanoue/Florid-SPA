@@ -6,8 +6,9 @@
                 <a href="javascript:void(0);" (click)="addOrder()" class="btn main-btn">Thêm đơn</a>
             </div>
             <div class="col-2 order-noti text-right">
-                <a href="./xac-nhan-don.html"><img src="../../../assets/images/noti.png" alt=""
-                        class="main-filter"><span class="noti-count">20</span></a>
+                <a routerLink="/staff/add-purchse"><img src="../../../assets/images/money.svg" alt=""
+                        class="main-filter">
+                    <!--<span class="noti-count">20</span>--></a>
             </div>
         </div>
     </div>
@@ -43,9 +44,9 @@
                             <h4 class="item-name" style="
                             font-size: 12px;
                             margin-top: 1px;">tel: {{order.CustomerInfo.PhoneNumber}}</h4>
-                            <span class="item-price">{{order.TotalAmount| currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                            <span class="item-price">{{order.TotalAmount| myCurrPipe}}
                             </span>
-                            <span class="item-date">{{order.CreatedDate | date: 'dd/MM/yyyy'}}</span>
+                            <span class="item-date">{{order.CreatedDate | myDatePipe}}</span>
                         </div>
                         <button data-toggle="collapse" [attr.data-target]="'#collapse' + orderIndex"
                             aria-expanded="false" [attr.aria-controls]="'collapse' + orderIndex"
@@ -65,12 +66,12 @@
                                     <div class="item-detail-info">
                                         <h5 class="item-code">{{orderDetail.ProductName}}</h5>
                                         <span class="item-quantity">Phụ phí:
-                                            {{orderDetail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                                            {{orderDetail.AdditionalFee| myCurrPipe}}</span>
                                         <span class="item-address">{{orderDetail.DeliveryInfo.Address}}</span>
                                         <span
-                                            class="item-time">{{orderDetail.DeliveryInfo.DateTime | date: 'hh:mm a'}}</span>
+                                            class="item-time">{{orderDetail.DeliveryInfo.DateTime | myTimePipe}}</span>
                                         <span
-                                            class="item-date">{{orderDetail.DeliveryInfo.DateTime  | date: 'dd/MM/yyyy'}}</span>
+                                            class="item-date">{{orderDetail.DeliveryInfo.DateTime  | myDatePipe}}</span>
                                     </div>
                                 </div>
                             </li>

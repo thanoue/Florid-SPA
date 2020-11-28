@@ -6,4 +6,5 @@ export class Purchase {
     OrderId: string;
     Status: PurchaseStatus;
     Method: PurchaseMethods;
+    AddingTime: number;
 }

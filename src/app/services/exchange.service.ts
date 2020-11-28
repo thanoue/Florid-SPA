@@ -1,6 +1,6 @@
 import { MembershipTypes, CusContactInfoTypes } from '../models/enums';
 import { Injectable } from '@angular/core';
-import { OrderDetailDeliveryInfo } from '../models/view.models/order.model';
+import { OrderDetailDeliveryInfo, OrderViewModel } from '../models/view.models/order.model';
 import { OrderReceiverDetail, CustomerReceiverDetail } from '../models/entities/order.entity';
 import { getTranslationDeclStmts } from '@angular/compiler/src/render3/view/template';
 import { float } from 'html2canvas/dist/types/css/property-descriptors/float';
@@ -101,6 +101,26 @@ export class ExchangeService {
 
     static getGainedScore(totalAmount: number): number {
         return totalAmount / 100000;
+    }
+
+    static getAmountFromScore(score: number): number {
+        return score * 100000;
+    }
+
+    static getScoreFromOrder(order: OrderViewModel) {
+
+        let amount = order.TotalAmount;
+
+        if (order.VATIncluded) {
+            amount = amount / 1.1;
+        }
+
+        order.OrderDetails.forEach(orderDetail => {
+            if (orderDetail.AdditionalFee)
+                amount = amount - orderDetail.AdditionalFee;
+        });
+
+        return amount / 100000;
     }
 
     static geExchangableAmount(gainedScore: number) {

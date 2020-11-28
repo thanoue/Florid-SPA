@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
-import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
+import { OrderDetailViewModel, OrderViewModel } from 'src/app/models/view.models/order.model';
 import { ORDER_DETAIL_STATES } from 'src/app/app.constants';
 import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { ODSeenUserInfo } from 'src/app/models/entities/order.entity';
@@ -22,16 +22,20 @@ export class ViewOrderDetailComponent extends BaseComponent {
   state: string;
   states = OrderDetailStates;
   canSeen = true;
+  order: OrderViewModel;
 
   constructor(private orderDetailService: OrderDetailService) {
     super();
+    console.log(this.globalOrder);
     this.orderDetail = new OrderDetailViewModel();
     this.orderDetail.SeenUsers = [];
+    this.order = new OrderViewModel();
   }
 
   protected Init() {
 
     this.orderDetail = this.globalOrderDetail;
+    this.order = this.globalOrder;
 
     this.state = ORDER_DETAIL_STATES.filter(p => p.State === this.orderDetail.State)[0].DisplayName;
 

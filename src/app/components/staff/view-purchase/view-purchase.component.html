@@ -21,12 +21,13 @@
             </div>
         </div>
         <div class="orderTotal">
-            <p class="totalOld">Còn lại: <span
-                    class="orderPrice">{{order.TotalAmount - order.TotalPaidAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+            <p class="totalOld">Mã đơn: <span class="orderPrice">{{order.OrderId}}
                 </span>
             </p>
-            <p class="totalNew">Thành tiền: <span
-                    class="orderPrice">{{order.TotalAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+            <p class="totalOld">Còn lại: <span class="orderPrice">{{totalBalance | myCurrPipe}}
+                </span>
+            </p>
+            <p class="totalNew">Thành tiền: <span class="orderPrice">{{order.TotalAmount | myCurrPipe}}
                 </span>
             </p>
         </div>
@@ -37,23 +38,22 @@
         <div class="checkOut" style="margin-top: 0px;padding: 0px">
             <div class="checkOutTotal">
                 <h3>Tổng</h3>
-                <p>{{order.TotalAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}</p>
+                <p>{{order.TotalAmount | myCurrPipe}}</p>
             </div>
             <div class="checkOutLeft mb-2">
                 <h4>Số tiền còn lại</h4>
-                <p>{{order.TotalAmount-order.TotalPaidAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}</p>
+                <p>{{totalBalance | myCurrPipe}}</p>
             </div>
             <div class="form-group">
                 <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentPayAmount">Số tiền thanh
                     toán</label>
-                <input type="tel" name="currentPayAmount" id="currentPayAmount"
-                    (input)="onPayChanged($event.target.value)" (focus)="onPayFocus()" [(ngModel)]="currentPayAmount"
-                    class="mainForm">
+                <input type="tel" name="Amount" id="Amount" (input)="onPayChanged($event.target.value)"
+                    (focus)="onPayFocus()" [(ngModel)]="currentPurchase.Amount" class="mainForm">
             </div>
             <div class=" form-group">
-                <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentPurStatus">Tình trạng thanh
+                <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Method">Tình trạng thanh
                     toán</label>
-                <select class="mainForm" id="currentPurStatus" name="currentPurStatus" [(ngModel)]="currentPurStatus">
+                <select class="mainForm" id="Status" name="Status" [(ngModel)]="currentPurchase.Status">
                     <option selected>Chọn...</option>
                     <option [ngValue]="'Waiting'">Đang đợi</option>
                     <option [ngValue]="'Completed'">Hoàn tất</option>
@@ -62,13 +62,13 @@
             </div>
             <div class="form-group methodGrid mb-0">
                 <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Momo)" class="methodItem"
-                    [ngClass]="currentPurType==='Momo' ? ' img-purchase-selected' : '' "><img
+                    [ngClass]="currentPurchase.Method==='Momo' ? ' img-purchase-selected' : '' "><img
                         src="../../../../assets/images/momo.jpg" alt="" /></a>
                 <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Banking)"
-                    [ngClass]="currentPurType==='Banking' ? ' img-purchase-selected' :''" class="methodItem"><img
-                        src="../../../../assets/images/banking.jpg" alt="" /></a>
+                    [ngClass]="currentPurchase.Method==='Banking' ? ' img-purchase-selected' :''"
+                    class="methodItem"><img src="../../../../assets/images/banking.jpg" alt="" /></a>
                 <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Cash)"
-                    [ngClass]="currentPurType==='Cash' ? ' img-purchase-selected' :''" class="methodItem"><img
+                    [ngClass]="currentPurchase.Method==='Cash' ? ' img-purchase-selected' :''" class="methodItem"><img
                         src="../../../../assets/images/cash.png" alt="" /></a>
             </div>
             <div class="row">

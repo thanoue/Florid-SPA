@@ -49,7 +49,7 @@
                             <tr>
                                 <td>{{customer.MembershipInfo.UsedScoreTotal}}</td>
                                 <td>{{customer.MembershipInfo.AvailableScore}}</td>
-                                <td>{{customer.MembershipInfo.AccumulatedAmount | currency:'VND':'symbol-narrow':'':'vi-VN'}}
+                                <td>{{customer.MembershipInfo.AccumulatedAmount | myCurrPipe}}
                                 </td>
                                 <td>{{getMemberShipName(customer.MembershipInfo.MembershipType)}}</td>
                             </tr>

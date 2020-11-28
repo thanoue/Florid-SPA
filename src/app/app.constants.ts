@@ -97,6 +97,7 @@ export const API_END_POINT = {
     deleteOrderDetailByOrderId: '/orderDetail/deleteOrderDetailByOrderId',
     getProcessingOrderDetails: '/orderDetail/getProcessingOrderDetails',
     getOrderDetailsByOrderId: '/orderDetail/getByOrderId',
+    updateOrderInfos: '/orderDetail/updateOrderInfos',
 
     updateDetailSeen: '/orderDetailSeener/updateDetailSeen',
     getODSeeners: '/orderDetailSeener/getODSeeners',
@@ -107,7 +108,7 @@ export const API_END_POINT = {
 
     addPurchase: '/purchase/add',
     updatePurchaseStatus: '/purchase/updateStatus',
-    bulkAddPurchase: '/purchase/bulkAdd'
+    bulkAddPurchase: '/purchase/bulkAdd',
 };
 
 export const IMAGE_FOLDER_PATHS = {

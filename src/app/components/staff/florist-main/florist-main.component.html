@@ -13,7 +13,8 @@
         <div class="tab-content order-list-bot" id="listContent">
             <div class="tab-pane fade show active" id="camhoa" role="tabpanel" aria-labelledby="nav1">
                 <ul class="order-content cusScroll">
-                    <div class="order-content-item product-item" *ngFor="let detail of waitingOrderDetails; let i = index">
+                    <div class="order-content-item product-item"
+                        *ngFor="let detail of waitingOrderDetails; let i = index">
                         <div class="item-top">
                             <span class="item-code">{{detail.OrderId}}_{{detail.Index +1}}</span>
                             <div class="item-info">
@@ -21,8 +22,7 @@
                                 <span
                                     class="item-quantity">{{detail.CustomerName}}-{{detail.CustomerPhoneNumber}}</span>
                             </div>
-                            <app-status-point [state]="detail.State" [id]="detail.OrderDetailId"
-                                [index]="i + 1">
+                            <app-status-point [state]="detail.State" [id]="detail.OrderDetailId" [index]="i + 1">
 
                             </app-status-point>
                         </div>
@@ -30,19 +30,15 @@
                             <ul class="order-product-list cusScroll">
                                 <li class="">
                                     <div class="item-detail" (click)="getMenu(detail)">
-                                        <img src="{{detail.ProductImageUrl |  ImgPipe : 'ProductImg' }}" alt="" class="item-detail-thumb">
+                                        <img src="{{detail.ProductImageUrl |  ImgPipe : 'ProductImg' }}" alt=""
+                                            class="item-detail-thumb">
                                         <div class="item-detail-info">
-                                            <span
-                                                class="prodPriceOld">{{detail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                                            <span
-                                                class="prodCharge">{{detail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                                            <span
-                                                class="prodPrice">{{detail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                                            <span class="prodPriceOld">{{detail.OriginalPrice| myCurrPipe}}</span>
+                                            <span class="prodCharge">{{detail.AdditionalFee| myCurrPipe}}</span>
+                                            <span class="prodPrice">{{detail.ModifiedPrice| myCurrPipe}}</span>
                                             <span class="item-address">{{detail.DeliveryInfo.Address}}</span>
-                                            <span
-                                                class="item-time">{{detail.DeliveryInfo.DateTime | date: 'hh:mm a '}}</span>
-                                            <span
-                                                class="item-date">{{detail.DeliveryInfo.DateTime | date: 'dd/MM/yyyy'}}</span>
+                                            <span class="item-time">{{detail.MakingRequestTime | myTimePipe}}</span>
+                                            <span class="item-date">{{detail.MakingRequestTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>
@@ -54,7 +50,8 @@
             </div>
             <div class="tab-pane fade" id="giaohoa" role="tabpanel" aria-labelledby="nav2">
                 <ul class="order-content cusScroll">
-                    <div class="order-content-item product-item" *ngFor="let detail of makingOrderDetails; let i = index">
+                    <div class="order-content-item product-item"
+                        *ngFor="let detail of makingOrderDetails; let i = index">
                         <div class="item-top">
                             <span class="item-code">{{detail.OrderId}}_{{detail.Index +1}}</span>
                             <div class="item-info">
@@ -62,8 +59,7 @@
                                 <span
                                     class="item-quantity">{{detail.CustomerName}}-{{detail.CustomerPhoneNumber}}</span>
                             </div>
-                            <app-status-point [state]="detail.State" [id]="detail.OrderDetailId"
-                                [index]="i +1">
+                            <app-status-point [state]="detail.State" [id]="detail.OrderDetailId" [index]="i +1">
 
                             </app-status-point>
                         </div>
@@ -71,19 +67,15 @@
                             <ul class="order-product-list cusScroll">
                                 <li class="">
                                     <div class="item-detail" (click)="getMenu(detail)">
-                                        <img src="{{detail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt="" class="item-detail-thumb">
+                                        <img src="{{detail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt=""
+                                            class="item-detail-thumb">
                                         <div class="item-detail-info">
-                                            <span
-                                                class="prodPriceOld">{{detail.OriginalPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                                            <span
-                                                class="prodCharge">{{detail.AdditionalFee| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
-                                            <span
-                                                class="prodPrice">{{detail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                                            <span class="prodPriceOld">{{detail.OriginalPrice| myCurrPipe}}</span>
+                                            <span class="prodCharge">{{detail.AdditionalFee| myCurrPipe}}</span>
+                                            <span class="prodPrice">{{detail.ModifiedPrice| myCurrPipe}}</span>
                                             <span class="item-address">{{detail.DeliveryInfo.Address}}</span>
-                                            <span
-                                                class="item-time">{{detail.MakingRequestTime | date: 'hh:mm a '}}</span>
-                                            <span
-                                                class="item-date">{{detail.MakingRequestTime | date: 'dd/MM/yyyy'}}</span>
+                                            <span class="item-time">{{detail.MakingRequestTime | myTimePipe}}</span>
+                                            <span class="item-date">{{detail.MakingRequestTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>

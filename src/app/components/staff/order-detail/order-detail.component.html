@@ -8,9 +8,9 @@
                         class="close-img">
                 </div>
                 <div class="prodContent">
-                    <h5 class="prodCode" (click)="productNameChangeRequest()">{{globalOrderDetail.ProductName}}</h5>
-                    <span (click)="insertModifiedValue()"
-                        class="prodPrice">{{globalOrderDetail.ModifiedPrice| currency:'VND':'symbol-narrow':'':'vi-VN'}}</span>
+                    <h5 class="prodCode">{{globalOrderDetail.ProductName}}
+                    </h5>
+                    <span class="prodPrice">{{globalOrderDetail.ModifiedPrice| myCurrPipe}}</span>
                     <div class="prodQuantity"><input type="number" readonly [(ngModel)]="globalOrderDetail.Quantity"
                             name="Quantity" id="Quantity" step="1" min="1">
                     </div>
@@ -19,28 +19,49 @@
                     <i class="fa fa-search main-bg"></i>
                 </div>
             </div>
+            <div class="row col-xs-12" style="margin-bottom: 10px;padding-left:15px;padding-right:15px;">
+                <div class="addInfo" style="width:50%;padding-right: 5px;">
+                    <a class=" btn main-btn" (click)="productNameChangeRequest()" href="javascript:void(0);">Cập nhật
+                        Tên</a>
+                </div>
+                <div class="addInfo" style="width:50%;padding-left: 5px;">
+                    <a class="btn main-btn" (click)="insertModifiedValue()" href="javascript:void(0);">Cập nhật giá</a>
+                </div>
+            </div>
             <div class="form-group addInfo">
                 <a class="btn main-btn" routerLink="/staff/select-receiver">Thông tin người nhận</a>
             </div>
             <label class="title-field">Phụ phí</label>
             <div class="form-group orderInfo">
                 <input type="text" name="AdditionalFee" id="AdditionalFee" class="orderField"
-                    [(ngModel)]="globalOrderDetail.AdditionalFee" (input)="onAddFeeChanged($event.target.value)" (focus)="onAddFeeFocus()" placeholder="Phụ phí (k)...">
+                    [(ngModel)]="globalOrderDetail.AdditionalFee" (input)="onAddFeeChanged($event.target.value)"
+                    (focus)="onAddFeeFocus()" placeholder="Phụ phí (k)...">
             </div>
 
             <a href="javascript:void(0)" onclick="openCustMenu()" style="margin-bottom:1vh;font-size: 16px;"
                 type="button" class="btn main-btn w-100">Áp dụng
                 khuyến mãi</a>
-            <label class="title-field">Giảm giá phần trăm </label>
-            <div class="form-group orderInfo">
-                <input type="number" name="PercentDiscount" id="PercentDiscount" class="orderField"
-                    [(ngModel)]="globalOrderDetail.PercentDiscount" placeholder="%">
+
+            <div class="row col-xs-12" style="padding-left:15px;padding-right:15px;">
+
+                <div class="addInfo" style="width:50%;padding-right: 5px;">
+                    <label class="title-field">Giảm giá phần trăm </label>
+                    <div class="form-group orderInfo">
+                        <input type="number" name="PercentDiscount" id="PercentDiscount" class="orderField"
+                            [(ngModel)]="globalOrderDetail.PercentDiscount" placeholder="%">
+                    </div>
+                </div>
+
+                <div class="addInfo" style="width:50%;padding-left: 5px;">
+                    <label class="title-field">Giảm giá tiền</label>
+                    <div class="form-group orderInfo">
+                        <input type="tel" name="AmountDiscount" id="AmountDiscount" class="orderField"
+                            [(ngModel)]="globalOrderDetail.AmountDiscount" placeholder="0"
+                            (input)="onAmountDiscountChanged($event.target.value)" (focus)="onAcmountDiscountFocus()">
+                    </div>
+                </div>
             </div>
-            <label class="title-field">Giảm giá tiền</label>
-            <div class="form-group orderInfo">
-                <input type="tel" name="AmountDiscount" id="AmountDiscount" class="orderField"
-                    [(ngModel)]="globalOrderDetail.AmountDiscount" placeholder="0" (input)="onAmountDiscountChanged($event.target.value)" (focus)="onAcmountDiscountFocus()">
-            </div>
+
             <label class="title-field">Mục đích mua hàng</label>
             <div class="form-group orderInfo">
                 <input type="text" name="PurposeOf" id="PurposeOf" class="orderField"
@@ -66,7 +87,20 @@
             <p class="recentInfo-name">{{promotion.Name}}</p>
             <span style="width: 25%;" class="recentInfo-phone">{{getPromotionAmount(promotion)}}</span>
             <span style="width: 75%;"
-                class="recentInfo-date">{{promotion.StartTime | date: 'dd/MM/yyyy'}}-{{promotion.EndTime | date: 'dd/MM/yyyy'}}</span>
+                class="recentInfo-date">{{promotion.StartTime | myDatePipe}}-{{promotion.EndTime | myDatePipe}}</span>
         </li>
     </ul>
+</div>
+
+<div id="inputDialog" class="popup-content dialog-popup">
+    <div class="form-group">
+        <input type="tel" name="newPrice" [(ngModel)]="newPrice" (input)="onNewPriceChanged($event.target.value)"
+            (focus)="onNewPriceFocus()" id="NewPrice" class="mainForm" placeholder="cập nhật giá tiền...">
+    </div>
+    <div class="row">
+        <div class="col-6"><button id="confirm-button" (click)="submitPrice()" class=" main-btn btn">Xác nhận</button>
+        </div>
+        <div class="col-6"><button id="cancel-button" onClick=dismissFixPriceDialog()
+                class=" main-bg border btn">Hủy</button></div>
+    </div>
 </div>

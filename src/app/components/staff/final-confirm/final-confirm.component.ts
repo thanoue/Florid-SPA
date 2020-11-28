@@ -12,6 +12,7 @@ import { switchMapTo } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IMAGE_FOLDER_PATHS } from 'src/app/app.constants';
 import { Router } from '@angular/router';
+import { OrderService } from 'src/app/services/order.service';
 
 declare function shareImageCusWithData(img: string, contactInfo: string): any;
 declare function deleteTempImage(): any;
@@ -31,7 +32,6 @@ export class FinalConfirmComponent extends BaseComponent {
   protected Init() {
 
     this.orderDetail = this.globalOrderDetail;
-    console.log(this.orderDetail);
 
     this.customerService.getById(this.globalOrder.CustomerInfo.Id).then(customer => {
       this.customer = customer;
@@ -39,7 +39,7 @@ export class FinalConfirmComponent extends BaseComponent {
 
   }
 
-  constructor(private router: Router, private orderDetailService: OrderDetailService, private storageService: StorageService, private customerService: CustomerService) {
+  constructor(private router: Router, private orderService: OrderService, private orderDetailService: OrderDetailService, private storageService: StorageService, private customerService: CustomerService) {
     super();
   }
 
@@ -70,22 +70,15 @@ export class FinalConfirmComponent extends BaseComponent {
 
         } else {
 
-          let totalAmount = this.globalOrder.TotalAmount;
-
-          orderDetails.forEach(detail => {
-            if (detail.State == OrderDetailStates.Canceled) {
-              totalAmount -= (detail.ModifiedPrice + detail.AdditionalFee);
-            }
-          });
-
           let newMemberInfo = new MembershipInfo();
-          newMemberInfo.AccumulatedAmount = this.customer.MembershipInfo.AccumulatedAmount + totalAmount;
-          newMemberInfo.AvailableScore = this.customer.MembershipInfo.AvailableScore - this.globalOrder.CustomerInfo.ScoreUsed + ExchangeService.getGainedScore(totalAmount);
+
+          let gainedScore = ExchangeService.getScoreFromOrder(this.globalOrder);
+
+          newMemberInfo.AccumulatedAmount = this.customer.MembershipInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);
+          newMemberInfo.AvailableScore = this.customer.MembershipInfo.AvailableScore - this.globalOrder.CustomerInfo.ScoreUsed + gainedScore;
           newMemberInfo.UsedScoreTotal = this.customer.MembershipInfo.UsedScoreTotal + this.globalOrder.CustomerInfo.ScoreUsed;
 
           newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);
-
-          console.log(newMemberInfo);
 
           this.customerService.updateFields(this.customer.Id, {
             UsedScoreTotal: newMemberInfo.UsedScoreTotal,

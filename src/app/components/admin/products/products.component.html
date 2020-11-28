@@ -81,7 +81,7 @@
                         <a href="javascript:void(0)" class="tdName"
                             onclick="showProductEdit(event)">{{product.Product.Name}}</a>
                     </td>
-                    <td>{{product.Product.Price| currency:'VND':'symbol-narrow':'':'vi-VN'}}</td>
+                    <td>{{product.Product.Price| myCurrPipe}}</td>
                     <td>
                         <span *ngFor="let category of product.Categories"
                             class="badge badge-pill badge-warning d-inline-block p-1 mb-1">{{category.Name}}</span>

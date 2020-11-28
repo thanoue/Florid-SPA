@@ -1,0 +1,97 @@
+<div class="page-content" id="customerInfo">
+    <div class="container">
+        <div class="row checkTop search">
+            <div class="col-12 mx-auto text-center">
+                <button type="button" (click)="addPurchase()" class="btn main-btn w-100">Thêm thanh toán</button>
+            </div>
+        </div>
+        <div class="nameTable">
+            <div class="tableHead">
+                <div class="tableLeft small-width">Hình thức</div>
+                <div class="tableCenter">Số tiền</div>
+                <div class="tableRight large-width">Thời gian</div>
+            </div>
+            <div class="tableBody cusScroll" id="customer-list">
+                <div class="tableRow main-bg customer-item" *ngFor="let purchaseItem of purchases;let i = index"
+                    (click)="selectItem(purchaseItem,i)">
+                    <div class="tableLeft small-width">{{purchaseItem.Method}}</div>
+                    <div class="tableCenter">{{purchaseItem.Amount| myCurrPipe}}</div>
+                    <div class="tableRight  large-width">{{purchaseItem.AddingTime | myDatePipe: 'HH:mm dd/MM/yyyy' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row checkTop search">
+            <div class="col-12 mx-auto text-center">
+                <button type="button" (click)="saveChanges()" class="btn main-btn w-100">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="addPurchase" class="popup-content">
+
+    <form #form="ngForm" (submit)="purchaseSaving(form)" autocomplete="on" class="addInfoForm">
+
+        <div class="form-group">
+
+            <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Amount">Số tiền</label>
+
+            <input type="tel" name="Amount" (input)="onAmountChanged($event.target.value)" (focus)="onAmountFocus()"
+                [(ngModel)]="currPurchase.Amount" id="Amount" required minlength="3" class="mainForm"
+                placeholder="Sô tiền..." #Amount="ngModel">
+
+            <div *ngIf="Amount.invalid && (Amount.dirty || Amount.touched)" class="alert alert-danger">
+
+                <div *ngIf="Amount.errors.required">
+                    Số tiền là bắt buộc
+                </div>
+                <div *ngIf="Amount.errors.minlength">
+                    Số tiền tối thiểu 3 ký tự
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Method">Hình thức thanh
+                toán</label>
+            <select class="mainForm" id="Method" name="Method" [(ngModel)]="currPurchase.Method">
+                <option selected>Chọn...</option>
+                <option [ngValue]="purchaseMethod.Cash">Tiền mặt</option>
+                <option [ngValue]="purchaseMethod.Banking">Chuyển khoản</option>
+                <option [ngValue]="purchaseMethod.Momo">Ví Momo</option>
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Status">Tình trạng thanh
+                toán</label>
+            <select class="mainForm" id="Status" name="Status" [(ngModel)]="currPurchase.Status">
+                <option selected>Chọn...</option>
+                <option [ngValue]="purchaseStatus.Waiting">Đang đợi</option>
+                <option [ngValue]="purchaseStatus.Completed">Hoàn tất</option>
+                <option [ngValue]="purchaseStatus.SentBack">Đã hoàn tiền</option>
+                <option [ngValue]="purchaseStatus.Canceled">Đã Huỷ</option>
+            </select>
+
+        </div>
+
+        <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentAddingTime">Thời gian</label>
+        <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="currentAddingTime" name="currentAddingTime"
+            class="mainForm">
+        <owl-date-time [stepMinute]="5" #dt1></owl-date-time>
+
+        <div class="row">
+            <div class="col-6 mx-auto text-center">
+                <button type="button" id="cancel-button" onClick=dissmissAddPurchaseDialog()
+                    class="btn grey-btn w-100 mt-3">Hủy</button>
+            </div>
+            <div class="col-6 mx-auto text-center">
+                <button type="submit" class="btn main-btn w-100 mt-3 btn-success">Lưu</button>
+            </div>
+        </div>
+    </form>
+</div>

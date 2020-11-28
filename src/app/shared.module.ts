@@ -1,5 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { Injectable, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { MobileSearchBoxComponent } from './controls/mobile-search-box/mobile-se
 import { PageSegmentComponent } from './controls/page-segment/page-segment.component';
 import { SearchBoxComponent } from './controls/search-box/search-box.component';
 import { StatusPointComponent } from './controls/status-point/status-point.component';
+import { MyCurrPipe, MyDatepipe, MyTimepipe } from './pipes/date.pipe';
 import { ImgPipe } from './pipes/img.pipe';
 
 // here is the default text string
@@ -103,8 +104,11 @@ export class DefaultIntl extends OwlDateTimeIntl {
         SearchBoxComponent,
         MobileSearchBoxComponent,
         ImgPipe,
+        MyDatepipe,
+        MyTimepipe,
         PageSegmentComponent,
-        StatusPointComponent
+        StatusPointComponent,
+        MyCurrPipe
     ],
     exports: [
         CommonModule,
@@ -120,14 +124,24 @@ export class DefaultIntl extends OwlDateTimeIntl {
         DragDropModule,
         SearchBoxComponent,
         MobileSearchBoxComponent,
+        DatePipe,
+        CurrencyPipe,
         ImgPipe,
+        MyDatepipe,
+        MyTimepipe,
         PageSegmentComponent,
         StatusPointComponent,
+        MyCurrPipe
     ],
     providers: [
         { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi' },
         { provide: OwlDateTimeIntl, useClass: DefaultIntl },
-        DatePipe
+        DatePipe,
+        CurrencyPipe,
+        MyDatepipe,
+        MyTimepipe,
+        MyCurrPipe,
+        ImgPipe
     ],
 })
 export class SharedModule { }
