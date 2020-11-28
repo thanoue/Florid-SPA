@@ -21,7 +21,7 @@ export const ROUTES: Routes = [
   { path: 'admin', loadChildren: () => import('./components/admin/admin.module').then(m => m.AdminModule) },
 
   { path: '404', component: NotFoundComponent },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: 'staff' },
 ];
 
 

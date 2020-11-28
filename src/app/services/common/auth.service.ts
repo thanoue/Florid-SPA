@@ -36,7 +36,7 @@ export class AuthService {
         LocalService.clear();
 
         this.globalService.stopLoading();
-        
+
         signedOutCallback(true);
 
       })
@@ -51,43 +51,49 @@ export class AuthService {
 
   login(model: LoginModel, loginCallback: (isSuccess: boolean) => void) {
 
-    try {
-      this.httpService.post(API_END_POINT.login, {
-        loginName: model.userName,
-        password: model.passcode
-      }, true)
-        .then(result => {
+    this.globalService.startLoading();
 
-          LocalService.clear();
+    this.httpService.post(API_END_POINT.login, {
+      loginName: model.userName,
+      password: model.passcode
+    }, false)
+      .then(result => {
 
-          LocalService.setUserEmail(result.email);
-          LocalService.setApiAccessToken(result.accessToken);
-          LocalService.setUserAvtUrl(result.avtUrl);
-          LocalService.setPhoneNumber(result.phoneNumber);
-          LocalService.setIsPrinter(result.isPrinter);
-          LocalService.setRole(result.roles[0]);
-          LocalService.setUserName(result.fullName);
-          LocalService.setUserId(result.id);
-
-          this.realTimeService.connect(result.id, result.isPrinter, () => {
-            this.ngZone.run(() => {
-              this.globalService.stopLoading();
-              loginCallback(true);
-            });
-          });
-        })
-        .catch(err => {
-          this.globalService.stopLoading();
-          this.globalService.showError(err.error.message);
+        if (!result) {
+          loginCallback(false);
           return;
+        }
+
+        LocalService.clear();
+
+        LocalService.setUserEmail(result.email);
+        LocalService.setApiAccessToken(result.accessToken);
+        LocalService.setUserAvtUrl(result.avtUrl);
+        LocalService.setPhoneNumber(result.phoneNumber);
+        LocalService.setIsPrinter(result.isPrinter);
+        LocalService.setRole(result.roles[0]);
+        LocalService.setUserName(result.fullName);
+        LocalService.setUserId(result.id);
+
+        this.realTimeService.connect(result.id, result.isPrinter, () => {
+          this.ngZone.run(() => {
+            this.globalService.stopLoading();
+            loginCallback(true);
+          });
         });
-    }
-    catch (exception) {
-      console.log(exception);
-      this.globalService.stopLoading();
-      loginCallback(false);
-      return;
-    }
+
+      })
+      .catch(err => {
+
+        this.httpService.handleError(err);
+
+        loginCallback(false);
+
+        console.warn(err);
+
+        return;
+
+      });
 
   }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "florid",
+  "name": "florid-app",
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "heroku-postbuild": "ng build  --prod",
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "ng build --prod && firebase deploy --only hosting"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +21,7 @@
     "@angular/compiler": "~9.0.0",
     "@angular/compiler-cli": "~9.0.0",
     "@angular/core": "~9.0.0",
+    "@angular/fire": "^6.1.2",
     "@angular/forms": "~9.0.0",
     "@angular/localize": "^9.0.6",
     "@angular/platform-browser": "~9.0.0",
@@ -53,7 +55,8 @@
     "tslib": "^1.10.0",
     "typescript": "~3.7.5",
     "xlsx": "^0.16.2",
-    "zone.js": "~0.10.2"
+    "zone.js": "~0.10.2",
+    "firebase": "^7.0.0 || ^8.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1000.4",
@@ -75,7 +78,13 @@
     "protractor": "~5.4.3",
     "ts-node": "~8.3.0",
     "tslint": "~5.18.0",
-    "typescript": "~3.7.5"
+    "typescript": "~3.7.5",
+    "@angular-devkit/architect": ">= 0.900 < 0.1200",
+    "firebase-tools": "^8.0.0",
+    "fuzzy": "^0.1.3",
+    "inquirer": "^6.2.2",
+    "inquirer-autocomplete-prompt": "^1.0.1",
+    "open": "^7.0.3"
   },
   "engines": {
     "node": "12.18.1",

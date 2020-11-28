@@ -59,9 +59,9 @@ export class HttpService {
 
     if (err.status == 403 || err.status == 401) {
       if (!isOnMobile()) {
-        this.router.navigate(['login']);
+        this.router.navigate(['admin/login']);
       } else {
-        this.router.navigate(['staff-login']);
+        this.router.navigate(['staff/login']);
       }
     }
 
@@ -137,6 +137,8 @@ export class HttpService {
         this.globalService.stopLoading();
       }
       return res;
+    }).catch(err => {
+      this.handleError(err);
     });
   }
 
