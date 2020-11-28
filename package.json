@@ -3,11 +3,6 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "ng": "ng",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
     "start": "NODE_ENV=production node server.js"
   },
   "private": true,
