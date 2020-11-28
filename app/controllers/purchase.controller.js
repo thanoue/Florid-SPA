@@ -1,24 +1,22 @@
 const db = require("../models");
 const Purchase = db.purchase;
-const PurchaseStatuses = require('../config/app.config').PurchaseStatus;
-const PurchaseMethods = require('../config/app.config').PurchaseMethods;
 const Order = db.order;
-
-exports.getByOrderId = (req, res) => {
-
-}
 
 exports.bulkAdd = (req, res) => {
 
     let purchases = [];
+
     req.body.purchases.forEach(rawPurchase => {
         purchases.push({
-            OrderId: req.body.orderId,
+            OrderId: req.body.orderId == '' ? null : req.body.orderId,
             Method: rawPurchase.Method,
             Status: rawPurchase.Status,
-            Amount: rawPurchase.Amount
+            Amount: +rawPurchase.Amount,
+            AddingTime: rawPurchase.AddingTime
         });
     });
+
+    console.log(purchases);
 
     Purchase.bulkCreate(purchases, {
         returning: true
@@ -38,25 +36,50 @@ exports.add = (req, res) => {
         OrderId: req.body.orderId,
         Amount: req.body.amount,
         Method: req.body.method,
-        Status: req.body.status
+        Status: req.body.status,
+        AddingTime: req.body.addingTime
     };
 
-    Purchase.create(obj)
-        .then(purchase => {
-            Order.update({
-                TotalPaidAmount: req.body.newtotalPaidAmount
-            }, {
-                where: {
-                    Id: req.body.orderId
-                }
-            }).then(() => {
-                res.send({ purchase: purchase });
+    if (!req.body.id || req.body.id <= 0) {
+        Purchase.create(obj)
+            .then(purchase => {
+                Order.update({
+                    TotalPaidAmount: req.body.newtotalPaidAmount
+                }, {
+                    where: {
+                        Id: req.body.orderId
+                    }
+                }).then(() => {
+                    res.send({ purchase: purchase });
+                })
             })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({ message: err });
+            });
+    }
+    else {
+        Purchase.update(obj, {
+            where: {
+                Id: req.body.id
+            }
         })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+            .then(purchase => {
+                Order.update({
+                    TotalPaidAmount: req.body.newtotalPaidAmount
+                }, {
+                    where: {
+                        Id: req.body.orderId
+                    }
+                }).then(() => {
+                    res.send({ purchase: purchase });
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send({ message: err });
+            });
+    }
 }
 
 exports.updateStatus = (req, res) => {

@@ -51,7 +51,7 @@ module.exports = function (app) {
         purchaseController.updateStatus
     );
     app.post(`${purchasePrefix}bulkAdd`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin, tableValidation.orderIdValidation],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         purchaseController.bulkAdd
     );
 
@@ -152,7 +152,8 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.getProcessingOrderDetails)
     app.post(`${orderDetailPrefix}getByOrderId`,
         [authJwt.verifyToken], orderDetailController.getByOrderId)
-
+    app.post(`${orderDetailPrefix}updateOrderInfos`,
+        [authJwt.verifyToken], orderDetailController.updateOrderInfos)
 
     //shipping session
     app.post(`${shippingSessionPrefix}assignSingleOD`,

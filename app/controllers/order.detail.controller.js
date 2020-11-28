@@ -3,7 +3,7 @@ const db = require("../models");
 const Order = db.order;
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
-const Sequelize = db.Sequelize;
+const sequelize = db.sequelize;
 const ShippingSession = db.shippingSession;
 const User = db.user;
 const fs = require('fs');
@@ -139,6 +139,60 @@ exports.getByOrderId = (req, res) => {
 
 };
 
+exports.updateOrderInfos = (req, res) => {
+
+    let rawOrderDetails = req.body.orderDetails;
+    let orderId = req.body.orderId;
+    let totalPaidAmount = req.body.totalPaidAmount;
+    let customerId = req.body.customerId;
+    let orderDetails = [];
+
+    rawOrderDetails.forEach(rawOrderDetail => {
+        orderDetails.push({
+            Id: rawOrderDetail.Id,
+            OrderId: rawOrderDetail.OrderId,
+            ReceivingTime: rawOrderDetail.DeliveryInfo ? rawOrderDetail.DeliveryInfo.ReceivingTime : 0,
+            ReceiverName: rawOrderDetail.DeliveryInfo ? rawOrderDetail.DeliveryInfo.ReceiverDetail.FullName : '',
+            ReceiverPhoneNumber: rawOrderDetail.DeliveryInfo ? rawOrderDetail.DeliveryInfo.ReceiverDetail.PhoneNumber : '',
+            ReceivingAddress: rawOrderDetail.DeliveryInfo ? rawOrderDetail.DeliveryInfo.ReceiverDetail.Address : '',
+            CustomerName: rawOrderDetail.CustomerName ? rawOrderDetail.CustomerName : '',
+            CustomerPhoneNumber: rawOrderDetail.CustomerPhoneNumber ? rawOrderDetail.CustomerPhoneNumber : '',
+        });
+    });
+
+    Order.update({
+        CustomerId: customerId,
+        TotalPaidAmount: totalPaidAmount
+    }, {
+        where: {
+            Id: orderId
+        }
+    }).then(() => {
+
+        let rawCommand = "";
+
+        orderDetails.forEach(item => {
+
+            let command = "UPDATE `orderDetails` SET `ReceivingTime` = " + item.ReceivingTime +
+                " , `ReceiverName` = \"" + item.ReceiverName + "\" , `ReceiverPhoneNumber` =\"" + item.ReceiverPhoneNumber +
+                "\", `ReceivingAddress` = \"" + item.ReceivingAddress + "\", `CustomerName` = \"" +
+                item.CustomerName + "\" , `CustomerPhoneNumber` = \"" + item.CustomerPhoneNumber + "\" WHERE `Id` = \"" + item.Id + "\";";
+
+            rawCommand += command;
+        });
+
+        console.info(rawCommand);
+
+        sequelize.query(rawCommand).then(data => {
+            res.send({ message: 'updated some customer' });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({ message: 'updated some customer' });
+        });
+
+    });
+}
+
 exports.addOrderDetails = (req, res) => {
     try {
         let rawOrderDetails = req.body.orderDetails;
@@ -177,7 +231,9 @@ exports.addOrderDetails = (req, res) => {
             returning: true
         }).then(data => {
             res.send({ orderDetails: orderDetails });
-        });
+        }).catch(err => {
+            res.status(500).send({ message: err.message || err })
+        })
     }
     catch (err) {
         res.status(500).send({ message: err.message });

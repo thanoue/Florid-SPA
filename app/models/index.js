@@ -50,11 +50,11 @@ db.purchase = require('./purchase.model')(sequelize, Sequelize);
 
 db.order.hasMany(db.purchase, {
     foreignKey: 'OrderId',
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
 });
 db.purchase.belongsTo(db.order, {
     foreignKey: 'OrderId',
-    onDelete: 'CASCADE'
+    onDelete: 'SET NULL'
 })
 
 db.order.hasMany(db.orderDetail, {

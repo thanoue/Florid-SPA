@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         OrderId: {
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: true
         },
         Amount: {
             type: Sequelize.BIGINT(11)
@@ -18,6 +18,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         Status: {
             type: Sequelize.STRING
+        },
+        AddingTime: {
+            type: Sequelize.BIGINT(11),
         },
         createdAt: {
             type: Sequelize.DATE,
