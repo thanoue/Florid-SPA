@@ -4,6 +4,7 @@ const Order = db.order;
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
+const Sequelize = sequelize;
 const ShippingSession = db.shippingSession;
 const User = db.user;
 const fs = require('fs');
@@ -373,7 +374,6 @@ exports.getProcessingOrderDetails = (req, res) => {
 exports.updateFields = (req, res) => {
 
     let obj = req.body.obj;
-    console.log(req.body);
 
     OrderDetail.update(obj, {
         where: {
