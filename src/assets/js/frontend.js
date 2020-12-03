@@ -894,7 +894,8 @@ function makingTimeRequest(saveCallback, chooseFloristCallback) {
 
     jQuery("#makingTimeRequest").fadeIn(350);
 
-    jQuery("#makingTimeRequest #submit-btn").one('click', function () {
+    jQuery("#makingTimeRequest #submit-btn").off('click');
+    jQuery("#makingTimeRequest #submit-btn").on('click', function () {
 
         jQuery('#makingTimeRequest').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();
@@ -904,6 +905,7 @@ function makingTimeRequest(saveCallback, chooseFloristCallback) {
 
     });
 
+    jQuery("#makingTimeRequest #choose-florist-btn").off('click');
     jQuery("#makingTimeRequest #choose-florist-btn").one('click', function () {
 
         jQuery('#makingTimeRequest').hide(250, function () {
@@ -914,12 +916,14 @@ function makingTimeRequest(saveCallback, chooseFloristCallback) {
 
     });
 
+    jQuery("#makingTimeRequest #cancel-btn").off('click');
     jQuery("#makingTimeRequest #cancel-btn").one('click', function () {
         jQuery('#makingTimeRequest').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();
         });
     })
 
+    jQuery(".overlay-dark:not(.layer2)").off('click');
     jQuery(".overlay-dark:not(.layer2)").one('click', function () {
         jQuery('#makingTimeRequest').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();

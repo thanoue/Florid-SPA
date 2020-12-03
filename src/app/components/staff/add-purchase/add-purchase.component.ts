@@ -68,10 +68,15 @@ export class AddPurchaseComponent extends BaseComponent {
 
   }
 
-
   onAmountChanged(value) {
 
-    this.onAmountFocus();
+    if (this.currPurchase.Amount < 10) {
+
+      this.currPurchase.Amount *= 1000;
+
+      this.moveCursor(this.currPurchase.Amount.toString().length, 'Amount');
+
+    }
 
     this.currPurchase.Amount = +this.currPurchase.Amount;
 
@@ -82,17 +87,7 @@ export class AddPurchaseComponent extends BaseComponent {
     if (!this.currPurchase.Amount) {
       this.currPurchase.Amount = 0;
     }
-
-    if (this.currPurchase.Amount < 1000) {
-      this.currPurchase.Amount *= 1000;
-    }
-
-    var length = this.currPurchase.Amount.toString().length;
-
-    setTimeout(() => {
-      moveCursor('Amount', length - 3);
-    }, 10);
-
+    this.moveCursor(this.currPurchase.Amount.toString().length, 'Amount');
   }
 
   purchaseSaving(form: NgForm) {

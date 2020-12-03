@@ -15,6 +15,7 @@ import { Purchase } from 'src/app/models/view.models/purchase.entity';
 declare function pickFile(isSaveUrl: boolean): any;
 declare function isRememberPassChecking(): any;
 declare function passwordSaving(): any;
+declare function moveCursor(id: string, pos: number);
 declare function passwordClearing(): any;
 declare function addressRequest(districts: District[], resCallback: (res: string) => void, onDistrictChange: (res: string, newWardCallback: (wards: Ward[]) => void) => void): any;
 
@@ -119,6 +120,14 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
 
     protected savedLoginInforReturn(loginName: string, passcode: string) {
 
+    }
+
+    moveCursor(length: number, id: string) {
+        setTimeout(() => {
+            if (length > 3) {
+                moveCursor(id, length - 3);
+            }
+        }, 10);
     }
 
     askForRememberPassword() {

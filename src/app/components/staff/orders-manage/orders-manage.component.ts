@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from '../../../models/view.models/order.model';
-import { OrderDetail } from 'src/app/models/entities/order.entity';
+import { ODFloristInfo, OrderDetail } from 'src/app/models/entities/order.entity';
 import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
@@ -548,6 +548,7 @@ export class OrdersManageComponent extends BaseComponent {
   updateMakingDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
     let items = [
+      'Xử lý sau',
       'Xem chi tiết',
       'Huỷ đơn'
     ];
@@ -555,6 +556,24 @@ export class OrdersManageComponent extends BaseComponent {
     menuOpen((index) => {
       switch ((+index)) {
         case 0:
+
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+            State: OrderDetailStates.Added,
+            MakingSortOrder: 0,
+            MakingRequestTime: 0,
+            FloristId: null
+          })
+            .then(() => {
+
+              orderDetail.State = OrderDetailStates.Added;
+              orderDetail.MakingSortOrder = 0;
+              orderDetail.MakingRequestTime = 0;
+              orderDetail.FloristInfo = new ODFloristInfo();
+            });
+
+          break;
+
+        case 1:
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
@@ -701,12 +720,13 @@ export class OrdersManageComponent extends BaseComponent {
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Added,
             MakingSortOrder: 0,
-            MakingRequestTime: 0
+            MakingRequestTime: 0,
           })
             .then(() => {
 
               orderDetail.State = OrderDetailStates.Added;
               orderDetail.MakingSortOrder = 0;
+              orderDetail.FloristInfo = new ODFloristInfo();
               orderDetail.MakingRequestTime = 0;
 
             });
@@ -742,40 +762,48 @@ export class OrdersManageComponent extends BaseComponent {
 
   transferToFlorist(orderDetail: OrderDetailViewModel, order: OrderViewModel, floristId?: number) {
 
-    this.orderDetailService.getNextMakingSortOrder()
-      .then(sortOrder => {
+    console.log('edit:', orderDetail);
 
-        let obj = {};
+    if (!floristId) {
 
-        if (!floristId) {
-          obj = {
+      this.orderDetailService.getNextMakingSortOrder()
+        .then(sortOrder => {
+
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Waiting,
             MakingSortOrder: sortOrder,
             MakingRequestTime: this.selectMakingRequestTime.getTime(),
             MakingNote: this.makingNote,
-          }
-        }
-        else {
-          obj = {
-            State: OrderDetailStates.Making,
-            MakingSortOrder: 0,
-            MakingRequestTime: this.selectMakingRequestTime.getTime(),
-            MakingNote: this.makingNote,
-            FloristId: floristId
-          }
-        }
+          })
+            .then(() => {
 
-        this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj)
-          .then(() => {
+              orderDetail.MakingSortOrder = sortOrder;
+              orderDetail.State = OrderDetailStates.Waiting;
+              orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
+              orderDetail.MakingNote = this.makingNote;
 
-            orderDetail.State = floristId ? OrderDetailStates.Waiting : OrderDetailStates.Waiting;
-            orderDetail.MakingSortOrder = sortOrder;
-            orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-            orderDetail.MakingNote = this.makingNote;
+            });
+        });
 
-          });
+    }
+    else {
 
-      });
+      this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+        State: OrderDetailStates.Making,
+        MakingSortOrder: 0,
+        MakingRequestTime: this.selectMakingRequestTime.getTime(),
+        MakingNote: this.makingNote,
+        FloristId: floristId
+      })
+        .then(() => {
+
+          orderDetail.MakingSortOrder = 0;
+          orderDetail.State = OrderDetailStates.Making;
+          orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
+          orderDetail.MakingNote = this.makingNote;
+
+        });
+    }
 
   }
 
@@ -835,7 +863,9 @@ export class OrdersManageComponent extends BaseComponent {
           this.makingNote = orderDetail.MakingNote ? orderDetail.MakingNote : '';
 
           makingTimeRequest(() => {
+
             this.transferToFlorist(orderDetail, order);
+
           }, () => {
 
             chooseFlorist((id) => {

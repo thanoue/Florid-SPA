@@ -20,7 +20,6 @@ declare function openExcForm(resCallback: (result: number, validateCalback: (isS
 declare function dismissPurchaseDialog();
 declare function hideReceiverPopup(): any;
 declare function purchaseDoing(): any;
-declare function moveCursor(id: string, pos: number);
 declare function openQR(): any;
 
 @Component({
@@ -329,11 +328,17 @@ export class AddOrderComponent extends BaseComponent {
     let purhases: purchaseItem[] = [];
 
     this.globalPurchases.forEach(purchase => {
-      purhases.push({
-        method: purchase.Method,
-        amount: purchase.Amount,
-        status: purchase.Status
-      });
+
+      if (purchase.Status == PurchaseStatus.Completed) {
+        
+        purhases.push({
+          method: purchase.Method,
+          amount: purchase.Amount,
+          status: purchase.Status
+        });
+
+      }
+
     });
 
     const orderData: PrintJob = {
@@ -518,6 +523,8 @@ export class AddOrderComponent extends BaseComponent {
             }
             else {
 
+              this.stopLoading();
+
               if (isCompleting) {
 
                 this.fastCompleteOrder();
@@ -670,30 +677,38 @@ export class AddOrderComponent extends BaseComponent {
   }
 
   onPayChanged(value) {
-    this.onPayFocus();
+
+    if (this.currentPayAmount < 10 && this.currentPayAmount > 0) {
+
+      this.currentPayAmount *= 1000;
+
+      this.moveCursor(this.currentPayAmount.toString().length, 'currentPayAmount');
+
+    }
+
     this.currentPayAmount = +this.currentPayAmount;
+
   }
 
   onPayFocus() {
+
     if (!this.currentPayAmount) {
       this.currentPayAmount = 0;
     }
 
-    if (this.currentPayAmount < 1000) {
-      this.currentPayAmount *= 1000;
-    }
-
-    var length = this.currentPayAmount.toString().length;
-
-    setTimeout(() => {
-      moveCursor('currentPayAmount', length - 3);
-    }, 10);
+    this.moveCursor(this.currentPayAmount.toString().length, 'currentPayAmount');
 
   }
 
   onAmountDiscountChanged(value) {
 
-    this.onAcmountDiscountFocus();
+    if (this.order.AmountDiscount < 10 && this.order.AmountDiscount > 0) {
+
+      this.order.AmountDiscount *= 1000;
+
+      this.moveCursor(this.order.AmountDiscount.toString().length, 'AmountDiscount');
+
+    }
 
     this.order.AmountDiscount = +this.order.AmountDiscount;
 
@@ -701,21 +716,13 @@ export class AddOrderComponent extends BaseComponent {
 
   }
 
-  onAcmountDiscountFocus() {
+  onAmountDiscountFocus() {
 
     if (!this.order.AmountDiscount) {
       this.order.AmountDiscount = 0;
     }
 
-    if (this.order.AmountDiscount < 1000) {
-      this.order.AmountDiscount *= 1000;
-    }
-
-    var length = this.order.AmountDiscount.toString().length;
-
-    setTimeout(() => {
-      moveCursor('AmountDiscount', length - 3);
-    }, 10);
+    this.moveCursor(this.order.AmountDiscount.toString().length, 'AmountDiscount');
 
   }
 

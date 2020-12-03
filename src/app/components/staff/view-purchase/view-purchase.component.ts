@@ -81,8 +81,17 @@ export class ViewPurchaseComponent extends BaseComponent {
   }
 
   onPayChanged(value) {
-    this.onPayFocus();
+
+    if (this.currentPurchase.Amount < 10) {
+
+      this.currentPurchase.Amount *= 1000;
+
+      this.moveCursor(this.currentPurchase.Amount.toString().length, 'Amount');
+
+    }
+
     this.currentPurchase.Amount = + this.currentPurchase.Amount;
+
   }
 
   onPayFocus() {
@@ -91,15 +100,7 @@ export class ViewPurchaseComponent extends BaseComponent {
       this.currentPurchase.Amount = 0;
     }
 
-    if (this.currentPurchase.Amount < 1000) {
-      this.currentPurchase.Amount *= 1000;
-    }
-
-    var length = this.currentPurchase.Amount.toString().length;
-
-    setTimeout(() => {
-      moveCursor('Amount', length - 3);
-    }, 10);
+    this.moveCursor(this.currentPurchase.Amount.toString().length, 'Amount');
 
   }
 

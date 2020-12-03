@@ -47,8 +47,17 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
   }
 
   onAmountDiscountChanged(value) {
-    this.onAcmountDiscountFocus();
+
+    if (this.globalOrderDetail.AmountDiscount < 10) {
+
+      this.globalOrderDetail.AmountDiscount *= 1000;
+
+      this.moveCursor(this.globalOrderDetail.AmountDiscount.toString().length, 'AmountDiscount');
+
+    }
+
     this.globalOrderDetail.AmountDiscount = +this.globalOrderDetail.AmountDiscount;
+
   }
 
   onAcmountDiscountFocus() {
@@ -57,21 +66,18 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       this.globalOrderDetail.AmountDiscount = 0;
     }
 
-    if (this.globalOrderDetail.AmountDiscount < 1000) {
-      this.globalOrderDetail.AmountDiscount *= 1000;
-    }
-
-    var length = this.globalOrderDetail.AmountDiscount.toString().length;
-
-    setTimeout(() => {
-      moveCursor('AmountDiscount', length - 3);
-    }, 10);
-
+    this.moveCursor(this.globalOrderDetail.AmountDiscount.toString().length, 'AmountDiscount');
   }
 
   onAddFeeChanged(value) {
 
-    this.onAddFeeFocus();
+    if (this.globalOrderDetail.AdditionalFee < 10) {
+
+      this.globalOrderDetail.AdditionalFee *= 1000;
+
+      this.moveCursor(this.globalOrderDetail.AdditionalFee.toString().length, 'AdditionalFee');
+
+    }
 
     this.globalOrderDetail.AdditionalFee = +this.globalOrderDetail.AdditionalFee;
 
@@ -83,21 +89,19 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       this.globalOrderDetail.AdditionalFee = 0;
     }
 
-    if (this.globalOrderDetail.AdditionalFee < 1000) {
-      this.globalOrderDetail.AdditionalFee *= 1000;
-    }
-
-    var length = this.globalOrderDetail.AdditionalFee.toString().length;
-
-    setTimeout(() => {
-      moveCursor('AdditionalFee', length - 3);
-    }, 10);
+    this.moveCursor(this.globalOrderDetail.AdditionalFee.toString().length, 'AdditionalFee');
 
   }
 
   onNewPriceChanged(value) {
 
-    this.onNewPriceFocus();
+    if (this.newPrice < 10) {
+
+      this.newPrice *= 1000;
+
+      this.moveCursor(this.newPrice.toString().length, 'NewPrice');
+
+    }
 
     this.newPrice = +this.newPrice;
 
@@ -109,16 +113,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       this.newPrice = 0;
     }
 
-    if (this.newPrice < 1000) {
-      this.newPrice *= 1000;
-    }
-
-    var length = this.newPrice.toString().length;
-
-    setTimeout(() => {
-      moveCursor('NewPrice', length - 3);
-    }, 10);
-
+    this.moveCursor(this.newPrice.toString().length, 'NewPrice');
   }
 
   protected Init() {
@@ -136,7 +131,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
       if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '....';
 
-      createNumbericElement(this.detailIndex > -1, (val) => {
+      createNumbericElement(false, (val) => {
         this.globalOrderDetail.Quantity = val;
       });
 
@@ -188,7 +183,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       this.globalOrderDetail.IsFromHardCodeProduct = true;
 
     }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName == '....' ? '' : this.globalOrderDetail.ProductName);
-    
+
   }
 
   insertModifiedValue() {
@@ -240,17 +235,26 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   insertOrderDetail(viewModel: OrderDetailViewModel) {
 
-    const newIndexes: number[] = [];
+    let i = 0;
+    let index = this.globalOrder.OrderDetails.length;
+    let isAdd = true;
 
     if (this.detailIndex > -1) {
 
       this.globalOrder.OrderDetails[this.detailIndex] = viewModel;
 
+      if (viewModel.Quantity > 1)
+        i = 1;
+      else
+        isAdd = false;
+
     } else {
+      i = 0;
+    }
 
-      let index = viewModel.Index;
+    if (isAdd) {
 
-      for (let i = 0; i < viewModel.Quantity; i++) {
+      for (; i < viewModel.Quantity; i++) {
 
         const subItem = OrderDetailViewModel.DeepCopy(viewModel);
 
@@ -260,10 +264,9 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
         this.globalOrder.OrderDetails.push(subItem);
 
-        newIndexes.push(index);
-
         index += 1;
       }
+
     }
 
     super.OnBackNaviage();
