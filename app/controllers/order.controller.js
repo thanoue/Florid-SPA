@@ -106,7 +106,6 @@ exports.addBulk = (req, res) => {
                 TotalPaidAmount: order.TotalPaidAmount,
                 GainedScore: order.GainedScore,
                 ScoreUsed: order.ScoreUsed,
-                OrderType: order.OrderType,
                 CreatedDate: order.Created,
                 PercentDiscount: 0,
                 AmountDiscount: 0,
@@ -130,13 +129,11 @@ exports.addOrder = (req, res) => {
     let body = req.body;
 
     let numberId = 0;;
-    let orderType = '';
 
     if (parseInt(body.id) != undefined && parseInt(body.id) != NaN) {
         numberId = parseInt(body.id);
     } else {
         numberId = -1;
-        orderType = 'SpecialDay';
     }
 
     let order = {
@@ -147,7 +144,6 @@ exports.addOrder = (req, res) => {
         TotalPaidAmount: body.totalPaidAmount,
         GainedScore: body.gaindedScore,
         ScoreUsed: body.scoreUsed,
-        OrderType: orderType,
         CreatedDate: body.createdDate,
         PercentDiscount: body.percentDiscount ? body.percentDiscount : 0,
         AmountDiscount: body.amountDiscount ? body.amountDiscount : 0,
@@ -179,7 +175,6 @@ exports.editOrder = (req, res) => {
         TotalPaidAmount: body.totalPaidAmount,
         GainedScore: body.gaindedScore,
         ScoreUsed: body.scoreUsed,
-        OrderType: body.orderType,
         CreatedDate: body.createdDate,
         PercentDiscount: body.percentDiscount,
         AmountDiscount: body.amountDiscount

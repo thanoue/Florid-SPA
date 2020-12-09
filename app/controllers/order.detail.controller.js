@@ -1,7 +1,8 @@
-const { role } = require("../models");
+const { role, customer } = require("../models");
 const db = require("../models");
 const Order = db.order;
 const OrderDetail = db.orderDetail;
+const Customer = db.customer;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 const Sequelize = sequelize;
@@ -11,8 +12,11 @@ const fs = require('fs');
 const ODStatuses = require('../config/app.config').ODStatuses;
 const commonService = require("../services/common.service");
 const appConstant = require('../config/app.config');
+const { Console } = require("console");
 const resultImgFolderPath = appConstant.fileFolderPath.resultImg;
 const shippingImgFolderPath = appConstant.fileFolderPath.shipppingImg;
+
+let KhachLeId = 'KHACH_LE';
 
 exports.resultConfirm = (req, res) => {
 
@@ -158,39 +162,101 @@ exports.updateOrderInfos = (req, res) => {
             ReceivingAddress: rawOrderDetail.DeliveryInfo ? rawOrderDetail.DeliveryInfo.ReceiverDetail.Address : '',
             CustomerName: rawOrderDetail.CustomerName ? rawOrderDetail.CustomerName : '',
             CustomerPhoneNumber: rawOrderDetail.CustomerPhoneNumber ? rawOrderDetail.CustomerPhoneNumber : '',
+            State: rawOrderDetail.State
         });
     });
 
-    Order.update({
-        CustomerId: customerId,
-        TotalPaidAmount: totalPaidAmount
-    }, {
+    let isUpdateAmount = true;
+
+    console.log(orderDetails);
+
+    orderDetails.forEach(detail => {
+
+        if (detail.State != ODStatuses.Completed) {
+            isUpdateAmount = false;
+        }
+
+    });
+
+    console.log("Is Update Amount:", isUpdateAmount);
+
+    Order.findOne({
         where: {
             Id: orderId
         }
-    }).then(() => {
+    }).then(order => {
 
-        let rawCommand = "";
+        if (isUpdateAmount) {
 
-        orderDetails.forEach(item => {
+            console.log("AccumulatedAmount: ", order.GainedScore * 100000);
+            console.log("AvailableScore: ", order.GainedScore);
 
-            let command = "UPDATE `orderDetails` SET `ReceivingTime` = " + item.ReceivingTime +
-                " , `ReceiverName` = \"" + item.ReceiverName + "\" , `ReceiverPhoneNumber` =\"" + item.ReceiverPhoneNumber +
-                "\", `ReceivingAddress` = \"" + item.ReceivingAddress + "\", `CustomerName` = \"" +
-                item.CustomerName + "\" , `CustomerPhoneNumber` = \"" + item.CustomerPhoneNumber + "\" WHERE `Id` = \"" + item.Id + "\";";
+            if (order.CustomerId != KhachLeId) {
 
-            rawCommand += command;
+                let customerCommand = "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` - " + order.GainedScore * 100000 +
+                    " , `AvailableScore` =  `AvailableScore` - " + order.GainedScore + "WHERE `Id` = \"" + order.CustomerId + "\";";
+
+                sequelize.query(customerCommand).then(data => {
+
+                    customerCommand = "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` - " + order.GainedScore * 100000 +
+                        " , `AvailableScore` =  `AvailableScore` - " + order.GainedScore + "WHERE `Id` = \"" + customerId + "\";";
+
+                    sequelize.query(customerCommand).then(data => {
+
+                    }).catch(err => {
+                        console.log(err);
+                    });
+
+                }).catch(err => {
+                    console.log(err);
+                });
+
+            } else {
+
+                if (customerId != KhachLeId) {
+
+                    let customerCommand = "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` + " + order.GainedScore * 100000 +
+                        " , `AvailableScore` =  `AvailableScore`+" + order.GainedScore + "WHERE `Id` = \"" + customerId + "\";";
+
+                    sequelize.query(customerCommand).then(data => {
+
+                    }).catch(err => {
+                        console.log(err);
+                    });
+
+                }
+            }
+        }
+
+        Order.update({
+            CustomerId: customerId,
+            TotalPaidAmount: totalPaidAmount
+        }, {
+            where: {
+                Id: orderId
+            }
+        }).then(() => {
+
+            let rawCommand = "";
+
+            orderDetails.forEach(item => {
+
+                let command = "UPDATE `orderDetails` SET `ReceivingTime` = " + item.ReceivingTime +
+                    " , `ReceiverName` = \"" + item.ReceiverName + "\" , `ReceiverPhoneNumber` =\"" + item.ReceiverPhoneNumber +
+                    "\", `ReceivingAddress` = \"" + item.ReceivingAddress + "\", `CustomerName` = \"" +
+                    item.CustomerName + "\" , `CustomerPhoneNumber` = \"" + item.CustomerPhoneNumber + "\" WHERE `Id` = \"" + item.Id + "\";";
+
+                rawCommand += command;
+            });
+
+            sequelize.query(rawCommand).then(data => {
+                res.send({ message: 'updated some customer' });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({ message: 'updated some customer' });
+            });
+
         });
-
-        console.info(rawCommand);
-
-        sequelize.query(rawCommand).then(data => {
-            res.send({ message: 'updated some customer' });
-        }).catch(err => {
-            console.log(err);
-            res.status(500).send({ message: 'updated some customer' });
-        });
-
     });
 }
 
