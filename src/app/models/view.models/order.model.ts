@@ -13,7 +13,7 @@ export class OrderViewModel {
     CreatedDate: Date;
     VATIncluded = false;
     OrderType: OrderType;
-
+    DoneTime: number;
     Index: number;
 
     PercentDiscount = 0;

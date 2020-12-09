@@ -60,37 +60,18 @@ export class FinalConfirmComponent extends BaseComponent {
 
         let orderDetails = await this.orderDetailService.getByOrderId(this.orderDetail.OrderId);
 
-        let notCompletedDetails = orderDetails.filter(p => p.State != OrderDetailStates.Completed && p.State != OrderDetailStates.Canceled);
+        let notCompletedDetails = orderDetails.filter(p => p.State != OrderDetailStates.Completed);
 
-        if (notCompletedDetails && notCompletedDetails.length > 0) {
+        if (notCompletedDetails.length == 0) {
 
-          this.router.navigate(['staff/orders-manage']);
-
-          return;
-
-        } else {
-
-          let newMemberInfo = new MembershipInfo();
-
-          let gainedScore = ExchangeService.getScoreFromOrder(this.globalOrder);
-
-          newMemberInfo.AccumulatedAmount = this.customer.MembershipInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);
-          newMemberInfo.AvailableScore = this.customer.MembershipInfo.AvailableScore - this.globalOrder.CustomerInfo.ScoreUsed + gainedScore;
-          newMemberInfo.UsedScoreTotal = this.customer.MembershipInfo.UsedScoreTotal + this.globalOrder.CustomerInfo.ScoreUsed;
-
-          newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);
-
-          this.customerService.updateFields(this.customer.Id, {
-            UsedScoreTotal: newMemberInfo.UsedScoreTotal,
-            AvailableScore: newMemberInfo.AvailableScore,
-            AccumulatedAmount: newMemberInfo.AccumulatedAmount,
-            MembershipType: newMemberInfo.MembershipType,
-          }).then((res) => {
-            setTimeout(() => {
+          this.orderDetailService.updateStatusByOrderId(this.orderDetail.OrderId, OrderDetailStates.Completed, (new Date().getTime()))
+            .then(data => {
               this.router.navigate(['staff/orders-manage']);
-            }, 200);
-          });
+
+            });
         }
+        else
+          this.router.navigate(['staff/orders-manage']);
 
       });
   }

@@ -3,7 +3,7 @@ import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from '../../../models/view.models/order.model';
 import { ODFloristInfo, OrderDetail } from 'src/app/models/entities/order.entity';
-import { OrderDetailStates, Roles } from 'src/app/models/enums';
+import { OrderDetailStates, PurchaseStatus, Roles } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
@@ -16,6 +16,8 @@ import { HttpClient } from '@angular/common/http';
 import { User } from 'src/app/models/entities/user.entity';
 import { UserService } from 'src/app/services/user.service';
 import { MyDatepipe } from 'src/app/pipes/date.pipe';
+import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
+import { PrintJobService } from 'src/app/services/print-job.service';
 
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
 declare function openColorBoard(): any;
@@ -87,7 +89,8 @@ export class OrdersManageComponent extends BaseComponent {
     private orderDetailService: OrderDetailService,
     protected http: HttpClient,
     private datePipe: MyDatepipe,
-    private userService: UserService) {
+    private userService: UserService,
+    private printJobService: PrintJobService) {
 
     super();
     this.globalService.currentOrderViewModel = new OrderViewModel();
@@ -195,6 +198,141 @@ export class OrdersManageComponent extends BaseComponent {
       })
 
     this.askForRememberPassword();
+
+  }
+
+  doPrintJob(order: OrderViewModel) {
+
+    let tempSummary = 0;
+    const products: PrintSaleItem[] = [];
+
+    order.OrderDetails.forEach(product => {
+      products.push({
+        productName: product.ProductName,
+        index: product.Index + 1,
+        price: product.ModifiedPrice,
+        additionalFee: product.AdditionalFee,
+        discount: this.getDetailDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount)
+      });
+      tempSummary += product.ModifiedPrice;
+    });
+
+    let purhases: purchaseItem[] = [];
+
+    if (order.PurchaseItems)
+      order.PurchaseItems.forEach(purchase => {
+
+        if (purchase.Status == PurchaseStatus.Completed) {
+          purhases.push({
+            method: purchase.Method,
+            amount: purchase.Amount,
+            status: purchase.Status
+          });
+
+        }
+
+      });
+
+    const orderData: PrintJob = {
+      Created: (new Date()).getTime(),
+      Id: order.OrderId,
+      Active: true,
+      IsDeleted: false,
+      saleItems: products,
+      createdDate: order.CreatedDate.toLocaleString('en-US', { hour12: true }),
+      orderId: order.OrderId,
+      summary: tempSummary,
+      totalAmount: order.TotalAmount,
+      totalPaidAmount: order.TotalPaidAmount,
+      totalBalance: order.TotalAmount - order.TotalPaidAmount,
+      vatIncluded: order.VATIncluded,
+      memberDiscount: order.CustomerInfo.DiscountPercent,
+      scoreUsed: order.CustomerInfo.ScoreUsed,
+      gainedScore: order.CustomerInfo.GainedScore,
+      totalScore: order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
+      customerName: order.CustomerInfo.Name,
+      customerId: order.CustomerInfo.Id,
+      discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
+      purchaseItems: purhases
+    };
+
+    console.log(orderData);
+
+    this.printJobService.addPrintJob(orderData);
+  }
+
+  getDetailDiscount(price: number, percentDiscount: number, amountDidcount: number): number {
+
+    let discount = 0;
+
+    if (percentDiscount && percentDiscount > 0)
+      discount = (price / 100) * percentDiscount;
+
+    if (amountDidcount && amountDidcount > 0)
+      discount = discount + amountDidcount;
+
+    return discount;
+  }
+
+  selectOrder(order: OrderViewModel) {
+
+    let items = [
+      'Thêm thanh toán',
+      'In hoá đơn',
+      'Hoàn tất đơn',
+      'Huỷ đơn'
+    ];
+
+    menuOpen((index) => {
+      switch ((+index)) {
+
+        case 0:
+
+          this.viewPurchase(order.OrderId);
+
+          break;
+
+        case 1:
+
+          this.doPrintJob(order);
+
+          break;
+
+        case 2:
+
+          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Completed, (new Date()).getTime())
+            .then(res => {
+
+              this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                .then(orders => {
+
+                  this.totalPage = orders.totalPages;
+                  this.orders = orders.orders;
+
+                });
+            });
+
+          break;
+
+        case 3:
+
+          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Canceled, 0)
+            .then(res => {
+
+              this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                .then(orders => {
+
+                  this.totalPage = orders.totalPages;
+                  this.orders = orders.orders;
+
+                });
+            });
+
+          break;
+
+      }
+    }, items);
+
 
   }
 

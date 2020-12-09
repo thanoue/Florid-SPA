@@ -67,7 +67,7 @@ export class OrderService {
     orderVM.CreatedDate = new Date(order.CreatedDate);
     orderVM.PercentDiscount = order.PercentDiscount;
     orderVM.AmountDiscount = order.AmountDiscount;
-
+    orderVM.DoneTime = !order.DoneTime || order.DoneTime <= 0 ? order.CreatedDate : order.DoneTime;
 
     if (order.purchases) {
 

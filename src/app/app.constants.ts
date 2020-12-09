@@ -98,6 +98,7 @@ export const API_END_POINT = {
     getProcessingOrderDetails: '/orderDetail/getProcessingOrderDetails',
     getOrderDetailsByOrderId: '/orderDetail/getByOrderId',
     updateOrderInfos: '/orderDetail/updateOrderInfos',
+    updateStatusByOrderId: '/orderDetail/updateStatusByOrderId',
 
     updateDetailSeen: '/orderDetailSeener/updateDetailSeen',
     getODSeeners: '/orderDetailSeener/getODSeeners',

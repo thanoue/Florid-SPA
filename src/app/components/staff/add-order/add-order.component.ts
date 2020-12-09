@@ -33,7 +33,6 @@ export class AddOrderComponent extends BaseComponent {
   memberShipTitle = '';
   order: OrderViewModel;
   totalBalance = 0;
-  originalOrderId = '';
   orderDiscount = 0;
   promotions: Promotion[];
   isPurchased = false;
@@ -65,28 +64,22 @@ export class AddOrderComponent extends BaseComponent {
 
     this.order = this.globalOrder;
 
-    if (this.isEdittingOrder) {
-
-      this.originalOrderId = this.order.OrderId;
-
-      this.onVATIncludedChange();
-
-    } else {
+    if (!this.isEdittingOrder) {
 
       this.memberShipTitle = 'New Customer';
 
-      this.orderService.getNormalDayOrdersCount()
-        .then(count => {
+      if (!this.order.OrderId) {
+        this.orderService.getNormalDayOrdersCount()
+          .then(count => {
 
-          this.order.OrderId = (count + 1).toString();
-          this.originalOrderId = this.order.OrderId;
-          this.order.OrderType = OrderType.NormalDay;
+            this.order.OrderId = (count + 1).toString();
 
-        });
-
-      this.onVATIncludedChange();
+          });
+      }
 
     }
+
+    this.onVATIncludedChange();
 
     switch (this.order.CustomerInfo.MembershipType) {
       case MembershipTypes.NewCustomer:
@@ -145,6 +138,7 @@ export class AddOrderComponent extends BaseComponent {
 
       detail.OrderId = this.globalOrder.OrderId;
       detail.Id = detailVM.OrderDetailId;
+      detail.State = detailVM.State;
 
       detail.CustomerName = this.globalOrder.CustomerInfo.Name;
       detail.CustomerPhoneNumber = this.globalOrder.CustomerInfo.PhoneNumber;
@@ -231,6 +225,7 @@ export class AddOrderComponent extends BaseComponent {
           this.OnBackNaviage();
         }
       });
+
   }
 
   placeOrder(isCompleting: boolean) {
@@ -330,7 +325,7 @@ export class AddOrderComponent extends BaseComponent {
     this.globalPurchases.forEach(purchase => {
 
       if (purchase.Status == PurchaseStatus.Completed) {
-        
+
         purhases.push({
           method: purchase.Method,
           amount: purchase.Amount,
@@ -374,10 +369,6 @@ export class AddOrderComponent extends BaseComponent {
     this.startLoading();
 
     const orderDB = new Order();
-
-    if (this.originalOrderId != this.order.OrderId) {
-      this.order.OrderType = OrderType.SpecialDay;
-    }
 
     orderDB.CustomerId = this.order.CustomerInfo.Id;
     orderDB.Id = this.order.OrderId;
@@ -499,22 +490,14 @@ export class AddOrderComponent extends BaseComponent {
           .then(() => {
 
             if (orderDB.CustomerId != 'KHACH_LE') {
+
               this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
 
                 this.stopLoading();
 
                 if (isSuccess) {
 
-                  if (isCompleting) {
-
-                    this.fastCompleteOrder();
-
-                  }
-                  else {
-
-                    this.OnBackNaviage();
-
-                  }
+                  this.completeOrder();
 
                 }
 
@@ -525,16 +508,7 @@ export class AddOrderComponent extends BaseComponent {
 
               this.stopLoading();
 
-              if (isCompleting) {
-
-                this.fastCompleteOrder();
-
-              }
-              else {
-
-                this.OnBackNaviage();
-
-              }
+              this.completeOrder();
 
             }
           })
@@ -800,7 +774,7 @@ export class AddOrderComponent extends BaseComponent {
     });
   }
 
-  fastCompleteOrder() {
+  completeOrder() {
 
     if (this.order.CustomerInfo.Id == 'KHACH_LE') {
       this.OnBackNaviage();
@@ -809,8 +783,10 @@ export class AddOrderComponent extends BaseComponent {
 
     let newMemberInfo = new MembershipInfo();
 
-    newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + this.order.TotalAmount;
-    newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + ExchangeService.getScoreFromOrder(this.order);
+    let gainedScore = ExchangeService.getScoreFromOrder(this.order)
+
+    newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + gainedScore;
+    newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);
     newMemberInfo.UsedScoreTotal = this.order.CustomerInfo.CustomerScoreUsedTotal + this.order.CustomerInfo.ScoreUsed;
 
     newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);

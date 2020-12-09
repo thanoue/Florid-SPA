@@ -28,6 +28,19 @@ export class OrderDetailService {
     });
   }
 
+  updateStatusByOrderId(orderId: string, status: OrderDetailStates, doneTime: number): Promise<any> {
+    return this.httpService.post(API_END_POINT.updateStatusByOrderId, {
+      orderId: orderId,
+      status: status,
+      doneTime: doneTime
+    }).then(res => {
+      return res;
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+  }
+
   getNextMakingSortOrder(): Promise<number> {
 
     return this.httpService.get(API_END_POINT.getMaxMakingSortOrder)

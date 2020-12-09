@@ -39,14 +39,14 @@
                     [id]="'order' + orderIndex">
                     <div class="item-top" [id]="'heading' + orderIndex">
                         <span class="item-code" (click)="viewPurchase(order.OrderId)">{{order.OrderId}}</span>
-                        <div class="item-info">
+                        <div class="item-info" (click)="selectOrder(order)">
                             <h4 class="item-name">{{order.CustomerInfo.Name}}</h4>
                             <h4 class="item-name" style="
                             font-size: 12px;
                             margin-top: 1px;">tel: {{order.CustomerInfo.PhoneNumber}}</h4>
                             <span class="item-price">{{order.TotalAmount| myCurrPipe}}
                             </span>
-                            <span class="item-date">{{order.CreatedDate | myDatePipe}}</span>
+                            <span class="item-date">{{order.DoneTime | myDatePipe}}</span>
                         </div>
                         <button data-toggle="collapse" [attr.data-target]="'#collapse' + orderIndex"
                             aria-expanded="false" [attr.aria-controls]="'collapse' + orderIndex"
