@@ -154,6 +154,8 @@ module.exports = function (app) {
         [authJwt.verifyToken], orderDetailController.getByOrderId)
     app.post(`${orderDetailPrefix}updateOrderInfos`,
         [authJwt.verifyToken], orderDetailController.updateOrderInfos)
+    app.post(`${orderDetailPrefix}updateStatusByOrderId`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.updateStatusByOrderId)
 
     //shipping session
     app.post(`${shippingSessionPrefix}assignSingleOD`,

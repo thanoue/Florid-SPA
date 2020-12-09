@@ -144,6 +144,38 @@ exports.getByOrderId = (req, res) => {
 
 };
 
+
+exports.updateStatusByOrderId = (req, res) => {
+
+    let orderId = req.body.orderId;
+    let status = req.body.status;
+    let doneTime = req.body.doneTime;
+
+    OrderDetail.update({
+        State: status
+    }, {
+        where: {
+            OrderId: orderId
+        }
+    }).then(data => {
+        Order.update({
+            DoneTime: doneTime
+        }, {
+            where: {
+                Id: orderId
+            }
+        }).then(() => {
+            res.send({ data });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({ message: err });
+        });
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({ message: err });
+    });
+}
+
 exports.updateOrderInfos = (req, res) => {
 
     let rawOrderDetails = req.body.orderDetails;
@@ -168,8 +200,6 @@ exports.updateOrderInfos = (req, res) => {
 
     let isUpdateAmount = true;
 
-    console.log(orderDetails);
-
     orderDetails.forEach(detail => {
 
         if (detail.State != ODStatuses.Completed) {
@@ -178,8 +208,6 @@ exports.updateOrderInfos = (req, res) => {
 
     });
 
-    console.log("Is Update Amount:", isUpdateAmount);
-
     Order.findOne({
         where: {
             Id: orderId
@@ -187,9 +215,6 @@ exports.updateOrderInfos = (req, res) => {
     }).then(order => {
 
         if (isUpdateAmount) {
-
-            console.log("AccumulatedAmount: ", order.GainedScore * 100000);
-            console.log("AvailableScore: ", order.GainedScore);
 
             if (order.CustomerId != KhachLeId) {
 
@@ -253,7 +278,7 @@ exports.updateOrderInfos = (req, res) => {
                 res.send({ message: 'updated some customer' });
             }).catch(err => {
                 console.log(err);
-                res.status(500).send({ message: 'updated some customer' });
+                res.status(500).send({ message: err });
             });
 
         });

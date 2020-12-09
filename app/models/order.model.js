@@ -28,6 +28,9 @@ module.exports = (sequelize, Sequelize) => {
         CreatedDate: {
             type: Sequelize.BIGINT(11)
         },
+        DoneTime: {
+            type: Sequelize.BIGINT(11)
+        },
         AmountDiscount: {
             type: Sequelize.INTEGER
         },
