@@ -53,6 +53,9 @@ module.exports = (sequelize, Sequelize) => {
         ShippingSortOrder: {
             type: Sequelize.INTEGER
         },
+        Quantity: {
+            type: Sequelize.INTEGER
+        },  
         IsVATIncluded: {
             type: Sequelize.BOOLEAN
         },

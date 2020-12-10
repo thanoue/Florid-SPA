@@ -316,6 +316,7 @@ exports.addOrderDetails = (req, res) => {
                 Index: rawOrderDetail.Index,
                 AmountDiscount: rawOrderDetail.AmountDiscount,
                 PercentDiscount: rawOrderDetail.PercentDiscount,
+                Quantity: rawOrderDetail.Quantity
             });
         });
 
