@@ -66,14 +66,25 @@ exports.addBulkOneCate = (req, res) => {
         returning: true
     }).then(prods => {
 
+        console.log(prods);
+
+        let prodCates = [];
+
         prods.forEach(prod => {
 
-            let command = "INSERT into `products_categories` (`ProductId`,`CategoryId`) values (" + prod.Id + "," + req.body.categoryId + ");";
+            prodCates.push({
+                ProductId: prod.Id,
+                CategoryId: req.body.categoryId
+            });
 
-            productCateRawQuery += command;
+            // let command = "INSERT into `products_categories` (`ProductId`,`CategoryId`) values (" + prod.Id + "," + req.body.categoryId + ");";
+
+            // productCateRawQuery += command;
         });
 
-        sequelize.query(productCateRawQuery).then(data => {
+        ProductCategory.bulkCreate(prodCates, {
+            returning: true
+        }).then(data => {
             res.send({ message: 'updated some data' });
         }).catch(err => {
 
@@ -81,6 +92,15 @@ exports.addBulkOneCate = (req, res) => {
             res.status(500).send({ message: err.message || err });
 
         });
+
+        // sequelize.query(productCateRawQuery).then(data => {
+        //     res.send({ message: 'updated some data' });
+        // }).catch(err => {
+
+        //     console.log(err);
+        //     res.status(500).send({ message: err.message || err });
+
+        // });
 
     }).catch(err => {
         res.status(500).send({
