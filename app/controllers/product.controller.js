@@ -49,41 +49,48 @@ exports.addBulkOneCate = (req, res) => {
     let products = [];
 
     let productCateRawQuery = '';
+    let productRawQuery = '';
 
     Product.findAll({
         attributes: [
             [sequelize.fn('MAX', sequelize.col('Id')), 'max']
         ]
     })
-        .then(count => {
+        .then(pr => {
 
-            let id = count + 1;
+            console.log("max la:", pr[0].dataValues.max);
+
+            let max = pr[0].dataValues.max;
+
+            let id = max + 1;
 
             req.body.products.forEach(rawProduct => {
 
-                products.push({
-                    Id: id,
-                    Name: rawProduct.Name,
-                    Price: rawProduct.Price,
-                    Unit: rawProduct.Unit,
-                    PriceList: JSON.stringify([rawProduct.Price]),
-                    Description: rawProduct.Description,
-                    ImageUrl: rawProduct.ImageUrl
-                });
+                // products.push({
+                //     Id: id,
+                //     Name: rawProduct.Name,
+                //     Price: rawProduct.Price,
+                //     Unit: rawProduct.Unit,
+                //     PriceList: JSON.stringify([rawProduct.Price]),
+                //     Description: rawProduct.Description,
+                //     ImageUrl: rawProduct.ImageUrl
+                // });
+
+                productRawQuery += "INSERT into `products` (`Id`,`Name`,`Price`,`Unit`,`PriceList`,`Description`,`ImageUrl`)" +
+                    " values (" + id + ",\"" + rawProduct.Name + "\"," + rawProduct.Price + ",\"" + rawProduct.Unit + "\"," +
+                    "\"" + JSON.stringify([rawProduct.Price]) + "\",\"" + rawProduct.Description + "\",\"" + rawProduct.ImageUrl + "\");";
 
                 id += 1;
 
             });
 
-            Product.bulkCreate(products, {
-                returning: true
-            }).then(prods => {
+            sequelize.query(productRawQuery).then(data => {
 
                 let prodCates = [];
 
-                let productId = count + 1;
+                let productId = max + 1;
 
-                prods.forEach(prod => {
+                req.body.products.forEach(prod => {
 
                     prodCates.push({
                         ProductId: productId,
@@ -108,20 +115,61 @@ exports.addBulkOneCate = (req, res) => {
 
                 });
 
-                // sequelize.query(productCateRawQuery).then(data => {
-                //     res.send({ message: 'updated some data' });
-                // }).catch(err => {
-
-                //     console.log(err);
-                //     res.status(500).send({ message: err.message || err });
-
-                // });
-
             }).catch(err => {
-                res.status(500).send({
-                    message: err.message || err
-                });
-            })
+
+                console.log(err);
+                res.status(500).send({ message: err.message || err });
+
+            });
+
+
+            // Product.bulkCreate(products, {
+            //     returning: true
+            // }).then(prods => {
+
+            //     let prodCates = [];
+
+            //     let productId = count + 1;
+
+            //     prods.forEach(prod => {
+
+            //         prodCates.push({
+            //             ProductId: productId,
+            //             CategoryId: req.body.categoryId
+            //         });
+
+            //         productId += 1;
+
+            //         // let command = "INSERT into `products_categories` (`ProductId`,`CategoryId`) values (" + prod.Id + "," + req.body.categoryId + ");";
+
+            //         // productCateRawQuery += command;
+            //     });
+
+            //     ProductCategory.bulkCreate(prodCates, {
+            //         returning: true
+            //     }).then(data => {
+            //         res.send({ message: 'updated some data' });
+            //     }).catch(err => {
+
+            //         console.log(err);
+            //         res.status(500).send({ message: err.message || err });
+
+            //     });
+
+            //     // sequelize.query(productCateRawQuery).then(data => {
+            //     //     res.send({ message: 'updated some data' });
+            //     // }).catch(err => {
+
+            //     //     console.log(err);
+            //     //     res.status(500).send({ message: err.message || err });
+
+            //     // });
+
+            // }).catch(err => {
+            //     res.status(500).send({
+            //         message: err.message || err
+            //     });
+            // })
 
         }).catch(err => {
             res.status(500).send({
