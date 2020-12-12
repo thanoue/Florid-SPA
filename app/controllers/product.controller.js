@@ -50,63 +50,85 @@ exports.addBulkOneCate = (req, res) => {
 
     let productCateRawQuery = '';
 
-    req.body.products.forEach(rawProduct => {
+    Product.findAll({
+        attributes: [
+            [sequelize.fn('MAX', sequelize.col('Id')), 'max']
+        ]
+    })
+        .then(count => {
 
-        products.push({
-            Name: rawProduct.Name,
-            Price: rawProduct.Price,
-            Unit: rawProduct.Unit,
-            PriceList: JSON.stringify([rawProduct.Price]),
-            Description: rawProduct.Description,
-            ImageUrl: rawProduct.ImageUrl
-        });
-    });
+            let id = count + 1;
 
-    Product.bulkCreate(products, {
-        returning: true
-    }).then(prods => {
+            req.body.products.forEach(rawProduct => {
 
-        console.log(prods);
+                products.push({
+                    Id: id,
+                    Name: rawProduct.Name,
+                    Price: rawProduct.Price,
+                    Unit: rawProduct.Unit,
+                    PriceList: JSON.stringify([rawProduct.Price]),
+                    Description: rawProduct.Description,
+                    ImageUrl: rawProduct.ImageUrl
+                });
 
-        let prodCates = [];
+                id += 1;
 
-        prods.forEach(prod => {
-
-            prodCates.push({
-                ProductId: prod.Id,
-                CategoryId: req.body.categoryId
             });
 
-            // let command = "INSERT into `products_categories` (`ProductId`,`CategoryId`) values (" + prod.Id + "," + req.body.categoryId + ");";
+            Product.bulkCreate(products, {
+                returning: true
+            }).then(prods => {
 
-            // productCateRawQuery += command;
-        });
+                let prodCates = [];
 
-        ProductCategory.bulkCreate(prodCates, {
-            returning: true
-        }).then(data => {
-            res.send({ message: 'updated some data' });
+                let productId = count + 1;
+
+                prods.forEach(prod => {
+
+                    prodCates.push({
+                        ProductId: productId,
+                        CategoryId: req.body.categoryId
+                    });
+
+                    productId += 1;
+
+                    // let command = "INSERT into `products_categories` (`ProductId`,`CategoryId`) values (" + prod.Id + "," + req.body.categoryId + ");";
+
+                    // productCateRawQuery += command;
+                });
+
+                ProductCategory.bulkCreate(prodCates, {
+                    returning: true
+                }).then(data => {
+                    res.send({ message: 'updated some data' });
+                }).catch(err => {
+
+                    console.log(err);
+                    res.status(500).send({ message: err.message || err });
+
+                });
+
+                // sequelize.query(productCateRawQuery).then(data => {
+                //     res.send({ message: 'updated some data' });
+                // }).catch(err => {
+
+                //     console.log(err);
+                //     res.status(500).send({ message: err.message || err });
+
+                // });
+
+            }).catch(err => {
+                res.status(500).send({
+                    message: err.message || err
+                });
+            })
+
         }).catch(err => {
-
-            console.log(err);
-            res.status(500).send({ message: err.message || err });
-
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving customer counting."
+            });
         });
-
-        // sequelize.query(productCateRawQuery).then(data => {
-        //     res.send({ message: 'updated some data' });
-        // }).catch(err => {
-
-        //     console.log(err);
-        //     res.status(500).send({ message: err.message || err });
-
-        // });
-
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || err
-        });
-    })
 
 }
 
