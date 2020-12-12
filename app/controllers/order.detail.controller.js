@@ -275,7 +275,7 @@ exports.updateOrderInfos = (req, res) => {
             });
 
             sequelize.query(rawCommand).then(data => {
-                res.send({ message: 'updated some customer' });
+                res.send({ message: 'updated some data' });
             }).catch(err => {
                 console.log(err);
                 res.status(500).send({ message: err });

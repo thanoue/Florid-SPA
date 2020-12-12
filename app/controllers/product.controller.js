@@ -8,6 +8,7 @@ const ProductTag = db.product_tag;
 const fs = require('fs');
 const ProductCategory = db.product_category;
 const Op = db.Sequelize.Op;
+const sequelize = db.sequelize;
 
 const appConstant = require('../config/app.config');
 const proudctImgFolderPath = appConstant.fileFolderPath.productImg;
@@ -41,6 +42,52 @@ exports.addBulkFromFiles = (req, res) => {
         });
         return;
     }
+}
+
+exports.addBulkOneCate = (req, res) => {
+
+    let products = [];
+
+    let productCateRawQuery = '';
+
+    req.body.products.forEach(rawProduct => {
+
+        products.push({
+            Name: rawProduct.Name,
+            Price: rawProduct.Price,
+            Unit: rawProduct.Unit,
+            PriceList: JSON.stringify([rawProduct.Price]),
+            Description: rawProduct.Description,
+            ImageUrl: rawProduct.ImageUrl
+        });
+    });
+
+    Product.bulkCreate(products, {
+        returning: true
+    }).then(prods => {
+
+        prods.forEach(prod => {
+
+            let command = "INSERT into `products_categories` (`ProductId`,`CategoryId`) values (" + prod.Id + "," + req.body.categoryId + ");";
+
+            productCateRawQuery += command;
+        });
+
+        sequelize.query(productCateRawQuery).then(data => {
+            res.send({ message: 'updated some data' });
+        }).catch(err => {
+
+            console.log(err);
+            res.status(500).send({ message: err.message || err });
+
+        });
+
+    }).catch(err => {
+        res.status(500).send({
+            message: err.message || err
+        });
+    })
+
 }
 
 exports.addBulk = (req, res) => {
