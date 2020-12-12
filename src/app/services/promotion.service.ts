@@ -94,13 +94,13 @@ export class PromotionService {
 
   }
 
-  getAvailablePromotions(currentTime: number) {
+  getAvailablePromotions(currentTime: number, isLoad: boolean = true) {
 
     let currentDate = this.formatDate(currentTime);
 
     return this.htttpService.post(API_END_POINT.getAvailable, {
       currentDate: currentDate
-    }).then(res => {
+    }, isLoad).then(res => {
 
       let promotions: Promotion[] = [];
 

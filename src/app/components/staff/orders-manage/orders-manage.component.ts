@@ -19,7 +19,6 @@ import { MyDatepipe } from 'src/app/pipes/date.pipe';
 import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
 
-declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
 declare function makingTimeRequest(saveCallBack: () => void, chooseFloristCallBack: () => void): any;
@@ -212,7 +211,8 @@ export class OrdersManageComponent extends BaseComponent {
         index: product.Index + 1,
         price: product.ModifiedPrice,
         additionalFee: product.AdditionalFee,
-        discount: this.getDetailDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount)
+        discount: this.getDetailDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount),
+        quantity: product.Quantity
       });
       tempSummary += product.ModifiedPrice;
     });
@@ -283,7 +283,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
 
         case 0:
@@ -490,7 +490,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ  đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
 
         case 1:
@@ -536,7 +536,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ  đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
 
         case 2:
@@ -601,7 +601,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ chi tiết đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
         case 0:
 
@@ -646,7 +646,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ chi tiết đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
 
         case 0:
@@ -691,7 +691,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
         case 0:
 
@@ -743,7 +743,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
         case 0:
 
@@ -804,7 +804,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
         case 0:
 
@@ -851,7 +851,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
         case 0:
 
@@ -992,7 +992,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Huỷ đơn'
     ];
 
-    menuOpen((index) => {
+    this.menuOpening((index) => {
       switch ((+index)) {
         case 0:
 

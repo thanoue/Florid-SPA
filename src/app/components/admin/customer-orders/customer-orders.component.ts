@@ -65,7 +65,8 @@ export class CustomerOrdersComponent extends BaseComponent {
         index: product.Index + 1,
         price: product.ModifiedPrice,
         additionalFee: product.AdditionalFee,
-        discount: this.getDetailDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount)
+        discount: this.getDetailDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount),
+        quantity: product.Quantity
       });
       tempSummary += product.ModifiedPrice;
     });

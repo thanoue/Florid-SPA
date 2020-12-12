@@ -118,7 +118,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   protected Init() {
 
-    this.promotionService.getAvailablePromotions((new Date()).getTime())
+    this.promotionService.getAvailablePromotions((new Date()).getTime(), false)
       .then(promotions => {
         this.promotions = promotions;
       });
@@ -235,41 +235,20 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   insertOrderDetail(viewModel: OrderDetailViewModel) {
 
-    let i = 0;
-    let index = this.globalOrder.OrderDetails.length;
-    let isAdd = true;
 
     if (this.detailIndex > -1) {
 
       this.globalOrder.OrderDetails[this.detailIndex] = viewModel;
 
-      if (viewModel.Quantity > 1)
-        i = 1;
-      else
-        isAdd = false;
 
     } else {
-      i = 0;
-    }
 
-    if (isAdd) {
-
-      for (; i < viewModel.Quantity; i++) {
-
-        const subItem = OrderDetailViewModel.DeepCopy(viewModel);
-
-        subItem.Quantity = 1;
-
-        subItem.Index = index;
-
-        this.globalOrder.OrderDetails.push(subItem);
-
-        index += 1;
-      }
+      this.globalOrder.OrderDetails.push(viewModel);
 
     }
 
     super.OnBackNaviage();
+
   }
 
   selectPromotion(index: number) {

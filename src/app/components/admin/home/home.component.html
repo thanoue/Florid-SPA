@@ -7,6 +7,11 @@
     <input type="file" (change)="onFileOrderChange($event)" multiple="false">
 </div>
 <div class="row">
+    <label>Tải lên danh sách Sản phẩm</label>
+    <input type="file" (change)="onFileProductChange($event)" multiple="false">
+    <input type="number" [(ngModel)]="category" name="category" placeholder="Ma danh muc...">
+</div>
+<div class="row">
     <label>Tải Xuống danh sách Hoa</label>
     <input type="button" (click)="exportProducts()">
 </div>

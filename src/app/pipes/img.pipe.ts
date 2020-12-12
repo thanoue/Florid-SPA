@@ -12,7 +12,11 @@ import { environment } from 'src/environments/environment';
 export class ImgPipe implements PipeTransform {
     transform(value: string, imgType: string): string {
 
-        if (!value || value == undefined) {
+        return ImgPipe.getImgUrl(value, imgType);
+    }
+
+    static getImgUrl(value: string, imgType: string): string {
+        if (!value || value == undefined || value == null) {
             return '../../../assets/images/temp.png';
         }
 

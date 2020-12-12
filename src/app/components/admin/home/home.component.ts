@@ -12,6 +12,8 @@ import { Order, OrderDetail } from 'src/app/models/entities/order.entity';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
+import { async } from '@angular/core/testing';
+import { Product } from 'src/app/models/entities/product.entity';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +22,8 @@ import { OrderDetailService } from 'src/app/services/order-detail.service';
 export class HomeComponent extends BaseComponent {
 
   protected PageCompnent = new PageComponent('Trang chủ', MenuItems.Home);
+
+  category: number = 0;
 
   constructor(private orderService: OrderService, private orderDetailService: OrderDetailService, private customerService: CustomerService, private router: Router, protected activatedRoute: ActivatedRoute, private productService: ProductService) {
     super();
@@ -87,6 +91,63 @@ export class HomeComponent extends BaseComponent {
       writeFile(wb, 'products.xlsx');
 
     });
+
+  }
+
+  onFileProductChange(evt: any) {
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    const reader: FileReader = new FileReader();
+
+    reader.onload = async (e: any) => {
+      const bstr: string = e.target.result;
+      const wb: WorkBook = read(bstr, { type: 'binary' });
+
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      let data = (utils.sheet_to_json(ws, { header: 1 })) as string[][];
+
+      let i = 1;
+      let products: Product[] = [];
+
+      while (i < data.length) {
+
+        var row = data[i];
+
+        if (!row[1] || row[1] == '')
+          continue;
+
+        let product = new Product();
+        product.Name = row[1];
+        product.Unit = row[2];
+        product.Price = parseInt(row[3]);
+        product.Description = '';
+        product.ImageUrl = '';
+
+        if (Number.isNaN(product.Price))
+          product.Price = 0;
+
+        products.push(product);
+
+        i++;
+
+      }
+
+      console.log(products);
+
+      console.log(this.category);
+
+      this.productService.insertListWithOneCate(this.category, products)
+        .then(() => {
+
+        });
+
+    }
+
+    reader.readAsBinaryString(target.files[0]);
 
   }
 

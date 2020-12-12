@@ -14,6 +14,7 @@ import { SearchBoxComponent } from './controls/search-box/search-box.component';
 import { StatusPointComponent } from './controls/status-point/status-point.component';
 import { MyCurrPipe, MyDatepipe, MyTimepipe } from './pipes/date.pipe';
 import { ImgPipe } from './pipes/img.pipe';
+import { AngularImageViewerModule } from "angular-x-image-viewer";
 
 // here is the default text string
 @Injectable()
@@ -99,6 +100,7 @@ export class DefaultIntl extends OwlDateTimeIntl {
         }),
         OwlDateTimeModule,
         OwlNativeDateTimeModule,
+        AngularImageViewerModule,
         DragDropModule],
     declarations: [
         SearchBoxComponent,
@@ -131,7 +133,8 @@ export class DefaultIntl extends OwlDateTimeIntl {
         MyTimepipe,
         PageSegmentComponent,
         StatusPointComponent,
-        MyCurrPipe
+        MyCurrPipe,
+        AngularImageViewerModule,
     ],
     providers: [
         { provide: OWL_DATE_TIME_LOCALE, useValue: 'vi' },

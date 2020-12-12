@@ -820,6 +820,49 @@ function openConfirm(message, okCallback, noCallback, cancelCallback, yesBTitle,
 
 }
 
+function viewProductImg(url, onCancel) {
+
+    if (isOnMobile()) {
+        if (typeof Android !== "undefined" && Android !== null) {
+
+            Android.viewImage(url);
+
+            if (onCancel != undefined)
+                onCancel();
+
+            return;
+
+        }
+
+        var res = {
+            dataType: 'viewImage',
+            data: url
+        }
+
+        webkit.messageHandlers.callback.postMessage(JSON.stringify(res));
+
+        if (onCancel != undefined)
+            onCancel();
+
+        return;
+    }
+
+    jQuery('.img-container').css('height', '100%');
+
+    jQuery("body").append("<div class='overlay-dark' id='tags-menu-bg'></div>");
+
+    jQuery("#view-product").slideDown(250);
+
+    jQuery("#tags-menu-bg").one('click', function () {
+
+        jQuery("#view-product").slideUp(250, function () {
+            jQuery("#tags-menu-bg").remove();
+            if (onCancel != undefined)
+                onCancel();
+        });
+    });
+}
+
 function openTagMenu() {
 
     jQuery("body").append("<div class='overlay-dark' id='tags-menu-bg'></div>");

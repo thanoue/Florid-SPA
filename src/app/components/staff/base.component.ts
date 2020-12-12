@@ -17,6 +17,7 @@ declare function isRememberPassChecking(): any;
 declare function passwordSaving(): any;
 declare function moveCursor(id: string, pos: number);
 declare function passwordClearing(): any;
+declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
 declare function addressRequest(districts: District[], resCallback: (res: string) => void, onDistrictChange: (res: string, newWardCallback: (wards: Ward[]) => void) => void): any;
 
 export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -116,6 +117,10 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
         this.IsOnTerminal = this.globalService.isRunOnTerimal();
         this.Init();
 
+    }
+
+    protected menuOpening(callback: (pos: number) => void, items: string[]) {
+        menuOpen(callback, items);
     }
 
     protected savedLoginInforReturn(loginName: string, passcode: string) {

@@ -67,7 +67,7 @@ export class CategoryService {
   }
 
   getAll(): Promise<Category[]> {
-    return this.htttpService.get(API_END_POINT.getAllCategories)
+    return this.htttpService.get(API_END_POINT.getAllCategories, false)
       .then(datas => {
         let categories: Category[] = [];
 

@@ -143,7 +143,8 @@ export class OrderService {
       orderDetailVM.MakingNote = orderDetail.MakingNote;
       orderDetailVM.DeliveryImageUrl = orderDetail.DeliveryImageUrl;
       orderDetailVM.ShippingNote = orderDetail.ShippingNote;
-      orderDetailVM.FixingFloristId = orderDetailVM.FixingFloristId;
+      orderDetailVM.FixingFloristId = orderDetail.FixingFloristId;
+      orderDetailVM.Quantity = orderDetail.Quantity ? orderDetail.Quantity : 1;
 
       orderVM.OrderDetails.push(orderDetailVM);
 
@@ -330,7 +331,7 @@ export class OrderService {
 
   getNormalDayOrdersCount(): Promise<number> {
 
-    return this.httpService.get(API_END_POINT.getNormalDayOrdersCount)
+    return this.httpService.get(API_END_POINT.getNormalDayOrdersCount, false)
       .then(data => {
         return data.max;
       })

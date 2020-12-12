@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy": "ng build --prod && firebase deploy --only hosting"
+    "deploy": "ng build --prod && firebase deploy --only hosting",
+    "public": "ng serve --host 0.0.0.0"
   },
   "private": true,
   "dependencies": {
@@ -25,10 +26,12 @@
     "@angular/platform-browser": "~9.0.0",
     "@angular/platform-browser-dynamic": "~9.0.0",
     "@angular/router": "~9.0.0",
+    "angular-x-image-viewer": "^2.0.1",
     "angular2-qrcode": "^2.0.3",
     "bcryptjs": "^2.4.3",
     "chart.js": "^2.9.4",
     "easyqrcodejs-nodejs": "^3.6.0",
+    "firebase": "^7.0.0 || ^8.0.0",
     "font-awesome": "^4.7.0",
     "guid": "0.0.12",
     "guid-typescript": "^1.0.9",
@@ -45,8 +48,7 @@
     "tslib": "^1.10.0",
     "typescript": "~3.7.5",
     "xlsx": "^0.16.2",
-    "zone.js": "~0.10.2",
-    "firebase": "^7.0.0 || ^8.0.0"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.1000.4",

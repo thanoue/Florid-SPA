@@ -66,9 +66,23 @@ export class ProductService {
         return product;
     }
 
+    insertListWithOneCate(categoryId: number, products: Product[]): Promise<any> {
+        return this.htttService.post(API_END_POINT.addBulkOneCate, {
+            products: products,
+            categoryId: categoryId
+        }).then(res => {
+            return;
+        }).catch(err => {
+            this.htttService.handleError(err);
+            throw err;
+        })
+    }
+
     updateProduct(product: Product, categoryIds: number[] = [], tagIds: number[] = [], productImg: File): Promise<any> {
 
         product = this.validateProductPrices(product);
+
+        console.log(product);
 
         let par = {
             categoryIds: JSON.stringify(categoryIds),

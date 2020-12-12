@@ -23,6 +23,7 @@ export class MyDatepipe implements PipeTransform {
 
 @Pipe({ name: 'myTimePipe' })
 export class MyTimepipe implements PipeTransform {
+    
     transform(date: Date | number, format: string = 'HH:mm'): string {
 
         if (typeof date === "number") {
@@ -42,6 +43,10 @@ export class MyTimepipe implements PipeTransform {
 export class MyCurrPipe implements PipeTransform {
 
     transform(value: number, ...args: any[]): any {
+        return new CurrencyPipe('vi-VN').transform(value, 'VND', 'symbol-narrow', '', 'vi-VN');
+    }
+
+    static currencyFormat(value: number): string {
         return new CurrencyPipe('vi-VN').transform(value, 'VND', 'symbol-narrow', '', 'vi-VN');
     }
 

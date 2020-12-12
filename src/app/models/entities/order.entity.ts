@@ -36,6 +36,7 @@ export class OrderDetail {
     MakingSortOrder = 0;
     ShippingSortOrder = 0;
     IsVATIncluded = false;
+    Quantity = 1;
 
     PurposeOf = '';
 

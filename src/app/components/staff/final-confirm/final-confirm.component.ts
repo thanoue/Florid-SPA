@@ -66,6 +66,7 @@ export class FinalConfirmComponent extends BaseComponent {
 
           this.orderDetailService.updateStatusByOrderId(this.orderDetail.OrderId, OrderDetailStates.Completed, (new Date().getTime()))
             .then(data => {
+
               this.router.navigate(['staff/orders-manage']);
 
             });

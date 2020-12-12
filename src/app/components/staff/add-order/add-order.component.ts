@@ -21,6 +21,8 @@ declare function dismissPurchaseDialog();
 declare function hideReceiverPopup(): any;
 declare function purchaseDoing(): any;
 declare function openQR(): any;
+declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
+
 
 @Component({
   selector: 'app-add-order',
@@ -57,7 +59,7 @@ export class AddOrderComponent extends BaseComponent {
 
   protected Init() {
 
-    this.promotionService.getAvailablePromotions((new Date()).getTime())
+    this.promotionService.getAvailablePromotions((new Date()).getTime(), false)
       .then(promotions => {
         this.promotions = promotions;
       });
@@ -304,6 +306,10 @@ export class AddOrderComponent extends BaseComponent {
 
   }
 
+  getDetailDiscount(orderDetail: OrderDetailViewModel): number {
+    return ExchangeService.getDetailDiscount(orderDetail);
+  }
+
   doPrintJob(isCompleting: boolean) {
 
     let tempSummary = 0;
@@ -315,9 +321,12 @@ export class AddOrderComponent extends BaseComponent {
         index: product.Index + 1,
         price: product.ModifiedPrice,
         additionalFee: product.AdditionalFee,
-        discount: this.getDetailDiscount(product)
+        discount: ExchangeService.getDetailDiscount(product),
+        quantity: product.Quantity
       });
-      tempSummary += product.ModifiedPrice;
+
+      tempSummary += product.ModifiedPrice * product.Quantity;
+
     });
 
     let purhases: purchaseItem[] = [];
@@ -414,6 +423,7 @@ export class AddOrderComponent extends BaseComponent {
           detail.Index = detailVM.Index;
           detail.PercentDiscount = detailVM.PercentDiscount;
           detail.AmountDiscount = detailVM.AmountDiscount;
+          detail.Quantity = detailVM.Quantity;
 
           detail.CustomerName = this.order.CustomerInfo.Name;
           detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
@@ -511,6 +521,7 @@ export class AddOrderComponent extends BaseComponent {
               this.completeOrder();
 
             }
+
           })
           .catch(error => {
 
@@ -597,10 +608,10 @@ export class AddOrderComponent extends BaseComponent {
         detail.AdditionalFee = 0;
       }
 
-      let amount = detail.ModifiedPrice;
+      let amount = detail.ModifiedPrice * detail.Quantity;
 
       if (detail.PercentDiscount && detail.PercentDiscount > 0)
-        amount -= (detail.ModifiedPrice / 100) * detail.PercentDiscount;
+        amount -= (amount / 100) * detail.PercentDiscount;
 
       if (detail.AmountDiscount && detail.AmountDiscount > 0)
         amount -= detail.AmountDiscount;
@@ -633,18 +644,7 @@ export class AddOrderComponent extends BaseComponent {
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
   }
 
-  getDetailDiscount(orderDetail: OrderDetailViewModel): number {
 
-    let discount = 0;
-
-    if (orderDetail.PercentDiscount && orderDetail.PercentDiscount > 0)
-      discount = (orderDetail.ModifiedPrice / 100) * orderDetail.PercentDiscount;
-
-    if (orderDetail.AmountDiscount && orderDetail.AmountDiscount > 0)
-      discount = discount + orderDetail.AmountDiscount;
-
-    return discount;
-  }
 
   onDiscountChanged(value) {
     this.onVATIncludedChange();
@@ -749,11 +749,30 @@ export class AddOrderComponent extends BaseComponent {
 
   editOrderDetail(index: number) {
 
-    const viewModel = OrderDetailViewModel.DeepCopy(this.order.OrderDetails[index]);
+    menuOpen((pos) => {
 
-    this.globalOrderDetail = viewModel;
+      const viewModel = OrderDetailViewModel.DeepCopy(this.order.OrderDetails[index]);
 
-    this.router.navigate([`/staff/order-detail/${index}`]);
+      switch (+pos) {
+        case 0:
+
+          this.globalOrderDetail = viewModel;
+
+          this.router.navigate([`/staff/order-detail/${index}`]);
+
+          break;
+
+        case 1:
+
+          viewModel.Index = this.order.OrderDetails.length;
+          this.order.OrderDetails.push(viewModel);
+
+          this.onVATIncludedChange();
+
+          break;
+      }
+    }, ['Chỉnh sửa', 'Sao chép']);
+
 
   }
 

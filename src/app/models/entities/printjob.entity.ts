@@ -36,6 +36,7 @@ export class PrintSaleItem {
     productName: string;
     index: number;
     price: number;
+    quantity: number;
     additionalFee: number;
     discount: number;
 }

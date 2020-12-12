@@ -1,24 +1,26 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from 'src/app/services/product.service';
 import { Product } from 'src/app/models/entities/product.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
-import { TempProduct } from 'src/app/models/entities/file.entity';
 import { TempProductService } from 'src/app/services/tempProduct.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { Tag } from 'src/app/models/entities/tag.entity';
 import { TagService } from 'src/app/services/tag.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { ProductSearchingMode } from 'src/app/models/enums';
+import { MyCurrPipe } from 'src/app/pipes/date.pipe';
+import { ImgPipe } from 'src/app/pipes/img.pipe';
+import { ImgType } from 'src/app/app.constants';
 
 declare function selectProductCategory(menuitems: { Name: string; Value: number; }[], callback: (index: any) => void): any;
 declare function filterFocus(): any;
+declare function viewProductImg(url: string, onCancel: () => void): any;
 
 @Component({
   selector: 'app-search-product',
   templateUrl: './select-product.component.html',
-  styleUrls: ['./select-product.component.css']
+  styleUrls: ['./select-product.component.css'],
 })
 export class SelectProductComponent extends BaseComponent {
 
@@ -27,9 +29,8 @@ export class SelectProductComponent extends BaseComponent {
   currentPage = 1;
   itemsPerPage = 18;
   currentMaxPage = 1;
-
+  images: string[];
   pagingProducts: Product[];
-
   categoryName = '';
   selectedProduct: Product;
   currentHardcodeUsedCount = -1;
@@ -47,6 +48,32 @@ export class SelectProductComponent extends BaseComponent {
     IsSelected: boolean
   }[];
 
+
+  viewProdOptions = {
+    btnClass: 'default', // The CSS class(es) that will apply to the buttons
+    zoomFactor: 0.1, // The amount that the scale will be increased by
+    containerBackgroundColor: '#ccc', // The color to use for the background. This can provided in hex, or rgb(a).
+    wheelZoom: true, // If true, the mouse wheel can be used to zoom in
+    allowDrag: true,
+    btnIcons: { // The icon classes that will apply to the buttons. By default, font-awesome is used.
+      zoomIn: 'fa fa-plus',
+      zoomOut: 'fa fa-minus',
+      rotateClockwise: 'fa fa-repeat',
+      rotateCounterClockwise: 'fa fa-undo',
+      next: 'fa fa-arrow-right',
+      prev: 'fa fa-arrow-left',
+      fullscreen: 'fa fa-arrows-alt',
+    },
+    btnShow: {
+      zoomIn: true,
+      zoomOut: true,
+      rotateClockwise: true,
+      rotateCounterClockwise: true,
+      next: true,
+      prev: true
+    }
+  };
+
   protected IsDataLosingWarning = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private orderDetailService: OrderDetailService,
@@ -62,6 +89,7 @@ export class SelectProductComponent extends BaseComponent {
     this.categories = [];
     this.globalTags = [];
     this.productSearchingMode = ProductSearchingMode.None;
+    this.images = [];
   }
 
   protected async Init() {
@@ -147,9 +175,45 @@ export class SelectProductComponent extends BaseComponent {
 
     this.selectedProduct = this.pagingProducts.filter(p => p.Id == data)[0];
 
-    // if (this.selectedProduct.PriceList.length > 1) {
+    let menuItems: string[] = ['Xem hình Sản phảm'];
 
-    // }
+    if (!this.selectedProduct.PriceList || this.selectedProduct.PriceList.length <= 0) {
+      this.selectedProduct.PriceList = [this.selectedProduct.Price];
+    }
+
+    this.selectedProduct.PriceList.forEach(price => {
+
+      menuItems.push(MyCurrPipe.currencyFormat(price));
+
+    });
+
+    this.menuOpening((pos) => {
+
+      switch (+pos) {
+
+        case 0:
+
+          let url = ImgPipe.getImgUrl(this.selectedProduct.ImageUrl, ImgType.ProductImg);
+          this.images = [url];
+          
+          setTimeout(() => {
+            viewProductImg(url, () => {
+              this.images = [];
+            });
+          }, 200);
+
+          break;
+
+        default:
+
+          this.selectedProduct.Price = this.selectedProduct.PriceList[pos - 1];
+
+          this.selectProduct();
+
+          break;
+      }
+
+    }, menuItems);
 
   }
 
@@ -246,7 +310,6 @@ export class SelectProductComponent extends BaseComponent {
     this.getProductsByPage(1);
 
   }
-
 
   selectProduct() {
 

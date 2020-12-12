@@ -2740,3 +2740,14 @@ div.popupDialog select {
     border: 5px solid #1fe8cb;
     border-radius: 20px;
 }
+
+.img-container{
+    height: 100%;
+}
+
+.view-img-popup-content{
+    padding: 5px;
+    border-radius: 5px;
+    width: 95%;
+    height: 500px;
+}

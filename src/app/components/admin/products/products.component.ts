@@ -173,6 +173,7 @@ export class ProductsComponent extends BaseComponent {
       }
     });
 
+
     this.productService.updateProduct(this.edittingProduct, categoryIds, tagIds, this.edittingFile)
       .then(res => {
         hideAdd();
@@ -348,6 +349,8 @@ export class ProductsComponent extends BaseComponent {
     this.edittingProduct = product.Product;
     this.edittingFile = null;
     this.edittingImageUrl = this.edittingProduct.ImageUrl;
+
+    console.log(this.edittingProduct);
 
     this.globalCategories.forEach(category => {
       let contain = product.Categories.filter(p => p.Id == category.Category.Id);

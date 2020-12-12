@@ -6,6 +6,7 @@ import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { ODSeenUserInfo } from 'src/app/models/entities/order.entity';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { User } from 'src/app/models/entities/user.entity';
+import { ExchangeService } from 'src/app/services/exchange.service';
 
 declare function openViewed(): any;
 
@@ -55,6 +56,10 @@ export class ViewOrderDetailComponent extends BaseComponent {
 
   }
 
+  getDetailDiscount(orderDetail: OrderDetailViewModel): number {
+    return ExchangeService.getDetailDiscount(orderDetail);
+  }
+  
   protected destroy() {
     this.canSeen = false;
   }

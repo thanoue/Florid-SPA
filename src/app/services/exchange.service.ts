@@ -1,6 +1,6 @@
 import { MembershipTypes, CusContactInfoTypes } from '../models/enums';
 import { Injectable } from '@angular/core';
-import { OrderDetailDeliveryInfo, OrderViewModel } from '../models/view.models/order.model';
+import { OrderDetailDeliveryInfo, OrderDetailViewModel, OrderViewModel } from '../models/view.models/order.model';
 import { OrderReceiverDetail, CustomerReceiverDetail } from '../models/entities/order.entity';
 import { getTranslationDeclStmts } from '@angular/compiler/src/render3/view/template';
 import { float } from 'html2canvas/dist/types/css/property-descriptors/float';
@@ -121,6 +121,19 @@ export class ExchangeService {
         });
 
         return amount / 100000;
+    }
+
+    static getDetailDiscount(orderDetail: OrderDetailViewModel): number {
+
+        let discount = 0;
+
+        if (orderDetail.PercentDiscount && orderDetail.PercentDiscount > 0)
+            discount = (orderDetail.ModifiedPrice / 100) * orderDetail.PercentDiscount;
+
+        if (orderDetail.AmountDiscount && orderDetail.AmountDiscount > 0)
+            discount = discount + orderDetail.AmountDiscount;
+
+        return discount;
     }
 
     static geExchangableAmount(gainedScore: number) {
