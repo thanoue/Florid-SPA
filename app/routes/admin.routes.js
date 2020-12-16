@@ -90,6 +90,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.getNormalDayOrdersCount
     )
+    app.get(`${orderPrefix}updateMemberDiscountApplies`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.updateMemberDiscountApplies
+    )
     app.post(`${orderPrefix}add`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.addOrder
@@ -238,6 +242,10 @@ module.exports = function (app) {
     app.post(`${customerPrefix}updateList`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.updateList
+    )
+    app.post(`${customerPrefix}updateCustomerIds`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.updateCustomerIds
     )
 
     //product

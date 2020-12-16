@@ -77,6 +77,38 @@ exports.createCustomers = (req, res) => {
     });
 }
 
+exports.updateCustomerIds = (req, res) => {
+
+    Customer.findAll({
+        where: {
+            NumberId: {
+                [Op.gt]: 875
+            }
+        }
+    }).then(customers => {
+        let numberId = 1017;
+
+        let orderCommand = ''
+        customers.forEach(customer => {
+            let id = `FD-0${numberId.toString()}`;
+
+            let conmmand = "UPDATE `customers` SET `Id` = \"" + id + "\" WHERE `Id` = \"" + customer.Id + "\";" +
+                "UPDATE `orders` SET `CustomerId` = \"" + id + "\" WHERE `CustomerId` = \"" + customer.Id + "\";";
+            orderCommand += conmmand;
+            numberId += 1;
+        });
+
+
+        Sequelize.query(orderCommand).then(data => {
+            res.send({ message: 'updated some customer' });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({ message: 'updated some customer' });
+        });
+
+    });
+};
+
 exports.updateReceiverList = (req, res) => {
 
     if (!req.body.customerId) {

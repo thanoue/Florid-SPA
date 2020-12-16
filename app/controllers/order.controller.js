@@ -124,6 +124,45 @@ exports.addBulk = (req, res) => {
     });
 }
 
+exports.updateMemberDiscountApplies = (req, res) => {
+
+    Order.findAll({
+        include: [
+            {
+                model: Customer,
+                where: {
+                    MembershipType: {
+                        [Op.ne]: 'NewCustomer'
+                    }
+                }
+            }
+        ]
+    }).then(data => {
+
+        let ids = [];
+
+        data.forEach(order => {
+            ids.push(order.Id);
+        });
+
+        Order.update({
+            IsMemberDiscountApply: true
+        }, {
+            where: {
+                Id: {
+                    [Op.in]: ids
+                }
+            }
+        }).then(updateData => {
+            res.send({ data: updateData });
+        })
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({ message: err.message | err });
+    });
+
+}
+
 exports.addOrder = (req, res) => {
 
     let body = req.body;
@@ -147,7 +186,8 @@ exports.addOrder = (req, res) => {
         CreatedDate: body.createdDate,
         PercentDiscount: body.percentDiscount ? body.percentDiscount : 0,
         AmountDiscount: body.amountDiscount ? body.amountDiscount : 0,
-        NumberId: numberId
+        NumberId: numberId,
+        IsMemberDiscountApply: body.isMemberDiscountApply ? body.isMemberDiscountApply : false
     }
 
     try {
