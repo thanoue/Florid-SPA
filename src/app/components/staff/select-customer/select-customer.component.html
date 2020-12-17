@@ -92,3 +92,29 @@
         </div>
     </form>
 </div>
+
+<div id="colorBoard" class="popup-content">
+    <ul class="colorList">
+        <li class="colorInfo">
+            <label>Họ tên:</label> <span>{{selectedCustomer.FullName}}</span>
+        </li>
+        <li class="colorInfo">
+            <label>SDT: </label><span>{{selectedCustomer.PhoneNumber}}</span>
+        </li>
+        <li class="colorInfo" *ngIf="selectedCustomer.Birthday && selectedCustomer.Birthday >0">
+            <label>Ngày sinh: </label><span>{{selectedCustomer.Birthday | myDatePipe}}</span>
+        </li>
+        <li *ngIf="selectedCustomer.ContactInfo && selectedCustomer.ContactInfo.Facebook" class="colorInfo">
+            <label>Facebook: </label><span>{{selectedCustomer.ContactInfo.Facebook }}</span>
+        </li>
+        <li *ngIf="selectedCustomer.ContactInfo && selectedCustomer.ContactInfo.Zalo" class="colorInfo">
+            <label>Zalo: </label><span>{{selectedCustomer.ContactInfo.Zalo }}</span>
+        </li>
+        <li *ngIf="selectedCustomer.ContactInfo && selectedCustomer.ContactInfo.Instagram" class="colorInfo">
+            <label>Instagram: </label><span>{{selectedCustomer.ContactInfo.Instagram}}</span>
+        </li>
+        <li *ngIf="selectedCustomer.ContactInfo && selectedCustomer.ContactInfo.Skype" class="colorInfo">
+            <label>Skype: </label><span>{{selectedCustomer.ContactInfo.Skype }}</span>
+        </li>
+    </ul>
+</div>

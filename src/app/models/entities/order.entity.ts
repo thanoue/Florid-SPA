@@ -9,6 +9,7 @@ export class Order extends BaseEntity {
     TotalPaidAmount = 0;
     OrderType: OrderType;
     NumberId: number;
+    IsMemberDiscountApply: boolean;
 
     GainedScore = 0;
     ScoreUsed = 0;

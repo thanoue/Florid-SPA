@@ -18,6 +18,7 @@ export class PrintJob extends BaseEntity {
     customerName: string;
     discount: number;
     purchaseItems: purchaseItem[];
+    isMemberDiscountApply: boolean;
 
     constructor() {
         super();

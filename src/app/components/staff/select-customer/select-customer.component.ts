@@ -9,6 +9,7 @@ import { OrderCustomerInfoViewModel } from 'src/app/models/view.models/order.mod
 import { ExchangeService } from 'src/app/services/exchange.service';
 
 declare function closeAddCustomerDialog(): any;
+declare function viewCustomerInfo(): any;
 declare function setSelectedCustomerItem(id: string): any;
 
 @Component({
@@ -31,6 +32,7 @@ export class SelectCustomerComponent extends BaseComponent {
     const key = 'searchProdReference';
     this.newCustomer = new Customer();
     this.customers = [];
+    this.selectedCustomer = new Customer();
 
     window[key] = {
       component: this, zone: this._ngZone,
@@ -41,6 +43,26 @@ export class SelectCustomerComponent extends BaseComponent {
 
   setSelectedCustomer(id: string) {
     this.selectedCustomer = this.customers.filter(p => p.Id === id)[0];
+
+    let menuItems = ["Chọn Khách hàng",
+      "Xem thông tin chi tiết"];
+
+    this.menuOpening((pos) => {
+      switch (+pos) {
+        case 0:
+
+          this.selectConfirm();
+
+          break;
+
+        case 1:
+
+          viewCustomerInfo();
+
+          break;
+      };
+
+    }, menuItems);
   }
 
   protected Init() {

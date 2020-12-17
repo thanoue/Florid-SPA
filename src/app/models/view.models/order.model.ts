@@ -16,6 +16,8 @@ export class OrderViewModel {
     DoneTime: number;
     Index: number;
 
+    IsMemberDiscountApply: boolean;
+
     PercentDiscount = 0;
     AmountDiscount = 0;
 

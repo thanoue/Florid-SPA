@@ -14,6 +14,15 @@
             </div>
         </div>
 
+        <div class="vatStatus">
+            <p>Áp dụng khuyến mãi thành viên</p>
+            <div class="vatScope">
+                <input type="checkbox" id="IsMemberDiscountApply" class="custom-checkbox" name="IsMemberDiscountApply"
+                    (change)="onMemberDiscountChange()" [(ngModel)]="order.IsMemberDiscountApply" value="1"><span
+                    class="main-bg vatCustom"></span>
+            </div>
+        </div>
+
         <label class="title-field">Mã đơn </label>
         <div class="form-group orderInfo borderless-field">
             <input type="text" name="OrderId" id="OrderId" [(ngModel)]="order.OrderId" [readonly]="isEdittingOrder"
@@ -73,15 +82,18 @@
                 </div>
             </li>
         </ul>
+
         <div class="vatStatus">
             <p>Bao gồm VAT</p>
             <div class="vatScope">
-                <input type="checkbox" id="VATIncluded" name="VATIncluded" (change)="onVATIncludedChange()"
-                    [(ngModel)]="order.VATIncluded" value="1"><span class="main-bg vatCustom"></span>
+                <input type="checkbox" id="VATIncluded" class="custom-checkbox" name="VATIncluded"
+                    (change)="onVATIncludedChange()" [(ngModel)]="order.VATIncluded" value="1"><span
+                    class="main-bg vatCustom"></span>
             </div>
         </div>
+
         <div class="orderTotal">
-            <p class="totalOld">Còn lại: <span class="orderPrice">{{totalBalance| myCurrPipe}}
+            <p class="totalOld">Còn lại: <span class="orderPrice">{{AcctualBalance| myCurrPipe}}
                 </span>
             </p>
             <p class="totalNew">Thành tiền: <span class="orderPrice">{{order.TotalAmount | myCurrPipe}}
@@ -89,6 +101,7 @@
             </p>
             <p class="totalExc">Đổi điểm: <span class="orderPrice">{{order.CustomerInfo.ScoreUsed}}</span></p>
         </div>
+
         <a href="javascript:void(0)" style="margin-top:2vh;" type="button" (click)="addPurchase()"
             class="btn main-btn w-100">
             Thanh toán</a>
@@ -134,8 +147,8 @@
             style="height: 69px;text-align: left;">
             <p class="recentInfo-name">{{promotion.Name}}</p>
             <span style="width: 25%;" class="recentInfo-phone">{{getPromotionAmount(promotion)}}</span>
-            <span style="width: 75%;"
-                class="recentInfo-date">{{promotion.StartTime | myDatePipe}}-{{promotion.EndTime | myDatePipe}}</span>
+            <span style="width: 75%;" class="recentInfo-date">{{promotion.StartTime | myDatePipe}}-{{promotion.EndTime |
+                myDatePipe}}</span>
         </li>
     </ul>
 </div>

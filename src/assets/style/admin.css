@@ -682,34 +682,34 @@ span.item-address {
     background: #2222f2;
 }
 
-#colorBoard .item-status span
+#colorBoard .item-status span,#customerInfo .item-status span
 {
     width: 20px;
     height: 20px;
 }
-#colorBoard .item-status {
+#colorBoard .item-status,#customerInfo .item-status {
     display: inline-block;
     margin-right: 20px;
 }
-div#colorBoard
+div#colorBoard,div#customerInfo
 {
     text-align: left;
 }
-#colorBoard label {
+#colorBoard label ,#customerInfo label {
     display: inline-block;
     font-size: 14px;
     margin-bottom: 0;
 }
-#colorBoard .colorInfo label + span {
+#colorBoard .colorInfo label + span, #customerInfo .colorInfo label + span {
     display: inline-block;
     margin-left: 20px;
     font-size: 14px;
     font-weight: 600;
 }
-#colorBoard li.colorInfo {
+#colorBoard li.colorInfo, #customerInfo li.colorInfo {
     margin-bottom: 15px;
 }
-#colorBoard li.colorInfo.colorItem
+#colorBoard li.colorInfo.colorItem, #customerInfo li.colorInfo.colorItem
 {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1304,7 +1304,7 @@ span.prodCharge {
     margin-left: 20px;
     height: 20px;
 }
-input#VATIncluded {
+input.custom-checkbox {
     width: 20px;
     height: 20px;
     position: absolute;
@@ -1326,12 +1326,12 @@ span.main-bg.vatCustom::before {
     color: #fff;
     display: none;
 }
-input#VATIncluded:checked + span.vatCustom.main-bg,
+input.custom-checkbox:checked + span.vatCustom.main-bg,
 input:checked + span.vatCustom.main-bg
 {
     background:var(--main-green);
 }
-input#VATIncluded:checked + span.vatCustom.main-bg::before,
+input.custom-checkbox:checked + span.vatCustom.main-bg::before,
 input:checked + span.vatCustom.main-bg::before
 {
     display: block;

@@ -760,6 +760,7 @@ function openConfirm(message, okCallback, noCallback, cancelCallback, yesBTitle,
 
     if (yesBTitle == undefined)
         yesBTitle = 'Có';
+
     if (noTitle == undefined)
         noTitle = 'Không';
 
@@ -807,12 +808,8 @@ function openConfirm(message, okCallback, noCallback, cancelCallback, yesBTitle,
             jQuery(this).remove();
             jQuery(".overlay-dark").remove();
 
-            if (noCallback != undefined) {
-                noCallback();
-            } else {
-                if (cancelCallback != undefined) {
-                    cancelCallback();
-                }
+            if (cancelCallback != undefined) {
+                cancelCallback();
             }
 
         });
@@ -861,6 +858,20 @@ function viewProductImg(url, onCancel) {
                 onCancel();
         });
     });
+}
+
+function viewCustomerInfo() {
+
+    appendInBody();
+
+    jQuery("#colorBoard").slideDown(250);
+
+    jQuery(".overlay-dark:not(.layer2)").one('click', function () {
+        jQuery('#colorBoard').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    });
+
 }
 
 function openTagMenu() {

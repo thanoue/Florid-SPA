@@ -67,6 +67,7 @@ export class OrderService {
     orderVM.CreatedDate = new Date(order.CreatedDate);
     orderVM.PercentDiscount = order.PercentDiscount;
     orderVM.AmountDiscount = order.AmountDiscount;
+    orderVM.IsMemberDiscountApply = order.IsMemberDiscountApply;
     orderVM.DoneTime = !order.DoneTime || order.DoneTime <= 0 ? order.CreatedDate : order.DoneTime;
 
     if (order.purchases) {
@@ -393,7 +394,8 @@ export class OrderService {
       orderType: order.OrderType,
       createdDate: order.Created,
       percentDiscount: order.PercentDiscount,
-      amountDiscount: order.AmountDiscount
+      amountDiscount: order.AmountDiscount,
+      isMemberDiscountApply: order.IsMemberDiscountApply
     })
       .then(data => {
 

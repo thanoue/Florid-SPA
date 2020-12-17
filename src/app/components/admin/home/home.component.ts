@@ -195,15 +195,12 @@ export class HomeComponent extends BaseComponent {
           if (order.Id.indexOf('_') > -1) {
 
             order.NumberId = -1;
-            order.OrderType = OrderType.SpecialDay;
 
           } else {
 
-            order.OrderType = OrderType.NormalDay;
-
             var int = parseInt(order.Id);
 
-            if (int != undefined && int != undefined && int != NaN) {
+            if (int != undefined && int != undefined && !Number.isNaN(int)) {
 
               order.NumberId = int;
 
@@ -212,16 +209,16 @@ export class HomeComponent extends BaseComponent {
               console.log('error id:', order.Id);
 
               order.NumberId = -1;
-              order.OrderType = OrderType.SpecialDay;
 
             }
 
           }
 
         } else {
+
           order.Id = Guid.create().toString();
           order.NumberId = -1;
-          order.OrderType = OrderType.SpecialDay;
+
         }
 
         order.CustomerId = row[0].toString();
@@ -427,7 +424,7 @@ export class HomeComponent extends BaseComponent {
 
             if (zaloViber.toLowerCase().indexOf('zalo') > -1) {
 
-              customer.ContactInfo.Zalo = zaloViber.replace('Zalo ', '').replace('zalo ', '');
+              customer.ContactInfo.Zalo = zaloViber;
 
             } else {
 

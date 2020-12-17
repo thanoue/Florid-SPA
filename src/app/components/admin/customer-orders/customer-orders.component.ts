@@ -107,7 +107,8 @@ export class CustomerOrdersComponent extends BaseComponent {
       customerName: order.CustomerInfo.Name,
       customerId: order.CustomerInfo.Id,
       discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
-      purchaseItems: purhases
+      purchaseItems: purhases,
+      isMemberDiscountApply: order.IsMemberDiscountApply
     };
 
     this.printJobService.addPrintJob(orderData);

@@ -12,7 +12,6 @@ import { PrintJobService } from 'src/app/services/print-job.service';
 import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';
 import { PromotionService } from 'src/app/services/promotion.service';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
-import { throwIfEmpty } from 'rxjs/operators';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { MembershipInfo } from 'src/app/models/entities/customer.entity';
 
@@ -44,6 +43,24 @@ export class AddOrderComponent extends BaseComponent {
   currentPayAmount: number;
   qrContent: string;
   qrContentTemplate = "";
+
+
+
+  get AcctualBalance(): number {
+
+    if (!this.order)
+      return 0;
+
+    let paidAmount = 0;
+    this.globalPurchases.forEach(purchase => {
+      if (purchase.Status == PurchaseStatus.Completed) {
+        paidAmount += purchase.Amount;
+      }
+    });
+
+    return this.order.TotalAmount - paidAmount;
+
+  }
 
   constructor(private router: Router,
     private orderService: OrderService,
@@ -102,6 +119,10 @@ export class AddOrderComponent extends BaseComponent {
     }
 
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+  }
+
+  onMemberDiscountChange() {
+    this.totalAmountCalculate();
   }
 
   getPromotionAmount(promotion: Promotion): string {
@@ -270,7 +291,9 @@ export class AddOrderComponent extends BaseComponent {
       }, null, 'Thanh Toán', 'Tiếp tục');
 
     } else {
+
       this.printConfirmation(isCompleting);
+
     }
 
   }
@@ -299,8 +322,6 @@ export class AddOrderComponent extends BaseComponent {
       this.orderConfirm(isCompleting);
 
     }, () => {
-
-      this.orderConfirm(isCompleting);
 
     });
 
@@ -355,7 +376,7 @@ export class AddOrderComponent extends BaseComponent {
       orderId: this.order.OrderId,
       summary: tempSummary,
       totalAmount: this.order.TotalAmount,
-      totalPaidAmount: this.order.TotalPaidAmount,
+      totalPaidAmount: this.order.TotalAmount - this.AcctualBalance,
       totalBalance: this.totalBalance,
       vatIncluded: this.order.VATIncluded,
       memberDiscount: this.order.CustomerInfo.DiscountPercent,
@@ -365,6 +386,7 @@ export class AddOrderComponent extends BaseComponent {
       customerName: this.order.CustomerInfo.Name,
       customerId: this.order.CustomerInfo.Id,
       discount: this.orderDiscount,
+      isMemberDiscountApply: this.order.IsMemberDiscountApply,
       purchaseItems: purhases
     };
 
@@ -391,6 +413,7 @@ export class AddOrderComponent extends BaseComponent {
     orderDB.OrderType = this.order.OrderType;
     orderDB.PercentDiscount = this.order.PercentDiscount;
     orderDB.AmountDiscount = this.order.AmountDiscount;
+    orderDB.IsMemberDiscountApply = this.order.IsMemberDiscountApply;
 
     this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {
@@ -571,7 +594,7 @@ export class AddOrderComponent extends BaseComponent {
 
     this.showSuccess('Đã thêm 1 thanh toán!');
 
-    this.totalAmountCalculate(this.order.VATIncluded);
+    this.totalAmountCalculate();
 
     if (this.totalBalance <= 0) {
 
@@ -582,25 +605,14 @@ export class AddOrderComponent extends BaseComponent {
       this.currentPayAmount = this.totalBalance;
       this.currentPurType = PurchaseMethods.Cash;
       this.currentPurStatus = PurchaseStatus.Completed;
-
     }
 
   }
 
-  totalAmountCalculate(isVATIncluded: boolean) {
+
+  totalAmountCalculate() {
 
     this.order.TotalAmount = 0;
-
-    let isWillApplyMemberDiscount = true;
-
-    if (this.order.AmountDiscount > 0 || this.order.PercentDiscount > 0)
-      isWillApplyMemberDiscount = false;
-
-    this.order.OrderDetails.forEach(detail => {
-      if (detail.PercentDiscount > 0 || detail.AmountDiscount > 0) {
-        isWillApplyMemberDiscount = false;
-      }
-    });
 
     this.order.OrderDetails.forEach(detail => {
 
@@ -608,7 +620,9 @@ export class AddOrderComponent extends BaseComponent {
         detail.AdditionalFee = 0;
       }
 
-      let amount = detail.ModifiedPrice * detail.Quantity;
+      let tempAmount = detail.ModifiedPrice * detail.Quantity;
+
+      let amount = tempAmount;
 
       if (detail.PercentDiscount && detail.PercentDiscount > 0)
         amount -= (amount / 100) * detail.PercentDiscount;
@@ -617,10 +631,11 @@ export class AddOrderComponent extends BaseComponent {
         amount -= detail.AmountDiscount;
 
 
-      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent && this.order.CustomerInfo.DiscountPercent > 0)
-        this.order.TotalAmount += ExchangeService.getFinalPrice(amount, this.order.CustomerInfo.DiscountPercent, detail.AdditionalFee, isWillApplyMemberDiscount);
+      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent && this.order.CustomerInfo.DiscountPercent > 0 && this.order.IsMemberDiscountApply)
+        this.order.TotalAmount += amount - (tempAmount / 100) * this.order.CustomerInfo.DiscountPercent + detail.AdditionalFee;
       else
         this.order.TotalAmount += amount + detail.AdditionalFee;
+
     });
 
     this.orderDiscount = 0;
@@ -635,16 +650,15 @@ export class AddOrderComponent extends BaseComponent {
       this.orderDiscount += this.order.AmountDiscount;
     }
 
-    if (isVATIncluded) {
+    if (this.order.VATIncluded) {
       this.order.TotalAmount = this.order.TotalAmount + this.order.TotalAmount * 0.1;
     }
 
     this.order.TotalAmount -= ExchangeService.geExchangableAmount(this.order.CustomerInfo.ScoreUsed);
 
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
+
   }
-
-
 
   onDiscountChanged(value) {
     this.onVATIncludedChange();
@@ -701,7 +715,7 @@ export class AddOrderComponent extends BaseComponent {
   }
 
   onVATIncludedChange() {
-    this.totalAmountCalculate(this.order.VATIncluded);
+    this.totalAmountCalculate();
   }
 
   scoreExchange() {
