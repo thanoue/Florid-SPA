@@ -21,6 +21,14 @@ exports.ODStatuses = {
     Canceled: 'Canceled'
 }
 
+exports.MemberShipType = {
+    All: 'All',
+    NewCustomer: 'NewCustomer',
+    Member: 'Member',
+    Vip: 'Vip',
+    VVip: 'VVip'
+}
+
 exports.Roles = {
     User: 'User',
     Admin: 'Admin',

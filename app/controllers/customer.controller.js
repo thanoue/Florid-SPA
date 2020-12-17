@@ -5,9 +5,11 @@ const CustomerReciverInfo = db.customerReceiverInfo;
 const CustomerSpecialDay = db.customerSpecialDay;
 const Sequelize = db.sequelize;
 const sequelize = db.sequelize;
+const Order = db.order;
 const Op = db.Sequelize.Op;
 const guid = require('guid');
 var fs = require('fs');
+const MemberShipType = require('../config/app.config').MemberShipType;
 
 exports.updateList = (req, res) => {
     let obj = [];
@@ -74,6 +76,67 @@ exports.createCustomers = (req, res) => {
         returning: true
     }).then(data => {
         res.send({ customers: customers });
+    });
+}
+
+exports.updateTotalAmount = (req, res) => {
+    Customer.findAll({
+        include: [
+            {
+                model: Order,
+                as: 'orders'
+            }
+        ]
+    }).then(customers => {
+
+        let updateCommand = '';
+
+        customers.forEach(customer => {
+
+            let totalAmount = 0;
+
+            if (customer.orders && customer.orders.length > 0 && customer.Id != 'KHACH_LE') {
+
+                customer.orders.forEach(order => {
+                    totalAmount += order.TotalAmount;
+                });
+
+                let score = totalAmount / 100000;
+
+                let memberShipType = MemberShipType.NewCustomer;
+
+                if (totalAmount < 5000000) {
+                    memberShipType = MemberShipType.NewCustomer;
+                }
+
+                if (totalAmount >= 5000000 && totalAmount < 10000000) {
+                    memberShipType = MemberShipType.Member;
+                }
+
+                if (totalAmount >= 10000000 && totalAmount < 30000000) {
+                    memberShipType = MemberShipType.Vip;
+                }
+
+                if (totalAmount >= 30000000) {
+                    memberShipType = MemberShipType.VVip;
+                }
+
+                let command = " update `customers` set `AccumulatedAmount` = " + totalAmount + ", `MembershipType` = \"" + memberShipType + "\" , `AvailableScore` = " + score +
+                    " where `Id` = \"" + customer.Id + "\";";
+
+                updateCommand += command;
+
+            }
+
+        });
+
+        Sequelize.query(updateCommand).then(data => {
+            res.send({ message: data });
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({ message: 'updated some customer' });
+        });
+
     });
 }
 

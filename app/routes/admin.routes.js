@@ -199,6 +199,9 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.getList
     )
+    app.get(`${customerPrefix}updateTotalAmount`,
+        customerController.updateTotalAmount
+    )
     app.post(`${customerPrefix}create`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.create
