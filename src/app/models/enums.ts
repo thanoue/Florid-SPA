@@ -56,7 +56,8 @@ export enum MenuItems {
     Promotion,
     Purchase,
     DaysChart,
-    MonthsChart
+    MonthsChart,
+    Debts,
 }
 
 export enum OrderDetailStates {
@@ -95,6 +96,7 @@ export enum PurchaseMethods {
 }
 
 export enum PurchaseStatus {
+    All = 'All',
     Canceled = 'Canceled',
     Waiting = 'Waiting',
     SentBack = 'SentBack',

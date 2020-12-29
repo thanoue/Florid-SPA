@@ -49,6 +49,7 @@ export class AddPurchaseComponent extends BaseComponent {
     this.currPurchase.Method = purchase.Method;
     this.currPurchase.Status = purchase.Status;
     this.currPurchase.OrderId = purchase.OrderId;
+    this.currPurchase.Note = purchase.Note;
 
     openAddPurchaseDialog();
 
@@ -63,6 +64,7 @@ export class AddPurchaseComponent extends BaseComponent {
     this.currPurchase.Method = PurchaseMethods.Banking;
     this.currPurchase.Status = PurchaseStatus.Completed;
     this.currPurchase.OrderId = '';
+    this.currPurchase.Note = '';
 
     openAddPurchaseDialog();
 

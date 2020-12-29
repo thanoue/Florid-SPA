@@ -17,6 +17,7 @@ export class Order extends BaseEntity {
     PercentDiscount = 0;
     AmountDiscount = 0;
 
+    DoneTime: number;
     Index: number;
 }
 

@@ -55,6 +55,7 @@ export class ViewPurchaseComponent extends BaseComponent {
     this.currentPurchase.Amount = purchase.Amount;
     this.currentPurchase.Method = purchase.Method;
     this.currentPurchase.Status = purchase.Status;
+    this.currentPurchase.Note = purchase.Note;
 
     purchaseDoing(() => {
 
@@ -74,6 +75,7 @@ export class ViewPurchaseComponent extends BaseComponent {
     this.currentPurchase.Amount = this.totalBalance;
     this.currentPurchase.Method = PurchaseMethods.Cash;
     this.currentPurchase.Status = PurchaseStatus.Completed;
+    this.currentPurchase.Note = ''
 
     purchaseDoing(() => {
 
@@ -119,6 +121,7 @@ export class ViewPurchaseComponent extends BaseComponent {
     purchase.Method = this.currentPurchase.Method;
     purchase.Status = this.currentPurchase.Status;
     purchase.AddingTime = new Date().getTime();
+    purchase.Note = this.currentPurchase.Note;
 
     this.order.TotalPaidAmount += purchase.Amount;
 

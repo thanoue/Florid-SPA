@@ -74,10 +74,12 @@ export const API_END_POINT = {
     getOrdersByStates: '/order/getByStates',
     getOrdersByCustomerId: '/order/getByCustomer',
     getById: '/order/getById',
+    getOrderNotLazyById: '/order/getNotLazyById',
     updateOrderFields: '/order/updateFields',
     getCompletedOrderByDayRange: '/order/getByDayRange',
     searchOrders: '/order/searchOrders',
     addBulkOrder: '/order/addBulk',
+    getDebts: '/order/getDebts',
 
     getAllDistricts: '/address/getAllDistricts',
     getAllWards: '/address/getAllWards',
@@ -111,6 +113,9 @@ export const API_END_POINT = {
     addPurchase: '/purchase/add',
     updatePurchaseStatus: '/purchase/updateStatus',
     bulkAddPurchase: '/purchase/bulkAdd',
+    getPurchasesByStatuses: '/purchase/getByStatuses',
+    updatePurchaseOrder: '/purchase/updateOrder',
+    assignPurchaseOrder: '/purchase/assignOrder',
 };
 
 export const IMAGE_FOLDER_PATHS = {

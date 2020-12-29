@@ -13,6 +13,9 @@
             <li [ngClass]="(currentMenu !== menus.Customer)?'menuItem':'menuItem active'">
                 <a routerLink="/admin/customers" class="menuItem-link"><i class="fa fa-users"></i>Khách Hàng</a>
             </li>
+            <li [ngClass]="(currentMenu !== menus.Promotion)?'menuItem':'menuItem active'">
+                <a routerLink="/admin/promotion" class="menuItem-link"><i class="fa fa-star"></i>Khuyến mãi</a>
+            </li>
             <li class="menuItem hasChildren">
                 <a href="javascript:void(0);" class="menuItem-link"><i class="fa fa-tasks"></i>Sản Phẩm</a>
                 <ul class="subMenu">
@@ -29,12 +32,21 @@
                     </li>
                 </ul>
             </li>
-            <!-- <li [ngClass]="(currentMenu !== menus.Order)?'menuItem':'menuItem active'">
-                <a href="#" class="menuItem-link"><i class="fa fa-file-text"></i>Đơn Hàng</a>
-            </li> -->
-            <li [ngClass]="(currentMenu !== menus.Promotion)?'menuItem':'menuItem active'">
-                <a routerLink="/admin/promotion" class="menuItem-link"><i class="fa fa-star"></i>Khuyến mãi</a>
+            <li class="menuItem hasChildren">
+                <a href="javascript:void(0);" class="menuItem-link"><i class="fa fa-tasks"></i>Thanh toán</a>
+                <ul class="subMenu">
+                    <li [ngClass]="(currentMenu !== menus.Purchase)?'menuItem':'menuItem active'">
+                        <a routerLink="/admin/purchases" class="menuItem-link"> <i class="fa fa-usd"> </i>Cập nhật
+                            thanh toán</a>
+                    </li>
+
+                    <li [ngClass]="(currentMenu !== menus.Debts)?'menuItem':'menuItem active'">
+                        <a routerLink="/admin/debts" class="menuItem-link"> <i class="fa fa-credit-card-alt"> </i>Công
+                            nợ</a>
+                    </li>
+                </ul>
             </li>
+
             <li class="menuItem hasChildren">
                 <a href="javascript:void(0);" class="menuItem-link"><i class="fa fa-line-chart"></i>Thống kê</a>
                 <ul class="subMenu">
@@ -49,10 +61,6 @@
                     <li [ngClass]="(currentMenu !== menus.MonthsChart)?'menuItem':'menuItem active'">
                         <a routerLink="/admin/monthly-chart" class="menuItem-link"><i class="fa fa-bar-chart"> </i>Biểu
                             đồ năm</a>
-                    </li>
-                    <li [ngClass]="(currentMenu !== menus.Purchase)?'menuItem':'menuItem active'">
-                        <a routerLink="/admin/product-tags" class="menuItem-link"><i class="fa fa-usd"> </i>Cập nhật
-                            thanh toán</a>
                     </li>
                 </ul>
             </li>

@@ -43,6 +43,7 @@ export class AddOrderComponent extends BaseComponent {
   currentPayAmount: number;
   qrContent: string;
   qrContentTemplate = "";
+  purchaseNote: string = '';
 
 
 
@@ -303,6 +304,7 @@ export class AddOrderComponent extends BaseComponent {
     this.currentPayAmount = this.totalBalance;
     this.currentPurType = PurchaseMethods.Cash;
     this.currentPurStatus = PurchaseStatus.Completed;
+    this.purchaseNote = '';
 
     purchaseDoing();
   }
@@ -414,6 +416,7 @@ export class AddOrderComponent extends BaseComponent {
     orderDB.PercentDiscount = this.order.PercentDiscount;
     orderDB.AmountDiscount = this.order.AmountDiscount;
     orderDB.IsMemberDiscountApply = this.order.IsMemberDiscountApply;
+    orderDB.DoneTime = isCompleting ? new Date().getTime() : 0;
 
     this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {
@@ -584,6 +587,7 @@ export class AddOrderComponent extends BaseComponent {
     purchase.Amount = +this.currentPayAmount;
     purchase.Method = this.currentPurType;
     purchase.Status = this.currentPurStatus;
+    purchase.Note = this.purchaseNote;
     purchase.AddingTime = new Date().getTime();
 
     this.globalPurchases.push(purchase);

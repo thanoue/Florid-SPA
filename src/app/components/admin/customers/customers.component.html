@@ -17,7 +17,7 @@
                         Xóa</button>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12  optionSearch">
+            <div class="col-md-3 col-xs-12  optionSearch">
                 <div class="form-group">
                     <app-search-box (searchTextInvoke)="searchCustomer($event)" [delayTimeSpan]="1000"
                         placeholder="Nhập tên hoặc SDT">
@@ -47,7 +47,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12  text-right optionPerPage">
+            <div class="col-md-5 col-xs-12  text-right optionPerPage">
                 <div class="form-group">
                     <label>Hiển thị </label>
                     <select class="form-control w-25 d-inline" [(ngModel)]="itemPerpage" name="itemPerpage" id="">
@@ -94,7 +94,7 @@
                         <a (click)="viewCusDetail(customer.Customer)" class="tdName">{{customer.Customer.FullName}}</a>
                     </td>
                     <td>{{customer.Customer.PhoneNumber}}</td>
-                    <td *ngIf="customer.Customer.Birthday">{{customer.Customer.Birthday |  date: 'dd/MM'}}</td>
+                    <td *ngIf="customer.Customer.Birthday">{{customer.Customer.Birthday | date: 'dd/MM'}}</td>
                     <td *ngIf="!customer.Customer.Birthday">--</td>
 
                     <td>{{customer.Customer.MembershipInfo.AccumulatedAmount | myCurrPipe }}
@@ -255,7 +255,7 @@
         <div class="form-action row">
             <div class="col-md-3">
                 <div class="btn-group w-100">
-                    <button type="submit" class="btn btn-outline-success w-100">Thêm Mới</button>
+                    <button type="submit" class="btn btn-outline-success w-100">Lưu</button>
                     <a href="javascript:void(0)" class="btn btn-outline-secondary" onclick="hideAdd()">Hủy</a>
                 </div>
             </div>

@@ -59,6 +59,9 @@ export class OrderService {
 
     let orderVM = new OrderViewModel();
 
+    if (order == null)
+      return null;
+
     orderVM.OrderId = order.Id;
     orderVM.TotalAmount = order.TotalAmount;
     orderVM.TotalPaidAmount = order.TotalPaidAmount;
@@ -81,10 +84,12 @@ export class OrderService {
         purchaseEntity.Amount = purchase.Amount;
         purchaseEntity.Method = purchase.Method;
         purchaseEntity.Status = purchase.Status;
+        purchaseEntity.Note = purchase.Note;
 
         orderVM.PurchaseItems.push(purchaseEntity);
 
       });
+
     }
 
     orderVM.CustomerInfo = new OrderCustomerInfoViewModel();
@@ -107,49 +112,53 @@ export class OrderService {
 
     }
 
-    order.orderDetails.forEach(orderDetail => {
+    if (order.orderDetails && order.orderDetails.length > 0) {
 
-      let orderDetailVM = new OrderDetailViewModel();
+      order.orderDetails.forEach(orderDetail => {
 
-      orderDetailVM.ProductName = orderDetail.ProductName;
-      orderDetailVM.OrderId = orderDetail.OrderId;
-      orderDetailVM.OrderDetailId = orderDetail.Id.toString();
-      orderDetailVM.State = orderDetail.State;
-      orderDetailVM.ProductId = orderDetail.ProductId;
-      orderDetailVM.ProductImageUrl = orderDetail.ProductImageUrl;
-      orderDetailVM.Index = orderDetail.Index;
-      orderDetailVM.DeliveryInfo.Address = orderDetail.ReceivingAddress;
-      orderDetailVM.DeliveryInfo.DateTime = new Date(orderDetail.ReceivingTime);
-      orderDetailVM.DeliveryInfo.FullName = orderDetail.ReceiverName;
-      orderDetailVM.DeliveryInfo.PhoneNumber = orderDetail.ReceiverPhoneNumber;
-      orderDetailVM.PurposeOf = orderDetail.PurposeOf;
-      orderDetailVM.OriginalPrice = orderDetail.ProductPrice;
-      orderDetailVM.ModifiedPrice = orderDetail.ProductPrice;
-      orderDetailVM.AdditionalFee = orderDetail.AdditionalFee;
-      orderDetailVM.MakingSortOrder = orderDetail.MakingSortOrder;
-      orderDetailVM.ShippingSortOrder = orderDetail.ShippingSortOrder;
-      orderDetailVM.IsVATIncluded = orderDetail.IsVATIncluded;
-      orderDetailVM.Description = orderDetail.Description;
-      orderDetailVM.CustomerName = orderDetail.CustomerName;
-      orderDetailVM.IsFromHardCodeProduct = orderDetail.IsHardcodeProduct;
-      orderDetailVM.CustomerPhoneNumber = orderDetail.CustomerPhoneNumber;
-      orderDetailVM.HardcodeImageName = orderDetail.HardcodeImageName;
-      orderDetailVM.PercentDiscount = orderDetail.PercentDiscount;
-      orderDetailVM.AmountDiscount = orderDetail.AmountDiscount;
-      orderDetailVM.DeliveryCompletedTime = orderDetail.DeliveryCompletedTime;
-      orderDetailVM.MakingStartTime = orderDetail.MakingStartTime;
-      orderDetailVM.MakingRequestTime = orderDetail.MakingRequestTime;
-      orderDetailVM.MakingCompletedTime = orderDetail.MakingCompletedTime;
-      orderDetailVM.ResultImageUrl = orderDetail.ResultImageUrl;
-      orderDetailVM.MakingNote = orderDetail.MakingNote;
-      orderDetailVM.DeliveryImageUrl = orderDetail.DeliveryImageUrl;
-      orderDetailVM.ShippingNote = orderDetail.ShippingNote;
-      orderDetailVM.FixingFloristId = orderDetail.FixingFloristId;
-      orderDetailVM.Quantity = orderDetail.Quantity ? orderDetail.Quantity : 1;
+        let orderDetailVM = new OrderDetailViewModel();
 
-      orderVM.OrderDetails.push(orderDetailVM);
+        orderDetailVM.ProductName = orderDetail.ProductName;
+        orderDetailVM.OrderId = orderDetail.OrderId;
+        orderDetailVM.OrderDetailId = orderDetail.Id.toString();
+        orderDetailVM.State = orderDetail.State;
+        orderDetailVM.ProductId = orderDetail.ProductId;
+        orderDetailVM.ProductImageUrl = orderDetail.ProductImageUrl;
+        orderDetailVM.Index = orderDetail.Index;
+        orderDetailVM.DeliveryInfo.Address = orderDetail.ReceivingAddress;
+        orderDetailVM.DeliveryInfo.DateTime = new Date(orderDetail.ReceivingTime);
+        orderDetailVM.DeliveryInfo.FullName = orderDetail.ReceiverName;
+        orderDetailVM.DeliveryInfo.PhoneNumber = orderDetail.ReceiverPhoneNumber;
+        orderDetailVM.PurposeOf = orderDetail.PurposeOf;
+        orderDetailVM.OriginalPrice = orderDetail.ProductPrice;
+        orderDetailVM.ModifiedPrice = orderDetail.ProductPrice;
+        orderDetailVM.AdditionalFee = orderDetail.AdditionalFee;
+        orderDetailVM.MakingSortOrder = orderDetail.MakingSortOrder;
+        orderDetailVM.ShippingSortOrder = orderDetail.ShippingSortOrder;
+        orderDetailVM.IsVATIncluded = orderDetail.IsVATIncluded;
+        orderDetailVM.Description = orderDetail.Description;
+        orderDetailVM.CustomerName = orderDetail.CustomerName;
+        orderDetailVM.IsFromHardCodeProduct = orderDetail.IsHardcodeProduct;
+        orderDetailVM.CustomerPhoneNumber = orderDetail.CustomerPhoneNumber;
+        orderDetailVM.HardcodeImageName = orderDetail.HardcodeImageName;
+        orderDetailVM.PercentDiscount = orderDetail.PercentDiscount;
+        orderDetailVM.AmountDiscount = orderDetail.AmountDiscount;
+        orderDetailVM.DeliveryCompletedTime = orderDetail.DeliveryCompletedTime;
+        orderDetailVM.MakingStartTime = orderDetail.MakingStartTime;
+        orderDetailVM.MakingRequestTime = orderDetail.MakingRequestTime;
+        orderDetailVM.MakingCompletedTime = orderDetail.MakingCompletedTime;
+        orderDetailVM.ResultImageUrl = orderDetail.ResultImageUrl;
+        orderDetailVM.MakingNote = orderDetail.MakingNote;
+        orderDetailVM.DeliveryImageUrl = orderDetail.DeliveryImageUrl;
+        orderDetailVM.ShippingNote = orderDetail.ShippingNote;
+        orderDetailVM.FixingFloristId = orderDetail.FixingFloristId;
+        orderDetailVM.Quantity = orderDetail.Quantity ? orderDetail.Quantity : 1;
 
-    });
+        orderVM.OrderDetails.push(orderDetailVM);
+
+      });
+    }
+
 
     return orderVM;
   }
@@ -260,11 +269,62 @@ export class OrderService {
 
   }
 
+  getDebtOrders(page: number, size: number, startTime: number, endTime: number): Promise<{
+    orders: OrderViewModel[],
+    totalItemCount: number,
+    totalPages: number
+  }> {
+
+    return this.httpService.post(API_END_POINT.getDebts, {
+      page: page - 1,
+      size: size,
+      startTime: startTime,
+      endTime: endTime
+    }).then(data => {
+
+      let res: {
+        orders: OrderViewModel[],
+        totalItemCount: number,
+        totalPages: number
+      } = {
+        totalItemCount: 0,
+        totalPages: 0,
+        orders: []
+      };
+
+      res.totalItemCount = data.totalItemCount;
+      res.totalPages = data.totalPages;
+      res.orders = this.getOrderVMsByRaw(data.items);
+
+      return res;
+
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+
+  }
+
   getById(id: string): Promise<OrderViewModel> {
     return this.httpService.post(API_END_POINT.getById, {
       id: id
     }).then(data => {
-      return this.getOrderVMByRaw(data.order);
+      if (data)
+        return this.getOrderVMByRaw(data.order);
+      return null;
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });;
+  }
+
+  getSingleById(id: string): Promise<OrderViewModel> {
+    return this.httpService.post(API_END_POINT.getOrderNotLazyById, {
+      id: id
+    }).then(data => {
+      if (data)
+        return this.getOrderVMByRaw(data.order);
+      return null;
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;
@@ -395,7 +455,8 @@ export class OrderService {
       createdDate: order.Created,
       percentDiscount: order.PercentDiscount,
       amountDiscount: order.AmountDiscount,
-      isMemberDiscountApply: order.IsMemberDiscountApply
+      isMemberDiscountApply: order.IsMemberDiscountApply,
+      doneTime: order.DoneTime
     })
       .then(data => {
 

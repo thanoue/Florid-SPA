@@ -16,7 +16,7 @@
                             class="fa fa-remove"></i> Xóa</button>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12  optionSearch">
+            <div class="col-md-3 col-xs-12  optionSearch">
                 <app-search-box (searchTextInvoke)="searchProduct($event)" [delayTimeSpan]="1000"
                     placeholder="Tên Sản phẩm...">
                 </app-search-box>
@@ -34,7 +34,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12  text-right optionPerPage">
+            <div class="col-md-5 col-xs-12  text-right optionPerPage">
                 <div class="form-group">
                     <label>Hiển thị </label>
                     <select class="form-control w-25 d-inline" [(ngModel)]="itemPerpage" name="itemPerpage" id="">

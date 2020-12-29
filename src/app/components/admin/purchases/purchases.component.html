@@ -1,0 +1,177 @@
+<div class="listWrap">
+    <!-- Top of List Component -->
+    <div class="listHeader">
+        <div class="row listAddNew">
+            <div class="col-xs-12 col-md-2">
+                <button class="btn btn-outline-info d-block w-100" (click)="addRequest()" role="button">Thêm
+                    Mới</button>
+            </div>
+        </div>
+        <div class="row listOptions">
+            <div class="col-md-2 col-xs-12  optionDelete">
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" name="" id=""
+                        (change)="checkAllChange(!isSelectAll)" value="checkedValue">
+                    <button type="button" class="btn btn-outline-danger"><i class="fa fa-remove"></i>
+                        Xóa</button>
+                </div>
+            </div>
+            <!-- <div class="col-md-4 col-xs-12  optionSearch">
+                <div class="form-group">
+                    <app-search-box (searchTextInvoke)="searchPurchase($event)" [delayTimeSpan]="1000"
+                        placeholder="Nhập tên hoặc SDT">
+                    </app-search-box>
+                    <button type="submit" class="btn btn-info position-absolute "><i class="fa fa-search"></i></button>
+                </div>
+            </div> -->
+            <div class="col-md-4 col-xs-12">
+                <div class="form-group">
+                    <input [owlDateTime]="dt1" [selectMode]="'range'" [(ngModel)]="selectedDates"
+                        [owlDateTimeTrigger]="dt1" name="currentDate" class="mainForm"
+                        style="border-radius:0px;border-bottom: 2px solid #ddd;">
+                    <owl-date-time [pickerType]="'calendar'" (afterPickerClosed)="rangeSelected()" #dt1>
+                    </owl-date-time>
+                </div>
+            </div>
+            <div class="col-md-2 col-xs-12  cateFilter">
+                <div class="form-group">
+                    <select class="form-control d-inline" [(ngModel)]="selectedPurchaseStatus"
+                        name="selectedPurchaseStatus" id="">
+                        <option [ngValue]="'All'">
+                            Tất cả
+                        </option>
+                        <option [ngValue]="'Canceled'">
+                            Đã huỷ
+                        </option>
+                        <option [ngValue]="'Waiting'">
+                            Đang chờ
+                        </option>
+                        <option [ngValue]="'SentBack'">
+                            Đã trả lại KH
+                        </option>
+                        <option [ngValue]="'Completed'">
+                            Đã hoàn tất
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12  text-right optionPerPage">
+                <div class="form-group">
+                    <label>Hiển thị </label>
+                    <select class="form-control w-25 d-inline" [(ngModel)]="itemPerpage" name="itemPerpage" id="">
+                        <option [ngValue]="10"> 10</option>
+                        <option [ngValue]="20">20</option>
+                        <option [ngValue]="40">40</option>
+                        <option [ngValue]="60">60</option>
+                    </select>
+                    <label> dòng / <strong>{{itemTotalCount}} dòng</strong></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content of List Component -->
+    <div class="listContent">
+        <table class="table table-bordered table-hover table-responsive-xl">
+            <thead class="table-info">
+                <tr>
+                    <th scope="col" style="width: 10%">ID</th>
+                    <th scope="col">Mã đơn hàng</th>
+                    <th scope="col">Số tiền</th>
+                    <th scope="col">Phương thức</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Thời gian</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let purchase of purchases">
+                    <td scope="row">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" name="" id=""
+                                    [(ngModel)]="purchase.IsChecked" value="checkedValue">
+                                {{purchase.Purchase.Id}}
+                            </label>
+                        </div>
+                    </td>
+                    <td>{{purchase.Purchase.OrderId}}</td>
+                    <td>{{purchase.Purchase.Amount | myCurrPipe}}</td>
+                    <td>{{getMethodDisplay(purchase.Purchase.Method)}}</td>
+                    <td>{{getStatusDisplay(purchase.Purchase.Status)}}</td>
+                    <td>{{purchase.Purchase.AddingTime | myDatePipe}}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a type="button" (click)="editPurchase(purchase.Purchase)"
+                                class="btn btn-outline-secondary"><i class="fa  fa-pencil"></i>Cập nhật</a>
+                            <button type="button" (click)="deletePurchase(purchase.Purchase)"
+                                class="btn btn-outline-danger"><i class="fa fa-remove"></i>
+                                Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Bottom of List Component -->
+    <app-page-segment [pageCount]="pageCount" (pageChanged)="pageChanged($event)">
+
+    </app-page-segment>
+</div>
+<div class="popupContent" id="purchaseSetup">
+    <h4 class="userName">Thêm/Sửa thanh toán</h4>
+    <hr class="adminSeperate">
+    <form #form="ngForm" (submit)="savePurchase(form)" autocomplete="off">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="OrderId">Mã đơn hàng</label>
+                <input type="text" class="form-control" [(ngModel)]="currentPurchase.OrderId" id="OrderId"
+                    name="OrderId">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="Method">Phương thức thanh toán</label>
+                <select class="form-control" [(ngModel)]="currentPurchase.Method" name="Method" id="Method">
+                    <option selected>Chọn...</option>
+                    <option [ngValue]="'Cash'">Tiền mặt</option>
+                    <option [ngValue]="'Banking'">Chuyển khoản</option>
+                    <option [ngValue]="'Momo'">Ví MOMO</option>
+                </select>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="Status">Trạng thái</label>
+                <select class="form-control" [(ngModel)]="currentPurchase.Status" name="Status" id="Status">
+                    <option selected>Chọn...</option>
+                    <option [ngValue]="'Waiting'">Đang đợi</option>
+                    <option [ngValue]="'Completed'">Đã nhận tiền</option>
+                    <option [ngValue]="'SentBack'">Đã hoàn trả</option>
+                    <option [ngValue]="'Canceled'">Đã huỷ</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="OrderId">Số tiền</label>
+                <input type="text" class="form-control" [(ngModel)]="currentPurchase.Amount" id="Amount" name="Amount">
+            </div>
+            <div class="form-group col-md-6">
+                <label>Thời gian nhận được tiền: </label>
+                <input class="form-control" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"
+                    [(ngModel)]="curentAddingDate" name="curentAddingDate" class="mainForm">
+                <owl-date-time [stepMinute]="5" #dt2></owl-date-time>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="OrderId">Ghi chú</label>
+                <input type="text" class="form-control" [(ngModel)]="currentPurchase.Note" id="Note" name="Note">
+            </div>
+        </div>
+        <div class="form-action row">
+            <div class="col-md-3">
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-outline-success w-100">Lưu</button>
+                    <a href="javascript:void(0)" class="btn btn-outline-secondary" onclick="hideAdd()">Hủy</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

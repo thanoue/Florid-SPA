@@ -8,7 +8,7 @@
             <div class="col-md-4 col-xs-12">
                 <div class="form-group">
                     <input [owlDateTime]="dt1" [selectMode]="'range'" [(ngModel)]="selectedDates"
-                        [owlDateTimeTrigger]="dt1" name="currentDate" class="mainForm"
+                        [owlDateTimeTrigger]="dt1" name="selectedDates" class="mainForm"
                         style="border-radius:0px;border-bottom: 2px solid #ddd;">
                     <owl-date-time [pickerType]="'calendar'" (afterPickerClosed)="rangeSelected()" #dt1>
                     </owl-date-time>

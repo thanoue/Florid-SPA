@@ -7,4 +7,5 @@ export class Purchase {
     Status: PurchaseStatus;
     Method: PurchaseMethods;
     AddingTime: number;
+    Note: string;
 }

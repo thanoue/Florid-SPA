@@ -50,6 +50,10 @@
                 <input type="tel" name="Amount" id="Amount" (input)="onPayChanged($event.target.value)"
                     (focus)="onPayFocus()" [(ngModel)]="currentPurchase.Amount" class="mainForm">
             </div>
+            <div class="form-group">
+                <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Note">Ghi Chú</label>
+                <input type="tel" name="Note" id="Note" [(ngModel)]="currentPurchase.Note" class="mainForm">
+            </div>
             <div class=" form-group">
                 <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Method">Tình trạng thanh
                     toán</label>

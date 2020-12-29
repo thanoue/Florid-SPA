@@ -18,6 +18,8 @@ import { ProductTagComponent } from './product-tag/product-tag.component';
 import { ProductsComponent } from './products/products.component';
 import { PromotionComponent } from './promotion/promotion.component';
 import { UsersComponent } from './users/users.component';
+import { PurchasesComponent } from './purchases/purchases.component';
+import { DebtsComponent } from './debts/debts.component';
 
 // routes
 export const ROUTES: Routes = [
@@ -82,6 +84,14 @@ export const ROUTES: Routes = [
             {
                 path: 'monthly-chart',
                 component: MonthlyChartComponent,
+            },
+            {
+                path: 'purchases',
+                component: PurchasesComponent,
+            },
+            {
+                path: 'debts',
+                component: DebtsComponent,
             }
         ]
     },
@@ -110,7 +120,9 @@ export const ROUTES: Routes = [
         MonthlySummaryComponent,
         ChartSummaryComponent,
         MonthlyChartComponent,
-        LoginComponent
+        LoginComponent,
+        PurchasesComponent,
+        DebtsComponent
     ]
 })
 export class AdminModule { }

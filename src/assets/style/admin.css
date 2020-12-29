@@ -2027,6 +2027,7 @@ nav#sideContent {
     padding: 20px;
     box-shadow: 0px 0px 10px 5px #999;
     transition: 350ms;
+    overflow-y: auto;
 }
 .mini nav#sideContent
 {
@@ -2289,10 +2290,10 @@ span.icon-bar.bottom-bar
     font-size: 14px;
 }
 /* ============================================CONTENT  */
-.col-md-4.optionPerPage
+/* .col-md-4.optionPerPage
 {
     max-width: 28%;
-}
+} */
 .col-md-4.optionSearch {
     max-width: 38%;
     flex: 0 0 38%;

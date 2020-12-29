@@ -398,6 +398,14 @@ function showCustomerSetupPopup() {
     jQuery('#customerAdd').slideDown(350);
 }
 
+function showPurchaseSetupPopup() {
+    jQuery('#purchaseSetup').slideDown(350);
+}
+
+function showDebtSetupPopup() {
+    jQuery('#debtsPopup').slideDown(350);
+}
+
 function showTagEditPopup() {
     jQuery("#tagAddPopup").slideDown(350);
 }

@@ -1,0 +1,196 @@
+<div class="listWrap">
+    <!-- Top of List Component -->
+    <div class="listHeader">
+        <div class="row listOptions">
+            <div class="col-md-2 col-xs-12  optionDelete">
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" name="" id="" value="checkedValue">
+                    <button type="button" class="btn btn-outline-danger"><i class="fa fa-remove"></i>
+                        Xóa</button>
+                </div>
+            </div>
+            <div class="col-md-5 col-xs-12">
+                <div class="form-group">
+                    <input [owlDateTime]="dt1" [selectMode]="'range'" [(ngModel)]="selectedDates"
+                        [owlDateTimeTrigger]="dt1" name="currentDate" class="mainForm"
+                        style="border-radius:0px;border-bottom: 2px solid #ddd;">
+                    <owl-date-time [pickerType]="'calendar'" (afterPickerClosed)="rangeSelected()" #dt1>
+                    </owl-date-time>
+                </div>
+            </div>
+            <div class="col-md-5 col-xs-12  text-right optionPerPage">
+                <div class="form-group">
+                    <label>Hiển thị </label>
+                    <select class="form-control w-25 d-inline" [(ngModel)]="itemPerpage" name="itemPerpage" id="">
+                        <option [ngValue]="10"> 10</option>
+                        <option [ngValue]="20">20</option>
+                        <option [ngValue]="40">40</option>
+                        <option [ngValue]="60">60</option>
+                    </select>
+                    <label> dòng / <strong>{{itemTotalCount}} dòng</strong></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content of List Component -->
+    <div class="listContent">
+        <table class="table table-bordered table-hover table-responsive-xl">
+            <thead class="table-info">
+                <tr>
+                    <th scope="col" style="width: 10%">Mã đơn</th>
+                    <th scope="col">Khách hàng</th>
+                    <th scope="col">Thành tiền</th>
+                    <th scope="col">Phần Chưa TT</th>
+                    <th scope="col">Thời gian</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of orders">
+                    <td scope="row">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" name="IsChecked" id=""
+                                    [(ngModel)]="order.IsChecked" value="checkedValue">
+                                {{order.Order.OrderId}}
+                            </label>
+                        </div>
+                    </td>
+
+                    <td> <a href="javascript:void(0)" class="tdName"
+                            (click)="viewCusDetail(order.Order.CustomerInfo)">{{order.Order.CustomerInfo?
+                            order.Order.CustomerInfo.Name : '' }}</a> </td>
+                    <td>{{order.Order.TotalAmount | myCurrPipe}}</td>
+                    <td>{{order.Order.TotalAmount - order.Order.TotalPaidAmount | myCurrPipe}}</td>
+                    <td>{{order.Order.DoneTime | myDatePipe}}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a type="button" (click)="selectPurchase(order.Order)" class="btn btn-outline-secondary"><i
+                                    class="fa  fa-pencil"></i>Cập nhật</a>
+                            <button type="button" (click)="deleteOrder(order.Order)" class="btn btn-outline-danger"><i
+                                    class="fa fa-remove"></i>
+                                Xóa</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Bottom of List Component -->
+    <app-page-segment [pageCount]="pageCount" (pageChanged)="pageChanged($event)">
+
+    </app-page-segment>
+</div>
+
+<div class="popupContent" id="debtsPopup">
+    <h4 class="userName">Mã HD: {{currentOrder.OrderId}}, KH: {{currentOrder.CustomerInfo?
+        currentOrder.CustomerInfo.Name : ''}}, Công nợ: {{currentOrder.TotalAmount - currentOrder.TotalPaidAmount |
+        myCurrPipe}}</h4>
+    <hr class="adminSeperate">
+    <!-- Top of List Component -->
+    <div class="listHeader">
+        <div class="row listAddNew">
+            <div class="col-xs-12 col-md-2">
+                <button class="btn btn-outline-info d-block w-100" (click)="addPurchase()" role="button">Thêm thanh
+                    toán</button>
+            </div>
+        </div>
+        <div class="row listOptions">
+            <div class="col-md-5 col-xs-12">
+                <div class="form-group">
+                    <input [owlDateTime]="dt2" [selectMode]="'range'" [(ngModel)]="purchaseSelectedDates"
+                        [owlDateTimeTrigger]="dt2" name="purchaseSelectedDates" class="mainForm"
+                        style="border-radius:0px;border-bottom: 2px solid #ddd;">
+                    <owl-date-time [pickerType]="'calendar'" (afterPickerClosed)="purchaseRangeSelected()" #dt2>
+                    </owl-date-time>
+                </div>
+            </div>
+            <div class="col-md-2 col-xs-12  cateFilter">
+                <div class="form-group">
+                    <select class="form-control d-inline" [(ngModel)]="selectedPurchaseStatus"
+                        name="selectedPurchaseStatus" id="">
+                        <option [ngValue]="'All'">
+                            Tất cả
+                        </option>
+                        <option [ngValue]="'Canceled'">
+                            Đã huỷ
+                        </option>
+                        <option [ngValue]="'Waiting'">
+                            Đang chờ
+                        </option>
+                        <option [ngValue]="'SentBack'">
+                            Đã trả lại KH
+                        </option>
+                        <option [ngValue]="'Completed'">
+                            Đã hoàn tất
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-5 col-xs-12  text-right optionPerPage">
+                <div class="form-group">
+                    <label>Hiển thị </label>
+                    <select class="form-control w-25 d-inline" [(ngModel)]="purchaseItemPerpage"
+                        name="purchaseItemPerpage" id="">
+                        <option [ngValue]="5">5</option>
+                        <option [ngValue]="7">7</option>
+                        <option [ngValue]="10">10</option>
+                        <option [ngValue]="15">15</option>
+                    </select>
+                    <label> dòng / <strong>{{purchaseItemTotalCount}} dòng</strong></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content of List Component -->
+    <div class="listContent">
+        <table class="table table-bordered table-hover table-responsive-xl">
+            <thead class="table-info">
+                <tr>
+                    <th scope="col" style="width: 10%">ID</th>
+                    <th scope="col">Ghi chú</th>
+                    <th scope="col">Số tiền</th>
+                    <th scope="col">Phương thức</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Thời gian</th>
+                    <th scope="col">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let purchase of purchases">
+                    <td scope="row">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                {{purchase.Id}}
+                            </label>
+                        </div>
+                    </td>
+                    <td>{{purchase.Note}}</td>
+                    <td>{{purchase.Amount | myCurrPipe}}</td>
+                    <td>{{getMethodDisplay(purchase.Method)}}</td>
+                    <td>{{getStatusDisplay(purchase.Status)}}</td>
+                    <td>{{purchase.AddingTime | myDatePipe}}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button type="button" (click)="assignPurchase(purchase)" class="btn btn-outline-info"><i
+                                    class="fa fa-check-square-o"></i>Chọn</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Bottom of List Component -->
+    <app-page-segment [pageCount]="purchasePageCount" (pageChanged)="purchasePageChanged($event)">
+
+    </app-page-segment>
+    <div class="form-action row">
+        <div class="col-md-12">
+            <div class="btn-group w-200" style="width:35%">
+                <a href="javascript:void(0)" style="width:50%" class="btn btn-outline-secondary"
+                    onclick="hideAdd()">Hủy</a>
+            </div>
+        </div>
+    </div>
+
+</div>
