@@ -1,3 +1,4 @@
+const { start } = require("repl");
 const { user } = require("../models");
 const db = require("../models");
 const Order = db.order;
@@ -83,6 +84,28 @@ exports.getById = (req, res) => {
             { model: Purchase }
         ]
 
+    }).then(order => {
+        res.send({ order: order });
+    }).catch(err => {
+        res.status(500).send({ message: err.message });
+    });
+}
+
+exports.getNotLazyById = (req, res) => {
+
+    if (!req.body.id) {
+
+        res.status(403).send({
+            message: 'Id is Required'
+        });
+
+        return;
+    }
+
+    Order.findOne({
+        where: {
+            Id: req.body.id
+        },
     }).then(order => {
         res.send({ order: order });
     }).catch(err => {
@@ -187,7 +210,8 @@ exports.addOrder = (req, res) => {
         PercentDiscount: body.percentDiscount ? body.percentDiscount : 0,
         AmountDiscount: body.amountDiscount ? body.amountDiscount : 0,
         NumberId: numberId,
-        IsMemberDiscountApply: body.isMemberDiscountApply ? body.isMemberDiscountApply : false
+        IsMemberDiscountApply: body.isMemberDiscountApply ? body.isMemberDiscountApply : false,
+        DoneTime: body.doneTime
     }
 
     try {
@@ -250,7 +274,6 @@ exports.getNormalDayOrdersCount = (req, res) => {
         }
     })
         .then(count => {
-            console.log('value is:', count[0].dataValues);
             res.send(count[0].dataValues);
         }).catch(err => {
             res.status(500).send({
@@ -293,6 +316,58 @@ exports.getByStates = (req, res) => {
         });
     });
 
+}
+
+exports.getDebts = (req, res) => {
+
+    const page = req.body.page;
+    const size = req.body.size;
+    const startTime = req.body.startTime ? req.body.startTime : 0;
+    const endTime = req.body.endTime ? req.body.endTime : Number.MAX_VALUE;
+
+    var condition = {
+        TotalPaidAmount: { [Op.lt]: sequelize.col('TotalAmount') },
+        DoneTime: {
+            [Op.between]: [startTime, endTime]
+        }
+    };
+
+    const { limit, offset } = commonService.getPagination(page, size);
+
+    let countClause = {
+        where: condition
+    }
+
+    Order.count(countClause)
+        .then(data => {
+
+            const count = data;
+
+            Order.findAndCountAll({
+                where: countClause.where,
+                include: [
+                    { model: OrderDetail },
+                    { model: Customer }
+                ],
+                limit: limit,
+                offset: offset
+            }).then(newData => {
+
+                newData.count = count;
+
+                const newResponse = commonService.getPagingData(newData, page, limit);
+                newResponse.totalItemCount = count;
+                res.send(newResponse);
+            })
+
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send({
+                message:
+                    err.message || err
+            });
+        });
 }
 
 exports.searchOrders = (req, res) => {

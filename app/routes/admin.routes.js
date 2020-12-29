@@ -43,7 +43,7 @@ module.exports = function (app) {
 
     //purchase
     app.post(`${purchasePrefix}add`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin, tableValidation.purchaseAmountValidation, tableValidation.orderIdValidation],
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin, tableValidation.purchaseAmountValidation],
         purchaseController.add
     );
     app.post(`${purchasePrefix}updateStatus`,
@@ -53,6 +53,18 @@ module.exports = function (app) {
     app.post(`${purchasePrefix}bulkAdd`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         purchaseController.bulkAdd
+    );
+    app.post(`${purchasePrefix}getByStatuses`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        purchaseController.getByStatuses
+    );
+    app.post(`${purchasePrefix}updateOrder`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        purchaseController.updateOrder
+    );
+    app.post(`${purchasePrefix}assignOrder`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        purchaseController.assignOrder
     );
 
     //promotion
@@ -114,6 +126,10 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         orderController.getById
     )
+    app.post(`${orderPrefix}getNotLazyById`,
+        [authJwt.verifyToken],
+        orderController.getNotLazyById
+    )
     app.post(`${orderPrefix}updateFields`,
         [authJwt.verifyToken], orderController.updateOrderFields)
     app.post(`${orderPrefix}searchOrders`,
@@ -122,6 +138,8 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin], orderController.getByDayRange)
     app.post(`${orderPrefix}addBulk`,
         [authJwt.verifyToken, authJwt.isAdmin], orderController.addBulk)
+    app.post(`${orderPrefix}getDebts`,
+        [authJwt.verifyToken, authJwt.isAdmin], orderController.getDebts)
 
     //order detail
     app.get(`${orderDetailPrefix}getMaxMakingSortOrder`,

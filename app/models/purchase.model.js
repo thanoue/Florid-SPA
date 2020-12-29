@@ -22,6 +22,9 @@ module.exports = (sequelize, Sequelize) => {
         AddingTime: {
             type: Sequelize.BIGINT(11),
         },
+        Note: {
+            type: Sequelize.STRING
+        },
         createdAt: {
             type: Sequelize.DATE,
             allowNull: true
