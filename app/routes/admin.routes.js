@@ -98,9 +98,9 @@ module.exports = function (app) {
     )
 
     //order
-    app.get(`${orderPrefix}getNormalDayOrdersCount`,
+    app.post(`${orderPrefix}getMaxNumberId`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
-        orderController.getNormalDayOrdersCount
+        orderController.getMaxNumberByYearId
     )
     app.get(`${orderPrefix}updateMemberDiscountApplies`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
@@ -140,6 +140,8 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin], orderController.addBulk)
     app.post(`${orderPrefix}getDebts`,
         [authJwt.verifyToken, authJwt.isAdmin], orderController.getDebts)
+    app.post(`${orderPrefix}updateIds`,
+        purchaseController.updateIds)
 
     //order detail
     app.get(`${orderDetailPrefix}getMaxMakingSortOrder`,

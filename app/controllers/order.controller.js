@@ -1,4 +1,3 @@
-const { start } = require("repl");
 const { user } = require("../models");
 const db = require("../models");
 const Order = db.order;
@@ -190,10 +189,12 @@ exports.addOrder = (req, res) => {
 
     let body = req.body;
 
-    let numberId = 0;;
+    let numberId = 0;
 
-    if (parseInt(body.id) != undefined && parseInt(body.id) != NaN) {
-        numberId = parseInt(body.id);
+    let id = body.id.split('.')[1];
+
+    if (parseInt(id) != undefined && parseInt(id) != NaN) {
+        numberId = parseInt(id);
     } else {
         numberId = -1;
     }
@@ -261,26 +262,25 @@ exports.editOrder = (req, res) => {
     }
 }
 
-exports.getNormalDayOrdersCount = (req, res) => {
+exports.getMaxNumberByYearId = (req, res) => {
 
-    Order.findAll({
-        attributes: [
-            [sequelize.fn('MAX', sequelize.col('NumberId')), 'max']
-        ],
-        where: {
-            NumberId: {
-                [Op.gt]: -1
-            }
-        }
-    })
-        .then(count => {
-            res.send(count[0].dataValues);
-        }).catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving customer counting."
-            });
+    let year = req.body.year;
+
+    var command = "select MAX(`NumberId`) as `max` from `orders` where `NumberId` > -1 AND EXTRACT(YEAR FROM `createdAt`) = " + year + ";";
+
+    sequelize.query(command).then(data => {
+
+        res.send(data[0][0]);
+
+    }).catch(err => {
+
+        console.log(err);
+
+        res.status(500).send({
+            message:
+                err.message || err
         });
+    });
 };
 
 exports.getByStates = (req, res) => {

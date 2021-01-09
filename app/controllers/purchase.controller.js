@@ -143,6 +143,28 @@ exports.updateStatus = (req, res) => {
 
 }
 
+exports.updateIds = (req, res) => {
+
+    Order.findAll()
+        .then((orders) => {
+            orders.forEach(async order => {
+
+                await Order.update({
+                    Id: `20.${order.Id}`
+                }, {
+                    where: {
+                        Id: order.Id
+                    }
+                }).then(data => {
+                    console.info(`OrderId: ${order.Id},message: ${data}`);
+                });
+
+            });
+
+            res.send({ message: 'done' });
+        });
+}
+
 exports.assignOrder = (req, res) => {
 
     const orderId = req.body.orderId;
