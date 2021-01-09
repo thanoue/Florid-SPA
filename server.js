@@ -14,11 +14,16 @@ var corsOptions = {
     origin: env === 'development' ? "http://localhost:4200" : "https://floridstorage.web.app"
 };
 
+var corsOptions2 = {
+    origin: "https://floridstorage.firebaseapp.com"
+};
+
 // var corsOptions = {
 //     origin: "http://172.16.4.35:4200"
 // };
 
 app.use(cors(corsOptions));
+app.use(cors(corsOptions2));
 
 app.use(fileUpload({
     createParentPath: true
