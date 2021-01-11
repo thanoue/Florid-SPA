@@ -68,7 +68,7 @@ export const API_END_POINT = {
     updateCustomerFields: '/customer/updateFields',
     updateCustomerList: '/customer/updateList',
 
-    getNormalDayOrdersCount: '/order/getNormalDayOrdersCount',
+    getMaxOrderNumberId: '/order/getMaxNumberId',
     addOrder: '/order/add',
     editOrder: '/order/editOrder',
     getOrdersByStates: '/order/getByStates',

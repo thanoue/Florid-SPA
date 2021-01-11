@@ -89,10 +89,18 @@ export class AddOrderComponent extends BaseComponent {
       this.memberShipTitle = 'New Customer';
 
       if (!this.order.OrderId) {
-        this.orderService.getNormalDayOrdersCount()
+
+        let year = new Date().getFullYear();
+
+        this.orderService.getMaxNumberId(year)
           .then(count => {
 
-            this.order.OrderId = (count + 1).toString();
+            if (count == null) {
+              count = 0;
+            }
+
+            this.order.OrderId = `${year % 100}.${(count + 1).toString()}`;
+
 
           });
       }

@@ -390,9 +390,12 @@ export class OrderService {
 
   }
 
-  getNormalDayOrdersCount(): Promise<number> {
+  getMaxNumberId(year: number): Promise<number> {
 
-    return this.httpService.get(API_END_POINT.getNormalDayOrdersCount, false)
+    return this.httpService.post(API_END_POINT.getMaxOrderNumberId,
+      {
+        year: year
+      })
       .then(data => {
         return data.max;
       })
