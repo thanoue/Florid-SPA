@@ -66,6 +66,11 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         purchaseController.assignOrder
     );
+     app.post(`${purchasePrefix}bulkInsert`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        purchaseController.bulkInsert
+    );
+
 
     //promotion
     app.get(`${promotionPrefix}getList`,
@@ -140,8 +145,22 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin], orderController.addBulk)
     app.post(`${orderPrefix}getDebts`,
         [authJwt.verifyToken, authJwt.isAdmin], orderController.getDebts)
-    app.post(`${orderPrefix}updateIds`,
-        purchaseController.updateIds)
+    app.post(`${orderPrefix}getOrders`,
+        orderController.getOrders)
+    app.post(`${orderPrefix}removeOrders`,
+        orderController.removeOrders)
+    app.post(`${orderPrefix}updateOldOrders`,
+        orderController.updateOldOrders
+    );
+    app.post(`${orderPrefix}getNullOrder`,
+        orderController.getNullOrder
+    ); 
+     app.post(`${orderPrefix}getMissingCustomers`,
+        orderController.getMissingCustomers
+    );  
+    app.post(`${orderPrefix}insertMissingCustomer`,
+        orderController.insertMissingCustomer
+    );
 
     //order detail
     app.get(`${orderDetailPrefix}getMaxMakingSortOrder`,

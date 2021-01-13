@@ -1,6 +1,6 @@
 const env = process.env.NODE_ENV || 'development';
 
-module.exports = env === 'development' ? {
+module.exports = env == 'development' ? {
     HOST: "localhost",
     USER: "root",
     PASSWORD: "root",

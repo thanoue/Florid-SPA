@@ -113,16 +113,8 @@ db.user.hasMany(db.orderDetailSeen, {
     foreignKey: 'UserId',
     onDelete: 'CASCADE',
 });
-db.orderDetailSeen.belongsTo(db.user, {
-    foreignKey: 'UserId',
-    onDelete: 'CASCADE',
-});
 
 db.orderDetail.hasMany(db.orderDetailSeen, {
-    foreignKey: 'OrderDetailId',
-    onDelete: 'CASCADE',
-});
-db.orderDetailSeen.belongsTo(db.orderDetail, {
     foreignKey: 'OrderDetailId',
     onDelete: 'CASCADE',
 });

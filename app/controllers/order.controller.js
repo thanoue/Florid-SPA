@@ -116,26 +116,38 @@ exports.addBulk = (req, res) => {
 
     let orders = req.body;
     let obj = [];
+
     orders.forEach(order => {
 
         if (order.Id) {
 
-            obj.push({
+            let orderItem = {
                 CustomerId: order.CustomerId,
                 Id: order.Id,
                 VATIncluded: order.VATIncluded,
-                TotalAmount: order.TotalAmount,
-                TotalPaidAmount: order.TotalPaidAmount,
-                GainedScore: order.GainedScore,
-                ScoreUsed: order.ScoreUsed,
-                CreatedDate: order.Created,
+                TotalAmount: +order.TotalAmount,
+                TotalPaidAmount: +order.TotalPaidAmount,
+                GainedScore: +order.GainedScore,
+                ScoreUsed: +order.ScoreUsed,
+                CreatedDate: +order.Created,
                 PercentDiscount: 0,
                 AmountDiscount: 0,
-                NumberId: order.NumberId
-            });
+                NumberId: order.NumberId,
+                DoneTime: order.DoneTime
+            };
+
+            obj.push(orderItem);
+
         }
 
     });
+
+    obj.forEach(data=>{
+        if(data.Id == undefined || data.Id == '' || data.CustomerId == undefined || data.CustomerId == ''){
+            console.error(data);
+        }
+    });
+
     Order.bulkCreate(obj, {
         returning: true
     }).then(orderRes => {
@@ -283,6 +295,242 @@ exports.getMaxNumberByYearId = (req, res) => {
     });
 };
 
+exports.insertMissingCustomer = async (req,res)=>{
+
+    let customers = [];
+
+    let allCustomers = await Customer.findAll();
+
+    req.body.forEach(rawCus => {
+
+        if(checkIfExist(allCustomers,rawCus.Id)){
+            console.log(rawCus.Id);
+        }else{
+
+            if(checkIfExist(customers,rawCus.Id)){
+                console.log(rawCus.Id);
+            }else{
+                customers.push(rawCus);
+            }
+        }
+
+    });
+
+    Customer.bulkCreate(customers,{
+        returning:true
+    }).then(data =>{
+        res.send(data);
+    }).catch(err => {
+
+        console.log(err);
+
+        res.status(500).send({
+            message:
+                err.message || err
+        });
+    });
+
+}
+
+exports.getMissingCustomers = (req,res)=>{
+
+    Order.findAll({
+        where:{
+            Id:{
+                [Op.in]:[
+                    "3506",
+                    "3512",
+                    "3515",
+                    "3566",
+                    "3576",
+                    "3584",
+                    "3586",
+                    "3588",
+                    "3589",
+                    "3590",
+                    "3599",
+                    "3601",
+                    "3621",
+                    "3636",
+                    "3641",
+                    "3666",
+                    "3667",
+                    "3676",
+                    "3683",
+                    "3684",
+                    "3705",
+                    "3718",
+                    "3759"
+                ]
+            }
+        },
+        include:[
+            {
+                model:Customer,
+            }
+        ]
+    }).then(orders=>{
+        let customers = [];
+        orders.forEach(order =>{
+            customers.push(order.customer);
+        });
+
+        res.send(customers);
+    })
+}
+
+exports.getNullOrder = (req,res) =>{
+
+    Order.findAll({
+        where:{
+            CustomerId : null
+        }
+    }).then(orders =>{
+        
+        let ids = [];
+        orders.forEach(order =>{
+            ids.push(order.Id);
+        });
+        res.send({ids: ids});
+    });
+}
+
+exports.getOrders = (req,res)=>{
+    let orderIds = ['21.67','21.66','21.65','21.64','21.63','21.61','21.62','21.59','21.58','21.57', '21.56', '21.55', '3763', '3759', '3727', '3718', '3712', '3705', '3695', '3689', '3685', '3684', '3683', '3676', '3494', '3672', '3286_', '3667', '3666', '3663', '3492', '3491', '3488', '00', '3654', '3652', '3646', '3641', '000', '3640', '3636', '3622', '3621', '0000', '3607', '3606', '3605', '3601', '3599', '3586', '3590', '3589', '3588', '3587', '3584', '3583', '3576', '3575', '3572', '3567', '3566', '3525', '3515', '3512', '3508', '3507', '3506', '3497', '3493', '3479', '3473'];
+
+    Order.findAll({
+        where:{
+            Id:{
+                [Op.in]: orderIds
+            }
+        }
+    }).then(orders =>{
+        res.send(orders);
+    }).catch(err =>{
+        console.log(err);
+        res.status(500).send({
+            message:
+                err.message || err
+        });
+    });
+}
+
+function checkIfExist(customers,customerId){
+
+   let temp = 0;
+   let isExist = false;
+
+   if(customers.length <=0)
+   return false;
+
+   while(true){
+
+        if(temp >= customers.length){
+             break;
+        }
+       
+        if(customers[temp].Id == customerId) {
+            isExist = true;
+            break;
+        }
+
+        temp +=1;
+   }
+
+   return isExist;
+
+}
+
+exports.updateOldOrders = async (req,res)=>{
+
+    let orders = req.body;
+
+    let orderCommand = '';
+    let customerCommand = '';
+
+    let customers = await Customer.findAll();
+
+    orders.forEach(order =>{
+
+        if(checkIfExist(customers,order.CustomerId)){
+
+            orderCommand += 'UPDATE `orders` SET `CustomerId` = \''+order.CustomerId+'\' WHERE `Id` = \''+order.Id+'\';';
+            customerCommand += 'UPDATE `customers` SET `AccumulatedAmount` = `customers`.`AccumulatedAmount` + '+ order.TotalAmount+ ', `AvailableScore` = `customers`.`AvailableScore` + ' +order.GainedScore +' WHERE `Id` = \''+order.CustomerId+'\';';
+        }
+
+    });
+
+
+    sequelize.query(orderCommand).then(data => {
+
+        sequelize.query(customerCommand).then(data => {
+
+            res.send({ updating: data });
+
+        }).catch(err => {
+            console.log(err);
+            res.status(500).send({
+                message:
+                    err.message || err
+            });
+        });
+
+    }).catch(err => {
+        console.log(err);
+        res.status(500).send({
+            message:
+                err.message || err
+        });
+    });
+
+}
+
+exports.removeOrders = (req, res) => {
+
+    let orderIds = ['21.67','21.66','21.65','21.64','21.63','21.61','21.62','21.59','21.58','21.57', '21.56', '21.55', '3763', '3759', '3727', '3718', '3712', '3705', '3695', '3689', '3685', '3684', '3683', '3676', '3494', '3672', '3286_', '3667', '3666', '3663', '3492', '3491', '3488', '00', '3654', '3652', '3646', '3641', '000', '3640', '3636', '3622', '3621', '0000', '3607', '3606', '3605', '3601', '3599', '3586', '3590', '3589', '3588', '3587', '3584', '3583', '3576', '3575', '3572', '3567', '3566', '3525', '3515', '3512', '3508', '3507', '3506', '3497', '3493', '3479', '3473'];
+
+    OrderDetail.destroy({
+        where: {
+            OrderId: {
+                [Op.notIn]: orderIds
+            }
+        }
+    }).then(deleteOrderDetails => {
+
+        Order.destroy({
+            where: {
+                Id: {
+                    [Op.notIn]: orderIds
+                }
+            }
+        }).then(deleteOrders => {
+
+            Customer.destroy({
+                where:{
+                    Id:{
+                        [Op.ne] : null
+                    }
+                }
+            })
+                .then(va => {
+                    res.send({ updated: va });
+                }).catch(err =>{
+                    console.log(err);
+                    res.status(500).send({
+                        message:
+                            err.message || err
+                    });
+                });
+        }).catch(err =>{
+            console.log(err);
+            res.status(500).send({
+                message:
+                    err.message || err
+            });
+        });
+    });
+}
+
 exports.getByStates = (req, res) => {
 
     let states = req.body.states;
@@ -312,7 +560,7 @@ exports.getByStates = (req, res) => {
         console.log(err);
         res.status(500).send({
             message:
-                err.message || "Some error occurred while retrieving orders"
+                err.message || err
         });
     });
 

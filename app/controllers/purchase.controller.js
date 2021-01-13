@@ -35,6 +35,33 @@ exports.bulkAdd = (req, res) => {
         });
 }
 
+exports.bulkInsert = (req, res) => {
+
+    let purchases = [];
+
+    req.body.purchases.forEach(rawPurchase => {
+        purchases.push({
+            OrderId: rawPurchase.OrderId,
+            Method: rawPurchase.Method,
+            Status: rawPurchase.Status,
+            Amount: +rawPurchase.Amount,
+            AddingTime: rawPurchase.AddingTime,
+            Note: rawPurchase.Note
+        });
+    });
+
+    Purchase.bulkCreate(purchases, {
+        returning: true
+    })
+        .then(data => {
+            res.send({ purchases: data });
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send({ message: err.message || err });
+        });
+}
+
 exports.add = (req, res) => {
 
     let obj = {
