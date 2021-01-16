@@ -1,8 +1,8 @@
 module.exports = process.env.NODE_ENV !== 'development' ? {
     HOST: "localhost",
-    USER: "khoikha",
+    USER: "'florid",
     PASSWORD: "123456a@A",
-    DB: "florid_1",
+    DB: "florid_main",
     dialect: "mysql",
     pool: {
         max: 5,
