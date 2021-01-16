@@ -19,19 +19,19 @@ if(env == 'development'){
             }
     }
 }else if(env == 'vps'){
-    dbConfig = {
+    dbConfig ={
         HOST: "localhost",
-        USER: "root",
-        PASSWORD: "root",
-        DB: "test_db",
-        dialect: "mysql",
+        USER: "khoikha",
+        PASSWORD: "123456a@A",
+        DB: "florid_1",
+        dialect: "mysql",   
         pool: {
             max: 5,
             min: 0,
             acquire: 30000,
             idle: 10000
         }
-    }
+    };
 }else{
     dbConfig =  {
                 HOST: "us-cdbr-east-02.cleardb.com",
