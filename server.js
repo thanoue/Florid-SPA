@@ -25,12 +25,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.use('/file', express.static('uploads'));
+app.use('/file', express.static('uploads'));    
 app.use('/user/avt', express.static('uploads/userAvt'));
 app.use('/product/img', express.static('uploads/productImg'));
 app.use('/orderDetail/resultImg', express.static('uploads/resultImg'));
 app.use('/orderDetail/shippingImg', express.static('uploads/shipppingImg'));
-app.use('/ios/install', express.static('files/ios'))
+app.use('/ios/install', express.static('uploads/ios'))
 
 require('./app/routes/admin.routes')(app);
 
