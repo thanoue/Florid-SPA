@@ -1,6 +1,6 @@
 module.exports = process.env.NODE_ENV !== 'development' ? {
     HOST: "localhost",
-    USER: "'florid",
+    USER: "florid",
     PASSWORD: "123456a@A",
     DB: "florid_main",
     dialect: "mysql",
