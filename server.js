@@ -54,7 +54,10 @@ app.set('port', port);
     
 const serverApp = http.createServer(app);
 
-serverApp.listen(port, () => console.log(`API running on host with port:${port}`));
+serverApp.listen(port, () => {
+    console.log(`API running on host with port:${port}`);
+    console.log('Env:',env );
+});
 
 const io = require('socket.io')(serverApp);
 io.on('connection', (socket) => {
