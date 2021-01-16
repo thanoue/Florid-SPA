@@ -59,7 +59,7 @@ db.sequelize.sync({ alter: true }).then(() => {
  */
 const port = process.env.PORT || '3000';
 app.set('port', port);
-
+    
 const serverApp = http.createServer(app);
 
 serverApp.listen(port, () => console.log(`API running on host with port:${port}`));
