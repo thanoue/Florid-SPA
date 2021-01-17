@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const CustomerReceiverInfo = sequelize.define("customerReceivers", {
+    const CustomerReceiverInfo = sequelize.define("customerreceivers", {
         Id: {
             type: Sequelize.INTEGER,
             primaryKey: true,

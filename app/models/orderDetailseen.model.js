@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const OrderDetailSeen = sequelize.define('orderDetailSeens', {
+    const OrderDetailSeen = sequelize.define('orderdetailseens', {
         UserId: {
             type: Sequelize.INTEGER,
             allowNull: false
