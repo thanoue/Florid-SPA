@@ -1,4 +1,6 @@
-module.exports = process.env.NODE_ENV !== 'development' ? {
+const env = process.env.NODE_ENV || 'development';
+
+module.exports = env !== 'development' ? {
     HOST: "localhost",
     USER: "florid",
     PASSWORD: "123456a@A",
@@ -13,7 +15,7 @@ module.exports = process.env.NODE_ENV !== 'development' ? {
 }: {
     HOST: "localhost",
     USER: "root",
-    PASSWORD: "root",
+    PASSWORD: "123456",
     DB: "test_db",
     dialect: "mysql",
     pool: {

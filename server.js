@@ -35,9 +35,9 @@ app.use('/ios/install', express.static('uploads/ios'));
 require('./app/routes/admin.routes')(app);
 
 // // Catch all other routes and return the index file
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'dist/index.html'));
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
 
 const { user, role, category, customer } = require("./app/models/index");
 const db = require("./app/models/index");

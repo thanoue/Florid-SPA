@@ -2,6 +2,7 @@ const config = require("../config/db.config.js");
 const RoleTypes = require('../config/app.config').Roles;
 
 const Sequelize = require("sequelize");
+console.log('user: ',config.USER);
 const sequelize = new Sequelize(
     config.DB,
     config.USER,
