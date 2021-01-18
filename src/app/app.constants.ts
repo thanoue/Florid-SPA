@@ -113,6 +113,7 @@ export const API_END_POINT = {
     addPurchase: '/purchase/add',
     updatePurchaseStatus: '/purchase/updateStatus',
     bulkAddPurchase: '/purchase/bulkAdd',
+    bulkInsertPurchase: '/purchase/bulkInsert',
     getPurchasesByStatuses: '/purchase/getByStatuses',
     updatePurchaseOrder: '/purchase/updateOrder',
     assignPurchaseOrder: '/purchase/assignOrder',

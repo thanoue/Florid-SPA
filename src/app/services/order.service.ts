@@ -112,9 +112,9 @@ export class OrderService {
 
     }
 
-    if (order.orderDetails && order.orderDetails.length > 0) {
+    if (order.orderdetails && order.orderdetails.length > 0) {
 
-      order.orderDetails.forEach(orderDetail => {
+      order.orderdetails.forEach(orderDetail => {
 
         let orderDetailVM = new OrderDetailViewModel();
 

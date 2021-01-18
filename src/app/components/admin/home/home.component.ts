@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
-import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates, OrderType } from 'src/app/models/enums';
+import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates, OrderType, PurchaseStatus, PurchaseMethods } from 'src/app/models/enums';
 import { Guid } from 'guid-typescript';
 import { ProductService } from 'src/app/services/product.service';
 import { utils, WorkBook, WorkSheet, read, writeFile } from 'xlsx';
@@ -14,6 +14,8 @@ import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { async } from '@angular/core/testing';
 import { Product } from 'src/app/models/entities/product.entity';
+import { Purchase } from 'src/app/models/view.models/purchase.entity';
+import { PurchaseService } from 'src/app/services/purchase.service';
 
 @Component({
   selector: 'app-home',
@@ -25,7 +27,7 @@ export class HomeComponent extends BaseComponent {
 
   category: number = 0;
 
-  constructor(private orderService: OrderService, private orderDetailService: OrderDetailService, private customerService: CustomerService, private router: Router, protected activatedRoute: ActivatedRoute, private productService: ProductService) {
+  constructor(private orderService: OrderService,private purchaseService : PurchaseService, private orderDetailService: OrderDetailService, private customerService: CustomerService, private router: Router, protected activatedRoute: ActivatedRoute, private productService: ProductService) {
     super();
   }
 
@@ -151,6 +153,42 @@ export class HomeComponent extends BaseComponent {
 
   }
 
+  detectPrice(src: any) : number{
+
+    if(!src || src == '')
+      return 0;
+
+    if(!Number.isNaN(src)){
+
+      src = src.toString();
+      
+      // console.log(src, parseInt(src));
+      // return parseInt(src);
+
+    }
+
+    if(src.indexOf('đ',0) >-1){
+
+      src = src.trim().split(' ')[0].trim();
+
+    }
+
+    let parts = src.split('.');
+
+    let dest = '';
+    
+    parts.forEach(part =>{
+      dest += part;
+    });
+
+    if(dest == ''){
+      console.log(src);
+    }
+
+    return parseInt(dest);
+
+  }
+
   onFileOrderChange(evt: any) {
 
     /* wire up file reader */
@@ -171,6 +209,7 @@ export class HomeComponent extends BaseComponent {
 
       var orders: Order[] = [];
       var orderDetails: OrderDetail[] = [];
+      var purchases : Purchase[]  = [];
 
       this.startLoading();
 
@@ -221,35 +260,74 @@ export class HomeComponent extends BaseComponent {
 
         }
 
+
         order.CustomerId = row[0].toString();
         order.Created = ExchangeService.getTimeFromExcel(row[3]);
-        order.TotalAmount = row[6] && row[6] != '' ? parseInt(row[6]) : 0;
+        order.DoneTime = order.Created;
+        order.TotalAmount = this.detectPrice(row[7]) ;// && row[7] != '' ? parseInt(row[7].replace('.',''))  : 0;
+
         order.GainedScore = ExchangeService.getGainedScore(order.TotalAmount);
-        order.TotalPaidAmount = order.TotalAmount;
 
-        let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
+        let doneDate  = new Date(order.Created);
 
-        if (duplicates && duplicates.length > 0) {
-          order.Id += "_";
+        if(doneDate.getFullYear() == 2021){
+          order.Id  = `21.${order.Id}`;
+        }else{
+          order.Id  = `20.${order.Id}`;
         }
+  
+        while(true){
+          
+          let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
 
+          if (duplicates && duplicates.length > 0) {
+
+            order.Id += "_";
+
+          }else{
+
+            break;
+
+          }
+
+        }
+        
         var detail = new OrderDetail();
 
         detail.TotalAmount = order.TotalAmount;
         detail.OrderId = order.Id;
         detail.PurposeOf = row[4] ? row[4] : '';
         detail.State = OrderDetailStates.Completed;
-        detail.ProductModifiedPrice = row[5] ? parseInt(row[5]) : 0;
-
+        detail.ProductModifiedPrice = this.detectPrice(row[5])
         detail.ProductName = row[2] ? row[2] : '';
-
         detail.ProductImageUrl = 'https://images.vexels.com/media/users/3/156051/isolated/preview/72094c4492bc9c334266dc3049c15252-flat-flower-icon-flower-by-vexels.png';
         detail.IsHardcodeProduct = true;
         detail.ProductPrice = detail.ProductModifiedPrice;
 
         orderDetails.push(detail);
+
+        order.TotalPaidAmount = 0;
+
+        order.AmountDiscount = detail.ProductModifiedPrice  - order.TotalAmount;
+
         orders.push(order);
 
+        var purchaseType = row[8] && row[8] != '' ? row[8] : '';
+        
+        if(purchaseType != ''){
+
+          let purchase = new Purchase();
+
+          purchase.Amount = order.TotalAmount;
+          purchase.AddingTime = order.Created;
+          purchase.OrderId = order.Id;
+          purchase.Status = PurchaseStatus.Completed;
+          purchase.Note= "from excel file";
+          purchase.Method = purchaseType == 'TM' ? PurchaseMethods.Cash : PurchaseMethods.Banking;
+
+          purchases.push(purchase);
+     
+        }
       };
 
       let newOrders: Order[] = [];
@@ -260,8 +338,10 @@ export class HomeComponent extends BaseComponent {
 
         if (duplicates && duplicates[0]) {
 
+          console.log('duplicate order:', duplicates);
+
           duplicates[0].TotalAmount += order.TotalAmount;
-          duplicates[0].TotalPaidAmount += order.TotalPaidAmount;
+          duplicates[0].AmountDiscount += order.AmountDiscount;
           duplicates[0].GainedScore += ExchangeService.getGainedScore(duplicates[0].TotalAmount);
 
         }
@@ -270,6 +350,21 @@ export class HomeComponent extends BaseComponent {
         }
 
       });
+
+      newOrders.forEach(newOrder=>{
+
+        let orderPurs = purchases.filter(p=>p.OrderId == newOrder.Id);
+
+        if(orderPurs && orderPurs.length >0){
+
+          orderPurs.forEach(pur =>{
+            newOrder.TotalPaidAmount += pur.Amount;
+          });
+
+        }
+
+      });
+
 
       let cuses = await this.customerService.getAll();
 
@@ -289,7 +384,7 @@ export class HomeComponent extends BaseComponent {
 
           cus[0].TotalAmount += order.TotalAmount;
           cus[0].MemberType = ExchangeService.detectMemberShipType(cus[0].TotalAmount);
-          console.log(cus[0].Id);
+
         }
         else {
 
@@ -297,27 +392,31 @@ export class HomeComponent extends BaseComponent {
 
           if (currentCus && currentCus.length > 0) {
 
-            let memberInfo = currentCus[0].MembershipInfo ? currentCus[0].MembershipInfo : new MembershipInfo();
-
             editCustomers.push({
               Id: order.CustomerId,
               TotalAmount: order.TotalAmount,
               MemberType: ExchangeService.detectMemberShipType(order.TotalAmount),
-              TotalUsedScore: memberInfo.UsedScoreTotal,
+              TotalUsedScore: 0,
               AvailableScore: 0
             });
 
           }
+          else{
+
+            order.CustomerId = 'KHACH_LE';
+
+          }
 
         }
+
+        if(+order.TotalAmount <= 1000)
+           console.log(order);
 
       });
 
       editCustomers.forEach(cus => {
         cus.AvailableScore = ExchangeService.getGainedScore(cus.TotalAmount) - cus.TotalUsedScore;
       });
-
-      console.log(editCustomers);
 
       var i, j, chunk = 50;
       let temparray = [];
@@ -355,6 +454,20 @@ export class HomeComponent extends BaseComponent {
         orderDetailArray = orderDetails.slice(i, i + chunk);
 
         let update = await this.orderService.addOrderDetails(orderDetailArray);
+
+        console.log(update);
+
+      }
+
+      console.log('------------------------------');
+
+      let purchaselArray: Purchase[] = [];
+
+      for (i = 0, j = purchases.length; i < j; i += chunk) {
+
+        purchaselArray = purchases.slice(i, i + chunk);
+
+        let update = await this.purchaseService.bulkInsert(purchaselArray);
 
         console.log(update);
 
@@ -443,13 +556,6 @@ export class HomeComponent extends BaseComponent {
           customer.Address.Work = row[9] ? row[9] : '';
 
           let memberInfo = new MembershipInfo();
-
-          memberInfo.AccumulatedAmount = row[10] && row[10] != '' ? parseInt(row[10]) : 0;
-          memberInfo.UsedScoreTotal = row[13] && row[13] != '' ? parseInt(row[13]) : 0;
-          memberInfo.AvailableScore = row[14] && row[114] != '' ? parseFloat(row[14]) : 0;
-          memberInfo.MembershipType = ExchangeService.detectMemberShipType(memberInfo.AccumulatedAmount);
-
-          customer.MembershipInfo = memberInfo;
 
           customers.push(customer);
 

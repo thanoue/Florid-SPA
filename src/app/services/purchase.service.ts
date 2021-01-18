@@ -11,7 +11,7 @@ import { HttpService } from './common/http.service';
 })
 export class PurchaseService {
 
-  constructor(private httpService: HttpService, private globalService: GlobalService) { }
+  constructor(private httpService: HttpService) { }
 
   getByStatuses(statuses: PurchaseStatus[], page: number, size: number, startTime: number, endTime: number, isUnknownOnly: boolean):
     Promise<{
@@ -63,6 +63,16 @@ export class PurchaseService {
       throw err;
     })
 
+  }
+
+  bulkInsert(purchases: Purchase[]) : Promise<any>{
+
+        return  this.httpService.post(API_END_POINT.bulkInsertPurchase, {
+          purchases: purchases,
+        }).then(data => {
+          return data;
+        });
+        
   }
 
   bulkCreate(purchases: Purchase[], orderId: string, callback: () => void): void {

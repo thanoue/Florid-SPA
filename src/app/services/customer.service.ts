@@ -66,14 +66,14 @@ export class CustomerService {
       customer.ReceiverInfos = [];
       customer.SpecialDays = [];
 
-      item.customerReceivers.forEach(receiver => {
+      item.customerreceivers.forEach(receiver => {
         let item = new CustomerReceiverDetail();
         item.PhoneNumber = receiver.PhoneNumber;
         item.FullName = receiver.FullName;
         customer.ReceiverInfos.push(item);
       });
 
-      item.customerSpecialDays.forEach(date => {
+      item.customerspecialDays.forEach(date => {
         let item = new SpecialDay();
         item.Date = date.Date;
         item.Description = date.Description;
@@ -289,9 +289,9 @@ export class CustomerService {
       customer.ReceiverInfos = [];
       customer.SpecialDays = [];
 
-      if (item.customerReceivers && item.customerReceivers.length > 0) {
+      if (item.customerreceivers && item.customerreceivers.length > 0) {
 
-        item.customerReceivers.forEach(receiver => {
+        item.customerreceivers.forEach(receiver => {
 
           let item = new CustomerReceiverDetail();
 
@@ -304,8 +304,8 @@ export class CustomerService {
         });
       }
 
-      if (item.customerSpecialDays && item.customerSpecialDays.length > 0) {
-        item.customerSpecialDays.forEach(date => {
+      if (item.customerspecialdays && item.customerspecialdays.length > 0) {
+        item.customerspecialdays.forEach(date => {
           let item = new SpecialDay();
           item.Date = date.Date;
           item.Description = date.Description;
