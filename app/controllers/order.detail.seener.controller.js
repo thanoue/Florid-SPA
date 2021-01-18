@@ -55,7 +55,6 @@ exports.getODSeeners = (req, res) => {
         },
         include: {
             model: User,
-            as: 'user',
             include: Role
         }
     }).then(data => {
