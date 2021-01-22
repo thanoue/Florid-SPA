@@ -142,8 +142,8 @@ exports.addBulk = (req, res) => {
 
     });
 
-    obj.forEach(data=>{
-        if(data.Id == undefined || data.Id == '' || data.CustomerId == undefined || data.CustomerId == ''){
+    obj.forEach(data => {
+        if (data.Id == undefined || data.Id == '' || data.CustomerId == undefined || data.CustomerId == '') {
             console.error(data);
         }
     });
@@ -276,9 +276,9 @@ exports.editOrder = (req, res) => {
 
 exports.getMaxNumberByYearId = (req, res) => {
 
-    let year = req.body.year;
+    let year = req.body.year % 100;
 
-    var command = "select MAX(`NumberId`) as `max` from `orders` where `NumberId` > -1 AND EXTRACT(YEAR FROM `createdAt`) = " + year + ";";
+    var command = "select MAX(`NumberId`) as `max` from `orders` where `NumberId` > -1 AND `Id` like \"" + year + ".%\";";
 
     sequelize.query(command).then(data => {
 
@@ -295,7 +295,7 @@ exports.getMaxNumberByYearId = (req, res) => {
     });
 };
 
-exports.insertMissingCustomer = async (req,res)=>{
+exports.insertMissingCustomer = async (req, res) => {
 
     let customers = [];
 
@@ -303,22 +303,22 @@ exports.insertMissingCustomer = async (req,res)=>{
 
     req.body.forEach(rawCus => {
 
-        if(checkIfExist(allCustomers,rawCus.Id)){
+        if (checkIfExist(allCustomers, rawCus.Id)) {
             console.log(rawCus.Id);
-        }else{
+        } else {
 
-            if(checkIfExist(customers,rawCus.Id)){
+            if (checkIfExist(customers, rawCus.Id)) {
                 console.log(rawCus.Id);
-            }else{
+            } else {
                 customers.push(rawCus);
             }
         }
 
     });
 
-    Customer.bulkCreate(customers,{
-        returning:true
-    }).then(data =>{
+    Customer.bulkCreate(customers, {
+        returning: true
+    }).then(data => {
         res.send(data);
     }).catch(err => {
 
@@ -332,12 +332,12 @@ exports.insertMissingCustomer = async (req,res)=>{
 
 }
 
-exports.getMissingCustomers = (req,res)=>{
+exports.getMissingCustomers = (req, res) => {
 
     Order.findAll({
-        where:{
-            Id:{
-                [Op.in]:[
+        where: {
+            Id: {
+                [Op.in]: [
                     "3506",
                     "3512",
                     "3515",
@@ -364,14 +364,14 @@ exports.getMissingCustomers = (req,res)=>{
                 ]
             }
         },
-        include:[
+        include: [
             {
-                model:Customer,
+                model: Customer,
             }
         ]
-    }).then(orders=>{
+    }).then(orders => {
         let customers = [];
-        orders.forEach(order =>{
+        orders.forEach(order => {
             customers.push(order.customer);
         });
 
@@ -379,34 +379,34 @@ exports.getMissingCustomers = (req,res)=>{
     })
 }
 
-exports.getNullOrder = (req,res) =>{
+exports.getNullOrder = (req, res) => {
 
     Order.findAll({
-        where:{
-            CustomerId : null
+        where: {
+            CustomerId: null
         }
-    }).then(orders =>{
-        
+    }).then(orders => {
+
         let ids = [];
-        orders.forEach(order =>{
+        orders.forEach(order => {
             ids.push(order.Id);
         });
-        res.send({ids: ids});
+        res.send({ ids: ids });
     });
 }
 
-exports.getOrders = (req,res)=>{
-    let orderIds = ['21.67','21.66','21.65','21.64','21.63','21.61','21.62','21.59','21.58','21.57', '21.56', '21.55', '3763', '3759', '3727', '3718', '3712', '3705', '3695', '3689', '3685', '3684', '3683', '3676', '3494', '3672', '3286_', '3667', '3666', '3663', '3492', '3491', '3488', '00', '3654', '3652', '3646', '3641', '000', '3640', '3636', '3622', '3621', '0000', '3607', '3606', '3605', '3601', '3599', '3586', '3590', '3589', '3588', '3587', '3584', '3583', '3576', '3575', '3572', '3567', '3566', '3525', '3515', '3512', '3508', '3507', '3506', '3497', '3493', '3479', '3473'];
+exports.getOrders = (req, res) => {
+    let orderIds = ['', '21.67', '21.66', '21.65', '21.64', '21.63', '21.61', '21.62', '21.59', '21.58', '21.57', '21.56', '21.55', '3763', '3759', '3727', '3718', '3712', '3705', '3695', '3689', '3685', '3684', '3683', '3676', '3494', '3672', '3286_', '3667', '3666', '3663', '3492', '3491', '3488', '00', '3654', '3652', '3646', '3641', '000', '3640', '3636', '3622', '3621', '0000', '3607', '3606', '3605', '3601', '3599', '3586', '3590', '3589', '3588', '3587', '3584', '3583', '3576', '3575', '3572', '3567', '3566', '3525', '3515', '3512', '3508', '3507', '3506', '3497', '3493', '3479', '3473'];
 
     Order.findAll({
-        where:{
-            Id:{
+        where: {
+            Id: {
                 [Op.in]: orderIds
             }
         }
-    }).then(orders =>{
+    }).then(orders => {
         res.send(orders);
-    }).catch(err =>{
+    }).catch(err => {
         console.log(err);
         res.status(500).send({
             message:
@@ -415,33 +415,33 @@ exports.getOrders = (req,res)=>{
     });
 }
 
-function checkIfExist(customers,customerId){
+function checkIfExist(customers, customerId) {
 
-   let temp = 0;
-   let isExist = false;
+    let temp = 0;
+    let isExist = false;
 
-   if(customers.length <=0)
-   return false;
+    if (customers.length <= 0)
+        return false;
 
-   while(true){
+    while (true) {
 
-        if(temp >= customers.length){
-             break;
+        if (temp >= customers.length) {
+            break;
         }
-       
-        if(customers[temp].Id == customerId) {
+
+        if (customers[temp].Id == customerId) {
             isExist = true;
             break;
         }
 
-        temp +=1;
-   }
+        temp += 1;
+    }
 
-   return isExist;
+    return isExist;
 
 }
 
-exports.updateOldOrders = async (req,res)=>{
+exports.updateOldOrders = async (req, res) => {
 
     let orders = req.body;
 
@@ -450,12 +450,12 @@ exports.updateOldOrders = async (req,res)=>{
 
     let customers = await Customer.findAll();
 
-    orders.forEach(order =>{
+    orders.forEach(order => {
 
-        if(checkIfExist(customers,order.CustomerId)){
+        if (checkIfExist(customers, order.CustomerId)) {
 
-            orderCommand += 'UPDATE `orders` SET `CustomerId` = \''+order.CustomerId+'\' WHERE `Id` = \''+order.Id+'\';';
-            customerCommand += 'UPDATE `customers` SET `AccumulatedAmount` = `customers`.`AccumulatedAmount` + '+ order.TotalAmount+ ', `AvailableScore` = `customers`.`AvailableScore` + ' +order.GainedScore +' WHERE `Id` = \''+order.CustomerId+'\';';
+            orderCommand += 'UPDATE `orders` SET `CustomerId` = \'' + order.CustomerId + '\' WHERE `Id` = \'' + order.Id + '\';';
+            customerCommand += 'UPDATE `customers` SET `AccumulatedAmount` = `customers`.`AccumulatedAmount` + ' + order.TotalAmount + ', `AvailableScore` = `customers`.`AvailableScore` + ' + order.GainedScore + ' WHERE `Id` = \'' + order.CustomerId + '\';';
         }
 
     });
@@ -485,47 +485,119 @@ exports.updateOldOrders = async (req,res)=>{
 
 }
 
+exports.updateCustomerTotalAmount = (req, res) => {
+
+    Order.findAll()
+        .then(orders => {
+
+            let command = '';
+
+            let items = [];
+
+            orders.forEach(order => {
+
+                if (items.length > 0) {
+
+                    var dups = items.filter(p => p.CustomerId == order.CustomerId);
+
+                    if (dups && dups.length > 0) {
+
+                        dups[0].TotalAmount += order.TotalAmount;
+
+                    } else {
+
+                        items.push({
+                            CustomerId: order.CustomerId,
+                            TotalAmount: order.TotalAmount
+                        });
+                    }
+
+                } else {
+                    items.push({
+                        CustomerId: order.CustomerId,
+                        TotalAmount: order.TotalAmount
+                    });
+                }
+            });
+
+            items.forEach(item => {
+
+                if (item.CustomerId != 'KHACH_LE') {
+                    command += "UPDATE `customers`  set `AccumulatedAmount` = " + item.TotalAmount + ", `AvailableScore` = " + item.TotalAmount / 100000 + " WHERE `Id` = \'" + item.CustomerId + "\';";
+                }
+            })
+
+            sequelize.query(command).then(data => {
+
+                res.send({ updating: data });
+
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    message:
+                        err.message || err
+                });
+            });
+
+        });
+}
+
 exports.removeOrders = (req, res) => {
 
-    let orderIds = ['21.67','21.66','21.65','21.64','21.63','21.61','21.62','21.59','21.58','21.57', '21.56', '21.55', '3763', '3759', '3727', '3718', '3712', '3705', '3695', '3689', '3685', '3684', '3683', '3676', '3494', '3672', '3286_', '3667', '3666', '3663', '3492', '3491', '3488', '00', '3654', '3652', '3646', '3641', '000', '3640', '3636', '3622', '3621', '0000', '3607', '3606', '3605', '3601', '3599', '3586', '3590', '3589', '3588', '3587', '3584', '3583', '3576', '3575', '3572', '3567', '3566', '3525', '3515', '3512', '3508', '3507', '3506', '3497', '3493', '3479', '3473'];
+    let orderIds = ['21.77', '21.78', '21.79', '21.80', '21.81', '21.83', '21.85', '21.86', '21.87', '21.88', '21.89', '21.90', '21.91', '21.92', '21.93', '21.94', '21.95', '21.96', '21.97', '21.98', '21.100', '21.101', '21.103', '21.102', '21.105', '21.106', '21.107', '21.109', '21.111', '21.112', '21.114', '21.118', '21.119', '21.75', '21.74', '21.72', '21.70', '21.69', '21.68', '21.67', '21.66', '21.65', '21.64', '21.63', '21.61', '21.62', '21.59', '21.58', '21.57', '21.56', '21.55', '3763', '3759', '3727', '3718', '3712', '3705', '3695', '3689', '3685', '3684', '3683', '3676', '3494', '3672', '3286_', '3667', '3666', '3663', '3492', '3491', '3488', '00', '3654', '3652', '3646', '3641', '000', '3640', '3636', '3622', '3621', '0000', '3607', '3606', '3605', '3601', '3599', '3586', '3590', '3589', '3588', '3587', '3584', '3583', '3576', '3575', '3572', '3567', '3566', '3525', '3515', '3512', '3508', '3507', '3506', '3497', '3493', '3479', '3473'];
 
     OrderDetail.destroy({
         where: {
             OrderId: {
-                [Op.notIn]: orderIds
+                [Op.notIn]: orderIds,
             }
         }
     }).then(deleteOrderDetails => {
 
-        Order.destroy({
+        Order.findAll({
             where: {
                 Id: {
-                    [Op.notIn]: orderIds
+                    [Op.in]: orderIds,
                 }
             }
-        }).then(deleteOrders => {
+        }).then(orders => {
 
-            Customer.destroy({
-                where:{
-                    Id:{
-                        [Op.ne] : null
+            let cusIds = [];
+            orders.forEach(order => {
+                if (order.CustomerId && order.CustomerId != null && order.CustomerId != '')
+                    cusIds.push(order.CustomerId);
+            });
+
+            Order.destroy({
+                where: {
+                    Id: {
+                        [Op.notIn]: orderIds
                     }
                 }
-            })
-                .then(va => {
-                    res.send({ updated: va });
-                }).catch(err =>{
-                    console.log(err);
-                    res.status(500).send({
-                        message:
-                            err.message || err
+            }).then(deleteOrders => {
+
+                Customer.destroy({
+                    where: {
+                        Id: {
+                            [Op.notIn]: cusIds
+                        }
+                    }
+                })
+                    .then(va => {
+                        res.send({ updated: va });
+                    }).catch(err => {
+                        console.log(err);
+                        res.status(500).send({
+                            message:
+                                err.message || err
+                        });
                     });
+            }).catch(err => {
+                console.log(err);
+                res.status(500).send({
+                    message:
+                        err.message || err
                 });
-        }).catch(err =>{
-            console.log(err);
-            res.status(500).send({
-                message:
-                    err.message || err
             });
         });
     });
@@ -670,7 +742,7 @@ exports.searchOrders = (req, res) => {
 
         Order.findAndCountAll({
             subQuery: false,
-            order: [['CreatedDate', 'DESC']],
+            order: [['DoneTime', 'DESC']],
             include: [
                 { model: Purchase },
                 {

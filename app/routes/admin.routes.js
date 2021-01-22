@@ -46,17 +46,13 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin, tableValidation.purchaseAmountValidation],
         purchaseController.add
     );
-    app.post(`${purchasePrefix}updateStatus`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
-        purchaseController.updateStatus
-    );
     app.post(`${purchasePrefix}bulkAdd`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         purchaseController.bulkAdd
     );
-    app.post(`${purchasePrefix}getByStatuses`,
+    app.post(`${purchasePrefix}getByTerm`,
         [authJwt.verifyToken, authJwt.isAdmin],
-        purchaseController.getByStatuses
+        purchaseController.getByTerm
     );
     app.post(`${purchasePrefix}updateOrder`,
         [authJwt.verifyToken, authJwt.isAdmin],
@@ -66,11 +62,18 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         purchaseController.assignOrder
     );
-     app.post(`${purchasePrefix}bulkInsert`,
+    app.post(`${purchasePrefix}bulkInsert`,
         [authJwt.verifyToken, authJwt.isAdmin],
         purchaseController.bulkInsert
     );
-
+    app.post(`${purchasePrefix}addAndAsign`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        purchaseController.addAndAsign
+    );
+    app.post(`${purchasePrefix}deletePurchase`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        purchaseController.deletePurchase
+    );
 
     //promotion
     app.get(`${promotionPrefix}getList`,
@@ -106,6 +109,9 @@ module.exports = function (app) {
     app.post(`${orderPrefix}getMaxNumberId`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.getMaxNumberByYearId
+    )
+    app.get(`${orderPrefix}updateCustomerTotalAmount`,
+        orderController.updateCustomerTotalAmount
     )
     app.get(`${orderPrefix}updateMemberDiscountApplies`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
@@ -154,10 +160,10 @@ module.exports = function (app) {
     );
     app.post(`${orderPrefix}getNullOrder`,
         orderController.getNullOrder
-    ); 
-     app.post(`${orderPrefix}getMissingCustomers`,
+    );
+    app.post(`${orderPrefix}getMissingCustomers`,
         orderController.getMissingCustomers
-    );  
+    );
     app.post(`${orderPrefix}insertMissingCustomer`,
         orderController.insertMissingCustomer
     );

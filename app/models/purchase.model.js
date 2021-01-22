@@ -16,9 +16,6 @@ module.exports = (sequelize, Sequelize) => {
         Method: {
             type: Sequelize.STRING
         },
-        Status: {
-            type: Sequelize.STRING
-        },
         AddingTime: {
             type: Sequelize.BIGINT(11),
         },

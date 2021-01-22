@@ -12,6 +12,7 @@ var fs = require('fs');
 const MemberShipType = require('../config/app.config').MemberShipType;
 
 exports.updateList = (req, res) => {
+
     let obj = [];
 
     req.body.forEach(item => {
@@ -26,9 +27,17 @@ exports.updateList = (req, res) => {
 
     let rawCommand = "";
 
+    let exeptCustomerIds = ['KHACH_LE', 'FD-01128', 'FD-01130', 'FD-01129', 'FD-00336', 'FD-00592', 'FD-00011', 'KHACH_LE', 'FD-00168', 'FD-01114', 'FD-01113', 'KHACH_LE', 'FD-00456', 'FD-00842', 'FD-01115', 'FD-00047', 'FD-01116', 'FD-01117', 'FD-01118', 'FD-00011', 'FD-00842', 'FD-00402', 'FD-01119', 'FD-01120', 'FD-01121', 'FD-01122', 'FD-00834', 'FD-01123', 'FD-00839', 'FD-01124', 'FD-01125', 'FD-00417', 'FD-01124', 'FD-01126', 'FD-01127', 'FD-00206', 'FD-00950', 'FD-00688', 'FD-00881', 'FD-01122', 'FD-00972', 'FD-01122', 'FD-00402', 'FD-00688', 'KHACH_LE', 'FD-00118', 'FD-00855', 'FD-00610', 'FD-00875', 'FD-00895', 'KHACH_LE', 'FD-01017', 'FD-00476', 'FD-00011', 'FD-01018', 'FD-01019', 'KHACH_LE', 'FD-01020', 'FD-00011', 'KHACH_LE', 'FD-00819', 'FD-01021', 'KHACH_LE', 'FD-01022', 'FD-01026', 'KHACH_LE', 'FD-01023', 'FD-01024', 'FD-01025', 'FD-01021', 'FD-00011', 'KHACH_LE', 'FD-00310', 'FD-01028', 'FD-00037', 'FD-01029', 'KHACH_LE', 'FD-01030', 'KHACH_LE', 'FD-00834', 'FD-00675', 'FD-00165', 'FD-01033', 'FD-01034', 'FD-00213', 'FD-01017', 'FD-01017', 'FD-01017', 'FD-00655', 'FD-00629', 'FD-00834', 'FD-01035', 'FD-00688', 'FD-01036', 'FD-00151', 'FD-01037', 'FD-00675'];
+
     obj.forEach(item => {
-        let command = "UPDATE `customers` SET `AccumulatedAmount` = " + item.AccumulatedAmount + " , `AvailableScore` = " + item.AvailableScore + " , `MembershipType` =\"" + item.MembershipType + "\", `UsedScoreTotal` = " + item.UsedScoreTotal + " WHERE `Id` = \"" + item.Id + "\";";
-        rawCommand += command;
+
+        let dup= exeptCustomerIds.filter(p=> p == item.Id);
+           
+        if(!dup || dup.length <= 0){
+            let command = "UPDATE `customers` SET `AccumulatedAmount` = " + item.AccumulatedAmount + " , `AvailableScore` = " + item.AvailableScore + " , `MembershipType` =\"" + item.MembershipType + "\", `UsedScoreTotal` = " + item.UsedScoreTotal + " WHERE `Id` = \"" + item.Id + "\";";
+            rawCommand += command;
+        }
+        
     });
 
     Sequelize.query(rawCommand).then(data => {
@@ -44,32 +53,40 @@ exports.createCustomers = (req, res) => {
 
     let customers = [];
 
+    let exeptCustomerIds = ['KHACH_LE', 'FD-01128', 'FD-01130', 'FD-01129', 'FD-00336', 'FD-00592', 'FD-00011', 'KHACH_LE', 'FD-00168', 'FD-01114', 'FD-01113', 'KHACH_LE', 'FD-00456', 'FD-00842', 'FD-01115', 'FD-00047', 'FD-01116', 'FD-01117', 'FD-01118', 'FD-00011', 'FD-00842', 'FD-00402', 'FD-01119', 'FD-01120', 'FD-01121', 'FD-01122', 'FD-00834', 'FD-01123', 'FD-00839', 'FD-01124', 'FD-01125', 'FD-00417', 'FD-01124', 'FD-01126', 'FD-01127', 'FD-00206', 'FD-00950', 'FD-00688', 'FD-00881', 'FD-01122', 'FD-00972', 'FD-01122', 'FD-00402', 'FD-00688', 'KHACH_LE', 'FD-00118', 'FD-00855', 'FD-00610', 'FD-00875', 'FD-00895', 'KHACH_LE', 'FD-01017', 'FD-00476', 'FD-00011', 'FD-01018', 'FD-01019', 'KHACH_LE', 'FD-01020', 'FD-00011', 'KHACH_LE', 'FD-00819', 'FD-01021', 'KHACH_LE', 'FD-01022', 'FD-01026', 'KHACH_LE', 'FD-01023', 'FD-01024', 'FD-01025', 'FD-01021', 'FD-00011', 'KHACH_LE', 'FD-00310', 'FD-01028', 'FD-00037', 'FD-01029', 'KHACH_LE', 'FD-01030', 'KHACH_LE', 'FD-00834', 'FD-00675', 'FD-00165', 'FD-01033', 'FD-01034', 'FD-00213', 'FD-01017', 'FD-01017', 'FD-01017', 'FD-00655', 'FD-00629', 'FD-00834', 'FD-01035', 'FD-00688', 'FD-01036', 'FD-00151', 'FD-01037', 'FD-00675'];
+
     rawCuses.forEach(cus => {
 
-        var idParts = cus.id.split('-');
+        let dup = exeptCustomerIds.filter(p=> p == cus.id);
 
-        var numberId = idParts.length > 1 ? parseInt(idParts[1]) : -1;
+        if(!dup || dup.length <=0) {
 
-        customers.push({
-            FullName: cus.fullName,
-            PhoneNumber: cus.phoneNumber,
-            Birthday: cus.birthday,
-            Sex: cus.sex,
-            HomeAddress: cus.homeAddress,
-            WorkAddress: cus.workAddress,
-            UsedScoreTotal: cus.usedScoreTotal,
-            AvailableScore: cus.availableScore,
-            AccumulatedAmount: cus.accumulatedAmount,
-            MembershipType: cus.membershipType,
-            ContactInfo_Facebook: cus.facebook,
-            ContactInfo_Zalo: cus.zalo,
-            ContactInfo_Skype: cus.skype,
-            ContactInfo_Viberviber: cus.viber,
-            ContactInfo_Instagram: cus.instagram,
-            MainContactInfo: cus.mainContactInfo,
-            Id: cus.id,
-            NumberId: numberId
-        });
+            var idParts = cus.id.split('-');
+
+            var numberId = idParts.length > 1 ? parseInt(idParts[1]) : -1;
+
+            customers.push({
+                FullName: cus.fullName,
+                PhoneNumber: cus.phoneNumber,
+                Birthday: cus.birthday,
+                Sex: cus.sex,
+                HomeAddress: cus.homeAddress,
+                WorkAddress: cus.workAddress,
+                UsedScoreTotal: cus.usedScoreTotal,
+                AvailableScore: cus.availableScore,
+                AccumulatedAmount: cus.accumulatedAmount,
+                MembershipType: cus.membershipType,
+                ContactInfo_Facebook: cus.facebook,
+                ContactInfo_Zalo: cus.zalo,
+                ContactInfo_Skype: cus.skype,
+                ContactInfo_Viberviber: cus.viber,
+                ContactInfo_Instagram: cus.instagram,
+                MainContactInfo: cus.mainContactInfo,
+                Id: cus.id,
+                NumberId: numberId
+            });
+                
+        }
     })
 
     Customer.bulkCreate(customers, {
