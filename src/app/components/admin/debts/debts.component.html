@@ -57,8 +57,7 @@
                         </div>
                     </td>
 
-                    <td> <a href="javascript:void(0)" class="tdName"
-                            (click)="viewCusDetail(order.Order.CustomerInfo)">{{order.Order.CustomerInfo?
+                    <td> <a href="javascript:void(0)" class="tdName" (click)="viewCusDetail(order.Order.CustomerInfo)">{{order.Order.CustomerInfo?
                             order.Order.CustomerInfo.Name : '' }}</a> </td>
                     <td>{{order.Order.TotalAmount | myCurrPipe}}</td>
                     <td>{{order.Order.TotalAmount - order.Order.TotalPaidAmount | myCurrPipe}}</td>
@@ -66,10 +65,10 @@
                     <td>
                         <div class="btn-group">
                             <a type="button" (click)="selectPurchase(order.Order)" class="btn btn-outline-secondary"><i
-                                    class="fa  fa-pencil"></i>Cập nhật</a>
-                            <button type="button" (click)="deleteOrder(order.Order)" class="btn btn-outline-danger"><i
-                                    class="fa fa-remove"></i>
-                                Xóa</button>
+                                    class="fa  fa-pencil"></i>Chọn TT</a>
+                            <button type="button" (click)="addNewPurchase(order.Order)"
+                                class="btn btn-outline-success"><i class="fa fa-plus"></i>
+                                Thêm TT</button>
                         </div>
                     </td>
                 </tr>
@@ -90,10 +89,6 @@
     <!-- Top of List Component -->
     <div class="listHeader">
         <div class="row listAddNew">
-            <div class="col-xs-12 col-md-2">
-                <button class="btn btn-outline-info d-block w-100" (click)="addPurchase()" role="button">Thêm thanh
-                    toán</button>
-            </div>
         </div>
         <div class="row listOptions">
             <div class="col-md-5 col-xs-12">
@@ -103,28 +98,6 @@
                         style="border-radius:0px;border-bottom: 2px solid #ddd;">
                     <owl-date-time [pickerType]="'calendar'" (afterPickerClosed)="purchaseRangeSelected()" #dt2>
                     </owl-date-time>
-                </div>
-            </div>
-            <div class="col-md-2 col-xs-12  cateFilter">
-                <div class="form-group">
-                    <select class="form-control d-inline" [(ngModel)]="selectedPurchaseStatus"
-                        name="selectedPurchaseStatus" id="">
-                        <option [ngValue]="'All'">
-                            Tất cả
-                        </option>
-                        <option [ngValue]="'Canceled'">
-                            Đã huỷ
-                        </option>
-                        <option [ngValue]="'Waiting'">
-                            Đang chờ
-                        </option>
-                        <option [ngValue]="'SentBack'">
-                            Đã trả lại KH
-                        </option>
-                        <option [ngValue]="'Completed'">
-                            Đã hoàn tất
-                        </option>
-                    </select>
                 </div>
             </div>
             <div class="col-md-5 col-xs-12  text-right optionPerPage">
@@ -151,7 +124,6 @@
                     <th scope="col">Ghi chú</th>
                     <th scope="col">Số tiền</th>
                     <th scope="col">Phương thức</th>
-                    <th scope="col">Trạng thái</th>
                     <th scope="col">Thời gian</th>
                     <th scope="col">Thao tác</th>
                 </tr>
@@ -168,7 +140,6 @@
                     <td>{{purchase.Note}}</td>
                     <td>{{purchase.Amount | myCurrPipe}}</td>
                     <td>{{getMethodDisplay(purchase.Method)}}</td>
-                    <td>{{getStatusDisplay(purchase.Status)}}</td>
                     <td>{{purchase.AddingTime | myDatePipe}}</td>
                     <td>
                         <div class="btn-group">
@@ -193,4 +164,54 @@
         </div>
     </div>
 
+</div>
+<div class="popupContent" id="purchaseSetup">
+    <h4 class="userName">Mã HD: {{currentOrder.OrderId}}, KH: {{currentOrder.CustomerInfo?
+            currentOrder.CustomerInfo.Name : ''}}, Công nợ: {{currentOrder.TotalAmount - currentOrder.TotalPaidAmount |
+            myCurrPipe}}</h4>
+    <hr class="adminSeperate">
+    <form #form="ngForm" (submit)="savePurchase(form)" autocomplete="off">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="OrderId">Mã đơn hàng</label>
+                <input type="text" class="form-control" readonly [(ngModel)]="newPurchase.OrderId" id="OrderId"
+                    name="OrderId">
+            </div>
+            <div class="form-group col-md-4">
+                <label for="Method">Phương thức thanh toán</label>
+                <select class="form-control" [(ngModel)]="newPurchase.Method" name="Method" id="Method">
+                    <option selected>Chọn...</option>
+                    <option [ngValue]="'Cash'">Tiền mặt</option>
+                    <option [ngValue]="'Banking'">Chuyển khoản</option>
+                    <option [ngValue]="'Momo'">Ví MOMO</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="OrderId">Số tiền</label>
+                <input type="text" class="form-control" [(ngModel)]="newPurchase.Amount" id="Amount" name="Amount">
+            </div>
+            <div class="form-group col-md-6">
+                <label>Thời gian nhận được tiền: </label>
+                <input class="form-control" [owlDateTime]="dt3" [owlDateTimeTrigger]="dt3"
+                    [(ngModel)]="newPurchaseAddingTime" name="newPurchaseAddingTime" class="mainForm">
+                <owl-date-time [stepMinute]="5" #dt3></owl-date-time>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="OrderId">Ghi chú</label>
+                <input type="text" class="form-control" [(ngModel)]="newPurchase.Note" id="Note" name="Note">
+            </div>
+        </div>
+        <div class="form-action row">
+            <div class="col-md-3">
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-outline-success w-100">Lưu</button>
+                    <a href="javascript:void(0)" class="btn btn-outline-secondary" onclick="hideAdd()">Hủy</a>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>

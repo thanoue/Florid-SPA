@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
-import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates, OrderType, PurchaseStatus, PurchaseMethods } from 'src/app/models/enums';
+import { MenuItems, Sexes, CusContactInfoTypes, MembershipTypes, OrderDetailStates, OrderType, PurchaseMethods } from 'src/app/models/enums';
 import { Guid } from 'guid-typescript';
 import { ProductService } from 'src/app/services/product.service';
 import { utils, WorkBook, WorkSheet, read, writeFile } from 'xlsx';
@@ -27,7 +27,7 @@ export class HomeComponent extends BaseComponent {
 
   category: number = 0;
 
-  constructor(private orderService: OrderService,private purchaseService : PurchaseService, private orderDetailService: OrderDetailService, private customerService: CustomerService, private router: Router, protected activatedRoute: ActivatedRoute, private productService: ProductService) {
+  constructor(private orderService: OrderService, private purchaseService: PurchaseService, private orderDetailService: OrderDetailService, private customerService: CustomerService, private router: Router, protected activatedRoute: ActivatedRoute, private productService: ProductService) {
     super();
   }
 
@@ -153,21 +153,18 @@ export class HomeComponent extends BaseComponent {
 
   }
 
-  detectPrice(src: any) : number{
+  detectPrice(src: any): number {
 
-    if(!src || src == '')
+    if (!src || src == '')
       return 0;
 
-    if(!Number.isNaN(src)){
+    if (!Number.isNaN(src)) {
 
       src = src.toString();
-      
-      // console.log(src, parseInt(src));
-      // return parseInt(src);
 
     }
 
-    if(src.indexOf('đ',0) >-1){
+    if (src.indexOf('đ', 0) > -1) {
 
       src = src.trim().split(' ')[0].trim();
 
@@ -176,12 +173,12 @@ export class HomeComponent extends BaseComponent {
     let parts = src.split('.');
 
     let dest = '';
-    
-    parts.forEach(part =>{
+
+    parts.forEach(part => {
       dest += part;
     });
 
-    if(dest == ''){
+    if (dest == '') {
       console.log(src);
     }
 
@@ -209,7 +206,7 @@ export class HomeComponent extends BaseComponent {
 
       var orders: Order[] = [];
       var orderDetails: OrderDetail[] = [];
-      var purchases : Purchase[]  = [];
+      var purchases: Purchase[] = [];
 
       this.startLoading();
 
@@ -260,38 +257,37 @@ export class HomeComponent extends BaseComponent {
 
         }
 
-
         order.CustomerId = row[0].toString();
         order.Created = ExchangeService.getTimeFromExcel(row[3]);
         order.DoneTime = order.Created;
-        order.TotalAmount = this.detectPrice(row[7]) ;// && row[7] != '' ? parseInt(row[7].replace('.',''))  : 0;
+        order.TotalAmount = this.detectPrice(row[7]);
 
         order.GainedScore = ExchangeService.getGainedScore(order.TotalAmount);
 
-        let doneDate  = new Date(order.Created);
+        let doneDate = new Date(order.Created);
 
-        if(doneDate.getFullYear() == 2021){
-          order.Id  = `21.${order.Id}`;
-        }else{
-          order.Id  = `20.${order.Id}`;
+        if (doneDate.getFullYear() == 2021) {
+          order.Id = `21.${order.Id}`;
+        } else {
+          order.Id = `20.${order.Id}`;
         }
-  
-        while(true){
-          
+
+        while (true) {
+
           let duplicates = orders.filter(p => p.Id == order.Id && p.CustomerId != order.CustomerId);
 
           if (duplicates && duplicates.length > 0) {
 
             order.Id += "_";
 
-          }else{
+          } else {
 
             break;
 
           }
 
         }
-        
+
         var detail = new OrderDetail();
 
         detail.TotalAmount = order.TotalAmount;
@@ -308,25 +304,24 @@ export class HomeComponent extends BaseComponent {
 
         order.TotalPaidAmount = 0;
 
-        order.AmountDiscount = detail.ProductModifiedPrice  - order.TotalAmount;
+        order.AmountDiscount = detail.ProductModifiedPrice - order.TotalAmount;
 
         orders.push(order);
 
         var purchaseType = row[8] && row[8] != '' ? row[8] : '';
-        
-        if(purchaseType != ''){
+
+        if (purchaseType != '') {
 
           let purchase = new Purchase();
 
           purchase.Amount = order.TotalAmount;
           purchase.AddingTime = order.Created;
           purchase.OrderId = order.Id;
-          purchase.Status = PurchaseStatus.Completed;
-          purchase.Note= "from excel file";
+          purchase.Note = "from excel file";
           purchase.Method = purchaseType == 'TM' ? PurchaseMethods.Cash : PurchaseMethods.Banking;
 
           purchases.push(purchase);
-     
+
         }
       };
 
@@ -351,20 +346,19 @@ export class HomeComponent extends BaseComponent {
 
       });
 
-      newOrders.forEach(newOrder=>{
+      newOrders.forEach(newOrder => {
 
-        let orderPurs = purchases.filter(p=>p.OrderId == newOrder.Id);
+        let orderPurs = purchases.filter(p => p.OrderId == newOrder.Id);
 
-        if(orderPurs && orderPurs.length >0){
+        if (orderPurs && orderPurs.length > 0) {
 
-          orderPurs.forEach(pur =>{
+          orderPurs.forEach(pur => {
             newOrder.TotalPaidAmount += pur.Amount;
           });
 
         }
 
       });
-
 
       let cuses = await this.customerService.getAll();
 
@@ -401,7 +395,7 @@ export class HomeComponent extends BaseComponent {
             });
 
           }
-          else{
+          else {
 
             order.CustomerId = 'KHACH_LE';
 
@@ -409,8 +403,8 @@ export class HomeComponent extends BaseComponent {
 
         }
 
-        if(+order.TotalAmount <= 1000)
-           console.log(order);
+        if (+order.TotalAmount <= 1000)
+          console.log(order);
 
       });
 
@@ -485,7 +479,7 @@ export class HomeComponent extends BaseComponent {
     const target: DataTransfer = <DataTransfer>(evt.target);
     if (target.files.length !== 1) throw new Error('Cannot use multiple files');
     const reader: FileReader = new FileReader();
-    reader.onload = (e: any) => {
+    reader.onload = async (e: any) => {
       /* read workbook */
       const bstr: string = e.target.result;
       const wb: WorkBook = read(bstr, { type: 'binary' });
@@ -565,10 +559,24 @@ export class HomeComponent extends BaseComponent {
 
       });
 
-      console.log(customers);
+      let oldCus = await this.customerService.getAll();
 
-      //this.startLoading();
-      this.customerService.createCustomers(customers).then(() => {
+      let insertCustomer: Customer[] = [];
+
+      customers.forEach(cus => {
+
+        let dups = oldCus.filter(p => p.Id == cus.Id);
+
+        if (dups && dups.length > 0) {
+          console.log('error customer: ', dups);
+        } else {
+          insertCustomer.push(cus);
+        }
+
+      });
+
+
+      this.customerService.createCustomers(insertCustomer).then(() => {
         this.stopLoading();
       });
 

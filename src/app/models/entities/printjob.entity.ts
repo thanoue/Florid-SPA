@@ -19,6 +19,7 @@ export class PrintJob extends BaseEntity {
     discount: number;
     purchaseItems: purchaseItem[];
     isMemberDiscountApply: boolean;
+    doneTime: string;
 
     constructor() {
         super();
@@ -30,7 +31,6 @@ export class PrintJob extends BaseEntity {
 export class purchaseItem {
     method: string;
     amount: number;
-    status: string;
 }
 
 export class PrintSaleItem {

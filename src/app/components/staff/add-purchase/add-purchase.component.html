@@ -70,20 +70,6 @@
 
         </div>
 
-        <div class="form-group">
-
-            <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Status">Tình trạng thanh
-                toán</label>
-            <select class="mainForm" id="Status" name="Status" [(ngModel)]="currPurchase.Status">
-                <option selected>Chọn...</option>
-                <option [ngValue]="purchaseStatus.Waiting">Đang đợi</option>
-                <option [ngValue]="purchaseStatus.Completed">Hoàn tất</option>
-                <option [ngValue]="purchaseStatus.SentBack">Đã hoàn tiền</option>
-                <option [ngValue]="purchaseStatus.Canceled">Đã Huỷ</option>
-            </select>
-
-        </div>
-
         <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentAddingTime">Thời gian</label>
         <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" [(ngModel)]="currentAddingTime" name="currentAddingTime"
             class="mainForm">

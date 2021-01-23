@@ -53,31 +53,34 @@
         </div>
 
         <div class="form-group">
-            <input type="text" name="FullName" [(ngModel)]="newCustomer.FullName" id="FullName" required minlength="1"
+            <input type="text" name="FullName" [(ngModel)]="newCustomer.FullName" id="FullName" minlength="1"
                 class="mainForm" placeholder="Tên đầy đủ ..." #FullName="ngModel">
 
             <div *ngIf="FullName.invalid && (FullName.dirty || FullName.touched)" class="alert alert-danger">
 
-                <div *ngIf="FullName.errors.required">
-                    Tên là bắt buộc
-                </div>
                 <div *ngIf="FullName.errors.minlength">
                     Tên tối thiểu 1 ký tự
                 </div>
+
             </div>
 
         </div>
 
+        <div class=" form-group">
+            <select class="mainForm" id="newCustomer.Sex" name="newCustomer.Sex" [(ngModel)]="newCustomer.Sex">
+                <option selected>Danh xưng</option>
+                <option [ngValue]="'Male'">Anh</option>
+                <option [ngValue]="'Female'">Chị</option>
+            </select>
+        </div>
+
         <div class="form-group">
-            <input type="tel" name="PhoneNumber" [(ngModel)]="newCustomer.PhoneNumber" id="PhoneNumber" minlength="9"
+            <input type="tel" name="PhoneNumber" [(ngModel)]="newCustomer.PhoneNumber" id="PhoneNumber" minlength="3"
                 class="mainForm" placeholder="Số điện thoại..." #PhoneNumber="ngModel">
 
             <div *ngIf="PhoneNumber.invalid && (PhoneNumber.dirty || PhoneNumber.touched)" class="alert alert-danger">
-                <div *ngIf="PhoneNumber.errors.required">
-                    SDT là bắt buộc
-                </div>
                 <div *ngIf="PhoneNumber.errors.minlength">
-                    SDT tối thiểu 9 ký tự
+                    SDT tối thiểu 3 ký tự
                 </div>
             </div>
 
@@ -100,6 +103,9 @@
         </li>
         <li class="colorInfo">
             <label>SDT: </label><span>{{selectedCustomer.PhoneNumber}}</span>
+        </li>
+        <li class="colorInfo">
+            <label>Danh xưng: </label><span>{{selectedCustomer.Sex}}</span>
         </li>
         <li class="colorInfo" *ngIf="selectedCustomer.Birthday && selectedCustomer.Birthday >0">
             <label>Ngày sinh: </label><span>{{selectedCustomer.Birthday | myDatePipe}}</span>

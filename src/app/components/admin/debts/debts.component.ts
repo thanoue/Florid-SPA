@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Customer } from 'src/app/models/entities/customer.entity';
-import { MenuItems, PurchaseMethods, PurchaseStatus } from 'src/app/models/enums';
+import { Order } from 'src/app/models/entities/order.entity';
+import { MenuItems, PurchaseMethods } from 'src/app/models/enums';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { OrderCustomerInfoViewModel, OrderDetailViewModel, OrderViewModel } from 'src/app/models/view.models/order.model';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
@@ -12,6 +14,7 @@ import { BaseComponent } from '../base.component';
 
 declare function showDebtSetupPopup(): any;
 declare function hideAdd(): any;
+declare function showPurchaseSetupPopup(): any;
 
 @Component({
   selector: 'app-debts',
@@ -48,18 +51,9 @@ export class DebtsComponent extends BaseComponent {
   purchasePageCount = 0;
   purchaseItemTotalCount = 0;
 
-  _selectedPurchaseStatus: PurchaseStatus = PurchaseStatus.All;
-  public get selectedPurchaseStatus(): PurchaseStatus {
-    return this._selectedPurchaseStatus;
-  }
-
-  public set selectedPurchaseStatus(val: PurchaseStatus) {
-    this._selectedPurchaseStatus = val;
-    this.purchasePageChanged(1);
-  }
-
   purchaseSelectedDates: Date[];
-
+  newPurchase: Purchase;
+  newPurchaseAddingTime: Date;
   purchases: Purchase[];
 
   selectedDates: Date[];
@@ -75,6 +69,9 @@ export class DebtsComponent extends BaseComponent {
     private orderService: OrderService,
     private purchaseService: PurchaseService) {
     super();
+
+    this.newPurchase = new Purchase();
+    this.newPurchaseAddingTime = new Date();
 
     let startTime = new Date();
     startTime.setMilliseconds(0);
@@ -98,8 +95,6 @@ export class DebtsComponent extends BaseComponent {
 
     this.purchaseSelectedDates.push(startTime, endTime);
 
-    this.selectedPurchaseStatus = PurchaseStatus.All;
-
     this.currentOrder = new OrderViewModel();
   }
 
@@ -120,28 +115,52 @@ export class DebtsComponent extends BaseComponent {
     }
   }
 
-
-  getStatusDisplay(status: PurchaseStatus) {
-
-    switch (status) {
-      case PurchaseStatus.Canceled:
-        return 'Đã huỷ';
-      case PurchaseStatus.Completed:
-        return 'Đã hoàn tất';
-      case PurchaseStatus.SentBack:
-        return 'Đã hoàn trả';
-      case PurchaseStatus.Waiting:
-        return 'Đang đợi';
-      default: return '';
-    }
-  }
-
   selectPurchase(order: OrderViewModel) {
     this.currentOrder = order;
     showDebtSetupPopup();
   }
 
-  deleteOrder(order: OrderViewModel) {
+  addNewPurchase(order: OrderViewModel) {
+
+    this.currentOrder = order;
+
+    this.newPurchase = new Purchase();
+    this.newPurchase.OrderId = order.OrderId;
+    this.newPurchaseAddingTime = new Date();
+    this.newPurchase.Method = PurchaseMethods.Banking;
+
+    showPurchaseSetupPopup();
+
+  }
+
+  savePurchase(form: NgForm) {
+
+    if (!form.valid)
+      return;
+
+    setTimeout(() => {
+
+      this.newPurchase.Amount = +this.newPurchase.Amount;
+
+      if (this.newPurchase.Amount + this.currentOrder.TotalPaidAmount > this.currentOrder.TotalAmount) {
+
+        this.showError('Thanh toán vượt quá thành tiền!');
+        return;
+
+      }
+
+      this.newPurchase.AddingTime = this.newPurchaseAddingTime.getTime();
+
+      this.purchaseService.addAndAssign(this.newPurchase)
+        .then(res => {
+
+          this.currentOrder = new OrderViewModel();
+
+          hideAdd();
+          this.pageChanged(1);
+        });
+
+    }, 10);
 
   }
 
@@ -174,7 +193,7 @@ export class DebtsComponent extends BaseComponent {
 
     this.purchases = [];
 
-    this.purchaseService.getByStatuses(this._selectedPurchaseStatus === PurchaseStatus.All ? [] : [this._selectedPurchaseStatus], this.purchaseCurrentPage, this._purchaseItemsPerPage, this.purchaseSelectedDates[0].getTime(), this.purchaseSelectedDates[1].getTime(), true)
+    this.purchaseService.getByTerm('', this.purchaseCurrentPage, this._purchaseItemsPerPage, this.purchaseSelectedDates[0].getTime(), this.purchaseSelectedDates[1].getTime(), true)
       .then(data => {
 
         this.purchaseItemTotalCount = data.totalItemCount;
@@ -189,16 +208,11 @@ export class DebtsComponent extends BaseComponent {
 
   assignPurchase(purchase: Purchase) {
 
-    console.log(purchase);
     this.purchaseService.assignToOrder(purchase.Id, this.currentOrder.OrderId, purchase.Amount)
       .then(() => {
         hideAdd();
         this.Init();
       });
-
-  }
-
-  addPurchase() {
 
   }
 

@@ -179,7 +179,7 @@ export class ExchangeService {
 
             if (res.toString().indexOf('/') > -1) {
 
-                var nums = res.split('/', 3);
+                var nums = res.split('/',3);
 
                 console.log(nums);
 
@@ -192,8 +192,8 @@ export class ExchangeService {
                     let date = new Date(year, month, day, 0, 0, 0, 0);
 
                     return date.getTime();
-
                 }
+                
             } else {
 
                 let dateVal = parseInt(res);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { timeStamp } from 'console';
-import { PurchaseMethods, PurchaseStatus } from 'src/app/models/enums';
+import { PurchaseMethods } from 'src/app/models/enums';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { BaseComponent } from '../base.component';
@@ -24,7 +24,6 @@ export class AddPurchaseComponent extends BaseComponent {
   currentIndex = -1;
   currentAddingTime: Date;
   purchaseMethod = PurchaseMethods;
-  purchaseStatus = PurchaseStatus;
 
 
   constructor(private purchaseService: PurchaseService) {
@@ -47,7 +46,6 @@ export class AddPurchaseComponent extends BaseComponent {
     this.currentAddingTime = new Date(purchase.AddingTime);
     this.currPurchase.Id = purchase.Id;
     this.currPurchase.Method = purchase.Method;
-    this.currPurchase.Status = purchase.Status;
     this.currPurchase.OrderId = purchase.OrderId;
     this.currPurchase.Note = purchase.Note;
 
@@ -62,7 +60,6 @@ export class AddPurchaseComponent extends BaseComponent {
     this.currentAddingTime = (new Date());
     this.currPurchase.Id = 0;
     this.currPurchase.Method = PurchaseMethods.Banking;
-    this.currPurchase.Status = PurchaseStatus.Completed;
     this.currPurchase.OrderId = '';
     this.currPurchase.Note = '';
 

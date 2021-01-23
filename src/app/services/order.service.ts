@@ -83,7 +83,6 @@ export class OrderService {
         purchaseEntity.OrderId = purchase.OrderId;
         purchaseEntity.Amount = purchase.Amount;
         purchaseEntity.Method = purchase.Method;
-        purchaseEntity.Status = purchase.Status;
         purchaseEntity.Note = purchase.Note;
 
         orderVM.PurchaseItems.push(purchaseEntity);

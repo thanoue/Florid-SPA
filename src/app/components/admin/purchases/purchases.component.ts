@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MenuItems, PurchaseMethods, PurchaseStatus } from 'src/app/models/enums';
+import { MenuItems, PurchaseMethods } from 'src/app/models/enums';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
 import { MyCurrPipe } from 'src/app/pipes/date.pipe';
@@ -23,22 +23,12 @@ export class PurchasesComponent extends BaseComponent {
   isSelectAll: boolean = false;
   totalCount = 0;
   currentPage = 1;
-  purchaseStatusses = PurchaseStatus;
   isUnKnownOnly = false;
   oldOrderId = '';
+  searchTerm = '';
   curentAddingDate: Date;
   selectedDates: Date[];
   oldAmount = 0;
-
-  _selectedPurchaseStatus: PurchaseStatus = PurchaseStatus.All;
-  public get selectedPurchaseStatus(): PurchaseStatus {
-    return this._selectedPurchaseStatus;
-  }
-
-  public set selectedPurchaseStatus(val: PurchaseStatus) {
-    this._selectedPurchaseStatus = val;
-    this.pageChanged(1);
-  }
 
   currentPurchase: Purchase;
 
@@ -171,7 +161,7 @@ export class PurchasesComponent extends BaseComponent {
     let endTime = this.selectedDates[1];
     endTime.setDate(endTime.getDate() + 1);
 
-    this.purchaseService.getByStatuses(this._selectedPurchaseStatus === PurchaseStatus.All ? [] : [this._selectedPurchaseStatus], page, this._itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime(), this.isUnKnownOnly)
+    this.purchaseService.getByTerm(this.searchTerm, page, this._itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime(), this.isUnKnownOnly)
       .then(data => {
 
         this.purchases = [];
@@ -190,7 +180,8 @@ export class PurchasesComponent extends BaseComponent {
   }
 
   searchPurchase(term: string) {
-
+    this.searchTerm = term;
+    this.pageChanged(1);
   }
 
   getMethodDisplay(method: PurchaseMethods): string {
@@ -201,22 +192,6 @@ export class PurchasesComponent extends BaseComponent {
         return 'Tiền mặt';
       case PurchaseMethods.Momo:
         return 'Ví MOMO';
-      default: return '';
-    }
-  }
-
-
-  getStatusDisplay(status: PurchaseStatus) {
-
-    switch (status) {
-      case PurchaseStatus.Canceled:
-        return 'Đã huỷ';
-      case PurchaseStatus.Completed:
-        return 'Đã hoàn tất';
-      case PurchaseStatus.SentBack:
-        return 'Đã hoàn trả';
-      case PurchaseStatus.Waiting:
-        return 'Đang đợi';
       default: return '';
     }
   }
@@ -243,6 +218,15 @@ export class PurchasesComponent extends BaseComponent {
   }
 
   deletePurchase(purchase: Purchase) {
+
+    this.openConfirm('Chắc chắn muốn xoá thanh toánn này?', () => {
+
+      this.purchaseService.delete(purchase.Id)
+        .then(() => {
+          this.pageChanged(1);
+        });
+
+    });
 
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
-import { MenuItems, OrderDetailStates, PurchaseStatus } from 'src/app/models/enums';
+import { MenuItems, OrderDetailStates } from 'src/app/models/enums';
 import { Customer } from 'src/app/models/entities/customer.entity';
 import { OrderViewModel, OrderDetailViewModel } from 'src/app/models/view.models/order.model';
 import { OrderService } from 'src/app/services/order.service';
@@ -76,20 +76,17 @@ export class CustomerOrdersComponent extends BaseComponent {
     if (order.PurchaseItems)
       order.PurchaseItems.forEach(purchase => {
 
-        if (purchase.Status == PurchaseStatus.Completed) {
-          purhases.push({
-            method: purchase.Method,
-            amount: purchase.Amount,
-            status: purchase.Status
-          });
-
-        }
+        purhases.push({
+          method: purchase.Method,
+          amount: purchase.Amount
+        });
 
       });
 
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
       Id: order.OrderId,
+      doneTime: new Date(order.DoneTime).toLocaleString('en-US', { hour12: true }),
       Active: true,
       IsDeleted: false,
       saleItems: products,

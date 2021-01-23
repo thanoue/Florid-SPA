@@ -3,7 +3,7 @@ import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from '../../../models/view.models/order.model';
 import { ODFloristInfo, OrderDetail } from 'src/app/models/entities/order.entity';
-import { OrderDetailStates, PurchaseStatus, Roles } from 'src/app/models/enums';
+import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
@@ -222,19 +222,16 @@ export class OrdersManageComponent extends BaseComponent {
     if (order.PurchaseItems)
       order.PurchaseItems.forEach(purchase => {
 
-        if (purchase.Status == PurchaseStatus.Completed) {
-          purhases.push({
-            method: purchase.Method,
-            amount: purchase.Amount,
-            status: purchase.Status
-          });
-
-        }
+        purhases.push({
+          method: purchase.Method,
+          amount: purchase.Amount,
+        });
 
       });
 
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
+      doneTime: new Date(order.DoneTime).toLocaleString('en-US', { hour12: true }),
       Id: order.OrderId,
       Active: true,
       IsDeleted: false,

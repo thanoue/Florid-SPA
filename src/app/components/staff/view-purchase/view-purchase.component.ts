@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PurchaseMethods, PurchaseStatus } from 'src/app/models/enums';
+import { PurchaseMethods } from 'src/app/models/enums';
 import { OrderViewModel } from 'src/app/models/view.models/order.model';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
 import { PurchaseService } from 'src/app/services/purchase.service';
@@ -54,7 +54,6 @@ export class ViewPurchaseComponent extends BaseComponent {
 
     this.currentPurchase.Amount = purchase.Amount;
     this.currentPurchase.Method = purchase.Method;
-    this.currentPurchase.Status = purchase.Status;
     this.currentPurchase.Note = purchase.Note;
 
     purchaseDoing(() => {
@@ -74,7 +73,6 @@ export class ViewPurchaseComponent extends BaseComponent {
 
     this.currentPurchase.Amount = this.totalBalance;
     this.currentPurchase.Method = PurchaseMethods.Cash;
-    this.currentPurchase.Status = PurchaseStatus.Completed;
     this.currentPurchase.Note = ''
 
     purchaseDoing(() => {
@@ -119,7 +117,6 @@ export class ViewPurchaseComponent extends BaseComponent {
     purchase.Id = this.currentPurchase.Id;
     purchase.Amount = +this.currentPurchase.Amount;
     purchase.Method = this.currentPurchase.Method;
-    purchase.Status = this.currentPurchase.Status;
     purchase.AddingTime = new Date().getTime();
     purchase.Note = this.currentPurchase.Note;
 
@@ -135,7 +132,6 @@ export class ViewPurchaseComponent extends BaseComponent {
         item.Id = purchase.Id;
         item.Amount = +purchase.Amount;
         item.Method = purchase.Method;
-        item.Status = purchase.Status;
 
         this.showSuccess('Đã cập nhật 1 thanh toán!');
 

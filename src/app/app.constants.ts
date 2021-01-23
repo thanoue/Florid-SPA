@@ -111,12 +111,14 @@ export const API_END_POINT = {
     getShippingOrderDetails: '/shippingSession/getShippingOrderDetails',
 
     addPurchase: '/purchase/add',
+    addAndAsign: '/purchase/addAndAsign',
     updatePurchaseStatus: '/purchase/updateStatus',
     bulkAddPurchase: '/purchase/bulkAdd',
     bulkInsertPurchase: '/purchase/bulkInsert',
     getPurchasesByStatuses: '/purchase/getByStatuses',
     updatePurchaseOrder: '/purchase/updateOrder',
     assignPurchaseOrder: '/purchase/assignOrder',
+    deletePurchase: '/purchase/deletePurchase',
 };
 
 export const IMAGE_FOLDER_PATHS = {

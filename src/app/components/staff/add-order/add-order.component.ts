@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from 'src/app/models/view.models/order.model';
-import { OrderDetailStates, MembershipTypes, OrderType, PurchaseStatus, PurchaseMethods } from 'src/app/models/enums';
+import { OrderDetailStates, MembershipTypes, OrderType, PurchaseMethods } from 'src/app/models/enums';
 import { Router } from '@angular/router';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
@@ -37,29 +37,20 @@ export class AddOrderComponent extends BaseComponent {
   orderDiscount = 0;
   promotions: Promotion[];
   isPurchased = false;
-  currentPurStatus: PurchaseStatus;
   currentPurType: PurchaseMethods;
   purchaseType = PurchaseMethods;
   currentPayAmount: number;
   qrContent: string;
   qrContentTemplate = "";
   purchaseNote: string = '';
-
-
+  wishingDoneTime: Date;
 
   get AcctualBalance(): number {
 
     if (!this.order)
       return 0;
 
-    let paidAmount = 0;
-    this.globalPurchases.forEach(purchase => {
-      if (purchase.Status == PurchaseStatus.Completed) {
-        paidAmount += purchase.Amount;
-      }
-    });
-
-    return this.order.TotalAmount - paidAmount;
+    return this.order.TotalAmount - this.order.TotalPaidAmount;
 
   }
 
@@ -73,6 +64,7 @@ export class AddOrderComponent extends BaseComponent {
     this.promotions = [];
     this.currentPayAmount = 0;
     this.qrContent = "";
+    this.wishingDoneTime = new Date();
   }
 
   protected Init() {
@@ -101,10 +93,11 @@ export class AddOrderComponent extends BaseComponent {
 
             this.order.OrderId = `${year % 100}.${(count + 1).toString()}`;
 
-
           });
       }
 
+    } else {
+      this.wishingDoneTime = new Date(this.order.DoneTime);
     }
 
     this.onVATIncludedChange();
@@ -263,6 +256,7 @@ export class AddOrderComponent extends BaseComponent {
   placeOrder(isCompleting: boolean) {
 
     this.currentPayAmount = this.order.TotalAmount - this.order.TotalPaidAmount;
+    this.order.DoneTime = this.wishingDoneTime.getTime();
 
     if (!this.order.CustomerInfo || !this.order.CustomerInfo.Id) {
 
@@ -311,7 +305,6 @@ export class AddOrderComponent extends BaseComponent {
 
     this.currentPayAmount = this.totalBalance;
     this.currentPurType = PurchaseMethods.Cash;
-    this.currentPurStatus = PurchaseStatus.Completed;
     this.purchaseNote = '';
 
     purchaseDoing();
@@ -364,20 +357,16 @@ export class AddOrderComponent extends BaseComponent {
 
     this.globalPurchases.forEach(purchase => {
 
-      if (purchase.Status == PurchaseStatus.Completed) {
-
-        purhases.push({
-          method: purchase.Method,
-          amount: purchase.Amount,
-          status: purchase.Status
-        });
-
-      }
+      purhases.push({
+        method: purchase.Method,
+        amount: purchase.Amount,
+      });
 
     });
 
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
+      doneTime: new Date(this.order.DoneTime).toLocaleString('en-US', { hour12: true }),
       Id: this.order.OrderId,
       Active: true,
       IsDeleted: false,
@@ -424,7 +413,7 @@ export class AddOrderComponent extends BaseComponent {
     orderDB.PercentDiscount = this.order.PercentDiscount;
     orderDB.AmountDiscount = this.order.AmountDiscount;
     orderDB.IsMemberDiscountApply = this.order.IsMemberDiscountApply;
-    orderDB.DoneTime = isCompleting ? new Date().getTime() : 0;
+    orderDB.DoneTime = this.order.DoneTime;
 
     this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {
@@ -483,7 +472,7 @@ export class AddOrderComponent extends BaseComponent {
           }
 
           if (!detailVM.DeliveryInfo.DateTime) {
-            detail.DeliveryInfo.ReceivingTime = (new Date()).getTime();
+            detail.DeliveryInfo.ReceivingTime = this.order.DoneTime;
           } else {
             detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
           }
@@ -594,7 +583,6 @@ export class AddOrderComponent extends BaseComponent {
     purchase.OrderId = this.order.OrderId;
     purchase.Amount = +this.currentPayAmount;
     purchase.Method = this.currentPurType;
-    purchase.Status = this.currentPurStatus;
     purchase.Note = this.purchaseNote;
     purchase.AddingTime = new Date().getTime();
 
@@ -616,7 +604,6 @@ export class AddOrderComponent extends BaseComponent {
 
       this.currentPayAmount = this.totalBalance;
       this.currentPurType = PurchaseMethods.Cash;
-      this.currentPurStatus = PurchaseStatus.Completed;
     }
 
   }

@@ -271,8 +271,6 @@ export class OrderCustomerInfoViewModel {
         if (!vm || vm == null)
             vm = new OrderCustomerInfoViewModel();
 
-        console.log(customer.ReceiverInfos);
-
         vm.Id = customer.Id;
         vm.Name = customer.FullName;
         vm.PhoneNumber = customer.PhoneNumber;
@@ -285,9 +283,6 @@ export class OrderCustomerInfoViewModel {
 
         Object.assign(vm.ReceiverInfos, customer.ReceiverInfos);
         Object.assign(vm.SpecialDays, customer.SpecialDays);
-
-
-        console.info(vm);
 
         return vm;
     }

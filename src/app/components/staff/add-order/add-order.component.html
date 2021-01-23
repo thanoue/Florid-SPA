@@ -53,6 +53,13 @@
             </div>
         </div>
 
+        <label class="title-field">Thời gian nhận dự kiến</label>
+        <div class="form-group orderInfo borderless-field">
+            <input type="text" name="wishingDoneTime" id="wishingDoneTime" [owlDateTime]="dt1"
+                [owlDateTimeTrigger]="dt1" [(ngModel)]="wishingDoneTime" class="orderField small-height" placeholder="">
+            <owl-date-time [stepMinute]="5" #dt1></owl-date-time>
+        </div>
+
         <ul class=" orderDetail cusScroll">
             <li *ngFor="let orderDetail of order.OrderDetails" class="orderDetailItem">
                 <div class="itemNumb"><span>{{orderDetail.Index + 1}}</span></div>
@@ -173,16 +180,6 @@
             <div class="form-group">
                 <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Note">Ghi Chú</label>
                 <input type="tel" name="purchaseNote" id="purchaseNote" [(ngModel)]="purchaseNote" class="mainForm">
-            </div>
-            <div class=" form-group">
-                <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="currentPurStatus">Tình trạng thanh
-                    toán</label>
-                <select class="mainForm" id="currentPurStatus" name="currentPurStatus" [(ngModel)]="currentPurStatus">
-                    <option selected>Chọn...</option>
-                    <option [ngValue]="'Waiting'">Đang đợi</option>
-                    <option [ngValue]="'Completed'">Hoàn tất</option>
-                    <option [ngValue]="'Canceled'">Đã Huỷ</option>
-                </select>
             </div>
             <div class="form-group methodGrid mb-0">
                 <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Momo)" class="methodItem"

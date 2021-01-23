@@ -95,7 +95,7 @@ export class SelectCustomerComponent extends BaseComponent {
 
     customer.FullName = this.newCustomer.FullName;
     customer.PhoneNumber = this.newCustomer.PhoneNumber;
-
+    customer.Sex = this.newCustomer.Sex;
     customer.MembershipInfo.MembershipType = MembershipTypes.NewCustomer;
     customer.MembershipInfo.AccumulatedAmount = 0;
     customer.MembershipInfo.AvailableScore = 0;

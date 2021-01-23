@@ -7,16 +7,16 @@
         </div>
         <div class="nameTable">
             <div class="tableHead">
-                <div class="tableLeft">Hình thức</div>
                 <div class="tableCenter">Số tiền</div>
-                <div class="tableRight">Trạng Thái</div>
+                <div class="tableLeft">Hình thức</div>
+                <div class="tableRight">Thời gian</div>
             </div>
             <div class="tableBody cusScroll" id="customer-list">
                 <div class="tableRow main-bg customer-item" *ngFor="let purchaseItem of purchaseItems"
                     (click)="selectItem(purchaseItem)">
-                    <div class="tableLeft">{{purchaseItem.Method}}</div>
                     <div class="tableCenter">{{purchaseItem.Amount|currency:'VND':'symbol-narrow':'':'vi-VN'}}</div>
-                    <div class="tableRight">{{purchaseItem.Status}}</div>
+                    <div class="tableLeft">{{purchaseItem.Method}}</div>
+                    <div class="tableRight">{{purchaseItem.AddingTime | myDatePipe}}</div>
                 </div>
             </div>
         </div>
@@ -54,16 +54,6 @@
                 <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Note">Ghi Chú</label>
                 <input type="tel" name="Note" id="Note" [(ngModel)]="currentPurchase.Note" class="mainForm">
             </div>
-            <div class=" form-group">
-                <label style="width: 100%;text-align: left;margin-bottom: 0px;" for="Method">Tình trạng thanh
-                    toán</label>
-                <select class="mainForm" id="Status" name="Status" [(ngModel)]="currentPurchase.Status">
-                    <option selected>Chọn...</option>
-                    <option [ngValue]="'Waiting'">Đang đợi</option>
-                    <option [ngValue]="'Completed'">Hoàn tất</option>
-                    <option [ngValue]="'Canceled'">Đã Huỷ</option>
-                </select>
-            </div>
             <div class="form-group methodGrid mb-0">
                 <a href="javascript:void(0)" (click)="selectPurType(purchaseType.Momo)" class="methodItem"
                     [ngClass]="currentPurchase.Method==='Momo' ? ' img-purchase-selected' : '' "><img
@@ -84,7 +74,7 @@
     </div>
 </div>
 <div id="codeQR" class="popup-content">
-    <span>Quét mã QR để thanh toán </span>
+    <span>Quét mã QR để thanh toán</span>
     <div>
         <qr-code [value]="qrContent" [size]="290"></qr-code>
     </div>

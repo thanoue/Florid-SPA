@@ -37,13 +37,6 @@ export class StaffLoginComponent extends BaseComponent {
       savedLoginInforGettingRequest();
       return;
     }
-
-    // this.model.passcode = 'aAA123456';
-    // // this.model.userName = 'florid.florist.main@floridday.com'; // florist
-    // this.model.userName = 'Account2'; //admin
-    // //   this.model.userName = 'florid.florist.main@floridday.com'; //florist
-    // // this.model.userName = 'florid.shipper.main@floridday.com'; //shipper
-
   }
 
   protected savedLoginInforReturn(loginName: string, passcode: string) {

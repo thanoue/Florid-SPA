@@ -94,11 +94,3 @@ export enum PurchaseMethods {
     Banking = 'Banking',
     Momo = 'Momo'
 }
-
-export enum PurchaseStatus {
-    All = 'All',
-    Canceled = 'Canceled',
-    Waiting = 'Waiting',
-    SentBack = 'SentBack',
-    Completed = 'Completed'
-}

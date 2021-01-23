@@ -73,7 +73,7 @@ export class CustomerService {
         customer.ReceiverInfos.push(item);
       });
 
-      item.customerspecialDays.forEach(date => {
+      item.customerspecialdays.forEach(date => {
         let item = new SpecialDay();
         item.Date = date.Date;
         item.Description = date.Description;

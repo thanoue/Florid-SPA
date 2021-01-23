@@ -16,14 +16,14 @@
                         Xóa</button>
                 </div>
             </div>
-            <!-- <div class="col-md-4 col-xs-12  optionSearch">
+            <div class="col-md-4 col-xs-12  optionSearch">
                 <div class="form-group">
                     <app-search-box (searchTextInvoke)="searchPurchase($event)" [delayTimeSpan]="1000"
-                        placeholder="Nhập tên hoặc SDT">
+                        placeholder="Nhập mã đơn...">
                     </app-search-box>
                     <button type="submit" class="btn btn-info position-absolute "><i class="fa fa-search"></i></button>
                 </div>
-            </div> -->
+            </div>
             <div class="col-md-4 col-xs-12">
                 <div class="form-group">
                     <input [owlDateTime]="dt1" [selectMode]="'range'" [(ngModel)]="selectedDates"
@@ -31,28 +31,6 @@
                         style="border-radius:0px;border-bottom: 2px solid #ddd;">
                     <owl-date-time [pickerType]="'calendar'" (afterPickerClosed)="rangeSelected()" #dt1>
                     </owl-date-time>
-                </div>
-            </div>
-            <div class="col-md-2 col-xs-12  cateFilter">
-                <div class="form-group">
-                    <select class="form-control d-inline" [(ngModel)]="selectedPurchaseStatus"
-                        name="selectedPurchaseStatus" id="">
-                        <option [ngValue]="'All'">
-                            Tất cả
-                        </option>
-                        <option [ngValue]="'Canceled'">
-                            Đã huỷ
-                        </option>
-                        <option [ngValue]="'Waiting'">
-                            Đang chờ
-                        </option>
-                        <option [ngValue]="'SentBack'">
-                            Đã trả lại KH
-                        </option>
-                        <option [ngValue]="'Completed'">
-                            Đã hoàn tất
-                        </option>
-                    </select>
                 </div>
             </div>
             <div class="col-md-4 col-xs-12  text-right optionPerPage">
@@ -77,8 +55,8 @@
                     <th scope="col" style="width: 10%">ID</th>
                     <th scope="col">Mã đơn hàng</th>
                     <th scope="col">Số tiền</th>
+                    <th scope="col">Ghi chú</th>
                     <th scope="col">Phương thức</th>
-                    <th scope="col">Trạng thái</th>
                     <th scope="col">Thời gian</th>
                     <th scope="col">Thao tác</th>
                 </tr>
@@ -96,8 +74,8 @@
                     </td>
                     <td>{{purchase.Purchase.OrderId}}</td>
                     <td>{{purchase.Purchase.Amount | myCurrPipe}}</td>
+                    <td>{{purchase.Purchase.Note}}</td>
                     <td>{{getMethodDisplay(purchase.Purchase.Method)}}</td>
-                    <td>{{getStatusDisplay(purchase.Purchase.Status)}}</td>
                     <td>{{purchase.Purchase.AddingTime | myDatePipe}}</td>
                     <td>
                         <div class="btn-group">
@@ -136,16 +114,6 @@
                     <option [ngValue]="'Momo'">Ví MOMO</option>
                 </select>
             </div>
-            <div class="form-group col-md-4">
-                <label for="Status">Trạng thái</label>
-                <select class="form-control" [(ngModel)]="currentPurchase.Status" name="Status" id="Status">
-                    <option selected>Chọn...</option>
-                    <option [ngValue]="'Waiting'">Đang đợi</option>
-                    <option [ngValue]="'Completed'">Đã nhận tiền</option>
-                    <option [ngValue]="'SentBack'">Đã hoàn trả</option>
-                    <option [ngValue]="'Canceled'">Đã huỷ</option>
-                </select>
-            </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -162,7 +130,9 @@
         <div class="form-row">
             <div class="form-group col-md-12">
                 <label for="OrderId">Ghi chú</label>
-                <input type="text" class="form-control" [(ngModel)]="currentPurchase.Note" id="Note" name="Note">
+                <textarea type="text" class="form-control" [(ngModel)]="currentPurchase.Note" id="Note"
+                    name="Note"></textarea>
+
             </div>
         </div>
         <div class="form-action row">
