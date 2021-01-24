@@ -7,6 +7,7 @@ const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 const commonService = require('../services/common.service');
 const Purchase = db.purchase;
+const logger = require('../config/logger');
 
 exports.getByCustomer = (req, res) => {
 
@@ -31,9 +32,7 @@ exports.getByCustomer = (req, res) => {
 
     }).then(orders => {
         res.send({ orders: orders });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getByDayRange = (req, res) => {
@@ -57,9 +56,7 @@ exports.getByDayRange = (req, res) => {
         ]
     }).then(orders => {
         res.send({ orders: orders });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getById = (req, res) => {
@@ -85,9 +82,7 @@ exports.getById = (req, res) => {
 
     }).then(order => {
         res.send({ order: order });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getNotLazyById = (req, res) => {
@@ -107,9 +102,7 @@ exports.getNotLazyById = (req, res) => {
         },
     }).then(order => {
         res.send({ order: order });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.addBulk = (req, res) => {
@@ -152,10 +145,7 @@ exports.addBulk = (req, res) => {
         returning: true
     }).then(orderRes => {
         res.send({ message: "Some order are added" });
-    }).catch(err => {
-        console.log(err);
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.updateMemberDiscountApplies = (req, res) => {
@@ -190,10 +180,7 @@ exports.updateMemberDiscountApplies = (req, res) => {
         }).then(updateData => {
             res.send({ data: updateData });
         })
-    }).catch(err => {
-        console.log(err);
-        res.status(500).send({ message: err.message | err });
-    });
+    }).catch(err => logger.error(err, res));
 
 }
 
@@ -231,13 +218,9 @@ exports.addOrder = (req, res) => {
         Order.create(order)
             .then(orderRes => {
                 res.send({ order: orderRes });
-            }).catch(err => {
-                console.log(err);
-                res.status(500).send({ message: err.message });
-            });
+            }).catch(err => logger.error(err, res));
     } catch (err) {
-        console.log(err);
-        res.status(500).send({ message: err.message });
+        logger.error(err, res);
     }
 }
 
@@ -266,11 +249,9 @@ exports.editOrder = (req, res) => {
         })
             .then(orderRes => {
                 res.send({ order: orderRes });
-            }).catch(err => {
-                res.status(500).send({ message: err.message });
-            });
+            }).catch(err => logger.error(err, res));
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        logger.error(err, res)
     }
 }
 
@@ -284,15 +265,7 @@ exports.getMaxNumberByYearId = (req, res) => {
 
         res.send(data[0][0]);
 
-    }).catch(err => {
-
-        console.log(err);
-
-        res.status(500).send({
-            message:
-                err.message || err
-        });
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.insertMissingCustomer = async (req, res) => {
@@ -320,15 +293,7 @@ exports.insertMissingCustomer = async (req, res) => {
         returning: true
     }).then(data => {
         res.send(data);
-    }).catch(err => {
-
-        console.log(err);
-
-        res.status(500).send({
-            message:
-                err.message || err
-        });
-    });
+    }).catch(err => logger.error(err, res));
 
 }
 
@@ -628,13 +593,7 @@ exports.getByStates = (req, res) => {
         res.send({
             orders: orders
         });
-    }).catch(err => {
-        console.log(err);
-        res.status(500).send({
-            message:
-                err.message || err
-        });
-    });
+    }).catch(err => logger.error(err, res));
 
 }
 
@@ -678,16 +637,10 @@ exports.getDebts = (req, res) => {
                 const newResponse = commonService.getPagingData(newData, page, limit);
                 newResponse.totalItemCount = count;
                 res.send(newResponse);
-            })
+            }).catch(err => logger.error(err, res));
 
         })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                message:
-                    err.message || err
-            });
-        });
+        .catch(err => logger.error(err, res));
 }
 
 exports.searchOrders = (req, res) => {
@@ -765,13 +718,9 @@ exports.searchOrders = (req, res) => {
 
             res.send(newResponse);
 
-        }).catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving orders"
-            });
-        });
-    });
+        }).catch(err => logger.error(err, res));
+
+    }).catch(err => logger.error(err, res));
 }
 
 exports.updateOrderFields = (req, res) => {
@@ -784,8 +733,6 @@ exports.updateOrderFields = (req, res) => {
         }
     }).then(val => {
         res.send({ result: val });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 
 }

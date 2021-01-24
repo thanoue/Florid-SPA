@@ -18,13 +18,9 @@ exports.getAll = (req, res) => {
                 model: Role
             }
         ]
-    })
-        .then(users => {
-            res.send({ users: users });
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+    }).then(users => {
+        res.send({ users: users });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getByRole = (req, res) => {
@@ -37,13 +33,9 @@ exports.getByRole = (req, res) => {
                 }
             }
         ]
-    })
-        .then(users => {
-            res.send({ users: users });
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+    }).then(users => {
+        res.send({ users: users });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.createUser = (req, res) => {
@@ -84,7 +76,7 @@ exports.createUser = (req, res) => {
                             res.send({ user: user });
                         });
                     }
-                });
+                }).catch(err => logger.error(err, res));
             } else {
                 // user role = 1
                 user.setRoles([1]).then(() => {
@@ -92,10 +84,7 @@ exports.createUser = (req, res) => {
                 });
             }
         })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+        .catch(err => logger.error(err, res));
 };
 
 exports.editUser = (req, res) => {
@@ -134,50 +123,42 @@ exports.editUser = (req, res) => {
         where: {
             Id: req.body.id
         }
-    })
-        .then(user => {
-            if (req.body.role) {
-                Role.findOne({
-                    where: {
-                        Name: req.body.role
-                    }
-                }).then(role => {
+    }).then(user => {
+        if (req.body.role) {
+            Role.findOne({
+                where: {
+                    Name: req.body.role
+                }
+            }).then(role => {
 
-                    if (!role || role == null) {
+                if (!role || role == null) {
 
-                        res.status(500).send({ message: "Invalid Role!" });
+                    res.status(500).send({ message: "Invalid Role!" });
 
-                    } else {
+                } else {
 
-                        UsersRoles.destroy({
-                            where: {
-                                UserId: req.body.id
-                            }
+                    UsersRoles.destroy({
+                        where: {
+                            UserId: req.body.id
+                        }
+                    }).then(() => {
+
+                        UsersRoles.create({
+                            RoleId: role.Id,
+                            UserId: req.body.id
                         }).then(() => {
-
-                            UsersRoles.create({
-                                RoleId: role.Id,
-                                UserId: req.body.id
-                            }).then(() => {
-                                res.send({ avtUrl: avtname });
-                            });
-
+                            res.send({ avtUrl: avtname });
                         });
 
-                    }
-                }).catch(err => {
-                    console.log(err);
-                    res.status(500).send({ message: err });
-                });
+                    });
 
-            } else {
-                res.send({ avtUrl: avtname });
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+                }
+            }).catch(err => logger.error(err, res));
+
+        } else {
+            res.send({ avtUrl: avtname });
+        }
+    }).catch(err => logger.error(err, res));
 };
 
 exports.deleteUser = (req, res) => {
@@ -202,9 +183,5 @@ exports.deleteUser = (req, res) => {
     }).then(() => {
         res.send({ message: "User is has been deleted!" });
         return;
-    }).catch((err) => {
-        res.status(500).send({ message: err });
-        return;
-    })
-
-}
+    }).catch(err => logger.error(err, res));
+};

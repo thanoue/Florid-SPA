@@ -4,6 +4,7 @@ const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
 const Shipping = db.shipping;
 const ODStatuses = require('../config/app.config').ODStatuses;
+const logger = require('../config/logger');
 
 exports.assignSingleOD = (req, res) => {
 
@@ -26,14 +27,10 @@ exports.assignSingleOD = (req, res) => {
                 }
             }).then(data => {
                 res.send(shippingSession);
-            }).catch(err => {
-                res.status(500).send({ message: err.message });
-            });
+            }).catch(err => logger.error(err, res));
 
         }
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getShippingOrderDetails = (req, res) => {
@@ -57,10 +54,7 @@ exports.getShippingOrderDetails = (req, res) => {
         ]
     }).then(sessions => {
         res.send(sessions)
-    }).catch(err => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.assignOrderDetails = (req, res) => {
@@ -99,8 +93,5 @@ exports.assignOrderDetails = (req, res) => {
             });
 
         }
-    }).catch(err => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
+    }).catch(err => logger.error(err, res));
 }

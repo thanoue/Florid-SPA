@@ -3,6 +3,7 @@ const commonService = require('../services/common.service');
 const Op = db.Sequelize.Op;
 const District = db.districtAddress;
 const Ward = db.wardAddress;
+const logger = require('../config/logger');
 
 exports.getAllDistricts = (req, res) => {
 
@@ -10,12 +11,7 @@ exports.getAllDistricts = (req, res) => {
         .then(districts => {
             res.send({ districts: districts });
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
-        });
+        .catch(err => logger.error(err, res));
 }
 
 exports.getAllWards = (req, res) => {
@@ -24,12 +20,7 @@ exports.getAllWards = (req, res) => {
         .then(wards => {
             res.send({ wards: wards });
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
-        });
+        .catch(err => logger.error(err, res));
 }
 
 exports.addBulkDistrict = (req, res) => {
@@ -51,10 +42,7 @@ exports.addBulkDistrict = (req, res) => {
         });
     }
     catch (err) {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-        return;
+        logger.error(err, res);
     }
 }
 
@@ -79,9 +67,6 @@ exports.addBulkWard = (req, res) => {
         });
     }
     catch (err) {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-        return;
+        logger.error(err, res);
     }
 }

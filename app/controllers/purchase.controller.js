@@ -3,6 +3,7 @@ const db = require("../models");
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 const Purchase = db.purchase;
+const logger = require('../config/logger');
 const Order = db.order;
 
 exports.bulkAdd = (req, res) => {
@@ -19,8 +20,6 @@ exports.bulkAdd = (req, res) => {
         });
     });
 
-    console.log(purchases);
-
     Purchase.bulkCreate(purchases, {
         returning: true
     })
@@ -28,8 +27,7 @@ exports.bulkAdd = (req, res) => {
             res.send({ purchases: data });
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
+            logger.error(err, res);
         });
 }
 
@@ -54,8 +52,7 @@ exports.bulkInsert = (req, res) => {
             res.send({ purchases: data });
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err.message || err });
+            logger.error(err, res);
         });
 }
 
@@ -83,11 +80,7 @@ exports.add = (req, res) => {
                         res.send({ purchase: purchase });
 
                     }).catch(err => {
-                        console.log(err);
-                        res.status(500).send({
-                            message:
-                                err.message || err
-                        });
+                        logger.error(err, res);
                     });
 
                 }
@@ -99,8 +92,7 @@ exports.add = (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
-                res.status(500).send({ message: err });
+                logger.error(err, res);
             });
     }
     else {
@@ -121,12 +113,7 @@ exports.add = (req, res) => {
 
                     }).catch(err => {
 
-                        console.log(err);
-
-                        res.status(500).send({
-                            message:
-                                err.message || err
-                        });
+                        logger.error(err, res);
 
                     });
 
@@ -139,8 +126,7 @@ exports.add = (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log(err);
-                res.status(500).send({ message: err });
+                logger.error(err, res);
             });
     }
 }
@@ -184,19 +170,11 @@ exports.addAndAsign = (req, res) => {
         sequelize.query(command).then(data => {
             res.send({ updating: data });
         }).catch(err => {
-            console.log(err);
-            res.status(500).send({
-                message:
-                    err.message || err
-            });
+            logger.error(err, res);
         });
 
     }).catch(err => {
-        console.log(err);
-        res.status(500).send({
-            message:
-                err.message || err
-        });
+        logger.error(err, res);
     });
 }
 
@@ -219,19 +197,11 @@ exports.assignOrder = (req, res) => {
         sequelize.query(command).then(data => {
             res.send({ updating: data });
         }).catch(err => {
-            console.log(err);
-            res.status(500).send({
-                message:
-                    err.message || err
-            });
+            logger.error(err, res);
         });
 
     }).catch(err => {
-        console.log(err);
-        res.status(500).send({
-            message:
-                err.message || err
-        });
+        logger.error(err, res);
     });
 }
 
@@ -282,19 +252,11 @@ exports.updateOrder = (req, res) => {
         sequelize.query(command).then(data => {
             res.send({ updating: data });
         }).catch(err => {
-            console.log(err);
-            res.status(500).send({
-                message:
-                    err.message || err
-            });
+            logger.error(err, res);
         });
 
     }).catch(err => {
-        console.log(err);
-        res.status(500).send({
-            message:
-                err.message || err
-        });
+        logger.error(err, res);
     });
 }
 
@@ -319,11 +281,7 @@ exports.deletePurchase = (req, res) => {
             sequelize.query(command).then(data => {
                 res.send({ updating: data });
             }).catch(err => {
-                console.log(err);
-                res.status(500).send({
-                    message:
-                        err.message || err
-                });
+                logger.error(err, res);
             });
 
         } else {
@@ -331,11 +289,7 @@ exports.deletePurchase = (req, res) => {
         }
 
     }).catch(err => {
-        console.log(err);
-        res.status(500).send({
-            message:
-                err.message || err
-        });
+        logger.error(err, res);
     });
 }
 
@@ -385,15 +339,11 @@ exports.getByTerm = (req, res) => {
                 const newResponse = commonService.getPagingData(newData, page, limit);
                 newResponse.totalItemCount = count;
                 res.send(newResponse);
-            })
+            }).catch(err => logger.error(err, res));
 
         })
         .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                message:
-                    err.message || err
-            });
+            logger.error(err, res);
         });
 
 }

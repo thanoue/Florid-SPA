@@ -7,6 +7,7 @@ const Sequelize = db.sequelize;
 const sequelize = db.sequelize;
 const Order = db.order;
 const Op = db.Sequelize.Op;
+const logger = require('../config/logger');
 const guid = require('guid');
 var fs = require('fs');
 const MemberShipType = require('../config/app.config').MemberShipType;
@@ -31,20 +32,18 @@ exports.updateList = (req, res) => {
 
     obj.forEach(item => {
 
-        let dup= exeptCustomerIds.filter(p=> p == item.Id);
-           
-        if(!dup || dup.length <= 0){
+        let dup = exeptCustomerIds.filter(p => p == item.Id);
+
+        if (!dup || dup.length <= 0) {
             let command = "UPDATE `customers` SET `AccumulatedAmount` = " + item.AccumulatedAmount + " , `AvailableScore` = " + item.AvailableScore + " , `MembershipType` =\"" + item.MembershipType + "\", `UsedScoreTotal` = " + item.UsedScoreTotal + " WHERE `Id` = \"" + item.Id + "\";";
             rawCommand += command;
         }
-        
+
     });
 
     Sequelize.query(rawCommand).then(data => {
         res.send({ message: 'updated some customer' });
-    }).catch(err => {
-        console.log(err);
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.createCustomers = (req, res) => {
@@ -57,9 +56,9 @@ exports.createCustomers = (req, res) => {
 
     rawCuses.forEach(cus => {
 
-        let dup = exeptCustomerIds.filter(p=> p == cus.id);
+        let dup = exeptCustomerIds.filter(p => p == cus.id);
 
-        if(!dup || dup.length <=0) {
+        if (!dup || dup.length <= 0) {
 
             var idParts = cus.id.split('-');
 
@@ -85,7 +84,7 @@ exports.createCustomers = (req, res) => {
                 Id: cus.id,
                 NumberId: numberId
             });
-                
+
         }
     })
 
@@ -93,7 +92,7 @@ exports.createCustomers = (req, res) => {
         returning: true
     }).then(data => {
         res.send({ customers: customers });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.updateTotalAmount = (req, res) => {
@@ -149,12 +148,9 @@ exports.updateTotalAmount = (req, res) => {
 
         Sequelize.query(updateCommand).then(data => {
             res.send({ message: data });
-        }).catch(err => {
-            console.log(err);
-            res.status(500).send({ message: 'updated some customer' });
-        });
+        }).catch(err => logger.error(err, res));
 
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.updateCustomerIds = (req, res) => {
@@ -181,12 +177,9 @@ exports.updateCustomerIds = (req, res) => {
 
         Sequelize.query(orderCommand).then(data => {
             res.send({ message: 'updated some customer' });
-        }).catch(err => {
-            console.log(err);
-            res.status(500).send({ message: 'updated some customer' });
-        });
+        }).catch(err => logger.error(err, res));
 
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.updateReceiverList = (req, res) => {
@@ -225,24 +218,13 @@ exports.updateReceiverList = (req, res) => {
 
                 res.send({ message: 'Customer Receiver info updated' });
 
-            }).catch(err => {
-
-                res.status(500).send({
-                    message: err.message || "Some error occurred while update receiver."
-                });
-
-            });
+            }).catch(err => logger.error(err, res));
 
         } else {
             res.send({ message: 'Deleted some customer receiver information' });
         }
 
-    })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while update receiver."
-            });
-        });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getById = (req, res) => {
@@ -252,29 +234,16 @@ exports.getById = (req, res) => {
             { model: CustomerReciverInfo },
             { model: CustomerSpecialDay },
         ],
-    })
-        .then(customer => {
-            res.send({ customer: customer });
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving customers."
-            });
-        });
-
+    }).then(customer => {
+        res.send({ customer: customer });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getAll = (req, res) => {
     Customer.findAll()
         .then(customers => {
             res.send({ customers: customers });
-        }).catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving customers."
-            });
-        });
+        }).catch(err => logger.error(err, res));
 }
 
 exports.getList = (req, res) => {
@@ -318,12 +287,7 @@ exports.getList = (req, res) => {
                     currentPage: -1
                 });
             })
-            .catch(err => {
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving customers."
-                });
-            })
+            .catch(err => logger.error(err, res));
 
     } else {
 
@@ -358,13 +322,7 @@ exports.getList = (req, res) => {
                 })
 
             })
-            .catch(err => {
-                console.log(err);
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving customers."
-                });
-            });
+            .catch(err => logger.error(err, res));
     }
 
 }
@@ -374,16 +332,9 @@ exports.getCount = (req, res) => {
         attributes: [
             [sequelize.fn('MAX', sequelize.col('NumberId')), 'max']
         ],
-    })
-        .then(count => {
-            console.log('value is:', count[0].dataValues);
-            res.send(count[0].dataValues);
-        }).catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving customer counting."
-            });
-        });
+    }).then(count => {
+        res.send(count[0].dataValues);
+    }).catch(err => logger.error(err, res));
 }
 
 exports.updateCustomer = (req, res) => {
@@ -413,6 +364,7 @@ exports.updateCustomer = (req, res) => {
             Id: req.body.id
         }
     }).then(result => {
+
         CustomerSpecialDay.destroy({
             where: {
                 CustomerId: body.id
@@ -436,24 +388,16 @@ exports.updateCustomer = (req, res) => {
                     res.send({
                         message: 'a Custoner is Updated'
                     });
-                });
+                }).catch(err => logger.error(err, res));
+
             } else {
                 res.send({
                     message: 'a Custoner is Updated'
                 });
             }
-        }).catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while create product."
-            });
-            return;
-        })
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-        return;
-    });
+        }).catch(err => logger.error(err, res));
+
+    }).catch(err => logger.error(err, res));
 }
 
 exports.create = (req, res) => {
@@ -505,12 +449,7 @@ exports.create = (req, res) => {
             customer: customer
         });
 
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-        return;
-    })
+    }).catch(err => logger.error(err, res));
 }
 
 exports.delete = (req, res) => {
@@ -522,12 +461,7 @@ exports.delete = (req, res) => {
         res.send({
             message: 'a customer is deleted'
         });
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while delete product."
-        });
-        return;
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.deleteMany = (req, res) => {
@@ -540,16 +474,11 @@ exports.deleteMany = (req, res) => {
                 [Op.in]: ids
             }
         }
-    })
-        .then(() => {
-            res.send({
-                message: 'Customers are  deleted'
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
+    }).then(() => {
+        res.send({
+            message: 'Customers are  deleted'
         });
+    }).catch((err) => logger.error(err, res));
 }
 
 exports.updateFields = (req, res) => {
@@ -562,7 +491,6 @@ exports.updateFields = (req, res) => {
         }
     }).then(val => {
         res.send({ result: val });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
+
 }

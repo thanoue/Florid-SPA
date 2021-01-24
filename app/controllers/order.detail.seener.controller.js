@@ -3,6 +3,7 @@ const { role } = require("../models");
 const db = require("../models");
 const OrderDetailSeen = db.orderDetailSeen;
 const User = db.user;
+const logger = require('../config/logger');
 const Role = db.role;
 
 exports.updateDetailSeen = (req, res) => {
@@ -38,12 +39,7 @@ exports.updateDetailSeen = (req, res) => {
                 });
             })
         }
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    })
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getODSeeners = (req, res) => {
@@ -59,10 +55,5 @@ exports.getODSeeners = (req, res) => {
         }
     }).then(data => {
         res.send({ seeners: data });
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    })
+    }).catch(err => logger.error(err, res));
 };

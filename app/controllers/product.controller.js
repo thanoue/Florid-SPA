@@ -9,6 +9,7 @@ const fs = require('fs');
 const ProductCategory = db.product_category;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
+const logger = require('../config/logger');
 
 const appConstant = require('../config/app.config');
 const proudctImgFolderPath = appConstant.fileFolderPath.productImg;
@@ -37,10 +38,7 @@ exports.addBulkFromFiles = (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-        return;
+        logger.error(err, res);
     }
 }
 
@@ -110,15 +108,13 @@ exports.addBulkOneCate = (req, res) => {
                     res.send({ message: 'updated some data' });
                 }).catch(err => {
 
-                    console.log(err);
-                    res.status(500).send({ message: err.message || err });
+                    logger.error(err, res);
 
                 });
 
             }).catch(err => {
 
-                console.log(err);
-                res.status(500).send({ message: err.message || err });
+                logger.error(err, res);
 
             });
 
@@ -172,10 +168,7 @@ exports.addBulkOneCate = (req, res) => {
             // })
 
         }).catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving customer counting."
-            });
+            logger.error(err, res);
         });
 
 }
@@ -215,10 +208,7 @@ exports.addBulk = (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-        return;
+        logger.error(err, res);
     }
 }
 
@@ -248,13 +238,7 @@ function getProducts(countClause, page, limit, offset, res) {
             })
 
         })
-        .catch(err => {
-            console.log(err);
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving products."
-            });
-        });
+        .catch(err => logger.error(err, res));
 }
 
 exports.getAll = (req, res) => {
@@ -266,7 +250,7 @@ exports.getAll = (req, res) => {
         ],
     }).then(products => {
         res.send({ products: products });
-    })
+    }).catch(err => logger.error(err, res));
 
 }
 
@@ -404,7 +388,8 @@ exports.getList = (req, res) => {
                 getProducts(countClause, page, limit, offset, res);
                 return;
             }
-        });
+        }).catch(err => logger.error(err, res));
+
     } else {
 
         if (tagIds.length > 0) {
@@ -439,13 +424,7 @@ exports.getList = (req, res) => {
                 getProducts(countClause, page, limit, offset, res);
 
                 return;
-            }).catch(err => {
-                console.log(err);
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while retrieving products."
-                });
-            });
+            }).catch(err => logger.error(err, res));
 
         } else {
             getProducts(countClause, page, limit, offset, res);
@@ -504,15 +483,7 @@ exports.createProduct = (req, res) => {
 
         res.send({ product: product });
 
-    }).catch(err => {
-
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-
-        return;
-
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.deleteManyProduct = (req, res) => {
@@ -542,11 +513,7 @@ exports.deleteManyProduct = (req, res) => {
             res.send({
                 message: 'Tags is deleted'
             });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+        }).catch(err => logger.error(err, res));
 }
 
 exports.deleteProduct = (req, res) => {
@@ -571,10 +538,7 @@ exports.deleteProduct = (req, res) => {
     }).then(() => {
         res.send({ message: "Product is has been deleted!" });
         return;
-    }).catch((err) => {
-        res.status(500).send({ message: err });
-        return;
-    })
+    }).catch(err => logger.error(err, res));
 
 }
 
@@ -627,7 +591,7 @@ exports.updateProduct = (req, res) => {
 
                         product.setCategories(categories);
 
-                    });
+                    }).catch(err => logger.error(err, res));
                 }
 
                 if (body.tagIds && body.tagIds.length > 0) {
@@ -642,7 +606,7 @@ exports.updateProduct = (req, res) => {
 
                         product.setTags(tags);
 
-                    });
+                    }).catch(err => logger.error(err, res));
                 }
 
                 res.send({
@@ -658,11 +622,6 @@ exports.updateProduct = (req, res) => {
             });
 
         }
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while create product."
-        });
-        return;
-    });
+    }).catch(err => logger.error(err, res));
 
 }

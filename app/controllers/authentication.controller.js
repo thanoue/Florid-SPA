@@ -3,6 +3,7 @@ const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
 const Session = db.session;
+const logger = require('../config/logger');
 
 const Op = db.Sequelize.Op;
 
@@ -40,9 +41,7 @@ exports.signup = (req, res) => {
                 });
             }
         })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+        .catch(err => logger.error(err, res));
 };
 
 exports.signout = (req, res) => {
@@ -130,7 +129,5 @@ exports.signin = (req, res) => {
 
             });
         })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+        .catch(err => logger.error(err, res));
 };

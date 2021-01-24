@@ -1,6 +1,7 @@
 const db = require("../models");
 const commonService = require("../services/common.service");
 const Promotion = db.promotion;
+const logger = require('../config/logger');
 const Op = db.Sequelize.Op;
 
 exports.getAvailable = (req, res) => {
@@ -22,10 +23,7 @@ exports.getAvailable = (req, res) => {
             res.send({ promotions: promotions });
         })
         .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
+            logger.error(err, res);
         })
 }
 
@@ -43,10 +41,7 @@ exports.getList = (req, res) => {
             res.send(response);
         })
         .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
+            logger.error(err, res);
         });
 }
 
@@ -57,10 +52,7 @@ exports.getAll = (req, res) => {
             res.send(promotions);
         })
         .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
+            logger.error(err, res);
         });
 }
 
@@ -82,7 +74,7 @@ exports.update = (req, res) => {
             message: 'promotion are updated'
         })
     }).catch((err) => {
-        res.status(500).send({ message: err });
+        logger.error(err, res);
     });
 }
 
@@ -99,16 +91,13 @@ exports.deleteMany = (req, res) => {
                 [Op.in]: ids
             }
         }
-    })
-        .then(() => {
-            res.send({
-                message: 'Categories are deleted'
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
+    }).then(() => {
+        res.send({
+            message: 'Categories are deleted'
         });
+    }).catch((err) => {
+        logger.error(err, res);
+    });
 }
 
 exports.delete = (req, res) => {
@@ -122,8 +111,7 @@ exports.delete = (req, res) => {
             message: 'a promtion is deleted'
         })
     }).catch((err) => {
-        console.log(err);
-        res.status(500).send({ message: err });
+        logger.error(err, res);
     });
 }
 
@@ -141,7 +129,6 @@ exports.create = (req, res) => {
             res.send({ promtion: promtion });
         })
         .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
+            logger.error(err, res);
         });
 }

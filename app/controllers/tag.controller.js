@@ -2,6 +2,7 @@ const db = require("../models");
 const guid = require('guid');
 const commonService = require("../services/common.service");
 const Tag = db.tag;
+const logger = require('../config/logger');
 const Op = db.Sequelize.Op;
 
 
@@ -17,12 +18,7 @@ exports.getList = (req, res) => {
             const response = commonService.getPagingData(data, page, limit);
             res.send(response);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving tags."
-            });
-        });
+        .catch(err => logger.error(err, res));
 }
 
 exports.getAll = (req, res) => {
@@ -30,12 +26,7 @@ exports.getAll = (req, res) => {
         .then(tags => {
             res.send(tags);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
-        })
+        .catch(err => logger.error(err, res));
 }
 
 
@@ -53,10 +44,7 @@ exports.update = (req, res) => {
         res.status(200).send({
             message: 'Tag is updated'
         })
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.deleteMany = (req, res) => {
@@ -75,10 +63,7 @@ exports.deleteMany = (req, res) => {
                 message: 'Tags are deleted'
             });
         })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+        .catch(err => logger.error(err, res));
 }
 
 exports.delete = (req, res) => {
@@ -91,10 +76,7 @@ exports.delete = (req, res) => {
         res.send({
             message: 'Tag is deleted'
         })
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.create = (req, res) => {
@@ -107,8 +89,5 @@ exports.create = (req, res) => {
         then(tag => {
             res.send({ tag: tag });
         })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+        .catch(err => logger.error(err, res));
 }

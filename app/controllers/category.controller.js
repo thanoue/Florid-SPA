@@ -1,6 +1,7 @@
 const db = require("../models");
 const commonService = require("../services/common.service");
 const Category = db.category;
+const logger = require('../config/logger');
 const Op = db.Sequelize.Op;
 
 exports.getList = (req, res) => {
@@ -16,12 +17,7 @@ exports.getList = (req, res) => {
             const response = commonService.getPagingData(data, page, limit);
             res.send(response);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
-        });
+        .catch(err => logger.error(err, res));
 }
 
 exports.getAll = (req, res) => {
@@ -29,12 +25,7 @@ exports.getAll = (req, res) => {
         .then(categories => {
             res.send(categories);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving categories."
-            });
-        })
+        .catch(err => logger.error(err, res));
 }
 
 exports.update = (req, res) => {
@@ -47,14 +38,10 @@ exports.update = (req, res) => {
             Id: req.body.id
         }
     }).then(() => {
-        Z
         res.status(200).send({
             message: 'Category are updated'
         })
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
+    }).catch((err) => logger.error(err, res));
 }
 
 exports.deleteMany = (req, res) => {
@@ -73,10 +60,7 @@ exports.deleteMany = (req, res) => {
                 message: 'Categories are deleted'
             });
         })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+        .catch((err) => logger.error(err, res));
 }
 
 exports.delete = (req, res) => {
@@ -89,10 +73,7 @@ exports.delete = (req, res) => {
         res.send({
             message: 'Category is deleted'
         })
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
+    }).catch((err) => logger.error(err, res));
 }
 
 exports.create = (req, res) => {
@@ -104,8 +85,5 @@ exports.create = (req, res) => {
         then(category => {
             res.send({ category: category });
         })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
+        .catch((err) => logger.error(err, res));
 }

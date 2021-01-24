@@ -15,6 +15,7 @@ const appConstant = require('../config/app.config');
 const { Console } = require("console");
 const resultImgFolderPath = appConstant.fileFolderPath.resultImg;
 const shippingImgFolderPath = appConstant.fileFolderPath.shipppingImg;
+const logger = require('../config/logger');
 
 let KhachLeId = 'KHACH_LE';
 
@@ -48,19 +49,9 @@ exports.resultConfirm = (req, res) => {
             }
         }).then(data => {
             res.send(updateObj);
-        }).catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving information."
-            });
-        });
+        }).catch(err => logger.error(err, res));
 
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.shippingConfirm = (req, res) => {
@@ -89,12 +80,7 @@ exports.shippingConfirm = (req, res) => {
         }
     }).then(data => {
         res.send(updateObj);
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 
 }
 
@@ -115,9 +101,7 @@ exports.deleteOrderDetailByOrderId = (req, res) => {
         }
     }).then(data => {
         res.send({ message: 'deleted some orderDetails' });
-    }).catch(err => {
-        res.status(500).send({ message: err.message });
-    });
+    }).catch(err => logger.error(err, res));
 
 }
 
@@ -140,7 +124,7 @@ exports.getByOrderId = (req, res) => {
         res.status(200).send({
             orderDetails: orderDetails
         });
-    });
+    }).catch(err => { logger.error(err, res); });
 
 };
 
@@ -166,14 +150,8 @@ exports.updateStatusByOrderId = (req, res) => {
             }
         }).then(() => {
             res.send({ data });
-        }).catch(err => {
-            console.log(err);
-            res.status(500).send({ message: err });
-        });
-    }).catch(err => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
+        }).catch(err => logger.error(err, res));
+    }).catch(err => logger.error(err, res));
 }
 
 exports.updateOrderInfos = (req, res) => {
@@ -228,13 +206,9 @@ exports.updateOrderInfos = (req, res) => {
 
                     sequelize.query(customerCommand).then(data => {
 
-                    }).catch(err => {
-                        console.log(err);
-                    });
+                    }).catch(err => logger.error(err, res));
 
-                }).catch(err => {
-                    console.log(err);
-                });
+                }).catch(err => logger.error(err, res));
 
             } else {
 
@@ -245,10 +219,7 @@ exports.updateOrderInfos = (req, res) => {
 
                     sequelize.query(customerCommand).then(data => {
 
-                    }).catch(err => {
-                        console.log(err);
-                    });
-
+                    }).catch(err => logger.error(err, res));
                 }
             }
         }
@@ -276,13 +247,11 @@ exports.updateOrderInfos = (req, res) => {
 
             sequelize.query(rawCommand).then(data => {
                 res.send({ message: 'updated some data' });
-            }).catch(err => {
-                console.log(err);
-                res.status(500).send({ message: err });
-            });
+            }).catch(err => logger.error(err, res));
 
-        });
-    });
+        }).catch(err => logger.error(err, res));
+
+    }).catch(err => logger.error(err, res));
 }
 
 exports.addOrderDetails = (req, res) => {
@@ -324,9 +293,7 @@ exports.addOrderDetails = (req, res) => {
             returning: true
         }).then(data => {
             res.send({ orderDetails: orderDetails });
-        }).catch(err => {
-            res.status(500).send({ message: err.message || err })
-        })
+        }).catch(err => logger.error(err, res))
     }
     catch (err) {
         res.status(500).send({ message: err.message });
@@ -399,10 +366,12 @@ exports.getOrderDetailShipperAndFlorist = (req, res) => {
 
                         res.status(200).send({ florist: florist, shipper: session.user, fixingFlorist: fixing });
                         return;
-                    })
-                })
 
-            });
+                    }).catch(err => logger.error(err, res));
+
+                }).catch(err => logger.error(err, res));
+
+            }).catch(err => logger.error(err, res));
         }
         else {
             res.status(200).send({ florist: {}, shipper: {} });
@@ -448,19 +417,9 @@ exports.getProcessingOrderDetails = (req, res) => {
             res.send({
                 orders: orders
             });
-        }).catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving customer counting."
-            });
-        });
+        }).catch(err => logger.error(err, res));
 
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving customer counting."
-        });
-    });;
+    }).catch(err => logger.error(err, res));
 };
 
 exports.updateFields = (req, res) => {
@@ -473,11 +432,7 @@ exports.updateFields = (req, res) => {
         }
     }).then(val => {
         res.send({ result: val });
-    }).catch(err => {
-        console.log(err);
-        res.status(500).send({ message: err });
-    });
-
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getMaxMakingSortOrder = (req, res) => {
@@ -486,12 +441,7 @@ exports.getMaxMakingSortOrder = (req, res) => {
         raw: true,
     }).then(value => {
         res.send(value[0]);
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getMaxShippingSortOrder = (req, res) => {
@@ -500,12 +450,7 @@ exports.getMaxShippingSortOrder = (req, res) => {
         raw: true,
     }).then(value => {
         res.send(value[0]);
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getByState = (req, res) => {
@@ -516,12 +461,7 @@ exports.getByState = (req, res) => {
         }
     }).then(data => {
         res.send({ orderDetails: data });
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getDetailByStateAndFloristId = (req, res) => {
@@ -533,12 +473,7 @@ exports.getDetailByStateAndFloristId = (req, res) => {
         }
     }).then(data => {
         res.send({ orderDetails: data });
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getDetailByStates = (req, res) => {
@@ -553,12 +488,7 @@ exports.getDetailByStates = (req, res) => {
         }
     }).then(data => {
         res.send({ orderDetails: data });
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getDetailByStatesAndFlorist = (req, res) => {
@@ -578,12 +508,7 @@ exports.getDetailByStatesAndFlorist = (req, res) => {
         }
     }).then(data => {
         res.send({ orderDetails: data });
-    }).catch(err => {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
-    });
+    }).catch(err => logger.error(err, res));
 };
 
 exports.updateMakingSortOrder = (req, res) => {
@@ -612,10 +537,7 @@ exports.updateMakingSortOrder = (req, res) => {
         res.send({ message: 'Details Order is Updated' });
     }
     catch (err) {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
+        logger.error(err, res);
     }
 };
 
@@ -645,9 +567,6 @@ exports.updateShippingSortOrder = (req, res) => {
         res.send({ message: 'Details Order is Updated' });
     }
     catch (err) {
-        res.status(500).send({
-            message:
-                err.message || "Some error occurred while retrieving information."
-        });
+        logger.error(err, res);
     }
 };
