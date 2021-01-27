@@ -176,53 +176,34 @@ exports.updateOrderInfos = (req, res) => {
         });
     });
 
-    let isUpdateAmount = true;
-
-    orderDetails.forEach(detail => {
-
-        if (detail.State != ODStatuses.Completed) {
-            isUpdateAmount = false;
-        }
-
-    });
-
     Order.findOne({
         where: {
             Id: orderId
         }
     }).then(order => {
 
-        if (isUpdateAmount) {
+        let command = '';
 
-            if (order.CustomerId != KhachLeId) {
+        if (order.CustomerId != KhachLeId) {
 
-                let customerCommand = "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` - " + order.GainedScore * 100000 +
-                    " , `AvailableScore` =  `AvailableScore` - " + order.GainedScore + "WHERE `Id` = \"" + order.CustomerId + "\";";
+            command += "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` - " + order.GainedScore * 100000 +
+                " , `AvailableScore` =  `AvailableScore` - " + order.GainedScore + " WHERE `Id` = \"" + order.CustomerId + "\";";
 
-                sequelize.query(customerCommand).then(data => {
-
-                    customerCommand = "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` - " + order.GainedScore * 100000 +
-                        " , `AvailableScore` =  `AvailableScore` - " + order.GainedScore + "WHERE `Id` = \"" + customerId + "\";";
-
-                    sequelize.query(customerCommand).then(data => {
-
-                    }).catch(err => logger.error(err, res));
-
-                }).catch(err => logger.error(err, res));
-
-            } else {
-
-                if (customerId != KhachLeId) {
-
-                    let customerCommand = "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` + " + order.GainedScore * 100000 +
-                        " , `AvailableScore` =  `AvailableScore`+" + order.GainedScore + "WHERE `Id` = \"" + customerId + "\";";
-
-                    sequelize.query(customerCommand).then(data => {
-
-                    }).catch(err => logger.error(err, res));
-                }
-            }
         }
+
+        if (customerId != KhachLeId) {
+
+            command += "UPDATE `customers` SET `AccumulatedAmount` =  `AccumulatedAmount` + " + order.GainedScore * 100000 +
+                " , `AvailableScore` =  `AvailableScore`+" + order.GainedScore + " WHERE `Id` = \"" + customerId + "\";";
+        }
+
+        if (command != '') {
+
+            sequelize.query(command).then(data => {
+
+            }).catch(err => { logger.error(err); });
+        }
+
 
         Order.update({
             CustomerId: customerId,
@@ -237,7 +218,7 @@ exports.updateOrderInfos = (req, res) => {
 
             orderDetails.forEach(item => {
 
-                let command = "UPDATE `orderDetails` SET `ReceivingTime` = " + item.ReceivingTime +
+                let command = "UPDATE `orderdetails` SET `ReceivingTime` = " + item.ReceivingTime +
                     " , `ReceiverName` = \"" + item.ReceiverName + "\" , `ReceiverPhoneNumber` =\"" + item.ReceiverPhoneNumber +
                     "\", `ReceivingAddress` = \"" + item.ReceivingAddress + "\", `CustomerName` = \"" +
                     item.CustomerName + "\" , `CustomerPhoneNumber` = \"" + item.CustomerPhoneNumber + "\" WHERE `Id` = \"" + item.Id + "\";";

@@ -409,6 +409,7 @@ exports.create = (req, res) => {
         res.status(403).send({
             message: 'Body is required'
         });
+
         return;
     }
 
@@ -439,9 +440,11 @@ exports.create = (req, res) => {
     }).then(customer => {
 
         if (!customer) {
+            
             res.status(500).send({
                 message: "Create customer err"
             });
+
             return;
         }
 

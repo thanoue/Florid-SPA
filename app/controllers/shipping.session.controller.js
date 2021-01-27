@@ -44,7 +44,7 @@ exports.getShippingOrderDetails = (req, res) => {
         include: [
             {
                 model: OrderDetail,
-                as: 'orderDetail',
+                as: 'orderdetail',
                 where: {
                     State: {
                         [Op.in]: [ODStatuses.DeliverAssinged, ODStatuses.OnTheWay]

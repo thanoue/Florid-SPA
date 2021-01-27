@@ -21,11 +21,11 @@ exports.getList = (req, res) => {
 }
 
 exports.getAll = (req, res) => {
-    Category.findAll()
-        .then(categories => {
-            res.send(categories);
-        })
-        .catch(err => logger.error(err, res));
+    Category.findAll({
+        order: [['Id', 'DESC']],
+    }).then(categories => {
+        res.send(categories);
+    }).catch(err => logger.error(err, res));
 }
 
 exports.update = (req, res) => {

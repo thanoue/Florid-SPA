@@ -363,6 +363,14 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         tagController.deleteMany
     )
+    app.post(`${tagPrefix}bulkAdd`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        tagController.bulkAdd
+    )
+    app.post(`${tagPrefix}bulkAddProductsTags`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        tagController.bulkAddProductsTags
+    )
 
     //category
     app.get(`${categoryPrefix}getList`,

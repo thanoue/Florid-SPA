@@ -214,14 +214,10 @@ exports.addOrder = (req, res) => {
         DoneTime: body.doneTime
     }
 
-    try {
-        Order.create(order)
-            .then(orderRes => {
-                res.send({ order: orderRes });
-            }).catch(err => logger.error(err, res));
-    } catch (err) {
-        logger.error(err, res);
-    }
+    Order.create(order)
+        .then(orderRes => {
+            res.send({ order: orderRes });
+        }).catch(err => logger.error(err, res));
 }
 
 exports.editOrder = (req, res) => {
@@ -240,19 +236,13 @@ exports.editOrder = (req, res) => {
         AmountDiscount: body.amountDiscount
     }
 
-    try {
-
-        Order.update(order, {
-            where: {
-                Id: req.body.id
-            }
-        })
-            .then(orderRes => {
-                res.send({ order: orderRes });
-            }).catch(err => logger.error(err, res));
-    } catch (err) {
-        logger.error(err, res)
-    }
+    Order.update(order, {
+        where: {
+            Id: req.body.id
+        }
+    }).then(orderRes => {
+        res.send({ order: orderRes });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.getMaxNumberByYearId = (req, res) => {
@@ -424,7 +414,6 @@ exports.updateOldOrders = async (req, res) => {
         }
 
     });
-
 
     sequelize.query(orderCommand).then(data => {
 
@@ -636,7 +625,9 @@ exports.getDebts = (req, res) => {
 
                 const newResponse = commonService.getPagingData(newData, page, limit);
                 newResponse.totalItemCount = count;
+
                 res.send(newResponse);
+
             }).catch(err => logger.error(err, res));
 
         })
