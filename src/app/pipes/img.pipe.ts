@@ -16,6 +16,7 @@ export class ImgPipe implements PipeTransform {
     }
 
     static getImgUrl(value: string, imgType: string): string {
+
         if (!value || value == undefined || value == null) {
             return '../../../assets/images/temp.png';
         }
@@ -38,6 +39,8 @@ export class ImgPipe implements PipeTransform {
                 return `${environment.base_domain}${IMAGE_FOLDER_PATHS.shipping_img}${value}`;
             case ImgType.ResultImg:
                 return `${environment.base_domain}${IMAGE_FOLDER_PATHS.result_img}${value}`;
+            case ImgType.NoteImg:
+                return `${environment.base_domain}${IMAGE_FOLDER_PATHS.order_detail_note}${value}`;
 
         }
     }

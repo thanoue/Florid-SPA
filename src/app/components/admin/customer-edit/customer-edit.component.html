@@ -8,31 +8,11 @@
                         <h3 class="infoTitle">Thông tin cá nhân</h3>
                         <ul class="infoList">
                             <li><label>Họ và Tên: </label><input class="form-control" type="text"
-                                    [(ngModel)]="customer.FullName" id="FullName" name="FullName" #FullName="ngModel"
-                                    required minlength="5">
-                                <div *ngIf="FullName.invalid && (FullName.dirty || FullName.touched)"
-                                    class="alert alert-danger">
+                                    [(ngModel)]="customer.FullName" id="FullName" name="FullName">
 
-                                    <div *ngIf="FullName.errors.required">
-                                        Bắt buộc
-                                    </div>
-                                    <div *ngIf="FullName.errors.minlength">
-                                        Tối thiểu 5 ký tự
-                                    </div>
-                                </div>
                             </li>
                             <li><label>Số điện thoại: </label><input class="form-control" type="number"
-                                    [(ngModel)]="customer.PhoneNumber" id="PhoneNumber" name="PhoneNumber"
-                                    #PhoneNumber="ngModel" required minlength="9">
-                                <div *ngIf="PhoneNumber.invalid && (PhoneNumber.dirty || PhoneNumber.touched)"
-                                    class="alert alert-danger">
-                                    <div *ngIf="PhoneNumber.errors.required">
-                                        Bắt buộc
-                                    </div>
-                                    <div *ngIf="PhoneNumber.errors.minlength">
-                                        Tối thiểu 9 ký tự
-                                    </div>
-                                </div>
+                                    [(ngModel)]="customer.PhoneNumber" id="PhoneNumber" name="PhoneNumber">
                             </li>
                             <li><label>Sinh nhật: </label>
                                 <input class="form-control" type="date"
@@ -87,7 +67,7 @@
                         <ul class="infoList">
                             <li><label>Facebook: </label><input type="text" class="form-control"
                                     [(ngModel)]="customer.ContactInfo.Facebook" id="Facebook" name="Facebook"
-                                    placeholder="nguyenvana"></li>
+                                    placeholder=""></li>
                             <li><label>Zalo: </label><input type="text" class="form-control"
                                     [(ngModel)]="customer.ContactInfo.Zalo" id="Zalo" name="Zalo" placeholder="">
                             </li>

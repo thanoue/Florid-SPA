@@ -16,6 +16,8 @@ import { async } from '@angular/core/testing';
 import { Product } from 'src/app/models/entities/product.entity';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
 import { PurchaseService } from 'src/app/services/purchase.service';
+import { TagService } from 'src/app/services/tag.service';
+import { Tag } from 'src/app/models/entities/tag.entity';
 
 @Component({
   selector: 'app-home',
@@ -27,7 +29,7 @@ export class HomeComponent extends BaseComponent {
 
   category: number = 0;
 
-  constructor(private orderService: OrderService, private purchaseService: PurchaseService, private orderDetailService: OrderDetailService, private customerService: CustomerService, private router: Router, protected activatedRoute: ActivatedRoute, private productService: ProductService) {
+  constructor(private orderService: OrderService, private tagService: TagService, private purchaseService: PurchaseService, private orderDetailService: OrderDetailService, private customerService: CustomerService, private router: Router, protected activatedRoute: ActivatedRoute, private productService: ProductService) {
     super();
   }
 
@@ -183,6 +185,107 @@ export class HomeComponent extends BaseComponent {
     }
 
     return parseInt(dest);
+
+  }
+
+  getTagId(tags: Tag[], name: string): number {
+
+    let tag = tags.filter(p => p.Alias == ExchangeService.getAlias(name));
+
+    if (tag && tag.length > 0) {
+      return tag[0].Id;
+    }
+
+    return -1;
+  }
+
+  importTags(evt: any) {
+
+    const target: DataTransfer = <DataTransfer>(evt.target);
+    if (target.files.length !== 1) throw new Error('Cannot use multiple files');
+    const reader: FileReader = new FileReader();
+
+    reader.onload = async (e: any) => {
+
+      const bstr: string = e.target.result;
+      const wb: WorkBook = read(bstr, { type: 'binary' });
+
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      let data = (utils.sheet_to_json(ws, { header: 1 })) as string[][];
+
+      let allTags = await this.tagService.getAll();
+
+      let newTags: Tag[] = []
+
+      let productsTags: {
+        ProductId: number,
+        TagId: Number
+      }[] = [];
+
+      for (let i = 0; i < data.length; i++) {
+
+        if (i == 0)
+          continue;
+
+        let row = data[i];
+
+        if (!row[0])
+          continue;
+
+        if (!row[5] || row[5] == '')
+          break;
+
+        let tags = row[5].split(',');
+
+        let productId = +row[0];
+
+        tags.forEach(tagName => {
+
+          let tagId = this.getTagId(allTags, tagName);
+
+          if (tagId == -1) {
+
+            if (newTags.filter(p => p.Alias == ExchangeService.getAlias(tagName)).length <= 0) {
+
+              let tag = new Tag();
+              tag.Alias = ExchangeService.getAlias(tagName);
+              tag.Name = tagName;
+
+              newTags.push(tag);
+
+            }
+
+          } else {
+
+            if (productsTags.filter(p => p.ProductId == productId && p.TagId == tagId).length <= 0) {
+
+              productsTags.push({
+                ProductId: productId,
+                TagId: tagId
+              });
+
+            }
+
+          }
+
+        });
+
+      }
+
+      if (newTags.length > 0) {
+        this.tagService.bulkAdd(newTags);
+        return;
+      }
+
+      this.tagService.addBulkProductTag(productsTags);
+
+    }
+
+    reader.readAsBinaryString(target.files[0]);
 
   }
 

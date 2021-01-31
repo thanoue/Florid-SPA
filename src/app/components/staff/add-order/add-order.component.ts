@@ -14,6 +14,7 @@ import { PromotionService } from 'src/app/services/promotion.service';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { MembershipInfo } from 'src/app/models/entities/customer.entity';
+import { stringify } from 'querystring';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
 declare function dismissPurchaseDialog();
@@ -447,7 +448,7 @@ export class AddOrderComponent extends BaseComponent {
           detail.PercentDiscount = detailVM.PercentDiscount;
           detail.AmountDiscount = detailVM.AmountDiscount;
           detail.Quantity = detailVM.Quantity;
-
+          detail.NoteImages = detailVM.NoteImages;
           detail.CustomerName = this.order.CustomerInfo.Name;
           detail.CustomerPhoneNumber = this.order.CustomerInfo.PhoneNumber;
 
@@ -517,42 +518,46 @@ export class AddOrderComponent extends BaseComponent {
 
         });
 
-        await this.orderService.deleteOrderDetailByOrderId(orderDB.Id);
+        this.uploadImage(orderDetails).then(upload => {
 
-        this.orderService.addOrderDetails(orderDetails)
-          .then(() => {
+          console.log('---------');
 
-            if (orderDB.CustomerId != 'KHACH_LE') {
+          this.orderService.addOrderDetails(orderDetails)
+            .then(() => {
 
-              this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
+              if (orderDB.CustomerId != 'KHACH_LE') {
+
+                this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
+
+                  this.stopLoading();
+
+                  if (isSuccess) {
+
+                    this.completeOrder();
+
+                  }
+
+                });
+
+              }
+              else {
 
                 this.stopLoading();
 
-                if (isSuccess) {
+                this.completeOrder();
 
-                  this.completeOrder();
+              }
 
-                }
+            })
+            .catch(error => {
 
-              });
+              console.log(error);
+              this.globalService.stopLoading();
+              this.showError(error.toString());
 
-            }
-            else {
+            });
+        });
 
-              this.stopLoading();
-
-              this.completeOrder();
-
-            }
-
-          })
-          .catch(error => {
-
-            console.log(error);
-            this.globalService.stopLoading();
-            this.showError(error.toString());
-
-          });
       });
   }
 
@@ -608,6 +613,117 @@ export class AddOrderComponent extends BaseComponent {
 
   }
 
+  async uploadImages(orderDetail: OrderDetail): Promise<string> {
+
+    return await new Promise((resolve: (res: string) => void, reject) => {
+      let imageUrls = '';
+      let index = 0;
+
+      orderDetail.NoteImages.forEach(async noteImgData => {
+
+        let response = await fetch(noteImgData);
+        let blob = await response.blob();
+
+        if (blob != null) {
+
+          const file = new File([blob], "result.png", { type: "image/png" });
+
+          let url = await this.orderService.uploadNoteImg(file)
+            .catch(err => {
+
+              this.showError(err);
+
+              reject(err);
+
+              return;
+
+            });
+
+          if (url != '') {
+
+            if (index == orderDetail.NoteImages.length - 1) {
+
+              imageUrls += url;
+
+              resolve(imageUrls);
+
+            } else {
+              imageUrls = imageUrls + url + ',';
+              index += 1;
+            }
+
+          }
+
+        }
+
+      });
+
+    }).then(url => {
+      return url;
+    })
+
+  }
+
+  async uploadImage(orderDetails: OrderDetail[]): Promise<any> {
+
+    return await new Promise((resolve: (url: string) => void, reject) => {
+
+      try {
+
+        let index = 0;
+        let isResolved = false;
+
+        orderDetails.forEach(async orderDetail => {
+
+          if (index >= orderDetails.length - 1) {
+
+            if (!isResolved) {
+              resolve('added');
+              isResolved = true;
+            }
+
+          } else {
+
+            if (orderDetail.NoteImages && orderDetail.NoteImages.length > 0) {
+
+              let urls = await this.uploadImages(orderDetail);
+
+              if (urls) {
+
+                orderDetail.NoteImages = [];
+                orderDetail.NoteImagesBlobbed = urls;
+
+                console.log(orderDetail.NoteImages, urls);
+
+                index += 1;
+
+                if (!isResolved) {
+                  resolve('added');
+                  isResolved = true;
+                }
+
+              }
+
+            } else {
+
+              index += 1;
+
+            }
+
+          }
+
+        });
+
+      }
+      catch (err) {
+        reject(err);
+      }
+
+    }).then(res => {
+      return res;
+    });
+
+  }
 
   totalAmountCalculate() {
 

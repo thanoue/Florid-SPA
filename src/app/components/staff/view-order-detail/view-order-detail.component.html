@@ -10,7 +10,6 @@
                 <img src="{{orderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}" alt="" class="item-detail-thumb">
                 <div class="item-detail-info">
                     <h5 class="item-code">{{orderDetail.ProductName}}</h5>
-                    <span class="prodPriceOld">{{orderDetail.OriginalPrice| myCurrPipe}}</span>
                     <span class="prodPrice">{{orderDetail.ModifiedPrice| myCurrPipe}}</span>
 
                     <span class="prodCharge">Phụ phí:
@@ -67,8 +66,14 @@
                     <span class="itemVal">{{orderDetail.ShippingNote}}</span>
                 </div>
             </div>
+            <div style="right:150px;" *ngIf="CurrentUser.Role == 'Admin' || CurrentUser.Role == 'Account' "
+                class="viewed" (click)="openViewed()"><img src="../../../assets/images/eye.svg" alt=""
+                    class="main-filter">Đã xem
+            </div>
+
             <div *ngIf="CurrentUser.Role == 'Admin' || CurrentUser.Role == 'Account' " class="viewed"
-                (click)="openViewed()"><img src="../../../assets/images/eye.svg" alt="" class="main-filter">Đã xem
+                (click)="openNoteImages()"><img src="../../../assets/images/eye.svg" alt="" class="main-filter">Ảnh ghi
+                chú
             </div>
         </div>
     </div>
@@ -82,4 +87,10 @@
             <span class="itemRole">{{user.Role}}</span>
         </li>
     </ul>
+</div>
+
+<div id="view-product" class="popup-content view-img-popup-content" style="z-index: 1000;">
+    <angular-image-viewer [src]="noteImgs" [config]="viewProdOptions">
+    </angular-image-viewer>
+
 </div>

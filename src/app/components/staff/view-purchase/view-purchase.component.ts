@@ -40,6 +40,7 @@ export class ViewPurchaseComponent extends BaseComponent {
   }
 
   protected Init() {
+    console.log(this.globalPurchases);
     this.purchaseItems = this.globalPurchases;
   }
 

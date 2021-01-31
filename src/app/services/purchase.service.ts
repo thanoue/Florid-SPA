@@ -36,7 +36,7 @@ export class PurchaseService {
       currentPage: number
     }> {
 
-    return this.httpService.post(API_END_POINT.getPurchasesByStatuses, {
+    return this.httpService.post(API_END_POINT.getPurchaseByTerm, {
       page: page - 1,
       size: size,
       startTime: startTime,

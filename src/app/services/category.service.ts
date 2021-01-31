@@ -80,6 +80,7 @@ export class CategoryService {
           category.Name = rawCategory.Name;
 
           categories.push(category);
+
         });
 
         return categories;

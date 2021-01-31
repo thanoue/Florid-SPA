@@ -25,80 +25,18 @@ export class SelectReceiverComponent extends BaseComponent {
 
   constructor(private route: ActivatedRoute, private _ngZone: NgZone) {
     super();
+    this.currentList = [];
+    this.deliveryInfo = new OrderDetailDeliveryInfo();
   }
 
   addressChoosing() {
     this.selectAddress((res) => {
+      console.log('selected');
       this.deliveryInfo.Address = res;
     });
   }
 
   protected Init() {
-
-    const key = 'DeliveryInfoReference';
-
-    window[key] = {
-      component: this,
-      zone: this._ngZone,
-      selectDeliveryInfo: (data) => this.selectDeliveryInfo(data),
-    };
-
-    this.currentList = [];
-
-    this.globalOrder.OrderDetails.forEach(orderDetail => {
-
-      const newItem = OrderDetailDeliveryInfo.DeepCopy(orderDetail.DeliveryInfo);
-
-      let isAdd = true;
-
-      this.currentList.forEach(item => {
-        if (ExchangeService.deliveryInfoCompare(newItem, item)) {
-          isAdd = false;
-          return;
-        }
-      });
-
-      if (isAdd) {
-        this.currentList.push(newItem);
-      }
-
-    });
-
-    if (this.globalOrder.CustomerInfo) {
-
-      this.globalOrder.CustomerInfo.ReceiverInfos.forEach(receiver => {
-
-        let isAdd = true;
-
-        this.currentList.forEach(item => {
-
-          const newItem = {
-            FullName: item.FullName,
-            PhoneNumber: item.PhoneNumber,
-            Address: item.Address
-          };
-
-          if (ExchangeService.receiverInfoCompare(receiver, newItem)) {
-            isAdd = false;
-            return;
-          }
-
-        });
-
-        if (isAdd) {
-          this.currentList.push({
-            FullName: receiver.FullName,
-            PhoneNumber: receiver.PhoneNumber,
-            Address: receiver.Address,
-            DateTime: new Date()
-          });
-        }
-
-      });
-
-    }
-
-    this.deliveryInfo = new OrderDetailDeliveryInfo();
 
     this.route.params.subscribe(params => {
 
@@ -108,9 +46,75 @@ export class SelectReceiverComponent extends BaseComponent {
 
     });
 
+    const key = 'DeliveryInfoReference';
+
+    window[key] = {
+      component: this,
+      zone: this._ngZone,
+      selectDeliveryInfo: (data) => this.selectDeliveryInfo(data),
+    };
+
+    setTimeout(() => {
+
+      this.globalOrder.OrderDetails.forEach(orderDetail => {
+
+        const newItem = OrderDetailDeliveryInfo.DeepCopy(orderDetail.DeliveryInfo);
+
+        let isAdd = true;
+
+        this.currentList.forEach(item => {
+          if (ExchangeService.deliveryInfoCompare(newItem, item)) {
+            isAdd = false;
+            return;
+          }
+        });
+
+        if (isAdd) {
+          this.currentList.push(newItem);
+        }
+
+      });
+
+      if (this.globalOrder.CustomerInfo) {
+
+        this.globalOrder.CustomerInfo.ReceiverInfos.forEach(receiver => {
+
+          let isAdd = true;
+
+          this.currentList.forEach(item => {
+
+            const newItem = {
+              FullName: item.FullName,
+              PhoneNumber: item.PhoneNumber,
+              Address: item.Address
+            };
+
+            if (ExchangeService.receiverInfoCompare(receiver, newItem)) {
+              isAdd = false;
+              return;
+            }
+
+          });
+
+          if (isAdd) {
+            this.currentList.push({
+              FullName: receiver.FullName,
+              PhoneNumber: receiver.PhoneNumber,
+              Address: receiver.Address,
+              DateTime: new Date()
+            });
+          }
+
+        });
+
+      }
+    }, 200);
+
+
   }
 
   selectDeliveryInfo(index: number) {
+    console.log('selected');
     this.deliveryInfo = OrderDetailDeliveryInfo.DeepCopy(this.currentList[index]);
   }
 

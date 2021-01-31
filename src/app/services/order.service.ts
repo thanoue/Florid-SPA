@@ -84,6 +84,7 @@ export class OrderService {
         purchaseEntity.Amount = purchase.Amount;
         purchaseEntity.Method = purchase.Method;
         purchaseEntity.Note = purchase.Note;
+        purchaseEntity.AddingTime = purchase.AddingTime;
 
         orderVM.PurchaseItems.push(purchaseEntity);
 
@@ -152,6 +153,8 @@ export class OrderService {
         orderDetailVM.ShippingNote = orderDetail.ShippingNote;
         orderDetailVM.FixingFloristId = orderDetail.FixingFloristId;
         orderDetailVM.Quantity = orderDetail.Quantity ? orderDetail.Quantity : 1;
+
+        orderDetailVM.NoteImages = orderDetail.NoteImages ? (orderDetail.NoteImages.split(',')) : [];
 
         orderVM.OrderDetails.push(orderDetailVM);
 
@@ -417,7 +420,23 @@ export class OrderService {
       });
   }
 
+  uploadNoteImg(fileData: File): Promise<string> {
+
+    return this.httpService.postForm(API_END_POINT.uploadNoteImage, {
+      noteImg: fileData
+    }, false).then(data => {
+      return data.imgName;
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+
+  }
+
   addOrderDetails(orderDetails: OrderDetail[]): Promise<any> {
+
+    console.log(orderDetails);
+
     return this.httpService.post(API_END_POINT.addOrderDetails, {
       orderDetails: orderDetails
     }).then(res => {

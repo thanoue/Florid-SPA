@@ -66,6 +66,7 @@ export class CustomerConfirmComponent extends BaseComponent {
   }
 
   protected fileChosen(path: string) {
+
     this.edittingImageUrl = 'data:image/png;base64,' + path;
 
   }
@@ -91,35 +92,6 @@ export class CustomerConfirmComponent extends BaseComponent {
       this.edittingImageUrl = reader.result.toString();
 
     }
-  }
-
-  partPay() {
-
-    getNumberValidateInput((res, validateCallback) => {
-
-      if (res > this.totalBalance) {
-        validateCallback(false, 'Thanh toán vượt quá thành tiền!');
-        return;
-      } else if (res <= 0) {
-        validateCallback(false, 'Thanh toán phải lớn hơn 0!');
-        return;
-      }
-
-      validateCallback(true, '');
-
-      getShippingNoteDialog('Xác nhận', (note) => {
-
-        this.orderService.updateFields(this.order.OrderId, {
-          TotalPaidAmount: this.order.TotalPaidAmount + res
-        })
-          .then(() => {
-            this.confirm(note);
-          });
-
-      });
-
-    }, 'Số tiền thanh toán...', this.totalBalance);
-
   }
 
   destroy() {
@@ -149,7 +121,7 @@ export class CustomerConfirmComponent extends BaseComponent {
                 .then(res => {
                   this.router.navigate(['staff/account-main']);
                 });
-            })
+            });
         }
 
         break;

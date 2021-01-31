@@ -6,15 +6,16 @@ import { NgForm } from '@angular/forms';
 import { CategoryService } from 'src/app/services/category.service';
 import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';
 import { PromotionService } from 'src/app/services/promotion.service';
-import { promise } from 'protractor';
+import { ImgPipe } from 'src/app/pipes/img.pipe';
+import { ImgType } from 'src/app/app.constants';
 
 declare function openFixPriceDialog(): any;
 declare function dismissFixPriceDialog(): any;
 declare function getTextInput(resCallback: (res: string) => void, placeHolder: string, oldValue: string): any;
 declare function createNumbericElement(isDisabled: boolean, calback: (val: number) => void): any;
-declare function selectProductCategory(menuitems: { Name: string; Value: number; }[], callback: (index: any) => void): any;
+declare function viewProductImg(url: string, onCancel: () => void): any;
 declare function hideReceiverPopup(): any;
-declare function moveCursor(id: string, pos: number);
+declare function viewImages(onCancel: () => void): any;
 
 @Component({
   selector: 'app-order-detail',
@@ -26,20 +27,42 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
   Title = 'Chi tiết đơn';
 
   detailIndex: number;
-
   promotions: Promotion[];
-
   newPrice: number;
-
-  categories: {
-    Value: number,
-    Name: string
-  }[];
+  isAddingNoteImage = false;
+  images: string[];
 
   constructor(private route: ActivatedRoute, private router: Router, private categoryService: CategoryService, private promotionService: PromotionService) {
     super();
-    this.categories = [];
     this.promotions = [];
+    this.images = [];
+
+    if (!this.globalOrderDetail.NoteImages) this.globalOrderDetail.NoteImages = [];
+
+  }
+
+  protected Init() {
+
+    this.promotionService.getAvailablePromotions((new Date()).getTime(), false)
+      .then(promotions => {
+        this.promotions = promotions;
+      });
+
+    this.route.params.subscribe(params => {
+
+      this.detailIndex = + params.id;
+
+      if (!this.globalOrderDetail.PurposeOf) this.globalOrderDetail.PurposeOf = 'Mua tặng';
+
+      if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '....';
+
+
+      createNumbericElement(false, (val) => {
+        this.globalOrderDetail.Quantity = val;
+      });
+
+    });
+
   }
 
   getPromotionAmount(promotion: Promotion): string {
@@ -67,6 +90,71 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     }
 
     this.moveCursor(this.globalOrderDetail.AmountDiscount.toString().length, 'AmountDiscount');
+  }
+
+  addNoteImage() {
+    this.isAddingNoteImage = true;
+    super.openFileForShare();
+  }
+
+  protected fileChosen(path: string) {
+
+    this.globalOrderDetail.NoteImages.push('data:image/png;base64,' + path);
+
+  }
+
+  onChange(event) {
+
+    const filesUpload: File = event.target.files[0];
+
+    if (!filesUpload)
+      return;
+
+    var mimeType = filesUpload.type;
+    if (mimeType.match(/image\/*/) == null) {
+      this.showError('Phải chọn hình !!');
+      return;
+    }
+
+    var reader = new FileReader();
+
+    reader.readAsDataURL(filesUpload);
+    reader.onload = (_event) => {
+
+      this.globalOrderDetail.NoteImages.push(reader.result.toString());
+
+    }
+
+  }
+
+  selectNoteImage(index: number) {
+    this.menuOpening((pos) => {
+
+      switch (+pos) {
+
+        case 0:
+
+          this.globalOrderDetail.NoteImages.splice(index, 1);
+
+          break;
+
+        case 1:
+
+          let url = ImgPipe.getImgUrl(this.globalOrderDetail.NoteImages[index], ImgType.NoteImg);
+          this.images = [url];
+
+          console.log(url);
+
+          setTimeout(() => {
+            viewImages(() => {
+              this.images = [];
+            });
+          }, 100);
+
+          break;
+      }
+
+    }, ['Xoá ảnh', 'Xem chi tiết ảnh']);
   }
 
   onAddFeeChanged(value) {
@@ -116,46 +204,6 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     this.moveCursor(this.newPrice.toString().length, 'NewPrice');
   }
 
-  protected Init() {
-
-    this.promotionService.getAvailablePromotions((new Date()).getTime(), false)
-      .then(promotions => {
-        this.promotions = promotions;
-      });
-
-    this.route.params.subscribe(params => {
-
-      this.detailIndex = + params.id;
-
-      if (!this.globalOrderDetail.PurposeOf) this.globalOrderDetail.PurposeOf = 'Mua tặng';
-
-      if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '....';
-
-      createNumbericElement(false, (val) => {
-        this.globalOrderDetail.Quantity = val;
-      });
-
-      this.categoryService.getAll()
-        .then((cates) => {
-
-          this.categories.push({
-            Value: -1,
-            Name: 'Tất cả'
-          });
-
-          cates.forEach(cate => {
-
-            this.categories.push({
-              Value: cate.Id,
-              Name: cate.Name
-            });
-
-          });
-
-        });
-    });
-
-  }
 
   clearProductImg() {
 
@@ -207,11 +255,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   searchProduct() {
 
-    selectProductCategory(this.categories, (val) => {
-
-      this.router.navigate(['/staff/search-product'], { queryParams: { category: +val }, queryParamsHandling: 'merge' });
-
-    });
+    this.router.navigate(['/staff/search-product'], { queryParams: { category: -1 }, queryParamsHandling: 'merge' });
 
   }
 
@@ -266,4 +310,5 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     hideReceiverPopup();
 
   };
+
 }

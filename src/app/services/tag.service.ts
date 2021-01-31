@@ -14,6 +14,35 @@ export class TagService {
   constructor(private htttService: HttpService, private globalService: GlobalService) {
   }
 
+  bulkAdd(tags: Tag[]): Promise<any> {
+
+    let obj = [];
+
+    tags.forEach(tag => {
+      obj.push({
+        Alias: tag.Alias,
+        Name: tag.Name
+      });
+    });
+
+    return this.htttService.post(API_END_POINT.bulkAddTags, tags)
+      .then((data) => {
+        return data;
+      }).catch(err => {
+        this.htttService.handleError(err);
+        throw err;
+      });
+  }
+
+  addBulkProductTag(ids: any[]): Promise<any> {
+    return this.htttService.post(API_END_POINT.bulkAddProductsTags, ids)
+      .then((data) => {
+        return data;
+      }).catch(err => {
+        this.htttService.handleError(err);
+        throw err;
+      })
+  }
 
   getAll(): Promise<Tag[]> {
     return this.htttService.get(API_END_POINT.getAllTags)

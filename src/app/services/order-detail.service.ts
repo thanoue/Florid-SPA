@@ -277,13 +277,11 @@ export class OrderDetailService {
 
       let orderDetailVMs: OrderDetailViewModel[] = [];
 
-      console.log(data);
-
       if (data == null || data.length <= 0)
         return [];
 
       data.forEach(item => {
-        orderDetailVMs.push(this.getFromRaw(item.orderDetail));
+        orderDetailVMs.push(this.getFromRaw(item.orderdetail));
       });
 
       return orderDetailVMs;

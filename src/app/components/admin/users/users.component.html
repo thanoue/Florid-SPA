@@ -93,17 +93,15 @@
         <div class="form-row" *ngIf="currrentEditUser.Role != 'Shipper' || !currrentEditUser.IsExternalShipper">
             <div class="form-group col-md-6">
                 <label for="Email">Tên đăng nhập</label>
-                <input [(ngModel)]="currrentEditUser.LoginName" id="LoginName" name="LoginName" required minlength="4"
+                <input [(ngModel)]="currrentEditUser.LoginName" id="LoginName" name="LoginName" minlength="3"
                     type="text" class="form-control" placeholder="tên đăng nhập..." #LoginName="ngModel"
                     autocomplete="off">
                 <div *ngIf="LoginName.invalid && (LoginName.dirty || LoginName.touched)" class="alert alert-danger">
 
-                    <div *ngIf="LoginName.errors.required">
-                        Bắt buộc
-                    </div>
                     <div *ngIf="LoginName.errors.minlength">
-                        Tối thiểu 4 ký tự
+                        Tối thiểu 3 ký tự
                     </div>
+
                 </div>
             </div>
             <div class="form-group col-md-6">
@@ -116,23 +114,15 @@
                     <div *ngIf="Password.errors.minlength">
                         Tối thiểu 5 ký tự
                     </div>
+
                 </div>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-4">
                 <label for="FullName">Họ và Tên</label>
-                <input type="text" class="form-control" required minlength="3" #FullName="ngModel"
-                    [(ngModel)]="currrentEditUser.FullName" id="FullName" name="FullName" placeholder="">
-                <div *ngIf="FullName.invalid && (FullName.dirty || FullName.touched)" class="alert alert-danger">
-
-                    <div *ngIf="FullName.errors.required">
-                        Bắt buộc
-                    </div>
-                    <div *ngIf="FullName.errors.minlength">
-                        Tối thiểu 3 ký tự
-                    </div>
-                </div>
+                <input type="text" class="form-control" [(ngModel)]="currrentEditUser.FullName" id="FullName"
+                    name="FullName" placeholder="">
             </div>
             <div class="form-group col-md-4">
                 <label for="FullName">Email</label>
@@ -142,24 +132,15 @@
             <div class="form-group col-md-4">
                 <label for="inputPhone">Số điện thoại</label>
                 <input type="text" class="form-control" [(ngModel)]="currrentEditUser.PhoneNumber" id="PhoneNumber"
-                    name="PhoneNumber" placeholder="+84" #PhoneNumber="ngModel" required minlength="7">
-                <div *ngIf="PhoneNumber.invalid && (PhoneNumber.dirty || PhoneNumber.touched)"
-                    class="alert alert-danger">
-
-                    <div *ngIf="PhoneNumber.errors.required">
-                        Bắt buộc
-                    </div>
-                    <div *ngIf="PhoneNumber.errors.minlength">
-                        Tối thiểu 7 ký tự
-                    </div>
-                </div>
+                    name="PhoneNumber" placeholder="+84" #PhoneNumber="ngModel">
             </div>
         </div>
         <div class="form-row">
 
             <div class="form-group col-md-4">
                 <label for="Role">Quyền</label>
-                <select id="Role" name="Role" [(ngModel)]="currrentEditUser.Role" class="form-control">
+                <select id="Role" name="Role" [(ngModel)]="currrentEditUser.Role" class="form-control" required
+                    #Role="ngModel">
                     <option selected>Choose...</option>
                     <option [ngValue]="'Florist'">Thợ cắm hoa</option>
                     <option [ngValue]="'Shipper'">Người giao hàng</option>
@@ -167,6 +148,12 @@
                     <option [ngValue]="'Admin'">Quản trị viên</option>
                     <option [ngValue]="'User'">Khác</option>
                 </select>
+                <div *ngIf="Role.invalid && (Role.dirty || Role.touched)" class="alert alert-danger">
+
+                    <div *ngIf="Role.errors.required">
+                        Bắt buộc
+                    </div>
+                </div>
             </div>
             <div class="form-group  col-md-2" *ngIf="currrentEditUser.Role !='Shipper'">
                 <label for="IsPrinter"></label>

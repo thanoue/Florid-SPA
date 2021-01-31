@@ -30,6 +30,8 @@ export const API_END_POINT = {
     updateTag: '/tag/update',
     getTags: '/tag/getList',
     getAllTags: '/tag/getall',
+    bulkAddTags: '/tag/bulkAdd',
+    bulkAddProductsTags: '/tag/bulkAddProductsTags',
 
     deleteCategory: '/category/delete',
     deleteCategories: '/category/deletemany',
@@ -102,6 +104,7 @@ export const API_END_POINT = {
     getOrderDetailsByOrderId: '/orderDetail/getByOrderId',
     updateOrderInfos: '/orderDetail/updateOrderInfos',
     updateStatusByOrderId: '/orderDetail/updateStatusByOrderId',
+    uploadNoteImage: '/orderDetail/uploadNoteImage',
 
     updateDetailSeen: '/orderDetailSeener/updateDetailSeen',
     getODSeeners: '/orderDetailSeener/getODSeeners',
@@ -112,10 +115,9 @@ export const API_END_POINT = {
 
     addPurchase: '/purchase/add',
     addAndAsign: '/purchase/addAndAsign',
-    updatePurchaseStatus: '/purchase/updateStatus',
     bulkAddPurchase: '/purchase/bulkAdd',
     bulkInsertPurchase: '/purchase/bulkInsert',
-    getPurchasesByStatuses: '/purchase/getByStatuses',
+    getPurchaseByTerm: '/purchase/getByTerm',
     updatePurchaseOrder: '/purchase/updateOrder',
     assignPurchaseOrder: '/purchase/assignOrder',
     deletePurchase: '/purchase/deletePurchase',
@@ -125,7 +127,8 @@ export const IMAGE_FOLDER_PATHS = {
     user_avt: '/user/avt/',
     product_img: '/product/img/',
     result_img: '/orderDetail/resultImg/',
-    shipping_img: '/orderDetail/shippingImg/'
+    shipping_img: '/orderDetail/shippingImg/',
+    order_detail_note: '/orderDetail/orderDetailNotes/'
 }
 
 export enum ImgType {
@@ -134,6 +137,7 @@ export enum ImgType {
     OrderImg = "OrderImg",
     ResultImg = "ResultImg",
     ShippingImg = "ShippingImg",
+    NoteImg = "NoteImg"
 }
 
 export const ROLES = [

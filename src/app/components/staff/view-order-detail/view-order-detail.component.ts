@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderDetailViewModel, OrderViewModel } from 'src/app/models/view.models/order.model';
-import { ORDER_DETAIL_STATES } from 'src/app/app.constants';
+import { ORDER_DETAIL_STATES, ImgType } from 'src/app/app.constants';
 import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { ODSeenUserInfo } from 'src/app/models/entities/order.entity';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { User } from 'src/app/models/entities/user.entity';
 import { ExchangeService } from 'src/app/services/exchange.service';
+import { ImgPipe } from 'src/app/pipes/img.pipe';
 
+declare function viewImages(onCancel: () => void): any;
 declare function openViewed(): any;
 
 @Component({
@@ -24,6 +26,7 @@ export class ViewOrderDetailComponent extends BaseComponent {
   states = OrderDetailStates;
   canSeen = true;
   order: OrderViewModel;
+  noteImgs: string[];
 
   constructor(private orderDetailService: OrderDetailService) {
     super();
@@ -31,6 +34,7 @@ export class ViewOrderDetailComponent extends BaseComponent {
     this.orderDetail = new OrderDetailViewModel();
     this.orderDetail.SeenUsers = [];
     this.order = new OrderViewModel();
+    this.noteImgs = [];
   }
 
   protected Init() {
@@ -39,6 +43,14 @@ export class ViewOrderDetailComponent extends BaseComponent {
     this.order = this.globalOrder;
 
     this.state = ORDER_DETAIL_STATES.filter(p => p.State === this.orderDetail.State)[0].DisplayName;
+
+    this.orderDetail.NoteImages.forEach(noteImg => {
+
+      let url = ImgPipe.getImgUrl(noteImg, ImgType.NoteImg);
+
+      this.noteImgs.push(url);
+
+    });
 
     setTimeout(() => {
 
@@ -59,7 +71,7 @@ export class ViewOrderDetailComponent extends BaseComponent {
   getDetailDiscount(orderDetail: OrderDetailViewModel): number {
     return ExchangeService.getDetailDiscount(orderDetail);
   }
-  
+
   protected destroy() {
     this.canSeen = false;
   }
@@ -71,6 +83,14 @@ export class ViewOrderDetailComponent extends BaseComponent {
         this.orderDetail.SeenUsers = detail;
         openViewed();
       });
+
+  }
+
+  openNoteImages() {
+    
+    viewImages(() => {
+
+    });
 
   }
 

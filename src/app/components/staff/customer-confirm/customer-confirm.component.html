@@ -20,10 +20,6 @@
             <a href="javascript:void(0)" *ngIf="CurrentUser.Role != 'Shipper'" (click)="shareForCus()"
                 class="main-bg">Share cho KH</a>
 
-            <a href="javascript:void(0)" class="main-bg" *ngIf="CurrentUser.Role == 'Shipper' && totalBalance > 0"
-                (click)="partPay()">Thanh
-                toán</a>
-
             <a href="javascript:void(0)" class="main-bg" *ngIf="CurrentUser.Role != 'Shipper'"  (click)="confirm('')">Xác nhận</a>
             <a href="javascript:void(0)" class="main-bg" *ngIf="CurrentUser.Role == 'Shipper'" (click)="shipperCofirm()">Xác nhận</a>
 

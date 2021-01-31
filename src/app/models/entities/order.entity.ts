@@ -48,7 +48,6 @@ export class OrderDetail {
     CustomerName = '';
     CustomerPhoneNumber = '';
 
-
     FloristInfo: ODFloristInfo;
     ShipperInfo: ODShipperInfo;
 
@@ -58,7 +57,10 @@ export class OrderDetail {
     DeliveryImageUrl: string;
 
     PercentDiscount: number;
-    AmountDiscount: number
+    AmountDiscount: number;
+
+    NoteImages: string[];
+    NoteImagesBlobbed: string = '';
 
     constructor() {
 
@@ -66,6 +68,7 @@ export class OrderDetail {
         this.FloristInfo = new ODFloristInfo();
         this.ShipperInfo = new ODShipperInfo();
         this.SeenUsers = [];
+        this.NoteImages = [];
     }
 }
 

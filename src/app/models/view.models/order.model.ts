@@ -84,7 +84,7 @@ export class OrderDetailViewModel {
     MakingNote: string;
     ShippingNote: string;
     FixingFloristId: number;
-
+    NoteImages: string[];
     SeenUsers: ODSeenUserInfo[];
 
     constructor() {
@@ -92,6 +92,7 @@ export class OrderDetailViewModel {
         this.FloristInfo = new ODFloristInfo();
         this.ShipperInfo = new ODShipperInfo();
         this.SeenUsers = [];
+        this.NoteImages = [];
     }
 
     // static ToViewModel(entity: OrderDetail) {
@@ -189,6 +190,7 @@ export class OrderDetailViewModel {
         viewModel.AmountDiscount = model.AmountDiscount;
         viewModel.ShippingNote = model.ShippingNote;
         viewModel.FixingFloristId = model.FixingFloristId;
+        viewModel.NoteImages = model.NoteImages;
 
         if (model.SeenUsers && model.SeenUsers.length > 0) {
             model.SeenUsers.forEach(user => {
@@ -233,12 +235,8 @@ export class OrderDetailDeliveryInfo {
         dest.FullName = source.FullName;
         dest.PhoneNumber = source.PhoneNumber;
 
-        dest.DateTime.setFullYear(source.DateTime.getFullYear());
-        dest.DateTime.setMonth(source.DateTime.getMonth());
-        dest.DateTime.setDate(source.DateTime.getDate());
-        dest.DateTime.setHours(source.DateTime.getHours());
-        dest.DateTime.setMinutes(source.DateTime.getMinutes());
-        dest.DateTime.setSeconds(0);
+        let time = source.DateTime.getTime();
+        dest.DateTime = new Date(time);
 
         return dest;
     }

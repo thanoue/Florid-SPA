@@ -67,15 +67,19 @@
                 <input type="text" name="PurposeOf" id="PurposeOf" class="orderField"
                     [(ngModel)]="globalOrderDetail.PurposeOf" placeholder="Mục đích mua hàng...">
             </div>
+
             <label class="title-field">Mô tả</label>
-            <div class="form-group orderDesc">
-                <textarea name="Description" id="Description" class="orderField" placeholder="Bình dẹp..."
-                    [(ngModel)]="globalOrderDetail.Description"></textarea>
+            <div class="form-group orderInfo">
+                <input type="text" name="Description" id="Description" class="orderField col-xs-6"
+                    [(ngModel)]="globalOrderDetail.Description" placeholder="Mô tả giao hàng...">
             </div>
-            <div class="row">
-                <div class="col-8 mx-auto text-center">
-                    <button type="submit" class="btn main-btn w-100">Xong</button>
-                </div>
+
+            <div class="form-group addInfo">
+                <a class="btn main-btn" href="javascript:void(0)" onClick="openImgsDialog()">Ảnh mô tả</a>
+            </div>
+
+            <div class="form-group addInfo">
+                <button type="submit" class="btn main-btn w-100">Xong</button>
             </div>
         </form>
     </div>
@@ -103,4 +107,41 @@
         <div class="col-6"><button id="cancel-button" onClick=dismissFixPriceDialog()
                 class=" main-bg border btn">Hủy</button></div>
     </div>
+</div>
+
+<div id="imgsDialog" class="popup-content dialog-popup">
+    <div class="row imageList cusScroll" style="max-height: 450px;">
+        <div class="col-6 product-item-big">
+
+            <div *ngIf="IsOnTerminal" class="prodItem-tall" (click)="addNoteImage()"
+                style="height: 220px;position: relative;">
+                <img style="margin-bottom:0px; width: 64px;height: 64px;position: absolute; top: 50%;left: 50%;transform: translate(-50%, -50%);"
+                    src="../../../../assets/images/add.svg" alt="">
+            </div>
+
+            <div *ngIf="!IsOnTerminal">
+                <div *ngIf="!IsOnTerminal" class="prodItem-tall" (click)="imageUpload.click()"
+                    style="height: 220px;position: relative;">
+                    <img style="margin-bottom:0px; width: 64px;height: 64px;position: absolute; top: 50%;left: 50%;transform: translate(-50%, -50%);"
+                        src="../../../../assets/images/add.svg" alt="">
+                    <input type="file" class="img-cover file-upload-default" (change)="onChange($event)"
+                        name="uploadedFile" #imageUpload hidden>
+                </div>
+            </div>
+        </div>
+        <div *ngFor="let img of globalOrderDetail.NoteImages;let i = index" class="col-6 product-item-big">
+            <div class="prodItem-tall" (click)="selectNoteImage(i)">
+                <img style="margin-bottom:0px;" src="{{img | ImgPipe : 'NoteImg'}}" alt="">
+            </div>
+        </div>
+
+    </div>
+    <div class="row"><button id="confirm-button" onClick="closeImgsDialog()" class=" main-btn btn">Đóng</button>
+    </div>
+</div>
+
+<div id="view-product" class="popup-content view-img-popup-content" style="z-index: 1000;">
+    <angular-image-viewer [src]="images" [config]="viewProdOptions">
+    </angular-image-viewer>
+
 </div>

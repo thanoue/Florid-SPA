@@ -42,7 +42,7 @@
             [attr.data-index]="i">
             <p class="recentInfo-name">{{receiverInfo.FullName}}</p>
             <span class="recentInfo-phone">{{receiverInfo.PhoneNumber}}</span>
-            <span class="recentInfo-date">{{deliveryInfo.DateTime | myDatePipe}}</span>
+            <span class="recentInfo-date">{{receiverInfo.DateTime | myDatePipe : 'HH:mm d/M/yyyy'}}</span>
             <span class="recentInfo-add">{{receiverInfo.Address}}</span>
         </li>
     </ul>
