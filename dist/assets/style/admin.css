@@ -213,6 +213,11 @@ div.tagMenu{
     color: #777;
     font-size: 12px;
 }
+
+.div.actionMenu{
+    z-index: 999;
+}
+
 .dialog-popup img {
     width: 60px;
     display: block;
@@ -934,6 +939,8 @@ form.addOrderForm {
 {
     display: block;
 }
+
+
 .prodItem img {
     width: 100%;
     border-radius: 10px;
@@ -952,6 +959,32 @@ form.addOrderForm {
 .product-item.selected .prodItem img
 {
     border-color: #1fc9db;
+}
+
+.prodItem-tall img {
+    width: 100%;
+    border-radius: 10px;
+    border: 3px solid transparent;
+    box-sizing: border-box;
+    transition: 350ms;
+    height: 220px;
+    object-fit: cover;
+}
+.prodItem-tall:focus img,
+.prodItem-tall:hover img
+{
+    border-color: #1fc9db;
+}
+
+.product-item.selected .prodItem-tall img
+{
+    border-color: #1fc9db;
+}
+
+.product-item-big
+{
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 .prodItem 
@@ -975,6 +1008,10 @@ form.addOrderForm {
     overflow-y: scroll;
     height: 64vh;
     margin-bottom: 2vh;
+}
+.imageList  {
+    overflow-y: scroll;
+    margin-bottom: 1vh;
 }
 .filterCate
 {

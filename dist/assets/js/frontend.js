@@ -119,7 +119,7 @@ function menuOpen(callback, items) {
     });
 
 
-    var html = `<div class="actionMenu">
+    var html = `<div class="actionMenu" style="z-index:999;">
         <ul>
            ${itemsContent}
         </ul>
@@ -284,7 +284,8 @@ function hideReceiverPopup() {
 // SlideUp Action menu
 function slideUp(html, callback) {
 
-    appendInBody();
+    let isFirstLayer = appendInBody();
+
     jQuery("body").append(html);
 
     jQuery(".actionMenu").slideDown(350);
@@ -295,20 +296,26 @@ function slideUp(html, callback) {
         var val = jQuery(this).attr('data-value');
 
         jQuery(".actionMenu").slideUp(250, function () {
+
             jQuery(".actionMenu").remove();
-            jQuery(".overlay-dark").remove();
+            if (isFirstLayer) jQuery(".overlay-dark").remove();
+            else jQuery(".overlay-dark.layer2").remove();
+
+            jQuery(".overlay-dark:not(.layer2)").off('click');
+            jQuery(".overlay-dark.layer2").off('click');
+
             callback(val);
         });
     });
 
     jQuery(".overlay-dark:not(.layer2)").one('click', function () {
         jQuery(".actionMenu").slideUp(250, function () {
-            jQuery(".overlay-dark").remove();
+            jQuery(".overlay-dark:not(.layer2)").remove();
             jQuery(this).remove();
         });
     })
 
-    jQuery(".overlay-dark.layer2").click(function () {
+    jQuery(".overlay-dark.layer2").one('click', function () {
         jQuery(".actionMenu").slideUp(250, function () {
             jQuery(".overlay-dark.layer2").remove();
             jQuery(this).remove();
@@ -817,6 +824,27 @@ function openConfirm(message, okCallback, noCallback, cancelCallback, yesBTitle,
 
 }
 
+
+function viewImages(onCancel) {
+    jQuery('.img-container').css('height', '100%');
+
+    let isFirst = appendInBody();
+
+    jQuery("#view-product").slideDown(250);
+
+    let overLayClass = isFirst ? '.overlay-dark:not(.layer2)' : '.overlay-dark.layer2';
+
+    jQuery(overLayClass).one('click', function () {
+
+        jQuery(this).remove();
+
+        jQuery("#view-product").slideUp(250, function () {
+            if (onCancel != undefined)
+                onCancel();
+        });
+    });
+}
+
 function viewProductImg(url, onCancel) {
 
     if (isOnMobile()) {
@@ -844,20 +872,8 @@ function viewProductImg(url, onCancel) {
         return;
     }
 
-    jQuery('.img-container').css('height', '100%');
+    viewImages(onCancel);
 
-    jQuery("body").append("<div class='overlay-dark' id='tags-menu-bg'></div>");
-
-    jQuery("#view-product").slideDown(250);
-
-    jQuery("#tags-menu-bg").one('click', function () {
-
-        jQuery("#view-product").slideUp(250, function () {
-            jQuery("#tags-menu-bg").remove();
-            if (onCancel != undefined)
-                onCancel();
-        });
-    });
 }
 
 function viewCustomerInfo() {
@@ -1092,4 +1108,20 @@ function locationDetection(position) {
     if (typeof Android !== "undefined" && Android !== null) {
         return Android.locationDetected(JSON.stringify(position));
     }
+}
+
+function openImgsDialog() {
+
+    appendInBody();
+
+    jQuery("#imgsDialog").slideDown(100, function () {
+
+    });
+
+}
+
+function closeImgsDialog() {
+    jQuery("#imgsDialog").hide(100, function () {
+        jQuery(".overlay-dark").remove();
+    });
 }
