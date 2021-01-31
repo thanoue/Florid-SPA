@@ -36,11 +36,11 @@ app.use('/ios/install', express.static('uploads/ios'));
 
 require('./app/routes/admin.routes')(app);
 
-var dir = './uploads/orderDetailNotes';
-
-if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
-}
+createDir('./uploads/orderDetailNotes');
+createDir('./uploads/shipppingImg');
+createDir('./uploads/userAvt');
+createDir('./uploads/productImg');
+createDir('./uploads/resultImg');
 
 // // Catch all other routes and return the index file
 app.get('*', (req, res) => {
@@ -120,6 +120,12 @@ io.on('connection', (socket) => {
     });
 
 });
+
+function createDir(path) {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path);
+    }
+}
 
 function initial() {
 
