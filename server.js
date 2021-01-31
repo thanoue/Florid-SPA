@@ -5,13 +5,14 @@ var bcrypt = require("bcryptjs");
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
+var fs = require('fs');
 
 const app = express();
 
 const env = process.env.NODE_ENV || 'development';
 
 var corsOptions = {
-    origin: [env === 'development' ? "http://localhost:4200" : "https://floridstorage.web.app", "https://floridstorage.firebaseapp.com"]
+    origin: [env === 'development' ? "http://192.168.1.26:4200" : "https://floridstorage.web.app", "https://floridstorage.firebaseapp.com"]
 };
 
 
@@ -25,14 +26,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.use('/file', express.static('uploads'));    
+app.use('/file', express.static('uploads'));
 app.use('/user/avt', express.static('uploads/userAvt'));
 app.use('/product/img', express.static('uploads/productImg'));
 app.use('/orderDetail/resultImg', express.static('uploads/resultImg'));
 app.use('/orderDetail/shippingImg', express.static('uploads/shipppingImg'));
+app.use('/orderDetail/orderDetailNotes', express.static('uploads/orderDetailNotes'));
 app.use('/ios/install', express.static('uploads/ios'));
 
 require('./app/routes/admin.routes')(app);
+
+var dir = './uploads/orderDetailNotes';
+
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+}
 
 // // Catch all other routes and return the index file
 app.get('*', (req, res) => {
@@ -51,12 +59,12 @@ db.sequelize.sync({ alter: true }).then(() => {
  */
 const port = process.env.PORT || '3000';
 app.set('port', port);
-    
+
 const serverApp = http.createServer(app);
 
 serverApp.listen(port, () => {
     console.log(`API running on host with port:${port}`);
-    console.log('Env:',env );
+    console.log('Env:', env);
 });
 
 const io = require('socket.io')(serverApp);

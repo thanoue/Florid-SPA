@@ -4,6 +4,12 @@ const User = db.user;
 const Op = db.Sequelize.Op;
 
 checkDuplicateUsernameOrEmail = (req, res, next) => {
+
+    if (req.body.isExternalShipper) {
+        next();
+        return;
+    }
+
     // Username
     User.findOne({
         where: {

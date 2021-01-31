@@ -1,20 +1,17 @@
-const { role, customer } = require("../models");
 const db = require("../models");
 const Order = db.order;
 const OrderDetail = db.orderDetail;
-const Customer = db.customer;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 const Sequelize = sequelize;
 const ShippingSession = db.shippingSession;
 const User = db.user;
-const fs = require('fs');
 const ODStatuses = require('../config/app.config').ODStatuses;
 const commonService = require("../services/common.service");
 const appConstant = require('../config/app.config');
-const { Console } = require("console");
 const resultImgFolderPath = appConstant.fileFolderPath.resultImg;
 const shippingImgFolderPath = appConstant.fileFolderPath.shipppingImg;
+const orderDetailNoteImg = appConstant.fileFolderPath.orderDetailNoteImg;
 const logger = require('../config/logger');
 
 let KhachLeId = 'KHACH_LE';
@@ -128,6 +125,26 @@ exports.getByOrderId = (req, res) => {
 
 };
 
+exports.uploadNoteImage = (req, res) => {
+
+    try {
+        let noteImg = '';
+
+        if (req.files) {
+
+            noteImg = commonService.getNewFileName(req.files.noteImg);
+
+            req.files.noteImg.mv(orderDetailNoteImg + noteImg);
+        }
+
+        res.send({
+            imgName: noteImg
+        });
+    }
+    catch (err) {
+        logger.error(err, res);
+    }
+}
 
 exports.updateStatusByOrderId = (req, res) => {
 
@@ -153,6 +170,8 @@ exports.updateStatusByOrderId = (req, res) => {
         }).catch(err => logger.error(err, res));
     }).catch(err => logger.error(err, res));
 }
+
+
 
 exports.updateOrderInfos = (req, res) => {
 
@@ -236,11 +255,18 @@ exports.updateOrderInfos = (req, res) => {
 }
 
 exports.addOrderDetails = (req, res) => {
+
     try {
+
         let rawOrderDetails = req.body.orderDetails;
         let orderDetails = [];
 
+        console.log(rawOrderDetails);
+
         rawOrderDetails.forEach(rawOrderDetail => {
+
+            let noteimg = rawOrderDetail.NoteImagesBlobbed;
+
             orderDetails.push({
                 Id: rawOrderDetail.Id,
                 OrderId: rawOrderDetail.OrderId,
@@ -266,8 +292,10 @@ exports.addOrderDetails = (req, res) => {
                 Index: rawOrderDetail.Index,
                 AmountDiscount: rawOrderDetail.AmountDiscount,
                 PercentDiscount: rawOrderDetail.PercentDiscount,
-                Quantity: rawOrderDetail.Quantity
+                Quantity: rawOrderDetail.Quantity,
+                NoteImages: noteimg
             });
+
         });
 
         OrderDetail.bulkCreate(orderDetails, {

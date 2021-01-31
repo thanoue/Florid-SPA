@@ -2,7 +2,8 @@ exports.fileFolderPath = {
     userAvt: './uploads/userAvt/',
     productImg: './uploads/productImg/',
     resultImg: './uploads/resultImg/',
-    shipppingImg: './uploads/shipppingImg/'
+    shipppingImg: './uploads/shipppingImg/',
+    orderDetailNoteImg: './uploads/orderDetailNotes/'
 }
 
 exports.ODStatuses = {

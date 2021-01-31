@@ -55,7 +55,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         Quantity: {
             type: Sequelize.INTEGER
-        },  
+        },
         IsVATIncluded: {
             type: Sequelize.BOOLEAN
         },
@@ -115,6 +115,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         FixingFloristId: {
             type: Sequelize.INTEGER,
+            allowNull: true
+        },
+        NoteImages: {
+            type: Sequelize.STRING,
             allowNull: true
         }
     });
