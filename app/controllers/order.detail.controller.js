@@ -2,9 +2,9 @@ const db = require("../models");
 const Order = db.order;
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
+const Shipping = db.shipping;
 const sequelize = db.sequelize;
 const Sequelize = sequelize;
-const ShippingSession = db.shippingSession;
 const User = db.user;
 const ODStatuses = require('../config/app.config').ODStatuses;
 const commonService = require("../services/common.service");
@@ -316,7 +316,25 @@ exports.getOrderDetailShipperAndFlorist = (req, res) => {
     OrderDetail.findOne({
         where: {
             Id: orderDetailId
-        }
+        },
+        include: [
+            {
+                model: User,
+                as: 'shippers'
+            },
+            {
+                model: User,
+                as: 'fixingFlorist'
+            },
+            {
+                model: User,
+                as: 'makingFlorist'
+            },
+            {
+                model: Shipping,
+                as: 'shippings'
+            }
+        ]
     }).then(data => {
 
         if (!data || data == null) {
@@ -324,69 +342,30 @@ exports.getOrderDetailShipperAndFlorist = (req, res) => {
             return;
         }
 
-        let floristId = data.FloristId;
-        let fixingFloristId = data.FixingFloristId;
-        let shippingSessionId = data.ShippingSessionId;
+        let makingFlorist = data.makingFlorist ? data.makingFlorist : {};
+        let fixingFlorist = data.fixingFlorist ? data.fixingFlorist : {};
 
-        if (floristId && floristId != 0) {
+        let shippers = data.shippers ? data.shippers : [];
 
-            User.findOne({
-                where: {
-                    Id: floristId
-                }
-            }).then(florist => {
-
-                if (!florist || florist == null) {
-                    res.status(200).send({ florist: {}, shipper: {}, fixingFlorist: {} });
-                    return;
-                }
-
-                if (!shippingSessionId || shippingSessionId == 0) {
-                    res.status(200).send({ florist: florist, shipper: {}, fixingFlorist: {} });
-                    return;
-                }
-
-                ShippingSession.findOne({
-                    where: {
-                        Id: shippingSessionId
-                    },
-                    include: [
-                        {
-                            model: User,
-                        }
-                    ]
-                }).then(session => {
-
-                    if (!session || session == null) {
-                        res.status(200).send({ florist: florist, shipper: {}, fixingFlorist: {} });
-                        return;
-                    }
-
-                    User.findOne({
-                        where: {
-                            Id: fixingFloristId
-                        }
-                    }).then(fixing => {
-
-                        if (!fixing || fixing == null) {
-                            res.status(200).send({ florist: florist, shipper: session.user, fixingFlorist: {} });
-                            return;
-                        }
-
-                        res.status(200).send({ florist: florist, shipper: session.user, fixingFlorist: fixing });
-                        return;
-
-                    }).catch(err => logger.error(err, res));
-
-                }).catch(err => logger.error(err, res));
-
-            }).catch(err => logger.error(err, res));
-        }
-        else {
-            res.status(200).send({ florist: {}, shipper: {} });
+        if (shippers.length <= 0) {
+            res.status(200).send({ florist: makingFlorist, shipper: {}, fixingFlorist: fixingFlorist });
             return;
         }
-    })
+
+        let lastShipping = undefined;
+
+        data.shippings.forEach(shipping => {
+
+            if (lastShipping == undefined || lastShipping.AssignTime < shipping.AssignTime) {
+                lastShipping = shipping;
+            }
+
+        });
+
+
+        res.status(200).send({ florist: makingFlorist, shipper: shippers.filter(p => p.Id == lastShipping.ShipperId)[0], fixingFlorist: fixingFlorist });
+
+    }).catch(err => logger.error(err, res));
 };
 
 exports.getProcessingOrderDetails = (req, res) => {

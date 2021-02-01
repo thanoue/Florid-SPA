@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DATE,
             allowNull: true
         }
-    });
+    }); 
 
     return ShippingSession;
 }

@@ -2,7 +2,7 @@ const config = require("../config/db.config.js");
 const RoleTypes = require('../config/app.config').Roles;
 
 const Sequelize = require("sequelize");
-console.log('user: ',config.USER);
+console.log('user: ', config.USER);
 const sequelize = new Sequelize(
     config.DB,
     config.USER,
@@ -88,11 +88,24 @@ db.user.hasMany(db.orderDetail, {
     onDelete: 'SET NULL',
 });
 
+db.orderDetail.belongsTo(db.user, {
+    foreignKey: 'FloristId',
+    onDelete: 'SET NULL',
+    as: 'makingFlorist'
+});
+
+db.orderDetail.belongsTo(db.user, {
+    foreignKey: 'FixingFloristId',
+    onDelete: 'SET NULL',
+    as: 'fixingFlorist'
+});
+
 db.user.belongsToMany(db.orderDetail, {
     through: "shippings",
     foreignKey: "ShipperId",
     otherKey: "OrderDetailId",
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    as: 'shippingOrderDetails'
 });
 db.shipping.belongsTo(db.user, {
     foreignKey: 'ShipperId',
@@ -103,12 +116,19 @@ db.orderDetail.belongsToMany(db.user, {
     through: "shippings",
     foreignKey: "OrderDetailId",
     otherKey: "ShipperId",
-    onDelete: 'CASCADE'
+    onDelete: 'CASCADE',
+    as: 'shippers'
 });
 db.shipping.belongsTo(db.orderDetail, {
     foreignKey: 'OrderDetailId',
-    onDelete: 'SET NULL'
+    onDelete: 'SET NULL',
 });
+
+db.orderDetail.hasMany(db.shipping, {
+    foreignKey: 'OrderDetailId',
+    onDelete: 'SET NULL',
+    as: 'shippings'
+})
 
 db.user.hasMany(db.orderDetailSeen, {
     foreignKey: 'UserId',
