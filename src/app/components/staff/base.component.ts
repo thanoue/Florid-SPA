@@ -11,6 +11,7 @@ import { District, Ward } from '../../models/entities/address.entity';
 import { LocalService } from '../../services/common/local.service';
 import { Roles } from '../../models/enums';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
+import { ExchangeService } from 'src/app/services/exchange.service';
 
 declare function pickFile(isSaveUrl: boolean): any;
 declare function isRememberPassChecking(): any;
@@ -124,6 +125,10 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
         this.location = injector.get(Location);
         this.ngZone = injector.get(NgZone);
         this.addressService = injector.get(AddressService);
+    }
+
+    public getDetailDiscount(orderDetail: OrderDetailViewModel): number {
+        return ExchangeService.getDetailDiscount(orderDetail);
     }
 
     ngOnInit(): void {

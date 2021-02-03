@@ -20,7 +20,6 @@ export class SortOrderChangingComponent extends BaseComponent {
 
   Title = 'Thứ tự ưu tiên';
   protected IsDataLosingWarning = false;
-  makingOrderDetails: OrderDetailViewModel[];
   isAssigningShipper: boolean = false;
   shippers: User[];
 
@@ -29,10 +28,18 @@ export class SortOrderChangingComponent extends BaseComponent {
     IsSelect: boolean
   }[];
 
+  makingODs: {
+    OrderDetail: OrderDetailViewModel,
+    IsSelect: boolean
+  }[];
+  isAssigningFlorist = false;
+
+
   constructor(private orderDetailService: OrderDetailService, private userService: UserService, private router: Router) {
     super();
     this.shippingODs = [];
     this.shippers = [];
+    this.makingODs = [];
 
   }
 
@@ -49,13 +56,17 @@ export class SortOrderChangingComponent extends BaseComponent {
 
   loadMakingDetails() {
 
-    this.makingOrderDetails = [];
+    this.makingODs = []
 
-    this.orderDetailService.getByState(OrderDetailStates.Waiting)
+    this.orderDetailService.getByStates([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
       .then(details => {
 
-        this.makingOrderDetails = details;
-        this.makingOrderDetails.sort((a, b) => a.MakingSortOrder < b.MakingSortOrder ? -1 : a.MakingSortOrder > b.MakingSortOrder ? 1 : 0)
+        details.forEach(detail => {
+          this.makingODs.push({
+            OrderDetail: detail,
+            IsSelect: false
+          })
+        });
 
       });
 
@@ -64,7 +75,7 @@ export class SortOrderChangingComponent extends BaseComponent {
   loadShippingDetails() {
 
     this.shippingODs = [];
-    this.orderDetailService.getByState(OrderDetailStates.DeliveryWaiting)
+    this.orderDetailService.getByStates([OrderDetailStates.DeliveryWaiting], 'ReceivingTime')
       .then(details => {
 
         details.forEach(detail => {
@@ -73,7 +84,6 @@ export class SortOrderChangingComponent extends BaseComponent {
             IsSelect: false
           });
         });
-        this.shippingODs.sort((a, b) => a.ShippingOrderDetail.ShippingSortOrder < b.ShippingOrderDetail.ShippingSortOrder ? -1 : a.ShippingOrderDetail.ShippingSortOrder > b.ShippingOrderDetail.ShippingSortOrder ? 1 : 0)
 
       });
   }
@@ -93,214 +103,77 @@ export class SortOrderChangingComponent extends BaseComponent {
   }
 
   viewMakingDetail(index: number) {
-    this.globalOrderDetail = this.makingOrderDetails[index];
+    this.globalOrderDetail = this.makingODs[index].OrderDetail;
     this.router.navigate(['staff/order-detail-view']);
   }
 
-  dropMakingList(event: CdkDragDrop<string[]>) {
-
-    var oldOrder = this.makingOrderDetails[event.previousIndex].MakingSortOrder;
-    var newOrder = this.makingOrderDetails[event.currentIndex].MakingSortOrder;
-
-    console.log(oldOrder, newOrder);
-
-    if (oldOrder === newOrder)
-      return;
-
-    let updates: {
-      Id: Number,
-      MarkingSortOrder: Number
-    }[] = [];
-
-    this.makingOrderDetails.forEach(detail => {
-
-      if (detail.MakingSortOrder >= newOrder && detail.MakingSortOrder <= oldOrder) {
-
-        detail.MakingSortOrder = detail.MakingSortOrder < oldOrder ? detail.MakingSortOrder + 1 : newOrder;
-        updates.push({
-          Id: detail.OrderDetailId,
-          MarkingSortOrder: detail.MakingSortOrder
-        })
-      }
-
-      if (detail.MakingSortOrder <= newOrder && detail.MakingSortOrder >= oldOrder) {
-
-        detail.MakingSortOrder = detail.MakingSortOrder > oldOrder ? detail.MakingSortOrder - 1 : newOrder;
-        updates.push({
-          Id: detail.OrderDetailId,
-          MarkingSortOrder: detail.MakingSortOrder
-        })
-      }
-
-    });
-
-    this.orderDetailService.updateMakingSortOrders(updates)
-      .then(() => {
-        this.makingOrderDetails.sort((a, b) => a.MakingSortOrder < b.MakingSortOrder ? -1 : a.MakingSortOrder > b.MakingSortOrder ? 1 : 0)
-      });
-  }
-
-  dropShippingList(event: CdkDragDrop<string[]>) {
-
-    var oldOrder = this.shippingODs[event.previousIndex].ShippingOrderDetail.ShippingSortOrder;
-    var newOrder = this.shippingODs[event.currentIndex].ShippingOrderDetail.ShippingSortOrder;
-
-    if (oldOrder === newOrder)
-      return;
-
-    let updates: {
-      Id: Number,
-      ShippingSortOrder: Number
-    }[] = [];
-
-    this.shippingODs.forEach(od => {
-
-      let detail = od.ShippingOrderDetail;
-
-      if (detail.ShippingSortOrder >= newOrder && detail.ShippingSortOrder <= oldOrder) {
-
-        detail.ShippingSortOrder = detail.ShippingSortOrder < oldOrder ? detail.ShippingSortOrder + 1 : newOrder;
-        updates.push({
-          Id: detail.OrderDetailId,
-          ShippingSortOrder: detail.ShippingSortOrder
-        });
-      }
-
-      if (detail.ShippingSortOrder <= newOrder && detail.ShippingSortOrder >= oldOrder) {
-
-        detail.ShippingSortOrder = detail.ShippingSortOrder > oldOrder ? detail.ShippingSortOrder - 1 : newOrder;
-        updates.push({
-          Id: detail.OrderDetailId,
-          ShippingSortOrder: detail.ShippingSortOrder
-        });
-      }
-
-    });
-
-    this.orderDetailService.updateMakingSortOrders(updates)
-      .then(() => {
-        this.shippingODs.sort((a, b) => a.ShippingOrderDetail.ShippingSortOrder < b.ShippingOrderDetail.ShippingSortOrder ? -1 : a.ShippingOrderDetail.ShippingSortOrder > b.ShippingOrderDetail.ShippingSortOrder ? 1 : 0)
-      });
-  }
-
-  move(state: OrderDetailStates, index: number, isUp: boolean) {
-
-    let orderDetail: OrderDetailViewModel;
-    let secondDetail: OrderDetailViewModel;
-
-    switch (state) {
-
-      case OrderDetailStates.Waiting:
-
-        orderDetail = this.makingOrderDetails[index];
-
-        if ((isUp && index <= 0) || (!isUp && index >= this.makingOrderDetails.length - 1))
-          return;
-
-        secondDetail = this.makingOrderDetails[isUp ? index - 1 : index + 1];
-
-        if (secondDetail) {
-
-          let updates: {
-            Id: Number,
-            MakingSortOrder: Number
-          }[] = [];
-
-          updates.push({
-            Id: secondDetail.OrderDetailId,
-            MakingSortOrder: orderDetail.MakingSortOrder
-          });
-
-          updates.push({
-            Id: orderDetail.OrderDetailId,
-            MakingSortOrder: secondDetail.MakingSortOrder
-          });
-
-          this.orderDetailService.updateMakingSortOrders(updates)
-            .then(() => {
-              let tempSort = secondDetail.MakingSortOrder;
-              secondDetail.MakingSortOrder = orderDetail.MakingSortOrder;
-              orderDetail.MakingSortOrder = tempSort;
-              this.makingOrderDetails.sort((a, b) => a.MakingSortOrder < b.MakingSortOrder ? -1 : a.MakingSortOrder > b.MakingSortOrder ? 1 : 0)
-            });
-
-        }
-
-        break;
-
-      case OrderDetailStates.DeliveryWaiting:
-
-        orderDetail = this.shippingODs[index].ShippingOrderDetail
-
-        if ((isUp && index <= 0) || (!isUp && index >= this.shippingODs.length - 1))
-          return;
-
-        secondDetail = this.shippingODs[isUp ? index - 1 : index + 1].ShippingOrderDetail;
-
-        if (secondDetail) {
-
-          let updates: {
-            Id: Number,
-            ShippingSortOrder: Number
-          }[] = [];
-
-          updates.push({
-            Id: secondDetail.OrderDetailId,
-            ShippingSortOrder: orderDetail.ShippingSortOrder
-          });
-          updates.push({
-            Id: orderDetail.OrderDetailId,
-            ShippingSortOrder: secondDetail.ShippingSortOrder
-          });
-
-          this.orderDetailService.updateShippingSortOrders(updates)
-            .then(() => {
-
-              let tempSort = secondDetail.ShippingSortOrder;
-              secondDetail.ShippingSortOrder = orderDetail.ShippingSortOrder;
-              orderDetail.ShippingSortOrder = tempSort;
-
-              this.shippingODs.sort((a, b) => a.ShippingOrderDetail.ShippingSortOrder < b.ShippingOrderDetail.ShippingSortOrder ? -1 : a.ShippingOrderDetail.ShippingSortOrder > b.ShippingOrderDetail.ShippingSortOrder ? 1 : 0)
-            });
-
-        }
-
-        break;
-    }
-  }
-
-  gotoSelectMode() {
+  gotoSelectShipperMode() {
     this.isAssigningShipper = true;
   }
 
-  cancelSelectMode() {
+  gotoSelectFloristMode() {
+    this.isAssigningFlorist = true;
+  }
+
+  cancelShipperSelectMode() {
     this.shippingODs.forEach(od => {
       od.IsSelect = false;
     });
     this.isAssigningShipper = false;
   }
 
-  selectShipper(shipper: User) {
+  cancelFloristSelectMode() {
+    this.shippingODs.forEach(od => {
+      od.IsSelect = false;
+    });
+    this.isAssigningShipper = false;
+  }
+
+  selectUser(shipper: User) {
 
     dismissShipperSelecting(() => {
-      this.openConfirm('Xác nhận giao đơn cho shipper?', () => {
 
-        let orderDetailIds: number[] = [];
+      this.openConfirm(this.isAssigningShipper ? 'Xác nhận giao đơn cho shipper?' : 'Xác nhận phân công florist?', () => {
 
-        this.shippingODs.forEach(od => {
 
-          if (od.IsSelect) {
-            orderDetailIds.push(od.ShippingOrderDetail.OrderDetailId);
-          }
+        if (this.isAssigningShipper) {
 
-        });
+          let orderDetailIds: number[] = [];
 
-        this.orderDetailService.assignOrderDetails(orderDetailIds, shipper.Id, (new Date()).getTime())
-          .then(res => {
-            this.isAssigningShipper = false;
-            this.loadMakingDetails();
-            this.loadShippingDetails();
+          this.shippingODs.forEach(od => {
+
+            if (od.IsSelect) {
+              orderDetailIds.push(od.ShippingOrderDetail.OrderDetailId);
+            }
+
           });
+
+          this.orderDetailService.assignOrderDetails(orderDetailIds, shipper.Id, (new Date()).getTime())
+            .then(res => {
+              this.isAssigningShipper = false;
+              this.loadMakingDetails();
+              this.loadShippingDetails();
+            });
+
+        } else {
+
+          let orderDetails: OrderDetailViewModel[] = [];
+          this.makingODs.forEach(od => {
+
+            if (od.IsSelect) {
+              orderDetails.push(od.OrderDetail);
+            }
+
+          });
+
+          this.orderDetailService.assignFloristForOrderDetails(orderDetails, shipper.Id, (new Date()).getTime())
+            .then(res => {
+              this.isAssigningFlorist = false;
+              this.loadMakingDetails();
+              this.loadShippingDetails();
+            });
+
+        }
 
       });
 
@@ -312,6 +185,23 @@ export class SortOrderChangingComponent extends BaseComponent {
 
     let isHas = false;
     this.shippingODs.forEach(od => {
+
+      if (od.IsSelect) {
+        isHas = true;
+        return;
+      }
+
+    });
+
+    if (isHas)
+      openViewed();
+
+  }
+
+  selectFloristDialogOpen() {
+
+    let isHas = false;
+    this.makingODs.forEach(od => {
 
       if (od.IsSelect) {
         isHas = true;

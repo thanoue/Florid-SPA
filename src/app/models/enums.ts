@@ -66,6 +66,8 @@ export enum OrderDetailStates {
     Making = 'Making',
     Fixing = 'Fixing',
     FixingRequest = 'FixingRequest',
+    FixerAssigned = 'FixerAssigned',
+    FloristAssigned = 'FloristAssigned',
     Comfirming = 'Comfirming',
     DeliveryWaiting = 'DeliveryWaiting',
     DeliverAssinged = 'DeliverAssinged',
@@ -74,6 +76,11 @@ export enum OrderDetailStates {
     SentBack = 'SentBack',
     Completed = 'Completed',
     Canceled = 'Canceled'
+}
+
+export enum MakingType {
+    Making = 'Making',
+    Fixing = 'Fixing'
 }
 
 export enum Sexes {

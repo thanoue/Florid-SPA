@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from '../../../models/view.models/order.model';
-import { ODFloristInfo, OrderDetail } from 'src/app/models/entities/order.entity';
-import { OrderDetailStates, Roles } from 'src/app/models/enums';
+import { OrderDetailStates, Roles, MakingType } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
@@ -29,11 +28,10 @@ declare function filterOrderByState(menuitems: { Name: string; Value: number; }[
 declare function locationDetection(location: any): any;
 
 export interface ISelectedDetail {
-  FloristName: string;
+  FloristName: string[];
   State: OrderDetailStates;
   StateDisplay: string;
-  ShipperName: string;
-  FixingFloristName: string;
+  ShipperName: string[];
 }
 
 @Component({
@@ -186,16 +184,6 @@ export class OrdersManageComponent extends BaseComponent {
 
       });
 
-    this.userService.getByRole(Roles.Florist)
-      .then(users => {
-        this.florists = users;
-      });
-
-    this.userService.getByRole(Roles.Shipper)
-      .then(users => {
-        this.shippers = users;
-      })
-
     this.askForRememberPassword();
 
   }
@@ -211,7 +199,7 @@ export class OrdersManageComponent extends BaseComponent {
         index: product.Index + 1,
         price: product.ModifiedPrice,
         additionalFee: product.AdditionalFee,
-        discount: this.getDetailDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount),
+        discount: this.getDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount),
         quantity: product.Quantity
       });
       tempSummary += product.ModifiedPrice;
@@ -249,17 +237,15 @@ export class OrdersManageComponent extends BaseComponent {
       totalScore: order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
       customerName: order.CustomerInfo.Name,
       customerId: order.CustomerInfo.Id,
-      discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
+      discount: this.getDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
       purchaseItems: purhases,
       isMemberDiscountApply: order.IsMemberDiscountApply
     };
 
-    console.log(orderData);
-
     this.printJobService.addPrintJob(orderData);
   }
 
-  getDetailDiscount(price: number, percentDiscount: number, amountDidcount: number): number {
+  getDiscount(price: number, percentDiscount: number, amountDidcount: number): number {
 
     let discount = 0;
 
@@ -377,24 +363,35 @@ export class OrdersManageComponent extends BaseComponent {
   openDetailInfo(id: number) {
 
     this.orders.forEach(order => {
+
       let isGot = false;
+      this.selectedDetail.ShipperName = [];
+      this.selectedDetail.FloristName = [];
 
       order.OrderDetails.forEach(orderDetail => {
 
         if (orderDetail.OrderDetailId === id) {
 
-          this.orderDetailService.getODFlorisAndShipper(orderDetail.OrderDetailId)
-            .then(data => {
-              this.selectedDetail.FloristName = data.Florist ? data.Florist.FullName : '...';
-              this.selectedDetail.ShipperName = data.Shipper ? data.Shipper.FullName : '...';
-              this.selectedDetail.State = orderDetail.State;
-              this.selectedDetail.FixingFloristName = data.FixingFlorist ? data.FixingFlorist.FullName : '';
-              this.selectedDetail.StateDisplay = ORDER_DETAIL_STATES.filter(p => p.State === orderDetail.State)[0].DisplayName;
+          isGot = true;
 
-              isGot = true;
+          this.selectedDetail.State = orderDetail.State;
+          this.selectedDetail.StateDisplay = ORDER_DETAIL_STATES.filter(p => p.State === orderDetail.State)[0].DisplayName;
 
+          if (orderDetail.Shippers && orderDetail.Shippers.length > 0) {
+
+            orderDetail.Shippers.forEach(shipper => {
+              this.selectedDetail.ShipperName.push(shipper.FullName);
             });
 
+          }
+
+          if (orderDetail.Florists && orderDetail.Florists.length > 0) {
+
+            orderDetail.Florists.forEach(florist => {
+              this.selectedDetail.FloristName.push(florist.FullName);
+            });
+
+          }
 
           return;
 
@@ -501,8 +498,16 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 0:
 
-          chooseFlorist((floristId) => {
-            this.transferToFloristToFix(orderDetail, +floristId);
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "hh:mm a dd-MM-yyyy");
+          this.selectMakingRequestTime = new Date();
+          this.makingNote = orderDetail.MakingNote;
+
+          makingTimeRequest(() => {
+            this.transferToFlorist(orderDetail, MakingType.Fixing)
+          }, () => {
+            chooseFlorist((floristId) => {
+              this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId)
+            });
           });
 
           break;
@@ -547,15 +552,11 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 0:
 
-          this.orderDetailService.getNextShippingSortOrder()
-            .then(shippingSortOrder => {
-              this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                State: OrderDetailStates.DeliveryWaiting,
-                ShippingSortOrder: shippingSortOrder,
-              })
-                .then(() => {
-                  orderDetail.State = OrderDetailStates.DeliveryWaiting;
-                });
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+            State: OrderDetailStates.DeliveryWaiting,
+          })
+            .then(() => {
+              orderDetail.State = OrderDetailStates.DeliveryWaiting;
             });
 
           break;
@@ -566,10 +567,10 @@ export class OrdersManageComponent extends BaseComponent {
           this.makingNote = orderDetail.MakingNote;
 
           makingTimeRequest(() => {
-            this.transferToFloristToFix(orderDetail)
+            this.transferToFlorist(orderDetail, MakingType.Fixing)
           }, () => {
             chooseFlorist((floristId) => {
-              this.transferToFloristToFix(orderDetail, +floristId);
+              this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId)
             });
           });
 
@@ -610,9 +611,9 @@ export class OrdersManageComponent extends BaseComponent {
           break;
         case 1:
 
+
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Deliveried,
-            ShippingSortOrder: 0,
           })
             .then(() => {
               orderDetail.State = OrderDetailStates.Deliveried;
@@ -702,9 +703,7 @@ export class OrdersManageComponent extends BaseComponent {
             .then(() => {
 
               orderDetail.State = OrderDetailStates.Added;
-              orderDetail.MakingSortOrder = 0;
               orderDetail.MakingRequestTime = 0;
-              orderDetail.FloristInfo = new ODFloristInfo();
             });
 
           break;
@@ -757,10 +756,10 @@ export class OrdersManageComponent extends BaseComponent {
           this.makingNote = '';
 
           makingTimeRequest(() => {
-            this.transferToFlorist(orderDetail, order)
+            this.transferToFlorist(orderDetail, MakingType.Fixing)
           }, () => {
             chooseFlorist((floristId) => {
-              this.transferToFlorist(orderDetail, order, +floristId);
+              this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId);
             });
           });
 
@@ -782,7 +781,6 @@ export class OrdersManageComponent extends BaseComponent {
           })
             .then(() => {
               orderDetail.State = OrderDetailStates.Canceled;
-              orderDetail.MakingSortOrder = 0;
               orderDetail.MakingRequestTime = 0;
               this.deleteOrderDetail(orderDetail, order);
 
@@ -829,7 +827,6 @@ export class OrdersManageComponent extends BaseComponent {
           })
             .then(() => {
               orderDetail.State = OrderDetailStates.Canceled;
-              orderDetail.MakingSortOrder = 0;
               orderDetail.MakingRequestTime = 0;
               this.deleteOrderDetail(orderDetail, order);
 
@@ -861,8 +858,6 @@ export class OrdersManageComponent extends BaseComponent {
             .then(() => {
 
               orderDetail.State = OrderDetailStates.Added;
-              orderDetail.MakingSortOrder = 0;
-              orderDetail.FloristInfo = new ODFloristInfo();
               orderDetail.MakingRequestTime = 0;
 
             });
@@ -884,7 +879,6 @@ export class OrdersManageComponent extends BaseComponent {
           })
             .then(() => {
               orderDetail.State = OrderDetailStates.Canceled;
-              orderDetail.MakingSortOrder = 0;
               orderDetail.MakingRequestTime = 0;
               this.deleteOrderDetail(orderDetail, order);
 
@@ -896,89 +890,43 @@ export class OrdersManageComponent extends BaseComponent {
 
   }
 
-  transferToFlorist(orderDetail: OrderDetailViewModel, order: OrderViewModel, floristId?: number) {
-
-    console.log('edit:', orderDetail);
+  transferToFlorist(orderDetail: OrderDetailViewModel, makingType: MakingType, floristId?: number) {
 
     if (!floristId) {
 
-      this.orderDetailService.getNextMakingSortOrder()
-        .then(sortOrder => {
+      this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+        State: makingType == MakingType.Making ? OrderDetailStates.Waiting : OrderDetailStates.FixingRequest,
+        MakingNote: this.makingNote,
+        MakingRequestTime: this.selectMakingRequestTime.getTime()
+      })
+        .then(() => {
 
-          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-            State: OrderDetailStates.Waiting,
-            MakingSortOrder: sortOrder,
-            MakingRequestTime: this.selectMakingRequestTime.getTime(),
-            MakingNote: this.makingNote,
-          })
-            .then(() => {
+          orderDetail.State = makingType == MakingType.Making ? OrderDetailStates.Waiting : OrderDetailStates.FixingRequest;
+          orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
+          orderDetail.MakingNote = this.makingNote;
 
-              orderDetail.MakingSortOrder = sortOrder;
-              orderDetail.State = OrderDetailStates.Waiting;
-              orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-              orderDetail.MakingNote = this.makingNote;
-
-            });
         });
 
     }
     else {
 
-      this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-        State: OrderDetailStates.Making,
-        MakingSortOrder: 0,
-        MakingRequestTime: this.selectMakingRequestTime.getTime(),
-        MakingNote: this.makingNote,
-        FloristId: floristId
-      })
+      this.orderDetailService.assignSingleMaking(orderDetail.OrderDetailId, floristId, new Date().getTime(), makingType)
         .then(() => {
 
-          orderDetail.MakingSortOrder = 0;
-          orderDetail.State = OrderDetailStates.Making;
-          orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-          orderDetail.MakingNote = this.makingNote;
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+            MakingNote: this.makingNote,
+            MakingRequestTime: this.selectMakingRequestTime.getTime()
+          })
+            .then(() => {
+
+              orderDetail.State = MakingType.Making ? OrderDetailStates.FloristAssigned : OrderDetailStates.FixerAssigned;
+              orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
+              orderDetail.MakingNote = this.makingNote;
+
+            });
 
         });
     }
-
-  }
-
-  transferToFloristToFix(orderDetail: OrderDetailViewModel, floristId?: number) {
-
-    this.orderDetailService.getNextMakingSortOrder()
-      .then(sortOrder => {
-
-        let obj = {};
-
-        if (!floristId) {
-          obj = {
-            State: OrderDetailStates.FixingRequest,
-            MakingSortOrder: sortOrder,
-            MakingRequestTime: this.selectMakingRequestTime.getTime(),
-            MakingNote: this.makingNote,
-          }
-        }
-        else {
-          obj = {
-            State: OrderDetailStates.Fixing,
-            MakingSortOrder: 0,
-            MakingRequestTime: this.selectMakingRequestTime.getTime(),
-            MakingNote: this.makingNote,
-            FixingFloristId: floristId
-          }
-        }
-
-        this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj)
-          .then(() => {
-
-            orderDetail.State = floristId ? OrderDetailStates.Fixing : OrderDetailStates.FixingRequest;
-            orderDetail.MakingSortOrder = floristId ? 0 : sortOrder;
-            orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-            orderDetail.MakingNote = this.makingNote;
-
-          });
-
-      });
 
   }
 
@@ -1000,12 +948,12 @@ export class OrdersManageComponent extends BaseComponent {
 
           makingTimeRequest(() => {
 
-            this.transferToFlorist(orderDetail, order);
+            this.transferToFlorist(orderDetail, MakingType.Making);
 
           }, () => {
 
             chooseFlorist((id) => {
-              this.transferToFlorist(orderDetail, order, +id);
+              this.transferToFlorist(orderDetail, MakingType.Making, +id);
             });
 
           });
@@ -1023,11 +971,9 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            MakingSortOrder: 0
           })
             .then(() => {
               orderDetail.State = OrderDetailStates.Canceled;
-              orderDetail.MakingSortOrder = 0;
               this.deleteOrderDetail(orderDetail, order);
             });
 

@@ -2,8 +2,9 @@ import { OrderDetailStates, OrderType } from '../../models/enums';
 import { MembershipTypes } from '../enums';
 import { Customer, SpecialDay } from '../entities/customer.entity';
 import { ExchangeService } from '../../services/exchange.service';
-import { CustomerReceiverDetail, OrderDetail, Order, ODFloristInfo, ODShipperInfo, ODSeenUserInfo } from '../entities/order.entity';
+import { CustomerReceiverDetail, OrderDetail, Order, ODSeenUserInfo, Making, Shipping } from '../entities/order.entity';
 import { Purchase } from './purchase.entity';
+import { User } from '../entities/user.entity';
 
 export class OrderViewModel {
 
@@ -55,8 +56,6 @@ export class OrderDetailViewModel {
     ModifiedPrice = 0;
     AdditionalFee = 0;
 
-    MakingSortOrder = 0;
-    ShippingSortOrder = 0;
     IsVATIncluded = false;
     Description = '';
 
@@ -66,107 +65,39 @@ export class OrderDetailViewModel {
     IsFromHardCodeProduct = false;
     HardcodeImageName = '';
 
-    FloristInfo: ODFloristInfo;
-    ShipperInfo: ODShipperInfo;
+    Makings: Making[];
+    Shippings: Shipping[];
 
-    ResultImageUrl: string;
-    DeliveryImageUrl: string;
+    Shippers: User[];
+    Florists: User[];
 
     PercentDiscount: number;
     AmountDiscount: number;
 
-    ShippingSessionId: number;
-
     MakingRequestTime: number;
-    DeliveryCompletedTime: number;
-    MakingStartTime: number;
-    MakingCompletedTime: number;
+
     MakingNote: string;
     ShippingNote: string;
-    FixingFloristId: number;
+
     NoteImages: string[];
     SeenUsers: ODSeenUserInfo[];
 
     constructor() {
         this.DeliveryInfo = new OrderDetailDeliveryInfo();
-        this.FloristInfo = new ODFloristInfo();
-        this.ShipperInfo = new ODShipperInfo();
+        this.Makings = [];
+        this.Shippings = []
         this.SeenUsers = [];
         this.NoteImages = [];
+        this.Shippers = [];
+        this.Florists = [];
     }
-
-    // static ToViewModel(entity: OrderDetail) {
-    //     const vm = new OrderDetailViewModel();
-
-    //     vm.CustomerName = entity.CustomerName;
-    //     vm.CustomerPhoneNumber = entity.CustomerPhoneNumber;
-    //     vm.IsVATIncluded = entity.IsVATIncluded;
-    //     vm.OrderDetailId = entity.Id;
-    //     vm.OrderId = entity.OrderId;
-    //     vm.AdditionalFee = entity.AdditionalFee;
-    //     vm.Description = entity.Description;
-    //     vm.Index = entity.Index;
-
-    //     vm.MakingSortOrder = entity.MakingSortOrder;
-    //     vm.ShippingSortOrder = entity.ShippingSortOrder;
-
-    //     vm.ModifiedPrice = entity.ProductModifiedPrice;
-    //     vm.ProductId = entity.Id;
-    //     vm.OriginalPrice = entity.ProductPrice;
-    //     vm.ProductImageUrl = entity.ProductImageUrl;
-    //     vm.ProductName = entity.ProductName;
-
-    //     vm.IsFromHardCodeProduct = entity.IsHardcodeProduct;
-    //     vm.HardcodeImageName = entity.HardcodeProductImageName;
-
-    //     vm.PurposeOf = entity.PurposeOf;
-
-    //     vm.DeliveryInfo.DateTime = new Date(entity.DeliveryInfo.ReceivingTime);
-    //     vm.DeliveryInfo.Address = entity.DeliveryInfo.ReceiverDetail.Address;
-    //     vm.DeliveryInfo.FullName = entity.DeliveryInfo.ReceiverDetail.FullName;
-    //     vm.DeliveryInfo.PhoneNumber = entity.DeliveryInfo.ReceiverDetail.PhoneNumber;
-
-    //     vm.ResultImageUrl = entity.ResultImageUrl;
-    //     vm.DeliveryImageUrl = entity.DeliveryImageUrl;
-
-    //     vm.State = entity.State;
-    //     vm.Quantity = 1;
-
-    //     if (entity.SeenUsers && entity.SeenUsers.length > 0) {
-    //         entity.SeenUsers.forEach(user => {
-    //             vm.SeenUsers.push(ODSeenUserInfo.DeepCopy(user));
-    //         });
-    //     }
-
-    //     if (entity.FloristInfo) {
-    //         vm.FloristInfo.Id = entity.FloristInfo.Id;
-    //         vm.FloristInfo.AssignTime = entity.FloristInfo.AssignTime;
-    //         vm.FloristInfo.CompletedTime = entity.FloristInfo.CompletedTime;
-    //         vm.FloristInfo.FullName = entity.FloristInfo.FullName;
-    //     }
-
-    //     if (entity.ShipperInfo) {
-    //         vm.ShipperInfo.Id = entity.ShipperInfo.Id;
-    //         vm.ShipperInfo.AssignTime = entity.ShipperInfo.AssignTime;
-    //         vm.ShipperInfo.CompletedTime = entity.ShipperInfo.CompletedTime;
-    //         vm.ShipperInfo.FullName = entity.ShipperInfo.FullName;
-    //     }
-
-    //     return vm;
-    // }
 
     static DeepCopy(model: OrderDetailViewModel) {
 
         const viewModel = new OrderDetailViewModel();
 
-        viewModel.DeliveryCompletedTime = model.DeliveryCompletedTime;
         viewModel.MakingNote = model.MakingNote;
-        viewModel.MakingCompletedTime = model.MakingCompletedTime;
-        viewModel.MakingStartTime = model.MakingStartTime;
-        viewModel.ShippingSessionId = model.ShippingSessionId;
         viewModel.MakingRequestTime = model.MakingRequestTime;
-        viewModel.ResultImageUrl = model.ResultImageUrl;
-        viewModel.DeliveryImageUrl = model.DeliveryImageUrl;
         viewModel.CustomerName = model.CustomerName;
         viewModel.CustomerPhoneNumber = model.CustomerPhoneNumber;
         viewModel.IsVATIncluded = model.IsVATIncluded;
@@ -183,13 +114,10 @@ export class OrderDetailViewModel {
         viewModel.AdditionalFee = model.AdditionalFee;
         viewModel.Description = model.Description;
         viewModel.IsFromHardCodeProduct = model.IsFromHardCodeProduct;
-        viewModel.ShippingSortOrder = model.ShippingSortOrder;
-        viewModel.MakingSortOrder = model.MakingSortOrder;
         viewModel.PurposeOf = model.PurposeOf;
         viewModel.PercentDiscount = model.PercentDiscount;
         viewModel.AmountDiscount = model.AmountDiscount;
         viewModel.ShippingNote = model.ShippingNote;
-        viewModel.FixingFloristId = model.FixingFloristId;
         viewModel.NoteImages = model.NoteImages;
 
         if (model.SeenUsers && model.SeenUsers.length > 0) {
@@ -198,18 +126,12 @@ export class OrderDetailViewModel {
             });
         }
 
-        if (model.FloristInfo) {
-            viewModel.FloristInfo.Id = model.FloristInfo.Id;
-            viewModel.FloristInfo.AssignTime = model.FloristInfo.AssignTime;
-            viewModel.FloristInfo.CompletedTime = model.FloristInfo.CompletedTime;
-            viewModel.FloristInfo.FullName = model.FloristInfo.FullName;
+        if (model.Shippings) {
+            Object.assign(viewModel.Shippings, model.Shippings);
         }
 
-        if (model.ShipperInfo) {
-            viewModel.ShipperInfo.Id = model.ShipperInfo.Id;
-            viewModel.ShipperInfo.AssignTime = model.ShipperInfo.AssignTime;
-            viewModel.ShipperInfo.CompletedTime = model.ShipperInfo.CompletedTime;
-            viewModel.ShipperInfo.FullName = model.ShipperInfo.FullName;
+        if (model.MakingNote) {
+            Object.assign(viewModel.MakingNote, model.MakingNote);
         }
 
         return viewModel;

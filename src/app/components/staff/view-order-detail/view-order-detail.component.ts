@@ -68,9 +68,6 @@ export class ViewOrderDetailComponent extends BaseComponent {
 
   }
 
-  getDetailDiscount(orderDetail: OrderDetailViewModel): number {
-    return ExchangeService.getDetailDiscount(orderDetail);
-  }
 
   protected destroy() {
     this.canSeen = false;

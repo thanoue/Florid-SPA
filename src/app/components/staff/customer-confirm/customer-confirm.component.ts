@@ -136,7 +136,7 @@ export class CustomerConfirmComponent extends BaseComponent {
 
               const file = new File([blob], "shipping.png", { type: "image/png" });
 
-              this.orderDetailService.shippingConfirm(this.orderDetail.OrderDetailId, file, note)
+              this.orderDetailService.shippingConfirm(this.orderDetail, file, note)
                 .then(res => {
                   this.router.navigate(['staff/shipper-main']);
                 });
@@ -145,15 +145,10 @@ export class CustomerConfirmComponent extends BaseComponent {
 
         } else {
 
-          this.orderDetailService.updateFields(this.orderDetail.OrderDetailId, {
-            DeliveryCompletedTime: (new Date()).getTime(),
-            State: OrderDetailStates.Deliveried,
-            MakingSortOrder: 0,
-            ShippingSortOrder: 0,
-            ShippingNote: note
-          }).then(data => {
-            this.router.navigate(['staff/shipper-main']);
-          });
+          this.orderDetailService.shippingConfirm(this.orderDetail, null, note)
+            .then(res => {
+              this.router.navigate(['staff/shipper-main']);
+            });
 
         }
 

@@ -122,7 +122,7 @@ export const ROUTES: Routes = [
         MonthlyChartComponent,
         LoginComponent,
         PurchasesComponent,
-        DebtsComponent
+        DebtsComponent,
     ]
 })
 export class AdminModule { }

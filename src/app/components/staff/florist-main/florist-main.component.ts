@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { Router } from '@angular/router';
 import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
-import { OrderDetailStates, Roles } from 'src/app/models/enums';
+import { OrderDetailStates, Roles, MakingType } from 'src/app/models/enums';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
-import { ODFloristInfo, ODSeenUserInfo } from 'src/app/models/entities/order.entity';
+import { ODSeenUserInfo } from 'src/app/models/entities/order.entity';
 
 declare function customerSupport(): any;
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
@@ -28,7 +28,12 @@ export class FloristMainComponent extends BaseComponent {
   ];
 
   fixingRequestMenuItems = [
-    'Sửa đơn',
+    'Nhận sửa đơn',
+    'Xem chi tiết đơn',
+  ];
+
+  asignedMenuItems = [
+    'Bắt đầu làm/sửa',
     'Xem chi tiết đơn',
   ];
 
@@ -72,11 +77,10 @@ export class FloristMainComponent extends BaseComponent {
 
     this.waitingOrderDetails = [];
 
-    this.orderDetailService.getByStates([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest])
+    this.orderDetailService.getByStates([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
       .then(details => {
 
         this.waitingOrderDetails = details;
-        this.waitingOrderDetails.sort((a, b) => a.MakingSortOrder < b.MakingSortOrder ? -1 : a.MakingSortOrder > b.MakingSortOrder ? 1 : 0)
 
       });
   }
@@ -85,11 +89,10 @@ export class FloristMainComponent extends BaseComponent {
 
     this.makingOrderDetails = [];
 
-    this.orderDetailService.getByStatesAndFloristId(this.CurrentUser.Id, [OrderDetailStates.Making, OrderDetailStates.Fixing])
+    this.orderDetailService.getMakingOrderDetails(this.CurrentUser.Id)
       .then(details => {
 
         this.makingOrderDetails = details;
-        this.makingOrderDetails.sort((a, b) => a.MakingSortOrder < b.MakingSortOrder ? -1 : a.MakingSortOrder > b.MakingSortOrder ? 1 : 0)
 
       });
 
@@ -110,6 +113,12 @@ export class FloristMainComponent extends BaseComponent {
       case OrderDetailStates.FixingRequest:
         menu = this.fixingRequestMenuItems;
         break;
+
+      case OrderDetailStates.FixerAssigned:
+      case OrderDetailStates.FloristAssigned:
+
+        menu = this.asignedMenuItems;
+        break;
     }
 
     menuOpen((index) => {
@@ -118,30 +127,48 @@ export class FloristMainComponent extends BaseComponent {
         case 0:
 
           switch (orderDetail.State) {
+
+            case OrderDetailStates.FixerAssigned:
+            case OrderDetailStates.FloristAssigned:
+
+              this.openConfirm('Bắt đầu thực hiện đơn này?', () => {
+
+                this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
+                  StartTime: (new Date()).getTime(),
+                }).then(() => {
+
+                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+                    State: orderDetail.State == OrderDetailStates.FixerAssigned ? OrderDetailStates.Fixing : OrderDetailStates.Making,
+
+                  }).then(() => {
+
+                    this.loadMakingDetails();
+
+                  });
+
+                });
+
+              });
+
+              break;
+
+
+            case OrderDetailStates.FixingRequest:
             case OrderDetailStates.Waiting:
 
               this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
                 .then(data => {
 
-                  let obj = {};
+                  let typeMaking = MakingType.Making;
 
                   if (orderDetail.State == OrderDetailStates.Waiting) {
-                    obj = {
-                      State: OrderDetailStates.Making,
-                      MakingSortOrder: 0,
-                      FloristId: this.CurrentUser.Id,
-                      MakingStartTime: (new Date).getTime()
-                    }
+                    typeMaking = MakingType.Making;
                   } else {
-                    obj = {
-                      State: OrderDetailStates.Fixing,
-                      MakingSortOrder: 0,
-                      FixingFloristId: this.CurrentUser.Id,
-                      MakingStartTime: (new Date).getTime()
-                    }
+                    typeMaking = MakingType.Fixing;
                   }
 
-                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj).then(() => {
+                  this.orderDetailService.assignSingleMaking(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime(), typeMaking).then(() => {
                     this.loadMakingDetails();
                     this.loadWaitingDetails();
                   });
@@ -155,12 +182,19 @@ export class FloristMainComponent extends BaseComponent {
 
               this.openConfirm('chắc chắn hoàn thành đơn?', () => {
 
-                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                  State: OrderDetailStates.Comfirming,
-                  MakingCompletedTime: (new Date).getTime()
+                this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
+                  CompleteTime: (new Date()).getTime(),
                 }).then(() => {
-                  this.loadMakingDetails();
-                  this.loadWaitingDetails();
+
+                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+                    State: orderDetail.State == OrderDetailStates.Comfirming,
+
+                  }).then(() => {
+                    this.loadMakingDetails();
+                    this.loadWaitingDetails();
+                  });
+
                 });
 
               })

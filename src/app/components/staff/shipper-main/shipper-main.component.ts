@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { OrderDetailStates, Roles } from 'src/app/models/enums';
-import { ODSeenUserInfo, ODShipperInfo } from 'src/app/models/entities/order.entity';
 import { OrderService } from 'src/app/services/order.service';
+import { browser } from 'protractor';
 
 declare function customerSupport(): any;
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
@@ -80,11 +80,10 @@ export class ShipperMainComponent extends BaseComponent {
 
     this.waitingOrderDetails = [];
 
-    this.orderDetailService.getByState(OrderDetailStates.DeliveryWaiting)
+    this.orderDetailService.getByState(OrderDetailStates.DeliveryWaiting, 'ReceivingTime')
       .then(details => {
 
         this.waitingOrderDetails = details;
-        this.waitingOrderDetails.sort((a, b) => a.ShippingSortOrder < b.ShippingSortOrder ? -1 : a.ShippingSortOrder > b.ShippingSortOrder ? 1 : 0)
 
       });
   }
@@ -97,7 +96,6 @@ export class ShipperMainComponent extends BaseComponent {
       .then(details => {
 
         this.shippingOrderDetails = details;
-        this.shippingOrderDetails.sort((a, b) => a.ShippingSortOrder < b.ShippingSortOrder ? -1 : a.ShippingSortOrder > b.ShippingSortOrder ? 1 : 0)
 
       });
   }
@@ -106,56 +104,21 @@ export class ShipperMainComponent extends BaseComponent {
 
     getShippingNoteDialog(btnTitl, (note) => {
 
-      this.orderService.getById(orderDetail.OrderId)
-        .then(order => {
+      this.orderDetailService.updateShippingFields(this.orderDetailService.getLastestShipping(orderDetail).Id, {
+        CompleteTime: (new Date()).getTime(),
+        Note: note
+      }).then(data => {
 
-          let balance = order.TotalAmount - order.TotalPaidAmount;
-          if (balance > 0) {
+        this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
 
-            getNumberValidateInput((res, validateCallback) => {
+          State: destState
 
-              if (res > balance) {
-                validateCallback(false, 'Thanh toán vượt quá thành tiền!');
-                return;
-              } else if (res <= 0) {
-                validateCallback(false, 'Thanh toán phải lớn hơn 0!');
-                return;
-              }
+        }).then(res => {
 
-              validateCallback(true, '');
-
-              this.orderService.updateFields(orderDetail.OrderId, {
-                TotalPaidAmount: order.TotalPaidAmount + res
-              })
-                .then(() => {
-                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                    DeliveryCompletedTime: (new Date()).getTime(),
-                    State: destState,
-                    MakingSortOrder: 0,
-                    ShippingSortOrder: 0,
-                    ShippingNote: note
-                  }).then(data => {
-                    this.loadShippingDetails();
-                  });
-                });
-
-            }, 'Số tiền thanh toán...', balance);
-
-          } else {
-
-            this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-              DeliveryCompletedTime: (new Date()).getTime(),
-              State: destState,
-              MakingSortOrder: 0,
-              ShippingSortOrder: 0,
-              ShippingNote: note
-            }).then(data => {
-              this.loadShippingDetails();
-            });
-
-          }
+          this.loadShippingDetails();
 
         });
+      });
 
     });
 
@@ -169,14 +132,17 @@ export class ShipperMainComponent extends BaseComponent {
         case 0:
 
           switch (orderDetail.State) {
+
             case OrderDetailStates.DeliveryWaiting:
 
               this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
                 .then(data => {
 
                   this.orderDetailService.assignSingleOD(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date()).getTime()).then(() => {
+
                     this.loadShippingDetails();
                     this.loadWaitingDetails();
+
                   });
 
                 });
@@ -197,10 +163,20 @@ export class ShipperMainComponent extends BaseComponent {
 
               this.openConfirm('Bắt đầu giao đơn này?', () => {
 
-                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                  State: OrderDetailStates.OnTheWay,
+                this.orderDetailService.updateShippingFields(this.orderDetailService.getLastestShipping(orderDetail).Id, {
+                  StartTime: (new Date()).getTime(),
                 }).then(() => {
-                  this.loadShippingDetails();
+
+                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+                    State: OrderDetailStates.OnTheWay,
+
+                  }).then(() => {
+
+                    this.loadShippingDetails();
+
+                  });
+
                 });
 
               });

@@ -54,34 +54,27 @@ export class FinalConfirmComponent extends BaseComponent {
 
     this.orderDetailService.updateFields(this.orderDetail.OrderDetailId, {
       State: OrderDetailStates.Completed,
-      ShippingSortOrder: 0
     })
       .then(async () => {
 
-        let orderDetails = await this.orderDetailService.getByOrderId(this.orderDetail.OrderId);
-
-        let notCompletedDetails = orderDetails.filter(p => p.State != OrderDetailStates.Completed);
-
-        if (notCompletedDetails.length == 0) {
-
-          this.orderDetailService.updateStatusByOrderId(this.orderDetail.OrderId, OrderDetailStates.Completed, (new Date().getTime()))
-            .then(data => {
-
-              this.router.navigate(['staff/orders-manage']);
-
-            });
-        }
-        else
-          this.router.navigate(['staff/orders-manage']);
+        this.router.navigate(['staff/orders-manage']);
 
       });
+  }
+
+  getShippingImg() {
+    return this.orderDetailService.getLastestShipping(this.orderDetail).DeliveryImageUrl;
+  }
+
+  getResultImg() {
+    return this.orderDetailService.getLastestMaking(this.orderDetail).ResultImageUrl;
   }
 
   shareToCus() {
 
     this.startLoading();
 
-    this.storageService.downloadFIle(`${environment.base_domain}${IMAGE_FOLDER_PATHS.shipping_img}${this.orderDetail.DeliveryImageUrl}`, (file) => {
+    this.storageService.downloadFIle(`${environment.base_domain}${IMAGE_FOLDER_PATHS.shipping_img}${this.getShippingImg()}`, (file) => {
 
       this.stopLoading();
 

@@ -1,5 +1,6 @@
 import { BaseEntity } from './base.entity';
-import { OrderDetailStates, Roles, OrderType } from '../enums';
+import { OrderDetailStates, Roles, OrderType, MakingType } from '../enums';
+import { User } from './user.entity';
 
 export class Order extends BaseEntity {
     CustomerId = '';
@@ -35,8 +36,6 @@ export class OrderDetail {
     Description = '';
     Index = -1;
     State = OrderDetailStates.Added;
-    MakingSortOrder = 0;
-    ShippingSortOrder = 0;
     IsVATIncluded = false;
     Quantity = 1;
 
@@ -48,13 +47,7 @@ export class OrderDetail {
     CustomerName = '';
     CustomerPhoneNumber = '';
 
-    FloristInfo: ODFloristInfo;
-    ShipperInfo: ODShipperInfo;
-
     SeenUsers: ODSeenUserInfo[];
-
-    ResultImageUrl: string;
-    DeliveryImageUrl: string;
 
     PercentDiscount: number;
     AmountDiscount: number;
@@ -65,8 +58,6 @@ export class OrderDetail {
     constructor() {
 
         this.DeliveryInfo = new OrderReceiverDetail();
-        this.FloristInfo = new ODFloristInfo();
-        this.ShipperInfo = new ODShipperInfo();
         this.SeenUsers = [];
         this.NoteImages = [];
     }
@@ -94,18 +85,30 @@ export class ODSeenUserInfo {
     }
 }
 
-export class ODFloristInfo {
-    Id: string;
-    FullName: string;
+export class Making {
+    Id: number;
+    FloristId: number;
     AssignTime: number;
-    CompletedTime: number;
+    StartTime: number;
+    CompleteTime: number;
+    ResultImageUrl: string;
+    MakingType: MakingType;
+
+    constructor() {
+    }
 }
 
-export class ODShipperInfo {
-    Id: string;
-    FullName: string;
+export class Shipping {
+    Id: number;
+    ShipperId: number;
     AssignTime: number;
-    CompletedTime: number;
+    StartTime: number;
+    CompleteTime: number;
+    DeliveryImageUrl: string;
+    Note: string;
+
+    constructor() {
+    }
 }
 
 export class OrderReceiverDetail {

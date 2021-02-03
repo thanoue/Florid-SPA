@@ -2,9 +2,8 @@
     <div class="container">
         <div class="prodDetail">
             <div class="prodGen">
-                <img src="{{orderDetail.ResultImageUrl |  ImgPipe : 'ResultImg' }}" alt="" class="item-detail-thumb">
-                <img src="{{orderDetail.DeliveryImageUrl |  ImgPipe : 'ShippingImg' }}" alt=""
-                    class="item-detail-thumb">
+                <img src="{{getResultImg() |  ImgPipe : 'ResultImg' }}" alt="" class="item-detail-thumb">
+                <img src="{{getShippingImg() |  ImgPipe : 'ShippingImg' }}" alt="" class="item-detail-thumb">
                 <div class="item-detail-info">
                     <h5 class="item-code">{{orderDetail.ProductName}}</h5>
                     <span class="prodPriceOld">{{orderDetail.OriginalPrice| myCurrPipe}}</span>

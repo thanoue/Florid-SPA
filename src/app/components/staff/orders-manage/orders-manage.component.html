@@ -127,14 +127,10 @@
             <label>{{selectedDetail.StateDisplay}}</label>
         </li>
         <li class="colorInfo">
-            <label>Người cắm hoa: </label><span>{{selectedDetail.FloristName}}</span>
+            <label>Thợ cắm hoa: </label><span *ngFor="let name of selectedDetail.FloristName">{{name}}</span>
         </li>
         <li class="colorInfo">
-            <label>Người giao hoa: </label><span>{{selectedDetail.ShipperName}}</span>
-        </li>
-        <li class="colorInfo"
-            *ngIf="selectedDetail && selectedDetail.FixingFloristName !== undefined && selectedDetail.FixingFloristName !== ''">
-            <label>Người sửa hoa: </label><span>{{selectedDetail.FixingFloristName}}</span>
+            <label>Người giao hoa: </label><span *ngFor="let name of selectedDetail.ShipperName">{{name}}</span>
         </li>
 
     </ul>

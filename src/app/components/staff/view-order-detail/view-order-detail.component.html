@@ -12,10 +12,10 @@
                     <h5 class="item-code">{{orderDetail.ProductName}}</h5>
                     <span class="prodPrice">{{orderDetail.ModifiedPrice| myCurrPipe}}</span>
 
-                    <span class="prodCharge">Phụ phí:
-                        {{getDetailDiscount(orderDetail)| myCurrPipe}}</span>
+                    <span class="prodCharge">Phụ phí: {{orderDetail.AdditionalFee| myCurrPipe}}
+                    </span>
                     <span class="prodCharge">Giảm giá:
-                        {{orderDetail.AdditionalFee| myCurrPipe}}</span>
+                        {{getDetailDiscount(orderDetail)| myCurrPipe}}</span>
                     <span class="prodCharge">Số lượng:
                         {{orderDetail.Quantity}}</span>
                 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from './common/base.service';
 import { Customer, SpecialDay } from '../models/entities/customer.entity';
-import { Order, OrderDetail, CustomerReceiverDetail } from '../models/entities/order.entity';
+import { Order, OrderDetail, CustomerReceiverDetail, Shipping, Making } from '../models/entities/order.entity';
 import { HttpService } from './common/http.service';
 import { GlobalService } from './common/global.service';
 import { API_END_POINT } from '../app.constants';
@@ -12,6 +12,7 @@ import { SaleTotalModel } from '../models/view.models/sale.total.model';
 import { NgModelGroup } from '@angular/forms';
 import { Purchase } from '../models/view.models/purchase.entity';
 import { OrderDetailStates } from '../models/enums';
+import { User } from '../models/entities/user.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -133,8 +134,6 @@ export class OrderService {
         orderDetailVM.OriginalPrice = orderDetail.ProductPrice;
         orderDetailVM.ModifiedPrice = orderDetail.ProductPrice;
         orderDetailVM.AdditionalFee = orderDetail.AdditionalFee;
-        orderDetailVM.MakingSortOrder = orderDetail.MakingSortOrder;
-        orderDetailVM.ShippingSortOrder = orderDetail.ShippingSortOrder;
         orderDetailVM.IsVATIncluded = orderDetail.IsVATIncluded;
         orderDetailVM.Description = orderDetail.Description;
         orderDetailVM.CustomerName = orderDetail.CustomerName;
@@ -143,16 +142,94 @@ export class OrderService {
         orderDetailVM.HardcodeImageName = orderDetail.HardcodeImageName;
         orderDetailVM.PercentDiscount = orderDetail.PercentDiscount;
         orderDetailVM.AmountDiscount = orderDetail.AmountDiscount;
-        orderDetailVM.DeliveryCompletedTime = orderDetail.DeliveryCompletedTime;
-        orderDetailVM.MakingStartTime = orderDetail.MakingStartTime;
-        orderDetailVM.MakingRequestTime = orderDetail.MakingRequestTime;
-        orderDetailVM.MakingCompletedTime = orderDetail.MakingCompletedTime;
-        orderDetailVM.ResultImageUrl = orderDetail.ResultImageUrl;
         orderDetailVM.MakingNote = orderDetail.MakingNote;
-        orderDetailVM.DeliveryImageUrl = orderDetail.DeliveryImageUrl;
         orderDetailVM.ShippingNote = orderDetail.ShippingNote;
-        orderDetailVM.FixingFloristId = orderDetail.FixingFloristId;
         orderDetailVM.Quantity = orderDetail.Quantity ? orderDetail.Quantity : 1;
+
+        if (orderDetail.orderDedailShippings && orderDetail.orderDedailShippings.length > 0) {
+
+          orderDetailVM.Shippings = [];
+
+          orderDetail.orderDedailShippings.forEach(rawShipping => {
+
+            let shipping = new Shipping();
+
+            shipping.AssignTime = rawShipping.AssignTime;
+            shipping.CompleteTime = rawShipping.CompleteTime;
+            shipping.DeliveryImageUrl = rawShipping.DeliveryImageUrl;
+            shipping.Id = rawShipping.Id;
+            shipping.Note = rawShipping.Note;
+            shipping.StartTime = rawShipping.StartTime;
+            shipping.ShipperId = rawShipping.ShipperId;
+
+            orderDetailVM.Shippings.push(shipping);
+
+          });
+
+        }
+
+        if (orderDetail.shippers && orderDetail.shippers.length > 0) {
+
+          orderDetailVM.Shippers = [];
+
+          orderDetail.shippers.forEach(rawShipper => {
+
+            let shipper = new User();
+
+            shipper.Id = rawShipper.Id;
+            shipper.AvtUrl = rawShipper.AvtUrl;
+            shipper.Email = rawShipper.Email;
+            shipper.FullName = rawShipper.FullName;
+            shipper.IsExternalShipper = rawShipper.IsExternalShipper;
+            shipper.PhoneNumber = rawShipper.PhoneNumber;
+
+            orderDetailVM.Shippers.push(shipper);
+
+          });
+
+        }
+
+        if (orderDetail.orderDetailMakings && orderDetail.orderDetailMakings.length > 0) {
+
+          orderDetailVM.Makings = [];
+
+          orderDetail.orderDetailMakings.forEach(rawMaking => {
+
+            let making = new Making();
+
+            making.AssignTime = rawMaking.AssignTime;
+            making.CompleteTime = rawMaking.CompleteTime;
+            making.ResultImageUrl = rawMaking.ResultImageUrl;
+            making.Id = rawMaking.Id;
+            making.StartTime = rawMaking.StartTime;
+            making.FloristId = rawMaking.FloristId;
+
+            orderDetailVM.Makings.push(making);
+
+          });
+
+        }
+
+        if (orderDetail.florists && orderDetail.florists.length > 0) {
+
+          orderDetailVM.Florists = [];
+
+          orderDetail.shippers.forEach(rawShipper => {
+
+            let user = new User();
+
+            user.Id = rawShipper.Id;
+            user.AvtUrl = rawShipper.AvtUrl;
+            user.Email = rawShipper.Email;
+            user.FullName = rawShipper.FullName;
+            user.IsExternalShipper = rawShipper.IsExternalShipper;
+            user.PhoneNumber = rawShipper.PhoneNumber;
+
+            orderDetailVM.Florists.push(user);
+
+          });
+
+        }
 
         orderDetailVM.NoteImages = orderDetail.NoteImages ? (orderDetail.NoteImages.split(',')) : [];
 
@@ -270,6 +347,7 @@ export class OrderService {
     return orderVMs;
 
   }
+
 
   getDebtOrders(page: number, size: number, startTime: number, endTime: number): Promise<{
     orders: OrderViewModel[],
