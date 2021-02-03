@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en-Us">
+
+<head>
+    <base href="/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Receipt</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <style>
+        .wrapper {
+            background-color: #fff;
+            text-align: center;
+            font-size: 12px;
+            width: 150px;
+            margin: auto
+        }
+
+        .shop-info {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 14px;
+            margin-bottom: 0px;
+            font-weight: 700;
+        }
+
+        .shop-info p {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .recipe-info,
+        .recipe-detail,
+        .recipe-total {
+            margin-bottom: 5px;
+        }
+
+        .recipe-summary {
+            margin-bottom: 20px;
+        }
+
+        .recipe-detail {
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table tr td:first-child,
+        table tr th:first-child {
+            text-align: left;
+            width: 90%
+        }
+
+        table tr td:last-child,
+        table tr th:last-child {
+            text-align: right;
+            width: 14%
+        }
+
+        .recipe-info table tr td:first-child,
+        .recipe-info table tr th:first-child {
+            width: 42%;
+        }
+
+
+        .recipe-detail table {
+            vertical-align: top;
+        }
+
+        .recipe-detail table tr th {
+            font-weight: 600;
+            padding-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .recipe-detail table tr td:first-child,
+        .recipe-detail table tr th:first-child {
+            width: 63%;
+        }
+
+
+        .recipe-detail table tr td:last-child,
+        .recipe-detail table tr th:last-child {
+            width: 20%;
+            text-align: right;
+        }
+
+        .recipe-detail table tr {
+            vertical-align: top;
+        }
+
+        .recipe-detail table tr td {
+            padding-bottom: 0px;
+        }
+
+        .recipe-detail table tr td p {
+            margin-bottom: 0px;
+            font-weight: 600;
+        }
+
+        .recipe-info table tfoot td {
+            padding-top: 20px;
+        }
+
+        .recipe-vat {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+
+        .recipe-detail table tr td:last-child span {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+
+        .top-title {
+            margin-top: 0px;
+        }
+
+        .dash-line {
+            border-top: 1px dashed #333;
+            height: 5px;
+        }
+
+        @media print {
+            .myDivToPrint {
+                background-color: white;
+                height: 100%;
+                width: 92%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                margin: 0;
+                line-height: 18px;
+            }
+
+            .hidden-print,
+            .hidden-print * {
+                display: none !important;
+            }
+        }
+
+        .small-line {
+            line-height: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hidden-print">PRINTER</div>
+    <div class="container-receipt">
+
+    </div>
+
+    <script>
+
+        String.prototype.format = function () {
+            a = this;
+            for (k in arguments) {
+                a = a.replace("{" + k + "}", arguments[k])
+            }
+            return a
+        }
+
+        function VNCurrencyFormat(val) {
+            return val.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
+
+        var socket;
+
+        function connectSocket(host) {
+
+            socket = io.connect(host);
+
+            socket.on('connected', (data) => {
+
+                console.log('connected');
+
+                socket.emit('login', { userId: 0, isPrinter: true });
+
+                socket.on('doPrintJob', (data) => {
+
+                    doPrintJob(data.printJob);
+
+                });
+
+            });
+
+        }
+
+        function getPurchaseMethod(method) {
+            switch (method) {
+                case 'Cash':
+                    return 'Tiền mặt';
+                case 'Banking':
+                    return 'Chuyển khoản';
+                case 'Momo':
+                    return 'Ví Momo';
+                default:
+                    return '';
+            }
+        }
+
+
+        connectSocket('');
+
+        function doPrintJob(data) {
+
+            console.log(data);
+
+            let template = `<div class="wrapper myDivToPrint">
+        <div style="align-content:center">
+            <img style="width:50%;height:50%"
+                src="data:image/png;base64,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"
+                alt="Red dot" />
+        </div>
+        <div class="shop-info">
+            <p> 783 Phan Văn Trị, P7,
+                Quận Gò Vấp, Thành phố Hồ Chí Minh, 70000
+            </p>
+            <p class="small-line">SĐT: 0931281122</p>
+            <p class="small-line">Facebook: fb.com/floridshop</p>
+            <p class="small-line">Website: florid.com.vn</p>
+        </div>
+        <h1>BIÊN LAI</h1>
+        <div class="recipe-info">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Mã hóa đơn:</td>
+                        <td>{{OrderId}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <strong>{{DoneTime}}</strong>
+        </div>
+        <div class="recipe-detail">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Mặt hàng</th>
+                        <th>Đơn giá</th>
+                    </tr>
+                    {{SaleItems}}
+                </tbody>
+            </table>
+        </div>
+        <div class="dash-line"></div>
+        <table>
+            <tbody>
+                <tr class="small-line">
+                    <td>Tạm tính</td>
+                    <td>{{SaleTotal}}</td>
+                </tr>
+                {{OrderDiscount}}
+                <tr class="small-line">
+                    <td>Thành tiền</td>
+                    <td>{{TotalAmount}}</td>
+                </tr>
+                <tr class="small-line">
+                    <td>Đã TT</td>
+                    <td>{{TotalPaidAmount}}</td>
+                </tr>
+                <tr class="small-line">
+                    <td>Còn lại</td>
+                    <td>{{TotalBalance}} </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{VATIncluded}}
+
+        <div class="dash-line"></div>
+
+        {{PurchaseItems}}
+
+        {{CustomerInfo}}
+
+        <div style="align-content:center">
+            <img style="width:70%;height:70%"
+                src="data:image/png;base64,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"
+                alt="Red dot" />
+        </div>
+        <div class="recipe-thank">
+            <p style="font-size: 11px;">Chúc bạn một ngày tươi như hoa!</p>
+        </div>
+    </div>`;
+
+            template = template.replace("{{OrderId}}", data.orderId);
+            template = template.replace("{{DoneTime}}", data.doneTime);
+
+            var productTemplate = `<tr>
+                                        <td>
+                                            <p class="top-title">{0}</p>
+                                        </td>
+                                        <td>{1}</td>
+                                    </tr>
+                                    <tr class="small-line">
+                                        <td>
+                                            số lượng
+                                        </td>
+                                        <td>{2}</td>
+                                    </tr>
+                                     <tr class="small-line">
+                                        <td>
+                                            <strong>***</strong>
+                                        </td>
+                                    </tr>`;
+
+            var productTemplateWithOnlyAdditionalFee = ` <tr>
+                                                            <td>
+                                                                <p class="top-title">{0}</p>
+                                                            </td>
+                                                            <td>{1}</td>
+                                                        </tr>
+                                                        <tr class="small-line">
+                                                            <td>
+                                                                số lượng
+                                                            </td>
+                                                            <td>{3}</td>
+                                                        </tr>
+                                                        <tr class="small-line">
+                                                            <td>
+                                                                phụ phí
+                                                            </td>
+                                                            <td>{2}</td>
+                                                        </tr> <tr class="small-line">
+                                                            <td>
+                                                                <strong>***</strong>
+                                                            </td>
+                                                        </tr>`;
+
+            var productTemplateWithOnlyDiscount = ` <tr>
+                                                            <td>
+                                                                <p class="top-title">{0}</p>
+                                                            </td>
+                                                            <td>{1}</td>
+                                                        </tr>
+                                                        <tr class="small-line">
+                                                            <td>
+                                                                số lượng
+                                                            </td>
+                                                            <td>{3}</td>
+                                                        </tr>
+                                                        <tr class="small-line">
+                                                            <td>
+                                                                giảm giá
+                                                            </td>
+                                                            <td>{2}</td>
+                                                        </tr> <tr class="small-line">
+                                                            <td>
+                                                                <strong>***</strong>
+                                                            </td>
+                                                        </tr>`;
+
+
+            var productTemplateWithAdditionalFeeDiscount = ` <tr>
+                                                                <td>
+                                                                    <p class="top-title">{0}</p>
+                                                                </td>
+                                                                <td>{1}</td>
+                                                            </tr>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    số lượng
+                                                                </td>
+                                                                <td>{4}</td>
+                                                            </tr>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    giảm giá
+                                                                </td>
+                                                                <td>{2}</td>
+                                                            </tr>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    phụ phí
+                                                                </td>
+                                                                <td>{3}</td>
+                                                            </tr> <tr class="small-line">
+                                                                <td>
+                                                                    <strong>***</strong>
+                                                                </td>
+                                                           </tr>`;
+
+
+
+            var saleTotal = 0;
+            var saleItemContainer = "";
+
+            data.saleItems.forEach(product => {
+
+                var discount = +product.discount;
+
+                if (data.isMemberDiscountApply) {
+                    discount += (((product.price) / 100) * data.memberDiscount);
+                }
+
+                if (discount > 0) {
+                    if (product.additionalFee > 0) {
+                        saleItemContainer += productTemplateWithAdditionalFeeDiscount.format(product.productName, VNCurrencyFormat(product.price), VNCurrencyFormat(discount), VNCurrencyFormat(product.additionalFee), product.quantity);
+                    }
+                    else {
+                        saleItemContainer += productTemplateWithOnlyDiscount.format(product.productName, VNCurrencyFormat(product.price), VNCurrencyFormat(discount), product.quantity);
+                    }
+                }
+                else {
+                    if (product.additionalFee > 0) {
+                        saleItemContainer += productTemplateWithOnlyAdditionalFee.format(product.productName, VNCurrencyFormat(product.price), VNCurrencyFormat(product.additionalFee), product.quantity);
+                    }
+                    else {
+                        saleItemContainer += productTemplate.format(product.productName, VNCurrencyFormat(product.price), product.quantity);
+                    }
+                }
+
+                saleTotal += (product.price * product.quantity + product.additionalFee);
+            });
+
+            var beforeVAT = data.vatIncluded ? (((data.totalAmount) / 1.1)) : data.totalAmount;
+
+            var discountTotal = saleTotal - beforeVAT;
+
+            template = template.replace("{{SaleItems}}", saleItemContainer);
+
+            template = template.replace("{{SaleTotal}}", VNCurrencyFormat(saleTotal));
+            template = template.replace("{{TotalAmount}}", VNCurrencyFormat(data.totalAmount));
+            template = template.replace("{{TotalPaidAmount}}", VNCurrencyFormat(data.totalPaidAmount));
+            template = template.replace("{{TotalBalance}}", VNCurrencyFormat(data.totalBalance));
+
+            var vatTemplate = ` <strong class="recipe-vat">Trước thuế: {0}</strong>`;
+            template = template.replace("{{VATIncluded}}", data.vatIncluded ? vatTemplate.format(VNCurrencyFormat(beforeVAT)) : "");
+
+            var customInfoTemplate = ` <div class="recipe-total">
+                                        <strong>KH: {{CustomerName}}</strong>
+                                        <table>
+                                            <tbody>
+                                                {{MemberDiscount}}
+                                                <tr class="small-line">
+                                                    <td>Điểm sử dụng</td>
+                                                    <td>{{ScoreUsed}}</td>
+                                                </tr>
+                                                <tr class="small-line">
+                                                    <td>Điểm được cộng</td>
+                                                    <td>{{GainedScore}}</td>
+                                                </tr>
+                                                <tr class="small-line">
+                                                    <td>Điểm còn lại</td>
+                                                    <td>{{TotalScore}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>`;
+
+            if (!data.customerId || data.customerId == "KHACH_LE") {
+                template = template.replace("{{CustomerInfo}}", "");
+            }
+            else {
+                template = template.replace("{{CustomerInfo}}", customInfoTemplate);
+
+                template = template.replace("{{ScoreUsed}}", data.scoreUsed);
+                template = template.replace("{{GainedScore}}", data.gainedScore);
+                template = template.replace("{{TotalScore}}", data.totalScore);
+                template = template.replace("{{CustomerName}}", !data.customerName ? "Khách lẻ" : data.customerName);
+            }
+
+            if (discountTotal > 0) {
+                var discountTeemplate = `  <tr class="small-line">
+                                                <td>Giảm giá</td>
+                                                <td>{0}</td>
+                                            </tr>`;
+
+                template = template.replace("{{OrderDiscount}}", discountTeemplate.format(VNCurrencyFormat(discountTotal)));
+            }
+            else
+                template = template.replace("{{OrderDiscount}}", "");
+
+            if (data.isMemberDiscountApply) {
+
+                var memberDiscountTemplate = ` <tr class="small-line">
+                                                    <td>Giảm giá TV</td>
+                                                    <td>{0}</td>
+                                                </tr>`;
+
+                template = template.replace("{{MemberDiscount}}", memberDiscountTemplate.format(data.MemberDiscount));
+            }
+            else
+                template = template.replace("{{MemberDiscount}}", "");
+
+            var purchaseTemplate = `  <table>
+                                        <tbody>
+                                            {{Purchases}}
+                                        </tbody>        
+                                    </table>     
+                                     <div class="dash-line"></div>
+                                    `;
+
+            var purchaseItemTemplate = `<tr class="small-line">
+                                                <td>{0}</td>
+                                                <td>{1}</td>
+                                            </tr>
+                                           `;
+
+            var purchase = "";
+
+            if (data.purchaseItems != null && data.purchaseItems.length > 0) {
+
+                data.purchaseItems.forEach(item => {
+                    purchase += purchaseItemTemplate.format(getPurchaseMethod(item.method), VNCurrencyFormat(item.amount));
+                });
+
+                purchaseTemplate = purchaseTemplate.replace("{{Purchases}}", purchase);
+
+
+                template = template.replace("{{PurchaseItems}}", purchaseTemplate);
+            }
+            else {
+                template = template.replace("{{PurchaseItems}}", "");
+            }
+
+            jQuery('.container-receipt').children().remove();
+            jQuery('.container-receipt').append(template);
+
+            setTimeout(() => {
+                window.print();
+            }, 3000);
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

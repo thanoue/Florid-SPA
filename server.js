@@ -12,9 +12,8 @@ const app = express();
 const env = process.env.NODE_ENV || 'development';
 
 var corsOptions = {
-    origin: [env === 'development' ? "http://localhost:4200" : "https://floridstorage.web.app", "https://floridstorage.firebaseapp.com"]
+    origin: [env === 'development' ? "http://192.168.1.21:4200" : ""]
 };
-
 
 app.use(cors(corsOptions));
 
@@ -24,7 +23,6 @@ app.use(fileUpload({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/file', express.static('uploads'));
 app.use('/user/avt', express.static('uploads/userAvt'));
@@ -42,7 +40,9 @@ createDir('./uploads/userAvt');
 createDir('./uploads/productImg');
 createDir('./uploads/resultImg');
 
-// // Catch all other routes and return the index file
+app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
@@ -68,6 +68,7 @@ serverApp.listen(port, () => {
 });
 
 const io = require('socket.io')(serverApp);
+
 io.on('connection', (socket) => {
 
     socket.emit('connected');
@@ -82,14 +83,16 @@ io.on('connection', (socket) => {
         const keys = Object.keys(clients.connected);
 
         let isHasPrinter = false;
+
         keys.forEach(key => {
 
             let itemSocket = clients.connected[key];
 
-            if (itemSocket.isPrinter) {
+            if (itemSocket.isPrinter && itemSocket.userId == 0) {
                 itemSocket.emit('doPrintJob', { printJob: data.printJob });
                 isHasPrinter = true;
             }
+
         });
 
         if (!isHasPrinter) {
@@ -103,20 +106,6 @@ io.on('connection', (socket) => {
         socket.userId = data.userId;
         socket.isPrinter = data.isPrinter;
 
-        var clients = io.sockets.clients();
-
-        const keys = Object.keys(clients.connected)
-
-        keys.forEach(key => {
-
-            let itemSocket = clients.connected[key];
-
-            if (itemSocket.userId && itemSocket.userId == data.userId) {
-                if (key != socket.id) {
-                    itemSocket.emit('forceLogout', { message: 'someone has already logged in with your account!' });
-                }
-            }
-        });
     });
 
 });
