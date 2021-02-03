@@ -40,20 +40,4 @@ export class RealtimeService {
     disConnectSocket();
   }
 
-  forceLogoutRegister(callback: (message: string) => void) {
-
-    forceLogoutRegister(callback, () => {
-
-      let userId = LocalService.getUserId();
-      let isPrinter = LocalService.isPrinter();
-
-      if (userId) {
-        this.connect(+userId, isPrinter, () => {
-          this.forceLogoutRegister(callback);
-        });
-      }
-
-    });
-  }
-
 }

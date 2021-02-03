@@ -367,12 +367,12 @@ export class AddOrderComponent extends BaseComponent {
 
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
-      doneTime: new Date(this.order.DoneTime).toLocaleString('en-US', { hour12: true }),
+      doneTime: new Date(this.order.DoneTime).toLocaleString('vi-VN', { hour12: false }),
       Id: this.order.OrderId,
       Active: true,
       IsDeleted: false,
       saleItems: products,
-      createdDate: this.order.CreatedDate.toLocaleString('en-US', { hour12: true }),
+      createdDate: this.order.CreatedDate.toLocaleString('vi-VN', { hour12: false }),
       orderId: this.order.OrderId,
       summary: tempSummary,
       totalAmount: this.order.TotalAmount,

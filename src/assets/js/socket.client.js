@@ -16,19 +16,6 @@ function connectSocket(host, connectedCallback) {
 
 }
 
-function forceLogoutRegister(callback, notConnectedCallback) {
-
-    if (socket) {
-        socket.on('forceLogout', (data) => {
-            console.log('force logout ne');
-            callback(data.message);
-        });
-    }
-    else {
-        if (notConnectedCallback != undefined) notConnectedCallback();
-    }
-}
-
 function disConnectSocket() {
 
     if (socket) {
