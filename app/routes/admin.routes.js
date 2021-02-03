@@ -31,6 +31,7 @@ module.exports = function (app) {
     const orderDetailPrefix = "/api/orderDetail/";
     const orderDetailSeenerPrefix = "/api/orderDetailSeener/";
     const shippingSessionPrefix = "/api/shippingSession/";
+    const makingPrefix = "/api/making/";
     const purchasePrefix = '/api/purchase/';
 
     app.use(function (req, res, next) {
@@ -169,18 +170,10 @@ module.exports = function (app) {
     );
 
     //order detail
-    app.get(`${orderDetailPrefix}getMaxMakingSortOrder`,
-        [authJwt.verifyToken], orderDetailController.getMaxMakingSortOrder);
-    app.get(`${orderDetailPrefix}getMaxShippingSortOrder`,
-        [authJwt.verifyToken], orderDetailController.getMaxShippingSortOrder);
     app.post(`${orderDetailPrefix}updateFields`,
         [authJwt.verifyToken], orderDetailController.updateFields);
     app.post(`${orderDetailPrefix}getByState`,
         [authJwt.verifyToken], orderDetailController.getByState);
-    app.post(`${orderDetailPrefix}updateShippingSortOrder`,
-        [authJwt.verifyToken], orderDetailController.updateShippingSortOrder);
-    app.post(`${orderDetailPrefix}updateMakingSortOrder`,
-        [authJwt.verifyToken], orderDetailController.updateMakingSortOrder);
     app.post(`${orderDetailPrefix}getDetailByStateAndFloristId`,
         [authJwt.verifyToken], orderDetailController.getDetailByStateAndFloristId);
     app.post(`${orderDetailPrefix}getDetailByStates`,
@@ -191,8 +184,6 @@ module.exports = function (app) {
         [authJwt.verifyToken], orderDetailController.getOrderDetailShipperAndFlorist);
     app.post(`${orderDetailPrefix}resultConfirm`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.resultConfirm)
-    app.post(`${orderDetailPrefix}shippingConfirm`,
-        [authJwt.verifyToken, authJwt.isShipper], orderDetailController.shippingConfirm)
     app.post(`${orderDetailPrefix}addOrderDetails`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.addOrderDetails)
     app.post(`${orderDetailPrefix}deleteOrderDetailByOrderId`,
@@ -215,13 +206,28 @@ module.exports = function (app) {
         [authJwt.verifyToken], shippingSessionController.assignOrderDetails)
     app.post(`${shippingSessionPrefix}getShippingOrderDetails`,
         [authJwt.verifyToken], shippingSessionController.getShippingOrderDetails)
+    app.post(`${shippingSessionPrefix}updateFields`,
+        [authJwt.verifyToken], shippingSessionController.updateShippingFields)
+    app.post(`${shippingSessionPrefix}shippingConfirm`,
+        [authJwt.verifyToken], shippingSessionController.shippingConfirm)
 
+    app.post(`${makingPrefix}getMakingOrderDetails`,
+        [authJwt.verifyToken], shippingSessionController.getMakingOrderDetails)
+    app.post(`${makingPrefix}assignSingleMaking`,
+        [authJwt.verifyToken], shippingSessionController.assignSingleMaking)
+    app.post(`${makingPrefix}updateFields`,
+        [authJwt.verifyToken], shippingSessionController.updateMakingFields)
+    app.post(`${makingPrefix}updateFields`,
+        [authJwt.verifyToken], shippingSessionController.updateMakingFields)
+    app.post(`${makingPrefix}assignFloristForOrderDetails`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], shippingSessionController.assignFloristForOrderDetails);
 
     //od seener
     app.post(`${orderDetailSeenerPrefix}getODSeeners`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailSeenerController.getODSeeners);
     app.post(`${orderDetailSeenerPrefix}updateDetailSeen`,
         [authJwt.verifyToken], orderDetailSeenerController.updateDetailSeen);
+
 
     //address
     app.post(`${addressPrefix}addBulkDistrict`,

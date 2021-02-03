@@ -47,12 +47,6 @@ module.exports = (sequelize, Sequelize) => {
         State: {
             type: Sequelize.STRING
         },
-        MakingSortOrder: {
-            type: Sequelize.INTEGER
-        },
-        ShippingSortOrder: {
-            type: Sequelize.INTEGER
-        },
         Quantity: {
             type: Sequelize.INTEGER
         },
@@ -68,32 +62,10 @@ module.exports = (sequelize, Sequelize) => {
         HardcodeProductImageName: {
             type: Sequelize.STRING
         },
-        FloristId: {
-            type: Sequelize.INTEGER,
-            allowNull: true
-        },
         MakingRequestTime: {
             type: Sequelize.BIGINT(11)
         },
-        MakingStartTime: {
-            type: Sequelize.BIGINT(11)
-        },
-        MakingCompletedTime: {
-            type: Sequelize.BIGINT(11)
-        },
-        MakingNote: {
-            type: Sequelize.STRING
-        },
-        ResultImageUrl: {
-            type: Sequelize.STRING
-        },
-        DeliveryImageUrl: {
-            type: Sequelize.STRING
-        },
-        DeliveryCompletedTime: {
-            type: Sequelize.BIGINT(11)
-        },
-        Index: {
+        Index: {    
             type: Sequelize.INTEGER
         },
         createdAt: {
@@ -110,12 +82,11 @@ module.exports = (sequelize, Sequelize) => {
         PercentDiscount: {
             type: Sequelize.BIGINT
         },
-        ShippingNote: {
+        MakingNote: {
             type: Sequelize.STRING
         },
-        FixingFloristId: {
-            type: Sequelize.INTEGER,
-            allowNull: true
+        ShippingNote: {
+            type: Sequelize.STRING
         },
         NoteImages: {
             type: Sequelize.STRING,

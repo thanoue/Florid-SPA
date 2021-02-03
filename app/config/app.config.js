@@ -12,6 +12,8 @@ exports.ODStatuses = {
     Making: 'Making',
     Fixing: 'Fixing',
     FixingRequest: 'FixingRequest',
+    FixerAssigned: 'FixerAssigned',
+    FloristAssigned: 'FloristAssigned',
     Comfirming: 'Comfirming',
     DeliveryWaiting: 'DeliveryWaiting',
     DeliverAssinged: 'DeliverAssinged',
@@ -28,6 +30,11 @@ exports.MemberShipType = {
     Member: 'Member',
     Vip: 'Vip',
     VVip: 'VVip'
+}
+
+exports.MakingTypes = {
+    Making: 'Making',
+    Fixing: 'Fixing'
 }
 
 exports.Roles = {

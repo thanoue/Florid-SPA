@@ -1,6 +1,8 @@
-const { user } = require("../models");
 const db = require("../models");
 const Order = db.order;
+const User = db.user;
+const Shipping = db.shipping;
+const Making = db.making;
 const OrderDetail = db.orderDetail;
 const Customer = db.customer;
 const Op = db.Sequelize.Op;
@@ -691,7 +693,25 @@ exports.searchOrders = (req, res) => {
                 { model: Purchase },
                 {
                     model: OrderDetail,
-                    where: orderDetailCond
+                    where: orderDetailCond,
+                    include: [
+                        {
+                            model: User,
+                            as: 'shippers'
+                        },
+                        {
+                            model: Shipping,
+                            as: 'orderDedailShippings'
+                        },
+                        {
+                            model: User,
+                            as: 'florists'
+                        },
+                        {
+                            model: Making,
+                            as: 'orderDetailMakings'
+                        }
+                    ]
                 },
                 {
                     model: Customer,

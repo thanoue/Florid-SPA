@@ -3,8 +3,14 @@ const db = require("../models");
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
 const Shipping = db.shipping;
-const ODStatuses = require('../config/app.config').ODStatuses;
+const appConstant = require('../config/app.config');
+const Making = db.making;
+const ODStatuses = appConstant.ODStatuses;
+const shippingImgFolderPath = appConstant.fileFolderPath.shipppingImg;
+const commonService = require("../services/common.service");
 const logger = require('../config/logger');
+const sequelize = db.sequelize;
+const MakingTypes = appConstant.MakingTypes;
 
 exports.assignSingleOD = (req, res) => {
 
@@ -17,19 +23,131 @@ exports.assignSingleOD = (req, res) => {
         AssignTime: assignTime,
         OrderDetailId: orderDetailId
     }).then(shippingSession => {
-        if (shippingSession) {
 
-            OrderDetail.update({
-                State: ODStatuses.DeliverAssinged
-            }, {
-                where: {
-                    Id: orderDetailId
-                }
-            }).then(data => {
-                res.send(shippingSession);
-            }).catch(err => logger.error(err, res));
+        OrderDetail.update({
+            State: ODStatuses.DeliverAssinged
+        }, {
+            where: {
+                Id: orderDetailId
+            }
+        }).then(data => {
+            res.send(shippingSession);
+        }).catch(err => logger.error(err, res));
 
+    }).catch(err => logger.error(err, res));
+}
+
+exports.assignSingleMaking = (req, res) => {
+
+    let orderDetailId = req.body.orderDetailId;
+    let floristId = req.body.floristId;
+    let assignTime = req.body.assignTime;
+    let makingType = req.body.makingType;
+
+    Making.create({
+        FloristId: floristId,
+        AssignTime: assignTime,
+        OrderDetailId: orderDetailId,
+        MakingType: makingType
+    }).then(making => {
+
+        OrderDetail.update({
+            State: makingType == MakingTypes.Fixing ? ODStatuses.FixerAssigned : ODStatuses.FloristAssigned
+        }, {
+            where: {
+                Id: orderDetailId
+            }
+        }).then(data => {
+            res.send(making);
+        }).catch(err => logger.error(err, res));
+
+    }).catch(err => logger.error(err, res));
+}
+
+exports.shippingConfirm = (req, res) => {
+
+    let shippingImgName = "";
+    let shipping = req.body.shipping;
+
+    if (req.files) {
+
+        shippingImgName = commonService.getNewFileName(req.files.shippingImg);
+
+        req.files.shippingImg.mv(shippingImgFolderPath + shippingImgName);
+    }
+
+    let updateObj = {
+        DeliveryImageUrl: shippingImgName,
+        CompleteTime: req.body.deliveryCompletedTime,
+        Note: req.body.note
+    };
+
+    Shipping.update(updateObj, {
+        where: {
+            Id: shipping.Id
         }
+    }).then(() => {
+
+        OrderDetail.update({
+            State: ODStatuses.Deliveried
+        }, {
+            where: {
+                Id: shipping.OrderDetailId
+            }
+        }).then(data => {
+
+            res.send(updateObj);
+
+        }).catch(err => logger.error(err, res));
+
+    }).catch(err => logger.error(err, res));
+
+}
+
+exports.updateShippingFields = (req, res) => {
+
+    Shipping.update(req.body.obj, {
+        where: {
+            Id: req.body.id
+        }
+    }).then(data => {
+        res.send({ message: data });
+    }).catch(err => logger.error(err, res));
+}
+
+exports.updateMakingFields = (req, res) => {
+
+    Making.update(req.body.obj, {
+        where: {
+            Id: req.body.id
+        }
+    }).then(data => {
+        res.send({ message: data });
+    }).catch(err => logger.error(err, res));
+}
+
+exports.getMakingOrderDetails = (req, res) => {
+
+    let floristId = req.body.floristId;
+
+    OrderDetail.findAll({
+        where: {
+            State: {
+                [Op.in]: [ODStatuses.Making, ODStatuses.FixerAssigned, ODStatuses.Fixing]
+            }
+        },
+        order: ['MakingRequestTime', 'ASC'],
+        include: [
+            {
+                model: Making,
+                as: 'makings',
+                where: {
+                    FloristId: floristId
+                },
+            }
+        ]
+    }).then(orderDetails => {
+        res.send(orderDetails)
     }).catch(err => logger.error(err, res));
 }
 
@@ -37,23 +155,24 @@ exports.getShippingOrderDetails = (req, res) => {
 
     let shipperId = req.body.shipperId;
 
-    Shipping.findAll({
+    OrderDetail.findAll({
         where: {
-            ShipperId: shipperId,
+            State: {
+                [Op.in]: [ODStatuses.DeliverAssinged, ODStatuses.OnTheWay]
+            }
         },
+        order: ['ReceivingTime', 'ASC'],
         include: [
             {
-                model: OrderDetail,
-                as: 'orderdetail',
+                model: Shipping,
+                as: 'shippings',
                 where: {
-                    State: {
-                        [Op.in]: [ODStatuses.DeliverAssinged, ODStatuses.OnTheWay]
-                    }
-                }
+                    ShipperId: shipperId
+                },
             }
         ]
-    }).then(sessions => {
-        res.send(sessions)
+    }).then(orderDetails => {
+        res.send(orderDetails)
     }).catch(err => logger.error(err, res));
 }
 
@@ -93,5 +212,27 @@ exports.assignOrderDetails = (req, res) => {
             });
 
         }
+    }).catch(err => logger.error(err, res));
+}
+
+exports.assignFloristForOrderDetails = (req, res) => {
+
+    let makings = req.body.makings;
+
+    Making.bulkCreate(makings, {
+        returning: true
+    }).then(data => {
+
+        let command = '';
+
+        makings.forEach(mak => {
+            command += 'UPDATE  `orderdetails` set `State` = \'' +
+                + mak.MakingType == MakingTypes.Fixing ? ODStatuses.FixerAssigned : ODStatuses.FloristAssigned + '\'  WHERE  `Id`= ' + mak.OrderDetailId + ';';
+        });
+
+        sequelize.query(command).then(data => {
+            res.send({ message: 'updated some data' });
+        }).catch(err => logger.error(err, res));
+
     }).catch(err => logger.error(err, res));
 }

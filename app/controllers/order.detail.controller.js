@@ -5,6 +5,7 @@ const Op = db.Sequelize.Op;
 const Shipping = db.shipping;
 const sequelize = db.sequelize;
 const Sequelize = sequelize;
+const Making = db.making;
 const User = db.user;
 const ODStatuses = require('../config/app.config').ODStatuses;
 const commonService = require("../services/common.service");
@@ -26,49 +27,9 @@ exports.resultConfirm = (req, res) => {
 
         req.files.resultImg.mv(resultImgFolderPath + resultImgName);
     }
-
-    OrderDetail.findAll({
-        attributes: [[Sequelize.fn('max', Sequelize.col('ShippingSortOrder')), 'maxShippingSortOrder']],
-        raw: true,
-    }).then(value => {
-
-        let nextShippingOrder = value[0].maxShippingSortOrder + 1;
-
-        let updateObj = {
-            State: ODStatuses.DeliveryWaiting,
-            ShippingSortOrder: nextShippingOrder,
-            ResultImageUrl: resultImgName
-        };
-
-        OrderDetail.update(updateObj, {
-            where: {
-                Id: req.body.orderDetailId
-            }
-        }).then(data => {
-            res.send(updateObj);
-        }).catch(err => logger.error(err, res));
-
-    }).catch(err => logger.error(err, res));
-}
-
-exports.shippingConfirm = (req, res) => {
-
-    let shippingImgName = "";
-
-    if (req.files) {
-
-        shippingImgName = commonService.getNewFileName(req.files.shippingImg);
-
-        req.files.shippingImg.mv(shippingImgFolderPath + shippingImgName);
-    }
-
     let updateObj = {
-        State: ODStatuses.Deliveried,
-        ShippingSortOrder: 0,
-        MakingSortOrder: 0,
-        DeliveryImageUrl: shippingImgName,
-        DeliveryCompletedTime: req.body.deliveryCompletedTime,
-        ShippingNote: req.body.note
+        State: ODStatuses.DeliveryWaiting,
+        ResultImageUrl: resultImgName
     };
 
     OrderDetail.update(updateObj, {
@@ -80,6 +41,8 @@ exports.shippingConfirm = (req, res) => {
     }).catch(err => logger.error(err, res));
 
 }
+
+
 
 exports.deleteOrderDetailByOrderId = (req, res) => {
 
@@ -281,8 +244,6 @@ exports.addOrderDetails = (req, res) => {
                 ReceivingAddress: rawOrderDetail.DeliveryInfo ? rawOrderDetail.DeliveryInfo.ReceiverDetail.Address : '',
                 Description: rawOrderDetail.Description,
                 State: rawOrderDetail.State,
-                MakingSortOrder: 0,
-                ShippingSortOrder: 0,
                 IsVATIncluded: rawOrderDetail.IsVATIncluded,
                 PurposeOf: rawOrderDetail.PurposeOf,
                 IsHardcodeProduct: rawOrderDetail.IsHardcodeProduct,
@@ -423,23 +384,6 @@ exports.updateFields = (req, res) => {
     }).catch(err => logger.error(err, res));
 }
 
-exports.getMaxMakingSortOrder = (req, res) => {
-    OrderDetail.findAll({
-        attributes: [[Sequelize.fn('max', Sequelize.col('MakingSortOrder')), 'maxMakingSortOrder']],
-        raw: true,
-    }).then(value => {
-        res.send(value[0]);
-    }).catch(err => logger.error(err, res));
-};
-
-exports.getMaxShippingSortOrder = (req, res) => {
-    OrderDetail.findAll({
-        attributes: [[Sequelize.fn('max', Sequelize.col('ShippingSortOrder')), 'maxShippingSortOrder']],
-        raw: true,
-    }).then(value => {
-        res.send(value[0]);
-    }).catch(err => logger.error(err, res));
-};
 
 exports.getByState = (req, res) => {
     let state = req.body.state
@@ -468,19 +412,37 @@ exports.getDetailByStates = (req, res) => {
 
     let states = req.body.states
 
+    let orderColumn = req.body.orderColumn;
+    let direction = req.body.direction;
+
     OrderDetail.findAll({
         where: {
             State: {
                 [Op.in]: states
             }
-        }
+        },
+        order: [
+            [orderColumn, direction],
+        ],
+        include: [
+            {
+                model: Making,
+                as: 'makings',
+            },
+            {
+                model: Shipping,
+                as: 'shippings',
+            }
+        ]
     }).then(data => {
         res.send({ orderDetails: data });
     }).catch(err => logger.error(err, res));
 };
 
 exports.getDetailByStatesAndFlorist = (req, res) => {
+
     let states = req.body.states
+
     OrderDetail.findAll({
         where: {
             [Op.and]: [{
@@ -492,69 +454,13 @@ exports.getDetailByStatesAndFlorist = (req, res) => {
                 State: {
                     [Op.in]: states
                 }
-            }]
-        }
+            },]
+        },
+        order: [
+            ['MakingRequestTime', 'ASC'],
+        ]
     }).then(data => {
         res.send({ orderDetails: data });
     }).catch(err => logger.error(err, res));
 };
 
-exports.updateMakingSortOrder = (req, res) => {
-
-    try {
-        var details = req.body.details;
-
-        if (details == undefined || details.length <= 0) {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving information."
-            });
-            return;
-        }
-
-        details.forEach(detail => {
-            OrderDetail.update({
-                MakingSortOrder: detail.MarkingSortOrder
-            }, {
-                where: {
-                    Id: detail.Id
-                }
-            })
-        });
-
-        res.send({ message: 'Details Order is Updated' });
-    }
-    catch (err) {
-        logger.error(err, res);
-    }
-};
-
-exports.updateShippingSortOrder = (req, res) => {
-
-    try {
-        var details = req.body.details;
-
-        if (details == undefined || details.length <= 0) {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving information."
-            });
-            return;
-        }
-
-        details.forEach(detail => {
-            OrderDetail.update({
-                ShippingSortOrder: detail.ShippingSortOrder
-            }, {
-                where: {
-                    Id: detail.Id
-                }
-            })
-        });
-
-        res.send({ message: 'Details Order is Updated' });
-    }
-    catch (err) {
-        logger.error(err, res);
-    }
-};

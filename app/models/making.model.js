@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
-    const Shipping = sequelize.define('shippings', {
+    const Making = sequelize.define('makings', {
         Id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        ShipperId: {
+        FloristId: {
             type: Sequelize.INTEGER,
             allowNull: false
         },
@@ -22,10 +22,10 @@ module.exports = (sequelize, Sequelize) => {
         CompleteTime: {
             type: Sequelize.BIGINT(11)
         },
-        Note: {
+        ResultImageUrl: {
             type: Sequelize.STRING
         },
-        DeliveryImageUrl: {
+        MakingType: {
             type: Sequelize.STRING
         },
         createdAt: {
@@ -38,5 +38,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    return Shipping;
+    return Making;
 }
