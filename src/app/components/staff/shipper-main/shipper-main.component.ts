@@ -106,56 +106,15 @@ export class ShipperMainComponent extends BaseComponent {
 
     getShippingNoteDialog(btnTitl, (note) => {
 
-      this.orderService.getById(orderDetail.OrderId)
-        .then(order => {
-
-          let balance = order.TotalAmount - order.TotalPaidAmount;
-          if (balance > 0) {
-
-            getNumberValidateInput((res, validateCallback) => {
-
-              if (res > balance) {
-                validateCallback(false, 'Thanh toán vượt quá thành tiền!');
-                return;
-              } else if (res <= 0) {
-                validateCallback(false, 'Thanh toán phải lớn hơn 0!');
-                return;
-              }
-
-              validateCallback(true, '');
-
-              this.orderService.updateFields(orderDetail.OrderId, {
-                TotalPaidAmount: order.TotalPaidAmount + res
-              })
-                .then(() => {
-                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-                    DeliveryCompletedTime: (new Date()).getTime(),
-                    State: destState,
-                    MakingSortOrder: 0,
-                    ShippingSortOrder: 0,
-                    ShippingNote: note
-                  }).then(data => {
-                    this.loadShippingDetails();
-                  });
-                });
-
-            }, 'Số tiền thanh toán...', balance);
-
-          } else {
-
-            this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-              DeliveryCompletedTime: (new Date()).getTime(),
-              State: destState,
-              MakingSortOrder: 0,
-              ShippingSortOrder: 0,
-              ShippingNote: note
-            }).then(data => {
-              this.loadShippingDetails();
-            });
-
-          }
-
-        });
+      this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+        DeliveryCompletedTime: (new Date()).getTime(),
+        State: destState,
+        MakingSortOrder: 0,
+        ShippingSortOrder: 0,
+        ShippingNote: note
+      }).then(data => {
+        this.loadShippingDetails();
+      });
 
     });
 
