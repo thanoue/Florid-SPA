@@ -280,10 +280,6 @@
         <div class="recipe-detail">
             <table>
                 <tbody>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                    </tr>
                     {{SaleItems}}
                 </tbody>
             </table>
@@ -332,74 +328,77 @@
             template = template.replace("{{OrderId}}", data.orderId);
             template = template.replace("{{DoneTime}}", data.doneTime);
 
-            var productTemplate = `<tr>
-                                        <td>
-                                            <p class="top-title">{0}</p>
-                                        </td>
-                                        <td>{1}</td>
-                                    </tr>
-                                    <tr class="small-line">
-                                        <td>
-                                            quantity
-                                        </td>
-                                        <td>{2}</td>
-                                    </tr>
-                                     <tr class="small-line">
-                                        <td>
-                                            <strong>***</strong>
-                                        </td>
-                                    </tr>`;
+            var productTemplate = `     <strong>{0}</strong>
+                                        <table>
+                                            <tbody>
+                                                <tr class="small-line">
+                                                    <td>
+                                                        price
+                                                    </td>
+                                                    <td>{1}</td>
+                                                </tr>
+                                                <tr class="small-line">
+                                                    <td>
+                                                        quantity
+                                                    </td>
+                                                    <td>{2}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    `;
 
-            var productTemplateWithOnlyAdditionalFee = ` <tr>
-                                                            <td>
-                                                                <p class="top-title">{0}</p>
-                                                            </td>
-                                                            <td>{1}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
-                                                            <td>
-                                                                quantity
-                                                            </td>
-                                                            <td>{3}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
-                                                            <td>
-                                                                fee
-                                                            </td>
-                                                            <td>{2}</td>
-                                                        </tr> <tr class="small-line">
-                                                            <td>
-                                                                <strong>***</strong>
-                                                            </td>
-                                                        </tr>`;
+            var productTemplateWithOnlyAdditionalFee = ` 
+                                                    <strong>{0}</strong>
+                                                    <table>
+                                                        <tbody>
+                                                            
+                                                            </tr>    
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    price
+                                                                </td>
+                                                                <td>{1}</td>
+                                                            </tr>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    quantity
+                                                                </td>
+                                                                <td>{3}</td>
+                                                            </tr>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    fee
+                                                                </td>
+                                                                <td>{2}</td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>`;
 
-            var productTemplateWithOnlyDiscount = ` <tr>
-                                                            <td>
-                                                                <p class="top-title">{0}</p>
-                                                            </td>
-                                                            <td>{1}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
-                                                            <td>
-                                                                quantity
-                                                            </td>
+            var productTemplateWithOnlyDiscount = ` <strong>{0}</strong><table><tbody> 
+                                                    <tr class="small-line">
+                                                        <td>
+                                                            price
+                                                        </td>
+                                                        <td>{1}</td>
+                                                    </tr>
+                                                    <tr class="small-line">
+                                                        <td>
+                                                             quantity
+                                                         </td>
                                                             <td>{3}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
+                                                    </tr>
+                                                    <tr class="small-line">
                                                             <td>
                                                                 discount
                                                             </td>
                                                             <td>{2}</td>
-                                                        </tr> <tr class="small-line">
-                                                            <td>
-                                                                <strong>***</strong>
-                                                            </td>
-                                                        </tr>`;
+                                                    </tr></tbody></table>`;
 
 
-            var productTemplateWithAdditionalFeeDiscount = ` <tr>
+            var productTemplateWithAdditionalFeeDiscount = `<strong>{0}</strong><table><tbody>
+                                                            <tr class="small-line">
                                                                 <td>
-                                                                    <p class="top-title">{0}</p>
+                                                                    price
                                                                 </td>
                                                                 <td>{1}</td>
                                                             </tr>
@@ -420,11 +419,7 @@
                                                                     fee
                                                                 </td>
                                                                 <td>{3}</td>
-                                                            </tr> <tr class="small-line">
-                                                                <td>
-                                                                    <strong>***</strong>
-                                                                </td>
-                                                           </tr>`;
+                                                            </tr></tbody></table>`;
 
 
 
@@ -474,7 +469,7 @@
             template = template.replace("{{VATIncluded}}", data.vatIncluded ? vatTemplate.format(VNCurrencyFormat(beforeVAT)) : "");
 
             var customInfoTemplate = ` <div class="recipe-total">
-                                        <strong>Customer: {{CustomerName}}</strong>
+                                        <strong>Member: {{CustomerName}}</strong>
                                         <table>
                                             <tbody>
                                                 {{MemberDiscount}}
