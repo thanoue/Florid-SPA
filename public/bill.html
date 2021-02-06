@@ -35,7 +35,6 @@
             margin-bottom: 5px;
         }
 
-        .recipe-info,
         .recipe-detail,
         .recipe-total {
             margin-bottom: 5px;
@@ -46,7 +45,7 @@
         }
 
         .recipe-detail {
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         table {
@@ -78,7 +77,7 @@
         .recipe-detail table tr th {
             font-weight: 600;
             padding-bottom: 3px;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .recipe-detail table tr td:first-child,
@@ -203,18 +202,50 @@
         function getPurchaseMethod(method) {
             switch (method) {
                 case 'Cash':
-                    return 'Tiền mặt';
+                    return 'Cash';
                 case 'Banking':
-                    return 'Chuyển khoản';
+                    return 'Banking';
                 case 'Momo':
-                    return 'Ví Momo';
+                    return 'Momo';
                 default:
                     return '';
             }
         }
 
-
         connectSocket('');
+
+        function removeSign(str) {
+
+            let VietnameseSigns =
+                [
+                    "aAeEoOuUiIdD$yY",
+                    "áàạảãâấầậẩẫăắằặẳẵ",
+                    "ÁÀẠẢÃÂẤẦẬẨẪĂẮẰẶẲẴ",
+                    "éèẹẻẽêếềệểễ",
+                    "ÉÈẸẺẼÊẾỀỆỂỄ",
+                    "óòọỏõôốồộổỗơớờợởỡ",
+                    "ÓÒỌỎÕÔỐỒỘỔỖƠỚỜỢỞỠ",
+                    "úùụủũưứừựửữ",
+                    "ÚÙỤỦŨƯỨỪỰỬỮ",
+                    "íìịỉĩ",
+                    "ÍÌỊỈĨ",
+                    "đ",
+                    "Đ",
+                    "₫",
+                    "ýỳỵỷỹ",
+                    "ÝỲỴỶỸ"
+                ];
+
+            if (str == undefined || str.length <= 0)
+                return "";
+
+            for (let i = 1; i < VietnameseSigns.length; i++) {
+                for (let j = 0; j < VietnameseSigns[i].length; j++)
+                    str = str.replace(VietnameseSigns[i][j], VietnameseSigns[0][i - 1]);
+            }
+
+            return str;
+        }
 
         function doPrintJob(data) {
 
@@ -227,33 +258,28 @@
                 alt="Red dot" />
         </div>
         <div class="shop-info">
-            <p> 783 Phan Văn Trị, P7,
-                Quận Gò Vấp, Thành phố Hồ Chí Minh, 70000
+            <p>783 Phan Van Tri, Ward 7,
+                Go Vap District, Ho Chi Minh City, 70000
             </p>
-            <p class="small-line">SĐT: 0931281122</p>
+            <p class="small-line">Mobile: 0931281122</p>
             <p class="small-line">Facebook: fb.com/floridshop</p>
             <p class="small-line">Website: florid.com.vn</p>
         </div>
-        <h1>BIÊN LAI</h1>
+        <h1>RECEIPT</h1>
         <div class="recipe-info">
+            <strong>{{DoneTime}}</strong>
             <table>
                 <tbody>
                     <tr>
-                        <td>Mã hóa đơn:</td>
+                        <td>OrderID:</td>
                         <td>{{OrderId}}</td>
                     </tr>
-
                 </tbody>
             </table>
-            <strong>{{DoneTime}}</strong>
         </div>
         <div class="recipe-detail">
             <table>
                 <tbody>
-                    <tr>
-                        <th>Mặt hàng</th>
-                        <th>Đơn giá</th>
-                    </tr>
                     {{SaleItems}}
                 </tbody>
             </table>
@@ -262,20 +288,20 @@
         <table>
             <tbody>
                 <tr class="small-line">
-                    <td>Tạm tính</td>
+                    <td>Sum</td>
                     <td>{{SaleTotal}}</td>
                 </tr>
                 {{OrderDiscount}}
                 <tr class="small-line">
-                    <td>Thành tiền</td>
+                    <td>Amount total</td>
                     <td>{{TotalAmount}}</td>
                 </tr>
                 <tr class="small-line">
-                    <td>Đã TT</td>
+                    <td>Paid amount</td>
                     <td>{{TotalPaidAmount}}</td>
                 </tr>
                 <tr class="small-line">
-                    <td>Còn lại</td>
+                    <td>Balance</td>
                     <td>{{TotalBalance}} </td>
                 </tr>
             </tbody>
@@ -295,106 +321,105 @@
                 alt="Red dot" />
         </div>
         <div class="recipe-thank">
-            <p style="font-size: 11px;">Chúc bạn một ngày tươi như hoa!</p>
+            <p style="font-size: 11px;">Have a Florid day!</p>
         </div>
     </div>`;
 
             template = template.replace("{{OrderId}}", data.orderId);
             template = template.replace("{{DoneTime}}", data.doneTime);
 
-            var productTemplate = `<tr>
-                                        <td>
-                                            <p class="top-title">{0}</p>
-                                        </td>
-                                        <td>{1}</td>
-                                    </tr>
-                                    <tr class="small-line">
-                                        <td>
-                                            số lượng
-                                        </td>
-                                        <td>{2}</td>
-                                    </tr>
-                                     <tr class="small-line">
-                                        <td>
-                                            <strong>***</strong>
-                                        </td>
-                                    </tr>`;
+            var productTemplate = `     <strong>{0}</strong>
+                                        <table>
+                                            <tbody>
+                                                <tr class="small-line">
+                                                    <td>
+                                                        price
+                                                    </td>
+                                                    <td>{1}</td>
+                                                </tr>
+                                                <tr class="small-line">
+                                                    <td>
+                                                        quantity
+                                                    </td>
+                                                    <td>{2}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    `;
 
-            var productTemplateWithOnlyAdditionalFee = ` <tr>
-                                                            <td>
-                                                                <p class="top-title">{0}</p>
-                                                            </td>
-                                                            <td>{1}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
-                                                            <td>
-                                                                số lượng
-                                                            </td>
-                                                            <td>{3}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
-                                                            <td>
-                                                                phụ phí
-                                                            </td>
-                                                            <td>{2}</td>
-                                                        </tr> <tr class="small-line">
-                                                            <td>
-                                                                <strong>***</strong>
-                                                            </td>
-                                                        </tr>`;
-
-            var productTemplateWithOnlyDiscount = ` <tr>
-                                                            <td>
-                                                                <p class="top-title">{0}</p>
-                                                            </td>
-                                                            <td>{1}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
-                                                            <td>
-                                                                số lượng
-                                                            </td>
-                                                            <td>{3}</td>
-                                                        </tr>
-                                                        <tr class="small-line">
-                                                            <td>
-                                                                giảm giá
-                                                            </td>
-                                                            <td>{2}</td>
-                                                        </tr> <tr class="small-line">
-                                                            <td>
-                                                                <strong>***</strong>
-                                                            </td>
-                                                        </tr>`;
-
-
-            var productTemplateWithAdditionalFeeDiscount = ` <tr>
+            var productTemplateWithOnlyAdditionalFee = ` 
+                                                    <strong>{0}</strong>
+                                                    <table>
+                                                        <tbody>
+                                                            
+                                                            </tr>    
+                                                            <tr class="small-line">
                                                                 <td>
-                                                                    <p class="top-title">{0}</p>
+                                                                    price
                                                                 </td>
                                                                 <td>{1}</td>
                                                             </tr>
                                                             <tr class="small-line">
                                                                 <td>
-                                                                    số lượng
+                                                                    quantity
+                                                                </td>
+                                                                <td>{3}</td>
+                                                            </tr>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    fee
+                                                                </td>
+                                                                <td>{2}</td>
+                                                            </tr> 
+                                                        </tbody>
+                                                    </table>`;
+
+            var productTemplateWithOnlyDiscount = ` <strong>{0}</strong><table><tbody> 
+                                                    <tr class="small-line">
+                                                        <td>
+                                                            price
+                                                        </td>
+                                                        <td>{1}</td>
+                                                    </tr>
+                                                    <tr class="small-line">
+                                                        <td>
+                                                             quantity
+                                                         </td>
+                                                            <td>{3}</td>
+                                                    </tr>
+                                                    <tr class="small-line">
+                                                            <td>
+                                                                discount
+                                                            </td>
+                                                            <td>{2}</td>
+                                                    </tr></tbody></table>`;
+
+
+            var productTemplateWithAdditionalFeeDiscount = `<strong>{0}</strong><table><tbody>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    price
+                                                                </td>
+                                                                <td>{1}</td>
+                                                            </tr>
+                                                            <tr class="small-line">
+                                                                <td>
+                                                                    quantity
                                                                 </td>
                                                                 <td>{4}</td>
                                                             </tr>
                                                             <tr class="small-line">
                                                                 <td>
-                                                                    giảm giá
+                                                                    discount
                                                                 </td>
                                                                 <td>{2}</td>
                                                             </tr>
                                                             <tr class="small-line">
                                                                 <td>
-                                                                    phụ phí
+                                                                    fee
                                                                 </td>
                                                                 <td>{3}</td>
-                                                            </tr> <tr class="small-line">
-                                                                <td>
-                                                                    <strong>***</strong>
-                                                                </td>
-                                                           </tr>`;
+                                                            </tr></tbody></table>`;
 
 
 
@@ -411,18 +436,18 @@
 
                 if (discount > 0) {
                     if (product.additionalFee > 0) {
-                        saleItemContainer += productTemplateWithAdditionalFeeDiscount.format(product.productName, VNCurrencyFormat(product.price), VNCurrencyFormat(discount), VNCurrencyFormat(product.additionalFee), product.quantity);
+                        saleItemContainer += productTemplateWithAdditionalFeeDiscount.format(removeSign(product.productName), VNCurrencyFormat(product.price), VNCurrencyFormat(discount), VNCurrencyFormat(product.additionalFee), product.quantity);
                     }
                     else {
-                        saleItemContainer += productTemplateWithOnlyDiscount.format(product.productName, VNCurrencyFormat(product.price), VNCurrencyFormat(discount), product.quantity);
+                        saleItemContainer += productTemplateWithOnlyDiscount.format(removeSign(product.productName), VNCurrencyFormat(product.price), VNCurrencyFormat(discount), product.quantity);
                     }
                 }
                 else {
                     if (product.additionalFee > 0) {
-                        saleItemContainer += productTemplateWithOnlyAdditionalFee.format(product.productName, VNCurrencyFormat(product.price), VNCurrencyFormat(product.additionalFee), product.quantity);
+                        saleItemContainer += productTemplateWithOnlyAdditionalFee.format(removeSign(product.productName), VNCurrencyFormat(product.price), VNCurrencyFormat(product.additionalFee), product.quantity);
                     }
                     else {
-                        saleItemContainer += productTemplate.format(product.productName, VNCurrencyFormat(product.price), product.quantity);
+                        saleItemContainer += productTemplate.format(removeSign(product.productName), VNCurrencyFormat(product.price), product.quantity);
                     }
                 }
 
@@ -440,24 +465,24 @@
             template = template.replace("{{TotalPaidAmount}}", VNCurrencyFormat(data.totalPaidAmount));
             template = template.replace("{{TotalBalance}}", VNCurrencyFormat(data.totalBalance));
 
-            var vatTemplate = ` <strong class="recipe-vat">Trước thuế: {0}</strong>`;
+            var vatTemplate = ` <strong class="recipe-vat">before VAT: {0}</strong>`;
             template = template.replace("{{VATIncluded}}", data.vatIncluded ? vatTemplate.format(VNCurrencyFormat(beforeVAT)) : "");
 
             var customInfoTemplate = ` <div class="recipe-total">
-                                        <strong>KH: {{CustomerName}}</strong>
+                                        <strong>Member: {{CustomerName}}</strong>
                                         <table>
                                             <tbody>
                                                 {{MemberDiscount}}
                                                 <tr class="small-line">
-                                                    <td>Điểm sử dụng</td>
+                                                    <td>Used Scores</td>
                                                     <td>{{ScoreUsed}}</td>
                                                 </tr>
                                                 <tr class="small-line">
-                                                    <td>Điểm được cộng</td>
+                                                    <td>Gained Scores</td>
                                                     <td>{{GainedScore}}</td>
                                                 </tr>
                                                 <tr class="small-line">
-                                                    <td>Điểm còn lại</td>
+                                                    <td>Total Scores</td>
                                                     <td>{{TotalScore}}</td>
                                                 </tr>
                                             </tbody>
@@ -473,12 +498,12 @@
                 template = template.replace("{{ScoreUsed}}", data.scoreUsed);
                 template = template.replace("{{GainedScore}}", data.gainedScore);
                 template = template.replace("{{TotalScore}}", data.totalScore);
-                template = template.replace("{{CustomerName}}", !data.customerName ? "Khách lẻ" : data.customerName);
+                template = template.replace("{{CustomerName}}", !data.customerName ? "KHACH LE" : data.customerName);
             }
 
             if (discountTotal > 0) {
                 var discountTeemplate = `  <tr class="small-line">
-                                                <td>Giảm giá</td>
+                                                <td>Discount</td>
                                                 <td>{0}</td>
                                             </tr>`;
 
@@ -487,10 +512,10 @@
             else
                 template = template.replace("{{OrderDiscount}}", "");
 
-            if (data.isMemberDiscountApply) {
+            if (data.isMemberDiscountApply && data.MemberDiscount != undefined && data.MemberDiscount > 0) {
 
                 var memberDiscountTemplate = ` <tr class="small-line">
-                                                    <td>Giảm giá TV</td>
+                                                    <td>Member discount</td>
                                                     <td>{0}</td>
                                                 </tr>`;
 
@@ -535,7 +560,7 @@
 
             setTimeout(() => {
                 window.print();
-            }, 3000);
+            }, 1000);
 
         }
 
