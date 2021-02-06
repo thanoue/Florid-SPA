@@ -219,12 +219,12 @@ export class OrdersManageComponent extends BaseComponent {
 
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
-      doneTime: new Date(order.DoneTime).toLocaleString('vi-VN', { hour12: false }),
+      doneTime: new Date(order.DoneTime).toLocaleString('en-US', { hour12: false }),
       Id: order.OrderId,
       Active: true,
       IsDeleted: false,
       saleItems: products,
-      createdDate: order.CreatedDate.toLocaleString('vi-VN', { hour12: false }),
+      createdDate: order.CreatedDate.toLocaleString('en-US', { hour12: false }),
       orderId: order.OrderId,
       summary: tempSummary,
       totalAmount: order.TotalAmount,
