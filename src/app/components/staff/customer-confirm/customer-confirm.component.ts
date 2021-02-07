@@ -117,10 +117,15 @@ export class CustomerConfirmComponent extends BaseComponent {
             .then(res => res.blob())
             .then(blob => {
               const file = new File([blob], "result.png", { type: "image/png" });
-              this.orderDetailService.resultConfirm(this.orderDetail.OrderDetailId, file)
+              this.orderDetailService.resultConfirm(this.orderDetail.OrderDetailId, this.orderDetailService.getLastestMaking(this.orderDetail).Id, file)
                 .then(res => {
                   this.router.navigate(['staff/account-main']);
                 });
+            });
+        } else {
+          this.orderDetailService.resultConfirm(this.orderDetail.OrderDetailId, this.orderDetailService.getLastestMaking(this.orderDetail).Id, null)
+            .then(res => {
+              this.router.navigate(['staff/account-main']);
             });
         }
 

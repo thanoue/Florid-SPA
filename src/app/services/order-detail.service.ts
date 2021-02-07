@@ -17,6 +17,7 @@ export class OrderDetailService {
   }
 
   updateFields(id: number, value: any): Promise<any> {
+    console.log(value);
     return this.httpService.post(API_END_POINT.updateODFields, {
       obj: value,
       orderDetailId: +id
@@ -28,11 +29,10 @@ export class OrderDetailService {
     });
   }
 
-  updateStatusByOrderId(orderId: string, status: OrderDetailStates, doneTime: number): Promise<any> {
+  updateStatusByOrderId(orderId: string, status: OrderDetailStates): Promise<any> {
     return this.httpService.post(API_END_POINT.updateStatusByOrderId, {
       orderId: orderId,
       status: status,
-      doneTime: doneTime
     }).then(res => {
       return res;
     }).catch(err => {
@@ -42,11 +42,12 @@ export class OrderDetailService {
   }
 
 
-  resultConfirm(orderDetailId: number, resultImg: File): Promise<any> {
+  resultConfirm(orderDetailId: number, makingId: number, resultImg: File): Promise<any> {
 
     return this.httpService.postForm(API_END_POINT.resultConfirm, {
       orderDetailId: orderDetailId,
-      resultImg: resultImg
+      resultImg: resultImg,
+      makingId: makingId
     }).then(obj => {
 
       return obj;
@@ -64,8 +65,9 @@ export class OrderDetailService {
     let lastestShipping = this.getLastestShipping(orderDetail);
 
     return this.httpService.postForm(API_END_POINT.shippingConfirm, {
-      shipping: lastestShipping,
+      shippingId: lastestShipping.Id,
       shippingImg: shippingImg,
+      orderrDetailId: orderDetail.OrderDetailId,
       deliveryCompletedTime: (new Date()).getTime(),
       note: note
     }).then(obj => {
@@ -81,40 +83,13 @@ export class OrderDetailService {
 
   }
 
-  getNextShippingSortOrder(): Promise<number> {
-
-    return this.httpService.get(API_END_POINT.getMaxShippingSortOrder)
-      .then(value => {
-
-        return value.maxShippingSortOrder + 1;
-
-      }).catch(err => {
-        this.httpService.handleError(err);
-        throw err;
-      });
-
-  }
-
-  updateShippingSortOrders(data: any): Promise<any> {
-    return this.httpService.post(API_END_POINT.updateShippingSortOrder, {
-      details: data
-    })
-      .then(value => {
-
-        return value;
-
-      }).catch(err => {
-        this.httpService.handleError(err);
-        throw err;
-      });
-  }
 
   getFromRaw(orderDetail: any): OrderDetailViewModel {
     let orderDetailVM = new OrderDetailViewModel();
 
     orderDetailVM.ProductName = orderDetail.ProductName;
     orderDetailVM.OrderId = orderDetail.OrderId;
-    orderDetailVM.OrderDetailId = orderDetail.Id.toString();
+    orderDetailVM.OrderDetailId = orderDetail.Id;
     orderDetailVM.State = orderDetail.State;
     orderDetailVM.ProductId = orderDetail.ProductId;
     orderDetailVM.ProductImageUrl = orderDetail.ProductImageUrl;
@@ -135,12 +110,15 @@ export class OrderDetailService {
     orderDetailVM.PercentDiscount = orderDetail.PercentDiscount;
     orderDetailVM.AmountDiscount = orderDetail.AmountDiscount;
     orderDetailVM.MakingRequestTime = orderDetail.MakingRequestTime;
+    orderDetailVM.ShippingNote = orderDetail.ShippingNote;
+    orderDetailVM.Quantity = orderDetail.Quantity ? orderDetail.Quantity : 1;
+    orderDetailVM.MakingNote = orderDetail.MakingNote;
 
-    if (orderDetail.shippings && orderDetail.shippings.length > 0) {
+    if (orderDetail.orderDedailShippings && orderDetail.orderDedailShippings.length > 0) {
 
       orderDetailVM.Shippings = [];
 
-      orderDetail.shippings.forEach(rawShipping => {
+      orderDetail.orderDedailShippings.forEach(rawShipping => {
 
         let shipping = new Shipping();
 
@@ -150,6 +128,7 @@ export class OrderDetailService {
         shipping.Id = rawShipping.Id;
         shipping.Note = rawShipping.Note;
         shipping.StartTime = rawShipping.StartTime;
+        shipping.OrderDetailId = orderDetailVM.OrderDetailId;
         shipping.ShipperId = rawShipping.ShipperId;
 
         orderDetailVM.Shippings.push(shipping);
@@ -158,11 +137,32 @@ export class OrderDetailService {
 
     }
 
-    if (orderDetail.makings && orderDetail.makings.length > 0) {
+    if (orderDetail.shippers && orderDetail.shippers.length > 0) {
+
+      orderDetailVM.Shippers = [];
+
+      orderDetail.shippers.forEach(rawShipper => {
+
+        let shipper = new User();
+
+        shipper.Id = rawShipper.Id;
+        shipper.AvtUrl = rawShipper.AvtUrl;
+        shipper.Email = rawShipper.Email;
+        shipper.FullName = rawShipper.FullName;
+        shipper.IsExternalShipper = rawShipper.IsExternalShipper;
+        shipper.PhoneNumber = rawShipper.PhoneNumber;
+
+        orderDetailVM.Shippers.push(shipper);
+
+      });
+
+    }
+
+    if (orderDetail.orderDetailMakings && orderDetail.orderDetailMakings.length > 0) {
 
       orderDetailVM.Makings = [];
 
-      orderDetail.makings.forEach(rawMaking => {
+      orderDetail.orderDetailMakings.forEach(rawMaking => {
 
         let making = new Making();
 
@@ -172,8 +172,34 @@ export class OrderDetailService {
         making.Id = rawMaking.Id;
         making.StartTime = rawMaking.StartTime;
         making.FloristId = rawMaking.FloristId;
+        making.OrderDetailId = orderDetailVM.OrderDetailId;
+        making.MakingType = rawMaking.MakingType;
+
 
         orderDetailVM.Makings.push(making);
+
+      });
+
+
+    }
+
+
+    if (orderDetail.florists && orderDetail.florists.length > 0) {
+
+      orderDetailVM.Florists = [];
+
+      orderDetail.florists.forEach(rawShipper => {
+
+        let user = new User();
+
+        user.Id = rawShipper.Id;
+        user.AvtUrl = rawShipper.AvtUrl;
+        user.Email = rawShipper.Email;
+        user.FullName = rawShipper.FullName;
+        user.IsExternalShipper = rawShipper.IsExternalShipper;
+        user.PhoneNumber = rawShipper.PhoneNumber;
+
+        orderDetailVM.Florists.push(user);
 
       });
 
@@ -252,10 +278,36 @@ export class OrderDetailService {
     return this.httpService.post(API_END_POINT.assignSingleOD, {
       orderDetailId: orderDetailId,
       shipperId: shipperId,
-      assignTime: assignTime
+      assignTime: assignTime,
     }).then(data => {
       return data;
     })
+  }
+
+  replaceShipper(orderDetailId: number, oldShippingId: number, newShipperId: number = -1) {
+
+    return this.httpService.post(API_END_POINT.replaceShipper, {
+      orderDetailId: orderDetailId,
+      newShipperId: newShipperId,
+      oldShippingId: oldShippingId,
+      newAssignTime: new Date().getTime()
+    }).then(data => {
+      return data;
+    });
+
+  }
+
+  replaceFlorist(orderDetailId: number, oldMakingId: number, newFloristId: number = -1) {
+
+    return this.httpService.post(API_END_POINT.replaceShipper, {
+      orderDetailId: orderDetailId,
+      newFloristId: newFloristId,
+      oldMakingId: oldMakingId,
+      newAssignTime: new Date().getTime()
+    }).then(data => {
+      return data;
+    });
+
   }
 
   updateShippingFields(shippingId: number, obj: any): Promise<any> {
@@ -304,12 +356,12 @@ export class OrderDetailService {
 
     orderDetailIds.forEach(orderDetail => {
 
-      let making: { AssignTime: number, FloristId: number, MakingType: MakingType, OrderDetailId: number };
-
-      making.AssignTime = assignTime;
-      making.FloristId = floristdId;
-      making.MakingType = orderDetail.State == OrderDetailStates.FixingRequest ? MakingType.Fixing : MakingType.Making;
-      making.OrderDetailId = orderDetail.OrderDetailId;
+      let making: { AssignTime: number, FloristId: number, MakingType: MakingType, OrderDetailId: number } = {
+        AssignTime: assignTime,
+        FloristId: floristdId,
+        MakingType: orderDetail.State == OrderDetailStates.FixingRequest ? MakingType.Fixing : MakingType.Making,
+        OrderDetailId: orderDetail.OrderDetailId
+      };
 
       makings.push(making);
 
@@ -362,7 +414,7 @@ export class OrderDetailService {
         return [];
 
       data.forEach(item => {
-        orderDetailVMs.push(this.getFromRaw(item.orderdetail));
+        orderDetailVMs.push(this.getFromRaw(item));
       });
 
       return orderDetailVMs;
@@ -386,7 +438,7 @@ export class OrderDetailService {
         return [];
 
       data.forEach(item => {
-        orderDetailVMs.push(this.getFromRaw(item.orderdetail));
+        orderDetailVMs.push(this.getFromRaw(item));
       });
 
       return orderDetailVMs;
@@ -399,11 +451,13 @@ export class OrderDetailService {
   }
 
   getLastestMaking(orderDetail: OrderDetailViewModel): Making {
+
     if (!orderDetail.Makings || orderDetail.Makings.length <= 0) {
-      return null;
+      return new Making();
     }
 
     let making = new Making();
+    making.AssignTime = 0;
 
     orderDetail.Makings.forEach(raw => {
       if (raw.AssignTime > making.AssignTime) {
@@ -416,11 +470,13 @@ export class OrderDetailService {
   }
 
   getLastestShipping(orderDetail: OrderDetailViewModel): Shipping {
+
     if (!orderDetail.Shippings || orderDetail.Shippings.length <= 0) {
-      return null;
+      return new Shipping();
     }
 
     let shipping = new Shipping();
+    shipping.AssignTime = 0;
 
     orderDetail.Shippings.forEach(raw => {
       if (raw.AssignTime > shipping.AssignTime) {
@@ -431,8 +487,6 @@ export class OrderDetailService {
     return shipping;
 
   }
-
-
 
   updateDetailSeen(orderDetailId: number, userId: number, seenTime: number, isAnim: boolean = true): Promise<any> {
     return this.httpService.post(API_END_POINT.updateDetailSeen, {

@@ -8,6 +8,7 @@ import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { User } from 'src/app/models/entities/user.entity';
 import { ExchangeService } from 'src/app/services/exchange.service';
 import { ImgPipe } from 'src/app/pipes/img.pipe';
+import { OrderService } from 'src/app/services/order.service';
 
 declare function viewImages(onCancel: () => void): any;
 declare function openViewed(): any;
@@ -28,9 +29,8 @@ export class ViewOrderDetailComponent extends BaseComponent {
   order: OrderViewModel;
   noteImgs: string[];
 
-  constructor(private orderDetailService: OrderDetailService) {
+  constructor(private orderDetailService: OrderDetailService, private orderService: OrderService) {
     super();
-    console.log(this.globalOrder);
     this.orderDetail = new OrderDetailViewModel();
     this.orderDetail.SeenUsers = [];
     this.order = new OrderViewModel();
@@ -40,7 +40,14 @@ export class ViewOrderDetailComponent extends BaseComponent {
   protected Init() {
 
     this.orderDetail = this.globalOrderDetail;
-    this.order = this.globalOrder;
+
+    this.orderService.getById(this.orderDetail.OrderId)
+      .then(order => {
+
+        if (order != null)
+          this.order = order;
+
+      });
 
     this.state = ORDER_DETAIL_STATES.filter(p => p.State === this.orderDetail.State)[0].DisplayName;
 
@@ -84,10 +91,15 @@ export class ViewOrderDetailComponent extends BaseComponent {
   }
 
   openNoteImages() {
-    
-    viewImages(() => {
 
-    });
+    if (this.orderDetail.NoteImages.length > 0) {
+
+      viewImages(() => {
+
+      });
+
+    }
+
 
   }
 

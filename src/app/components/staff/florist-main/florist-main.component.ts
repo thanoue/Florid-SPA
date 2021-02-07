@@ -92,6 +92,7 @@ export class FloristMainComponent extends BaseComponent {
     this.orderDetailService.getMakingOrderDetails(this.CurrentUser.Id)
       .then(details => {
 
+        console.log('making', details);
         this.makingOrderDetails = details;
 
       });
@@ -188,7 +189,7 @@ export class FloristMainComponent extends BaseComponent {
 
                   this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
 
-                    State: orderDetail.State == OrderDetailStates.Comfirming,
+                    State: OrderDetailStates.Comfirming,
 
                   }).then(() => {
                     this.loadMakingDetails();

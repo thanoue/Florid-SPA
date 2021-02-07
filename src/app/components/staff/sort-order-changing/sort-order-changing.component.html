@@ -13,7 +13,9 @@
         <div class="tab-content order-list-bot" id="listContent">
             <div class="tab-pane fade show active" id="camhoa" role="tabpanel" aria-labelledby="nav1">
                 <ul class="order-content cusScroll">
-                    <div *ngFor="let makDetail of makingODs; let i = index" class="order-content-item product-item">
+                    <div *ngFor="let makDetail of makingODs; let i = index"
+                        [ngClass]="makDetail.IsSelect ? 'selected-order-detail': ''"
+                        class="order-content-item product-item">
                         <div class="item-top">
                             <span
                                 class="item-code">{{makDetail.OrderDetail.OrderId}}_{{makDetail.OrderDetail.Index+1}}</span>
@@ -30,10 +32,6 @@
                         <div class="item-bot">
                             <ul class="order-product-list cusScroll">
                                 <li class="">
-                                    <div class="changeOrder">
-                                        <button class="inOrder navOrder">tăng</button>
-                                        <button class="deOrder navOrder">giảm</button>
-                                    </div>
                                     <div class="item-detail" (click)="viewMakingDetail(i)">
                                         <img src="{{makDetail.OrderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}"
                                             alt="" class="item-detail-thumb">
@@ -44,8 +42,8 @@
                                                 {{makDetail.OrderDetail.AdditionalFee| myCurrPipe}}</span>
                                             <span class="prodCharge">Giảm
                                                 giá: {{getDetailDiscount(makDetail.OrderDetail) | myCurrPipe}}</span>
-                                            <span
-                                                class="item-address">{{makDetail.OrderDetail.DeliveryInfo.Address ? makDetail.OrderDetail.DeliveryInfo.Address : '.....'}}</span>
+                                            <span class="item-address">Số
+                                                lượng: {{makDetail.OrderDetail.Quantity}}</span>
                                             <span
                                                 class="item-time">{{makDetail.OrderDetail.MakingRequestTime | myTimePipe}}
                                             </span>
@@ -85,38 +83,38 @@
                         [ngClass]="shipDetail.IsSelect ? 'selected-order-detail': ''">
                         <div class="item-top">
                             <span
-                                class="item-code">{{shipDetail.ShippingOrderDetail.OrderId}}_{{shipDetail.ShippingOrderDetail.Index+1}}</span>
+                                class="item-code">{{shipDetail.OrderDetail.OrderId}}_{{shipDetail.OrderDetail.Index+1}}</span>
                             <div class="item-info">
-                                <h4 class="item-name">{{shipDetail.ShippingOrderDetail.ProductName}}</h4>
+                                <h4 class="item-name">{{shipDetail.OrderDetail.ProductName}}</h4>
                                 <span
-                                    class="item-quantity">{{shipDetail.ShippingOrderDetail.CustomerName}}-{{shipDetail.ShippingOrderDetail.CustomerPhoneNumber}}</span>
+                                    class="item-quantity">{{shipDetail.OrderDetail.CustomerName}}-{{shipDetail.OrderDetail.CustomerPhoneNumber}}</span>
                             </div>
-                            <app-status-point [state]="shipDetail.ShippingOrderDetail.State"
-                                [id]="shipDetail.ShippingOrderDetail.OrderDetailId" [index]="j+1">
+                            <app-status-point [state]="shipDetail.OrderDetail.State"
+                                [id]="shipDetail.OrderDetail.OrderDetailId" [index]="j+1">
 
                             </app-status-point>
                         </div>
                         <div class="item-bot">
                             <ul class="order-product-list cusScroll">
                                 <li class="">
-                                    <div class="changeOrder">
-                                        <button class="inOrder navOrder">tăng</button>
-                                        <button class="deOrder navOrder">giảm</button>
-                                    </div>
                                     <div class="item-detail" (click)="viewShippingDetail(j)">
-                                        <img src="{{shipDetail.ShippingOrderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}"
+                                        <img src="{{shipDetail.OrderDetail.ProductImageUrl |  ImgPipe : 'ProductImg'}}"
                                             alt="" class="item-detail-thumb">
                                         <div class="item-detail-info">
                                             <span
-                                                class="prodPrice">{{shipDetail.ShippingOrderDetail.ModifiedPrice| myCurrPipe}}</span>
+                                                class="prodPrice">{{shipDetail.OrderDetail.ModifiedPrice| myCurrPipe}}</span>
+                                            <span class="prodCharge">Phụ phí:
+                                                {{shipDetail.OrderDetail.AdditionalFee| myCurrPipe}}</span>
+                                            <span class="prodCharge">Giảm
+                                                giá:
+                                                {{getDetailDiscount(shipDetail.OrderDetail) | myCurrPipe}}</span>
+                                            <span class="item-address">Số
+                                                lượng: {{shipDetail.OrderDetail.Quantity}}</span>
                                             <span
-                                                class="prodCharge">{{shipDetail.ShippingOrderDetail.AdditionalFee| myCurrPipe}}</span>
-                                            <span
-                                                class="item-address">{{shipDetail.ShippingOrderDetail.DeliveryInfo.Address}}</span>
-                                            <span
-                                                class="item-time">{{shipDetail.ShippingOrderDetail.DeliveryInfo.DateTime | myTimePipe}}</span>
-                                            <span
-                                                class="item-date">{{shipDetail.ShippingOrderDetail.DeliveryInfo.DateTime | myDatePipe}}</span>
+                                                class="item-time">{{shipDetail.OrderDetail.DeliveryInfo.DateTime | myTimePipe}}
+                                            </span>
+                                            <span class="item-date">
+                                                {{shipDetail.OrderDetail.DeliveryInfo.DateTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>
@@ -147,10 +145,20 @@
     </div>
 </div>
 
-<div class="popup-content" id="viewed">
+<div class="popup-content florist" id="viewed">
+    <h3 class="main-bg">Chọn Florist</h3>
+    <ul class="viewedList">
+        <li class="viewItem" *ngFor="let user of florists" id="{{user.Id}}">
+            <img src="{{user.AvtUrl | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
+            <span class="itemName">{{user.FullName}}</span>
+        </li>
+    </ul>
+</div>
+
+<div class="popup-content shipper" id="viewed">
     <h3 class="main-bg">Chọn Shipper</h3>
     <ul class="viewedList">
-        <li class="viewItem-three-column" *ngFor="let user of shippers" (click)="selectUser(user)">
+        <li class="viewItem-three-column" *ngFor="let user of shippers" id="{{user.Id}}">
             <img src="{{user.AvtUrl | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
             <span class="itemName">{{user.FullName}}</span>
             <span class="itemRole">{{user.IsExternalShipper ?  'Shipper ngoài' : 'Nhân viên'}}</span>

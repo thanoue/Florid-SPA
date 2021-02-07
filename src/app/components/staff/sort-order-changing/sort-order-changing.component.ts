@@ -8,9 +8,8 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/entities/user.entity';
 
-declare function openViewed(): any;
-declare function dismissShipperSelecting(callback: () => void): any;
-
+declare function chooseFlorist(saveCallBack: (id: number) => void): any;
+declare function chooseShipper(saveCallBack: (id: number) => void): any;
 @Component({
   selector: 'app-sort-order-changing',
   templateUrl: './sort-order-changing.component.html',
@@ -22,9 +21,10 @@ export class SortOrderChangingComponent extends BaseComponent {
   protected IsDataLosingWarning = false;
   isAssigningShipper: boolean = false;
   shippers: User[];
+  florists: User[];
 
   shippingODs: {
-    ShippingOrderDetail: OrderDetailViewModel,
+    OrderDetail: OrderDetailViewModel,
     IsSelect: boolean
   }[];
 
@@ -40,7 +40,7 @@ export class SortOrderChangingComponent extends BaseComponent {
     this.shippingODs = [];
     this.shippers = [];
     this.makingODs = [];
-
+    this.florists = [];
   }
 
   protected Init() {
@@ -51,6 +51,11 @@ export class SortOrderChangingComponent extends BaseComponent {
     this.userService.getByRole(Roles.Shipper)
       .then(users => {
         this.shippers = users;
+      });
+
+    this.userService.getByRole(Roles.Florist)
+      .then(users => {
+        this.florists = users;
       })
   }
 
@@ -80,7 +85,7 @@ export class SortOrderChangingComponent extends BaseComponent {
 
         details.forEach(detail => {
           this.shippingODs.push({
-            ShippingOrderDetail: detail,
+            OrderDetail: detail,
             IsSelect: false
           });
         });
@@ -97,12 +102,20 @@ export class SortOrderChangingComponent extends BaseComponent {
       return;
     }
 
-    this.globalOrderDetail = this.shippingODs[index].ShippingOrderDetail;
+    this.globalOrderDetail = this.shippingODs[index].OrderDetail;
     this.router.navigate(['staff/order-detail-view']);
 
   }
 
   viewMakingDetail(index: number) {
+
+    if (this.isAssigningFlorist) {
+
+      this.makingODs[index].IsSelect = !this.makingODs[index].IsSelect;
+
+      return;
+    }
+
     this.globalOrderDetail = this.makingODs[index].OrderDetail;
     this.router.navigate(['staff/order-detail-view']);
   }
@@ -123,62 +136,59 @@ export class SortOrderChangingComponent extends BaseComponent {
   }
 
   cancelFloristSelectMode() {
-    this.shippingODs.forEach(od => {
+    this.makingODs.forEach(od => {
       od.IsSelect = false;
     });
-    this.isAssigningShipper = false;
+    this.isAssigningFlorist = false;
   }
 
-  selectUser(shipper: User) {
-
-    dismissShipperSelecting(() => {
-
-      this.openConfirm(this.isAssigningShipper ? 'Xác nhận giao đơn cho shipper?' : 'Xác nhận phân công florist?', () => {
 
 
-        if (this.isAssigningShipper) {
+  assignUsers(userId: number) {
 
-          let orderDetailIds: number[] = [];
+    this.openConfirm(this.isAssigningShipper ? 'Xác nhận giao đơn cho shipper?' : 'Xác nhận phân công florist?', () => {
 
-          this.shippingODs.forEach(od => {
 
-            if (od.IsSelect) {
-              orderDetailIds.push(od.ShippingOrderDetail.OrderDetailId);
-            }
+      if (this.isAssigningShipper) {
 
+        let orderDetailIds: number[] = [];
+
+        this.shippingODs.forEach(od => {
+
+          if (od.IsSelect) {
+            orderDetailIds.push(od.OrderDetail.OrderDetailId);
+          }
+
+        });
+
+        this.orderDetailService.assignOrderDetails(orderDetailIds, userId, (new Date()).getTime())
+          .then(res => {
+            this.isAssigningShipper = false;
+            this.loadMakingDetails();
+            this.loadShippingDetails();
           });
 
-          this.orderDetailService.assignOrderDetails(orderDetailIds, shipper.Id, (new Date()).getTime())
-            .then(res => {
-              this.isAssigningShipper = false;
-              this.loadMakingDetails();
-              this.loadShippingDetails();
-            });
+      } else {
 
-        } else {
+        let orderDetails: OrderDetailViewModel[] = [];
+        this.makingODs.forEach(od => {
 
-          let orderDetails: OrderDetailViewModel[] = [];
-          this.makingODs.forEach(od => {
+          if (od.IsSelect) {
+            orderDetails.push(od.OrderDetail);
+          }
 
-            if (od.IsSelect) {
-              orderDetails.push(od.OrderDetail);
-            }
+        });
 
+        this.orderDetailService.assignFloristForOrderDetails(orderDetails, userId, (new Date()).getTime())
+          .then(res => {
+            this.isAssigningFlorist = false;
+            this.loadMakingDetails();
+            this.loadShippingDetails();
           });
 
-          this.orderDetailService.assignFloristForOrderDetails(orderDetails, shipper.Id, (new Date()).getTime())
-            .then(res => {
-              this.isAssigningFlorist = false;
-              this.loadMakingDetails();
-              this.loadShippingDetails();
-            });
-
-        }
-
-      });
+      }
 
     });
-
   }
 
   selectShipperDialogOpen() {
@@ -193,8 +203,11 @@ export class SortOrderChangingComponent extends BaseComponent {
 
     });
 
-    if (isHas)
-      openViewed();
+    if (isHas) {
+      chooseShipper((id) => {
+        this.assignUsers(+id);
+      })
+    }
 
   }
 
@@ -210,8 +223,11 @@ export class SortOrderChangingComponent extends BaseComponent {
 
     });
 
-    if (isHas)
-      openViewed();
+    if (isHas) {
+      chooseFlorist((id) => {
+        this.assignUsers(+id);
+      })
+    }
 
   }
 }

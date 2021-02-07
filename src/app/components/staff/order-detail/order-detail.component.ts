@@ -100,7 +100,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
   protected fileChosen(path: string) {
 
     this.globalOrderDetail.NoteImages.push('data:image/png;base64,' + path);
-
+    
   }
 
   onChange(event) {
@@ -142,8 +142,6 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
           let url = ImgPipe.getImgUrl(this.globalOrderDetail.NoteImages[index], ImgType.NoteImg);
           this.images = [url];
-
-          console.log(url);
 
           setTimeout(() => {
             viewImages(() => {

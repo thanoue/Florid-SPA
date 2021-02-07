@@ -15,6 +15,7 @@ import { StatusPointComponent } from './controls/status-point/status-point.compo
 import { MyCurrPipe, MyDatepipe, MyTimepipe } from './pipes/date.pipe';
 import { ImgPipe } from './pipes/img.pipe';
 import { AngularImageViewerModule } from "angular-x-image-viewer";
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 // here is the default text string
 @Injectable()
@@ -144,7 +145,8 @@ export class DefaultIntl extends OwlDateTimeIntl {
         MyDatepipe,
         MyTimepipe,
         MyCurrPipe,
-        ImgPipe
+        ImgPipe,
+        NgxImageCompressService
     ],
 })
 export class SharedModule { }

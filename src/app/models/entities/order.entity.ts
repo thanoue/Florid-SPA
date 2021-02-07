@@ -93,6 +93,7 @@ export class Making {
     CompleteTime: number;
     ResultImageUrl: string;
     MakingType: MakingType;
+    OrderDetailId: number;
 
     constructor() {
     }
@@ -105,6 +106,7 @@ export class Shipping {
     StartTime: number;
     CompleteTime: number;
     DeliveryImageUrl: string;
+    OrderDetailId: number;
     Note: string;
 
     constructor() {

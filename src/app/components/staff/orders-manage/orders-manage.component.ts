@@ -21,17 +21,19 @@ import { PrintJobService } from 'src/app/services/print-job.service';
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
 declare function makingTimeRequest(saveCallBack: () => void, chooseFloristCallBack: () => void): any;
+declare function shippingRequest(saveCallBack: () => void, chooseFloristCallBack: () => void): any;
 declare function chooseFlorist(saveCallBack: (id: number) => void): any;
 declare function chooseShipper(saveCallBack: (id: number) => void): any;
 declare function saveFile(url, productId, callback: () => void): any;
 declare function filterOrderByState(menuitems: { Name: string; Value: number; }[], callback: (val: any) => void): any;
 declare function locationDetection(location: any): any;
+declare function getShippingNoteDialog(btnTitle: string, callback: (note: string) => void): any;
 
 export interface ISelectedDetail {
-  FloristName: string[];
   State: OrderDetailStates;
   StateDisplay: string;
-  ShipperName: string[];
+  Shippers: User[];
+  Florists: User[];
 }
 
 @Component({
@@ -47,9 +49,11 @@ export class OrdersManageComponent extends BaseComponent {
   protected IsDataLosingWarning = false;
   selectDeliveryTime: string;
   selectMakingRequestTime: Date;
+  selectReceiveRequestTime: Date;
   orders: OrderViewModel[];
   states = OrderDetailStates;
   makingNote: string;
+  shippingNote: string;
   florists: User[];
   shippers: User[];
   pageSize = 20;
@@ -97,6 +101,84 @@ export class OrdersManageComponent extends BaseComponent {
     this.shippers = [];
   }
 
+  updateOrderDetailState(id: number) {
+
+    let orderDetail: OrderDetailViewModel = new OrderDetailViewModel();
+    let selectedOrder: OrderViewModel = new OrderViewModel();
+
+    this.orders.forEach(order => {
+
+      order.OrderDetails.forEach(detail => {
+        if (detail.OrderDetailId === id) {
+          orderDetail = detail;
+          selectedOrder = order;
+          return;
+        }
+      });
+
+      if (orderDetail.OrderDetailId !== 0) {
+        return;
+      }
+
+    });
+
+    switch (orderDetail.State) {
+      case OrderDetailStates.Added:
+        this.updateAddedDetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.Waiting:
+        this.updateWaitingDetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.Making:
+      case OrderDetailStates.Fixing:
+
+        this.updateMakingDetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.Comfirming:
+        this.updatConfirmingDetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.Deliveried:
+        this.updateDeliveriedDetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.DeliveryWaiting:
+        this.updateDeliveryWaitingDetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.OnTheWay:
+      case OrderDetailStates.DeliverAssinged:
+
+        this.updateAssignedShipperDetailState(orderDetail, selectedOrder);
+
+        break;
+
+      case OrderDetailStates.DeliverAssinged:
+        this.updateDeliveringetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.SentBack:
+        this.updateSentBackDetailState(orderDetail, selectedOrder);
+        break;
+
+      case OrderDetailStates.Completed:
+
+        this.globalOrderDetail = orderDetail;
+        this.globalOrder = selectedOrder;
+
+        this.router.navigate(['staff/order-detail-view']);
+
+        break;
+      case OrderDetailStates.FixingRequest:
+        this.updateFixingRequestDetailState(orderDetail, selectedOrder);
+        break;
+
+    }
+  }
+
   filterByState() {
     var menuitems = [];
 
@@ -120,14 +202,22 @@ export class OrdersManageComponent extends BaseComponent {
         state
       ];
 
-      this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
-        .then(orders => {
-          this.totalPage = orders.totalPages;
-          this.orders = orders.orders;
+      this.getOrders();
 
-        });
     });
 
+  }
+
+  getOrders() {
+
+    this.orders = [];
+    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses, this.searchTerm)
+      .then(orders => {
+
+        this.totalPage = orders.totalPages;
+        this.orders = orders.orders;
+
+      });
   }
 
   searchOrder(phoneNumber) {
@@ -135,11 +225,7 @@ export class OrdersManageComponent extends BaseComponent {
     this.currentPage = 0;
     this.searchTerm = phoneNumber;
 
-    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses, this.searchTerm)
-      .then(orders => {
-        this.totalPage = orders.totalPages;
-        this.orders = orders.orders;
-      });
+    this.getOrders();
 
   }
 
@@ -186,6 +272,15 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.askForRememberPassword();
 
+    this.userService.getByRole(Roles.Florist)
+      .then(users => {
+        this.florists = users;
+      });
+
+    this.userService.getByRole(Roles.Shipper)
+      .then(users => {
+        this.shippers = users;
+      })
   }
 
   doPrintJob(order: OrderViewModel) {
@@ -284,7 +379,7 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 2:
 
-          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Completed, (new Date()).getTime())
+          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Completed)
             .then(res => {
 
               this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
@@ -300,7 +395,7 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 3:
 
-          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Canceled, 0)
+          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Canceled)
             .then(res => {
 
               this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
@@ -360,121 +455,171 @@ export class OrdersManageComponent extends BaseComponent {
 
   }
 
+  getDetailById(id: number): OrderDetailViewModel {
+
+    return this.orders.filter(p => p.OrderDetails.filter(p => p.OrderDetailId == id).length > 0)[0].OrderDetails.filter(c => c.OrderDetailId == id)[0];
+
+  }
+
   openDetailInfo(id: number) {
 
-    this.orders.forEach(order => {
+    let orderDetail = this.getDetailById(id);
 
-      let isGot = false;
-      this.selectedDetail.ShipperName = [];
-      this.selectedDetail.FloristName = [];
+    if (!orderDetail)
+      return;
 
-      order.OrderDetails.forEach(orderDetail => {
+    this.selectedDetail.Shippers = orderDetail.Shippers ? orderDetail.Shippers : [];
+    this.selectedDetail.Florists = orderDetail.Florists ? orderDetail.Florists : [];
 
-        if (orderDetail.OrderDetailId === id) {
-
-          isGot = true;
-
-          this.selectedDetail.State = orderDetail.State;
-          this.selectedDetail.StateDisplay = ORDER_DETAIL_STATES.filter(p => p.State === orderDetail.State)[0].DisplayName;
-
-          if (orderDetail.Shippers && orderDetail.Shippers.length > 0) {
-
-            orderDetail.Shippers.forEach(shipper => {
-              this.selectedDetail.ShipperName.push(shipper.FullName);
-            });
-
-          }
-
-          if (orderDetail.Florists && orderDetail.Florists.length > 0) {
-
-            orderDetail.Florists.forEach(florist => {
-              this.selectedDetail.FloristName.push(florist.FullName);
-            });
-
-          }
-
-          return;
-
-        }
-
-      });
-
-      if (isGot)
-        return;
-
-    });
+    this.selectedDetail.State = orderDetail.State;
+    this.selectedDetail.StateDisplay = ORDER_DETAIL_STATES.filter(p => p.State === orderDetail.State)[0].DisplayName;
 
     openColorBoard();
   }
 
-  updateOrderDetailState(id: number) {
+  updateAssignedShipperDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let orderDetail: OrderDetailViewModel = new OrderDetailViewModel();
-    let selectedOrder: OrderViewModel = new OrderViewModel();
+    let items = [
+      'Chọn lại Shipper',
+      'Hoàn thành giao',
+      'Trả đơn về',
+      'Xem chi tiết',
+      'Huỷ  đơn'
+    ];
 
-    this.orders.forEach(order => {
+    this.menuOpening((index) => {
 
-      order.OrderDetails.forEach(detail => {
-        if (detail.OrderDetailId === id) {
-          orderDetail = detail;
-          selectedOrder = order;
-          return;
-        }
-      });
+      switch (+index) {
 
-      if (orderDetail.OrderDetailId !== 0) {
-        return;
+        case 0:
+
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+          this.selectReceiveRequestTime = orderDetail.DeliveryInfo.DateTime;
+          this.shippingNote = orderDetail.ShippingNote;
+
+          let newObj = {
+            State: OrderDetailStates.DeliveryWaiting,
+            ReceivingTime: this.selectReceiveRequestTime.getTime(),
+            ShippingNote: this.shippingNote
+          };
+
+          shippingRequest(() => {
+
+            newObj.ShippingNote = this.shippingNote;
+            newObj.ReceivingTime = this.selectReceiveRequestTime.getTime();
+
+            this.orderDetailService.updateFields(orderDetail.OrderDetailId, newObj).then(res => {
+
+              this.orderDetailService.replaceShipper(orderDetail.OrderDetailId, this.orderDetailService.getLastestShipping(orderDetail).Id, -1)
+                .then(() => {
+
+                  this.getOrders();
+
+                });
+
+            });
+
+          }, () => {
+
+            chooseShipper((id) => {
+
+              newObj.State = OrderDetailStates.DeliverAssinged;
+              newObj.ShippingNote = this.shippingNote;
+              newObj.ReceivingTime = this.selectReceiveRequestTime.getTime();
+
+              this.orderDetailService.updateFields(orderDetail.OrderDetailId, newObj).then(res => {
+
+                this.orderDetailService.replaceShipper(orderDetail.OrderDetailId, this.orderDetailService.getLastestShipping(orderDetail).Id, +id)
+                  .then(() => {
+
+                    this.getOrders();
+
+                  });
+
+              });
+
+            });
+
+          });
+
+          break;
+
+        case 1:
+
+          this.openConfirm('Hoàn tất giao đơn này?', () => {
+            getShippingNoteDialog('Hoàn tất', (note) => {
+
+              this.orderDetailService.shippingConfirm(orderDetail, null, note)
+                .then(res => {
+                  this.getOrders();
+                });
+
+            });
+
+          });
+
+          break;
+
+        case 2:
+
+          if (orderDetail.State == OrderDetailStates.DeliverAssinged) {
+            this.showInfo('Đơn chưa bắt đầu giao!');
+            return;
+          }
+
+          this.openConfirm('Trả lại cừa hàng đơn này?', () => {
+            getShippingNoteDialog('Trả đơn', (note) => {
+
+
+              this.orderDetailService.updateShippingFields(this.orderDetailService.getLastestShipping(orderDetail).Id, {
+                Note: note,
+                CompleteTime: new Date().getTime(),
+                DeliveryImageUrl: ''
+              }).then(data => {
+
+                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+                  State: OrderDetailStates.SentBack
+
+                }).then(res => {
+
+                  this.getOrders();
+
+                });
+              }).catch(err => {
+                this.showError(err);
+              });
+
+            });
+
+          });
+
+          break;
+
+        case 4:
+
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+            State: OrderDetailStates.Canceled,
+          })
+            .then(() => {
+
+              this.getOrders();
+
+            });
+
+          break;
+
+        case 3:
+
+          this.globalOrderDetail = orderDetail;
+          this.globalOrder = order;
+          this.router.navigate(['staff/order-detail-view']);
+
+          break;
+
       }
 
-    });
-
-    switch (orderDetail.State) {
-      case OrderDetailStates.Added:
-        this.updateAddedDetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.Waiting:
-        this.updateWaitingDetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.Making:
-        this.updateMakingDetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.Comfirming:
-        this.updatConfirmingDetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.Deliveried:
-        this.updateDeliveriedDetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.DeliveryWaiting:
-        this.updateDeliveryWaitingDetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.DeliverAssinged:
-        this.updateDeliveringetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.SentBack:
-        this.updateSentBackDetailState(orderDetail, selectedOrder);
-        break;
-
-      case OrderDetailStates.Completed:
-      case OrderDetailStates.Fixing:
-
-        this.globalOrderDetail = orderDetail;
-        this.globalOrder = selectedOrder;
-
-        this.router.navigate(['staff/order-detail-view']);
-
-        break;
-      case OrderDetailStates.FixingRequest:
-        this.updateFixingRequestDetailState(orderDetail, selectedOrder);
-        break;
-
-    }
+    }, items);
   }
 
   updateFixingRequestDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
@@ -498,7 +643,7 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 0:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "hh:mm a dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm  dd-MM-yyyy");
           this.selectMakingRequestTime = new Date();
           this.makingNote = orderDetail.MakingNote;
 
@@ -516,11 +661,10 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            ShippingSortOrder: 0,
-            MakingSortOrder: 0
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
+              this.getOrders();
+
             });
 
           break;
@@ -552,17 +696,13 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 0:
 
-          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-            State: OrderDetailStates.DeliveryWaiting,
-          })
-            .then(() => {
-              orderDetail.State = OrderDetailStates.DeliveryWaiting;
-            });
+          this.assignShipper(orderDetail);
 
           break;
+
         case 1:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "hh:mm a dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
           this.selectMakingRequestTime = new Date();
           this.makingNote = orderDetail.MakingNote;
 
@@ -579,11 +719,14 @@ export class OrdersManageComponent extends BaseComponent {
         case 3:
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
             State: OrderDetailStates.Canceled,
-            ShippingSortOrder: 0
+
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
+
+              this.getOrders();
+
             });
 
           break;
@@ -609,15 +752,17 @@ export class OrdersManageComponent extends BaseComponent {
           this.router.navigate(['staff/order-detail-view']);
 
           break;
-        case 1:
 
+        case 1:
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Deliveried,
-          })
-            .then(() => {
-              orderDetail.State = OrderDetailStates.Deliveried;
-            });
+          }).then(() => {
+            this.orderDetailService.shippingConfirm(orderDetail, null, '')
+              .then(() => {
+                this.getOrders();
+              })
+          });
 
           break;
 
@@ -625,15 +770,64 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            ShippingSortOrder: 0
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
+
+              this.getOrders();
+
             });
 
           break;
       }
     }, items);
+
+  }
+
+  assignShipper(orderDetail: OrderDetailViewModel) {
+
+    this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+    this.selectReceiveRequestTime = orderDetail.DeliveryInfo.DateTime;
+    this.shippingNote = '';
+
+    let obj = {
+      State: OrderDetailStates.DeliveryWaiting,
+      ReceivingTime: this.selectReceiveRequestTime.getTime(),
+      ShippingNote: this.shippingNote
+    };
+
+    shippingRequest(() => {
+
+      obj.ReceivingTime = this.selectReceiveRequestTime.getTime();
+      obj.ShippingNote = this.shippingNote;
+
+      this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj).then(res => {
+
+        this.getOrders();
+
+      });
+
+    }, () => {
+
+      chooseShipper((id) => {
+
+        obj.State = OrderDetailStates.DeliverAssinged;
+        obj.ReceivingTime = this.selectReceiveRequestTime.getTime();
+        obj.ShippingNote = this.shippingNote;
+
+        this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj).then(res => {
+
+          this.orderDetailService.assignSingleOD(orderDetail.OrderDetailId, +id, (new Date()).getTime())
+            .then(res => {
+
+              this.getOrders();
+
+            });
+
+        });
+
+      });
+
+    });
 
   }
 
@@ -649,17 +843,11 @@ export class OrdersManageComponent extends BaseComponent {
       switch ((+index)) {
 
         case 0:
-
-          chooseShipper((id) => {
-            this.orderDetailService.assignSingleOD(orderDetail.OrderDetailId, id, (new Date()).getTime())
-              .then(res => {
-                orderDetail.State = OrderDetailStates.DeliverAssinged;
-              });
-          });
-
+          this.assignShipper(orderDetail);
           break;
 
         case 1:
+
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
@@ -670,10 +858,9 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            ShippingSortOrder: 0
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
+              this.getOrders();
             });
 
           break;
@@ -686,6 +873,8 @@ export class OrdersManageComponent extends BaseComponent {
 
     let items = [
       'Xử lý sau',
+      'Đổi florist',
+      'Giao hàng',
       'Xem chi tiết',
       'Huỷ đơn'
     ];
@@ -695,34 +884,110 @@ export class OrdersManageComponent extends BaseComponent {
         case 0:
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-            State: OrderDetailStates.Added,
-            MakingSortOrder: 0,
+            State: orderDetail.State == OrderDetailStates.Making ? OrderDetailStates.Added : OrderDetailStates.FixingRequest,
             MakingRequestTime: 0,
             FloristId: null
           })
             .then(() => {
 
-              orderDetail.State = OrderDetailStates.Added;
-              orderDetail.MakingRequestTime = 0;
+              this.getOrders();
+
             });
 
           break;
 
         case 1:
+
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+          this.selectMakingRequestTime = new Date(orderDetail.MakingRequestTime);
+          this.makingNote = orderDetail.MakingNote;
+
+          let newObj = {
+            State: OrderDetailStates.Waiting,
+            MakingRequestTime: this.selectMakingRequestTime.getTime(),
+            MakingNote: this.makingNote
+          };
+
+          makingTimeRequest(() => {
+
+            newObj.MakingNote = this.makingNote;
+            newObj.MakingRequestTime = this.selectMakingRequestTime.getTime();
+
+            this.orderDetailService.updateFields(orderDetail.OrderDetailId, newObj).then(res => {
+
+              this.orderDetailService.replaceFlorist(orderDetail.OrderDetailId, this.orderDetailService.getLastestMaking(orderDetail).Id, -1)
+                .then(() => {
+
+                  this.getOrders();
+
+                });
+
+            });
+
+          }, () => {
+
+            chooseFlorist((id) => {
+
+              newObj.State = OrderDetailStates.FixerAssigned;
+              newObj.MakingNote = this.makingNote;
+              newObj.MakingRequestTime = this.selectMakingRequestTime.getTime();
+
+              this.orderDetailService.updateFields(orderDetail.OrderDetailId, newObj).then(res => {
+
+                this.orderDetailService.replaceFlorist(orderDetail.OrderDetailId, this.orderDetailService.getLastestMaking(orderDetail).Id, +id)
+                  .then(() => {
+
+                    this.getOrders();
+
+                  });
+
+              });
+
+            });
+
+          });
+
+
+          break;
+
+        case 2:
+
+          this.openConfirm('Hoàn thành đơn này?', () => {
+
+            this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
+              CompleteTime: (new Date()).getTime(),
+            }).then(() => {
+
+              this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+                State: OrderDetailStates.Comfirming,
+
+              }).then(() => {
+
+                this.assignShipper(orderDetail);
+
+              });
+
+            });
+
+          });
+
+          break;
+
+        case 3:
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
 
           break;
 
-        case 2:
+        case 4:
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            MakingSortOrder: 0
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
+              this.getOrders();
             });
 
           break;
@@ -735,6 +1000,7 @@ export class OrdersManageComponent extends BaseComponent {
 
     let items = [
       'Xác nhận thành phẩm',
+      'Giao hàng',
       'Làm lại đơn',
       'Xem chi tiết',
       'Huỷ đơn'
@@ -742,6 +1008,7 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.menuOpening((index) => {
       switch ((+index)) {
+
         case 0:
 
           this.globalOrderDetail = orderDetail;
@@ -751,7 +1018,13 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 1:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "hh:mm a dd-MM-yyyy");
+          this.assignShipper(orderDetail);
+
+          break;
+
+        case 2:
+
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
           this.selectMakingRequestTime = orderDetail.DeliveryInfo.DateTime;
           this.makingNote = '';
 
@@ -764,7 +1037,7 @@ export class OrdersManageComponent extends BaseComponent {
           });
 
           break;
-        case 2:
+        case 3:
 
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
@@ -772,17 +1045,15 @@ export class OrdersManageComponent extends BaseComponent {
 
           break;
 
-        case 3:
+        case 4:
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            MakingSortOrder: 0,
             MakingRequestTime: 0
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
-              orderDetail.MakingRequestTime = 0;
-              this.deleteOrderDetail(orderDetail, order);
+
+              this.getOrders();
 
             });
 
@@ -822,13 +1093,10 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            MakingSortOrder: 0,
             MakingRequestTime: 0
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
-              orderDetail.MakingRequestTime = 0;
-              this.deleteOrderDetail(orderDetail, order);
+              this.getOrders();
 
             });
 
@@ -842,6 +1110,7 @@ export class OrdersManageComponent extends BaseComponent {
 
     let items = [
       'Xử lý sau',
+      'Giao hàng',
       'Xem chi tiết',
       'Huỷ đơn'
     ];
@@ -852,8 +1121,6 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Added,
-            MakingSortOrder: 0,
-            MakingRequestTime: 0,
           })
             .then(() => {
 
@@ -865,6 +1132,12 @@ export class OrdersManageComponent extends BaseComponent {
           break;
 
         case 1:
+
+          this.assignShipper(orderDetail);
+
+          break;
+
+        case 2:
           this.globalOrderDetail = orderDetail;
           this.globalOrder = order;
           this.router.navigate(['staff/order-detail-view']);
@@ -874,13 +1147,11 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
-            MakingSortOrder: 0,
             MakingRequestTime: 0
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
-              orderDetail.MakingRequestTime = 0;
-              this.deleteOrderDetail(orderDetail, order);
+
+              this.getOrders();
 
             });
 
@@ -901,12 +1172,9 @@ export class OrdersManageComponent extends BaseComponent {
       })
         .then(() => {
 
-          orderDetail.State = makingType == MakingType.Making ? OrderDetailStates.Waiting : OrderDetailStates.FixingRequest;
-          orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-          orderDetail.MakingNote = this.makingNote;
+          this.getOrders();
 
         });
-
     }
     else {
 
@@ -915,13 +1183,12 @@ export class OrdersManageComponent extends BaseComponent {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             MakingNote: this.makingNote,
+            State: makingType == MakingType.Making ? OrderDetailStates.FloristAssigned : OrderDetailStates.FixerAssigned,
             MakingRequestTime: this.selectMakingRequestTime.getTime()
           })
             .then(() => {
 
-              orderDetail.State = MakingType.Making ? OrderDetailStates.FloristAssigned : OrderDetailStates.FixerAssigned;
-              orderDetail.MakingRequestTime = this.selectMakingRequestTime.getTime();
-              orderDetail.MakingNote = this.makingNote;
+              this.getOrders();
 
             });
 
@@ -935,6 +1202,7 @@ export class OrdersManageComponent extends BaseComponent {
     let items = [
       'Chuyển cho Florist',
       'Xem chi tiết',
+      'Giao hàng',
       'Huỷ đơn'
     ];
 
@@ -969,12 +1237,18 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 2:
 
+          this.assignShipper(orderDetail);
+
+          break;
+
+        case 3:
+
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             State: OrderDetailStates.Canceled,
           })
             .then(() => {
-              orderDetail.State = OrderDetailStates.Canceled;
-              this.deleteOrderDetail(orderDetail, order);
+              this.getOrders();
+
             });
 
           break;

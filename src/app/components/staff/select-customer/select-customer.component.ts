@@ -29,6 +29,7 @@ export class SelectCustomerComponent extends BaseComponent {
   constructor(private customerService: CustomerService, private _ngZone: NgZone) {
     super();
 
+    this.selectedCustomer = new Customer();
     const key = 'searchProdReference';
     this.newCustomer = new Customer();
     this.customers = [];
@@ -70,7 +71,6 @@ export class SelectCustomerComponent extends BaseComponent {
     this.customerService.getCount().then(res => {
 
       this.totalCount = res + 1;
-      this.newCustomer = new Customer();
       this.newCustomer.Id = ExchangeService.detectCustomerId(this.totalCount);
 
     });
@@ -89,7 +89,7 @@ export class SelectCustomerComponent extends BaseComponent {
       return;
     }
 
-    this.selectedCustomer = null;
+    this.selectedCustomer = new Customer();
 
     const customer = new Customer();
 
@@ -112,9 +112,9 @@ export class SelectCustomerComponent extends BaseComponent {
 
       this.globalOrder.CustomerInfo = OrderCustomerInfoViewModel.toViewModel(this.selectedCustomer);
 
-      setSelectedCustomerItem(this.globalOrder.CustomerInfo.Id);
-
       closeAddCustomerDialog();
+
+      setSelectedCustomerItem(this.selectedCustomer.Id);
 
       this.totalCount += 1;
       this.newCustomer = new Customer();

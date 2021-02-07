@@ -33,12 +33,18 @@
                                         <img src="{{detail.ProductImageUrl |  ImgPipe : 'ProductImg' }}" alt=""
                                             class="item-detail-thumb">
                                         <div class="item-detail-info">
-                                            <span class="prodPriceOld">{{detail.OriginalPrice| myCurrPipe}}</span>
-                                            <span class="prodCharge">{{detail.AdditionalFee| myCurrPipe}}</span>
                                             <span class="prodPrice">{{detail.ModifiedPrice| myCurrPipe}}</span>
-                                            <span class="item-address">{{detail.DeliveryInfo.Address}}</span>
-                                            <span class="item-time">{{detail.DeliveryInfo.DateTime | myTimePipe}}</span>
-                                            <span class="item-date">{{detail.DeliveryInfo.DateTime | myDatePipe}}</span>
+                                            <span class="item-address">Số
+                                                lượng: {{detail.Quantity}}</span>
+                                            <span class="item-address">tên:
+                                                {{detail.DeliveryInfo.FullName}}</span>
+                                            <span class="item-address">dc: {{detail.DeliveryInfo.Address}}</span>
+
+                                            <span class="item-time">thời gian
+                                                {{detail.DeliveryInfo.DateTime | myTimePipe}}
+                                            </span>
+                                            <span class="item-date">
+                                                {{detail.DeliveryInfo.DateTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>
@@ -71,12 +77,18 @@
                                         <img src="{{detail.ProductImageUrl |  ImgPipe : 'ProductImg' }}" alt=""
                                             class="item-detail-thumb">
                                         <div class="item-detail-info">
-                                            <span class="prodPriceOld">{{detail.OriginalPrice| myCurrPipe}}</span>
-                                            <span class="prodCharge">{{detail.AdditionalFee| myCurrPipe}}</span>
                                             <span class="prodPrice">{{detail.ModifiedPrice| myCurrPipe}}</span>
-                                            <span class="item-address">{{detail.DeliveryInfo.Address}}</span>
-                                            <span class="item-time">{{detail.DeliveryInfo.DateTime | myTimePipe}}</span>
-                                            <span class="item-date">{{detail.DeliveryInfo.DateTime | myDatePipe}}</span>
+                                            <span class="item-address">Số
+                                                lượng: {{detail.Quantity}}</span>
+                                            <span class="item-address">người nhận:
+                                                {{detail.DeliveryInfo.FullName}}</span>
+                                            <span class="item-address">dc nhận: {{detail.DeliveryInfo.Address}}</span>
+
+                                            <span class="item-time">giao lúc
+                                                {{detail.DeliveryInfo.DateTime | myTimePipe}}
+                                            </span>
+                                            <span class="item-date">
+                                                {{detail.DeliveryInfo.DateTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>
@@ -88,6 +100,7 @@
         </div>
     </div>
 </div>
+
 <div class="customer-support">
     <img src="{{CurrentUser.Avt |  ImgPipe : 'UserAvt'}}" alt="" class="customer-avatar">
     <p class="customer-name">{{CurrentUser.FullName}}</p>

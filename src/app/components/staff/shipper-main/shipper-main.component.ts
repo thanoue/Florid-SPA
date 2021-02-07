@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgProbeToken } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { Router } from '@angular/router';
 import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
@@ -24,6 +24,10 @@ export class ShipperMainComponent extends BaseComponent {
   protected IsDataLosingWarning = false;
   waitingOrderDetails: OrderDetailViewModel[];
   shippingOrderDetails: OrderDetailViewModel[];
+
+  selectDeliveryTime = '';
+  selectReceiveRequestTime: Date;
+  shippingNote = '';
 
   waitingMenuItems = [
     'Nhận đơn',
@@ -104,21 +108,38 @@ export class ShipperMainComponent extends BaseComponent {
 
     getShippingNoteDialog(btnTitl, (note) => {
 
-      this.orderDetailService.updateShippingFields(this.orderDetailService.getLastestShipping(orderDetail).Id, {
-        CompleteTime: (new Date()).getTime(),
-        Note: note
-      }).then(data => {
+      if (destState == OrderDetailStates.SentBack) {
 
-        this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+        this.orderDetailService.updateShippingFields(this.orderDetailService.getLastestShipping(orderDetail).Id, {
+          Note: note,
+          CompleteTime: new Date().getTime(),
+          DeliveryImageUrl: ''
+        }).then(data => {
 
-          State: destState
+          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
 
-        }).then(res => {
+            State: destState
+
+          }).then(res => {
+
+            this.loadShippingDetails();
+
+          });
+        }).catch(err => {
+          this.showError(err);
+        });
+
+      } else {
+
+        this.orderDetailService.shippingConfirm(orderDetail, null, note).then(data => {
 
           this.loadShippingDetails();
 
+        }).catch(err => {
+          this.showError(err);
         });
-      });
+
+      }
 
     });
 

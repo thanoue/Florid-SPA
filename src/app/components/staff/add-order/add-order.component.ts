@@ -520,8 +520,6 @@ export class AddOrderComponent extends BaseComponent {
 
         this.uploadImage(orderDetails).then(upload => {
 
-          console.log('---------');
-
           this.orderService.addOrderDetails(orderDetails)
             .then(() => {
 
@@ -556,6 +554,9 @@ export class AddOrderComponent extends BaseComponent {
               this.showError(error.toString());
 
             });
+        }).catch(errr => {
+          this.showError(errr.toString());
+          return;
         });
 
       });
@@ -615,11 +616,13 @@ export class AddOrderComponent extends BaseComponent {
 
   async uploadImages(orderDetail: OrderDetail): Promise<string> {
 
-    return await new Promise((resolve: (res: string) => void, reject) => {
-      let imageUrls = '';
-      let index = 0;
+    return await new Promise(async (resolve: (res: string) => void, reject) => {
 
-      orderDetail.NoteImages.forEach(async noteImgData => {
+      let imageUrls = '';
+
+      for (let i = 0; i < orderDetail.NoteImages.length; i++) {
+
+        let noteImgData = orderDetail.NoteImages[i];
 
         let response = await fetch(noteImgData);
         let blob = await response.blob();
@@ -639,24 +642,12 @@ export class AddOrderComponent extends BaseComponent {
 
             });
 
-          if (url != '') {
-
-            if (index == orderDetail.NoteImages.length - 1) {
-
-              imageUrls += url;
-
-              resolve(imageUrls);
-
-            } else {
-              imageUrls = imageUrls + url + ',';
-              index += 1;
-            }
-
-          }
+          imageUrls = i == orderDetail.NoteImages.length - 1 ? imageUrls + url : imageUrls + url + ',';
 
         }
+      }
 
-      });
+      resolve(imageUrls);
 
     }).then(url => {
       return url;
@@ -666,53 +657,32 @@ export class AddOrderComponent extends BaseComponent {
 
   async uploadImage(orderDetails: OrderDetail[]): Promise<any> {
 
-    return await new Promise((resolve: (url: string) => void, reject) => {
+    return await new Promise(async (resolve: (url: string) => void, reject) => {
 
       try {
 
-        let index = 0;
-        let isResolved = false;
+        for (let i = 0; i < orderDetails.length; i++) {
 
-        orderDetails.forEach(async orderDetail => {
+          let orderDetail = orderDetails[i];
 
-          if (index >= orderDetails.length - 1) {
+          if (orderDetail.NoteImages && orderDetail.NoteImages.length > 0) {
 
-            if (!isResolved) {
-              resolve('added');
-              isResolved = true;
-            }
+            let urls = await this.uploadImages(orderDetail).catch(err => {
+              reject(err);
+              return;
+            });
 
-          } else {
+            if (urls) {
 
-            if (orderDetail.NoteImages && orderDetail.NoteImages.length > 0) {
-
-              let urls = await this.uploadImages(orderDetail);
-
-              if (urls) {
-
-                orderDetail.NoteImages = [];
-                orderDetail.NoteImagesBlobbed = urls;
-
-                console.log(orderDetail.NoteImages, urls);
-
-                index += 1;
-
-                if (!isResolved) {
-                  resolve('added');
-                  isResolved = true;
-                }
-
-              }
-
-            } else {
-
-              index += 1;
+              orderDetail.NoteImages = [];
+              orderDetail.NoteImagesBlobbed = urls;
 
             }
 
           }
+        }
 
-        });
+        resolve('added');
 
       }
       catch (err) {
@@ -894,6 +864,7 @@ export class AddOrderComponent extends BaseComponent {
         case 1:
 
           viewModel.Index = this.order.OrderDetails.length;
+
           this.order.OrderDetails.push(viewModel);
 
           this.onVATIncludedChange();

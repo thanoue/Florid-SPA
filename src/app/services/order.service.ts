@@ -214,7 +214,7 @@ export class OrderService {
 
           orderDetailVM.Florists = [];
 
-          orderDetail.shippers.forEach(rawShipper => {
+          orderDetail.florists.forEach(rawShipper => {
 
             let user = new User();
 

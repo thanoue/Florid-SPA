@@ -106,6 +106,7 @@ export const API_END_POINT = {
     getODSeeners: '/orderDetailSeener/getODSeeners',
 
     assignSingleOD: '/shippingSession/assignSingleOD',
+    replaceShipper: '/shippingSession/replaceFlorist',
     assignOrderDetails: '/shippingSession/assignOrderDetails',
     getShippingOrderDetails: '/shippingSession/getShippingOrderDetails',
     shippingConfirm: '/shippingSession/shippingConfirm',
@@ -173,7 +174,11 @@ export const ORDER_DETAIL_STATES = [
     },
     {
         State: OrderDetailStates.Waiting,
-        DisplayName: 'Đang chờ cắm'
+        DisplayName: 'Chưa chọn thợ cắm'
+    },
+    {
+        State: OrderDetailStates.FloristAssigned,
+        DisplayName: 'Đã chọn thợ cắm'
     },
     {
         State: OrderDetailStates.Making,
@@ -189,7 +194,7 @@ export const ORDER_DETAIL_STATES = [
     },
     {
         State: OrderDetailStates.DeliverAssinged,
-        DisplayName: 'Đã chọn được Shipper'
+        DisplayName: 'Đã chọn Shipper'
     },
     {
         State: OrderDetailStates.OnTheWay,
@@ -206,6 +211,10 @@ export const ORDER_DETAIL_STATES = [
     {
         State: OrderDetailStates.FixingRequest,
         DisplayName: 'Đang yêu cầu sửa'
+    },
+    {
+        State: OrderDetailStates.FixerAssigned,
+        DisplayName: 'Đã chọn thợ sửa'
     },
     {
         State: OrderDetailStates.Fixing,

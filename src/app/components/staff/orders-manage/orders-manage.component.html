@@ -65,9 +65,9 @@
                                         class="item-detail-thumb">
                                     <div class="item-detail-info">
                                         <h5 class="item-code">{{orderDetail.ProductName}}</h5>
-                                        <span class="item-quantity">Phụ phí:
-                                            {{orderDetail.AdditionalFee| myCurrPipe}}</span>
-                                        <span class="item-address">{{orderDetail.DeliveryInfo.Address}}</span>
+                                        <span class="prodPrice">{{orderDetail.ModifiedPrice| myCurrPipe}}</span>
+                                        <span class="item-quantity">Số lượng:
+                                            {{orderDetail.Quantity}}</span>
                                         <span
                                             class="item-time">{{orderDetail.DeliveryInfo.DateTime | myTimePipe}}</span>
                                         <span
@@ -93,8 +93,8 @@
    ">{{selectDeliveryTime}}</span>
     <div class="form-group">
         <label class="custom-label">Thời gian hoàn thành: </label>
-        <input [owlDateTime]="dt1" id="request-time" [owlDateTimeTrigger]="dt1" [(ngModel)]="selectMakingRequestTime"
-            name="DateTime" class="mainForm">
+        <input [owlDateTime]="dt1" id="selectMakingRequestTime" [owlDateTimeTrigger]="dt1"
+            [(ngModel)]="selectMakingRequestTime" name="selectMakingRequestTime" class="mainForm">
         <owl-date-time [stepMinute]="5" #dt1></owl-date-time>
     </div>
     <div class="form-group">
@@ -117,6 +117,38 @@
     </div>
 </div>
 
+<div id="shippingRequest" class="popup-content">
+    <label>Thời nhận dự kiến: </label> <span style="
+    font-weight: bold;
+    font-size: 15px;
+    margin-left:3px;
+   ">{{selectDeliveryTime}}</span>
+    <div class="form-group">
+        <label class="custom-label">Thời gian nhận: </label>
+        <input [owlDateTime]="dt2" id="selectReceiveRequestTime" [owlDateTimeTrigger]="dt2"
+            [(ngModel)]="selectReceiveRequestTime" name="selectReceiveRequestTime" class="mainForm">
+        <owl-date-time [stepMinute]="5" #dt2></owl-date-time>
+    </div>
+    <div class="form-group">
+        <label class="custom-label">Ghi chú giao hàng: </label>
+        <textarea id="shippingNote" style="width:100%;height:130px" [(ngModel)]="shippingNote" name="shippingNote"
+            class="mainForm"></textarea>
+    </div>
+    <div class="row">
+        <div class="col-12 mx-auto text-center">
+            <button type="button" id="choose-florist-btn" class="btn main-btn w-100 mt-3">Chỉ định Shipper</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 mx-auto text-center">
+            <button type="button" id="submit-btn" class="btn main-btn w-100 mt-3">Lưu</button>
+        </div>
+        <div class="col-6 mx-auto text-center">
+            <button type="button" id="cancel-btn" class="btn grey-btn w-100 mt-3">Hủy</button>
+        </div>
+    </div>
+</div>
+
 <div id="colorBoard" class="popup-content">
     <ul class="colorList">
 
@@ -127,10 +159,12 @@
             <label>{{selectedDetail.StateDisplay}}</label>
         </li>
         <li class="colorInfo">
-            <label>Thợ cắm hoa: </label><span *ngFor="let name of selectedDetail.FloristName">{{name}}</span>
+            <label>Thợ cắm hoa: </label><span
+                *ngFor="let florist of selectedDetail.Florists">{{florist.FullName}}</span>
         </li>
         <li class="colorInfo">
-            <label>Người giao hoa: </label><span *ngFor="let name of selectedDetail.ShipperName">{{name}}</span>
+            <label>Người giao hoa: </label><span *ngFor="let shipper of selectedDetail.Shippers"
+                style="margin-left: 5px;">{{shipper.FullName}}</span>
         </li>
 
     </ul>

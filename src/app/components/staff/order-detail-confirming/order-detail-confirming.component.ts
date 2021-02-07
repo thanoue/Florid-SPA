@@ -34,25 +34,18 @@ export class OrderDetailConfirmingComponent extends BaseComponent {
 
       case Roles.Account:
       case Roles.Admin:
-        this.orderDetailService.getNextShippingSortOrder()
-          .then((nextOrder) => {
 
-            this.orderDetailService.updateFields(this.globalOrderDetail.OrderDetailId, {
-              State: OrderDetailStates.DeliveryWaiting,
-              ShippingSortOrder: nextOrder,
-            })
-              .then(() => {
+        this.orderDetailService.resultConfirm(this.globalOrderDetail.OrderDetailId, this.orderDetailService.getLastestMaking(this.globalOrderDetail).Id, null)
+          .then(() => {
 
-                this.router.navigate(['staff/account-main']);
-
-              });
+            this.router.navigate(['staff/account-main']);
 
           });
+
         break;
       case Roles.Shipper:
 
         this.orderDetailService.updateFields(this.globalOrderDetail.OrderDetailId, {
-          ShippingSortOrder: 0,
           State: OrderDetailStates.Deliveried,
           DeliveryCompletedTime: (new Date).getTime(),
         })

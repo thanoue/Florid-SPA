@@ -62,12 +62,25 @@ export class FinalConfirmComponent extends BaseComponent {
       });
   }
 
-  getShippingImg() {
-    return this.orderDetailService.getLastestShipping(this.orderDetail).DeliveryImageUrl;
+  getShippingImg(): string {
+
+    let shipping = this.orderDetailService.getLastestShipping(this.orderDetail) ;
+
+    if (shipping != null)
+      return shipping.DeliveryImageUrl;
+
+    return '';
+
+    return
   }
 
   getResultImg() {
-    return this.orderDetailService.getLastestMaking(this.orderDetail).ResultImageUrl;
+    let making = this.orderDetailService.getLastestMaking(this.orderDetail);
+
+    if (making != null)
+      return making.ResultImageUrl;
+
+    return '';
   }
 
   shareToCus() {

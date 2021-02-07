@@ -7,6 +7,7 @@ import { REQUEST_TIMEOUT } from 'src/app/app.constants';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { NgxImageCompressService, DOC_ORIENTATION } from 'ngx-image-compress';
 
 declare function isOnMobile(): any;
 
@@ -29,13 +30,15 @@ export class HttpService {
   protected apiHost = environment.base_domain;
   protected apiUrlPrefix = '/api';
 
+  maxFileSize = 800000;
+
   protected headers: HttpHeaders;
 
   public createAPIURL(path: string): string {
     return this.apiHost + this.apiUrlPrefix + path;
   }
 
-  constructor(protected http: HttpClient, private router: Router, protected globalService: GlobalService) {
+  constructor(protected http: HttpClient, private router: Router, protected globalService: GlobalService, protected imageCompress: NgxImageCompressService) {
     this.headers = new HttpHeaders(HttpService.defaultHeader);
   }
 
@@ -131,7 +134,7 @@ export class HttpService {
       .pipe(timeout(REQUEST_TIMEOUT));
 
     var promise = request.toPromise();
- 
+
     return promise.then((res) => {
       if (loader) {
         this.globalService.stopLoading();
@@ -142,7 +145,62 @@ export class HttpService {
     });
   }
 
-  public postForm(url: string, params?: HttpParams | any, loader = true): Promise<object | any> {
+  public async compressImage(src: File): Promise<File> {
+
+    let fileSize = src.size;
+    console.log('original size ', fileSize);
+
+    if (fileSize <= this.maxFileSize) {
+      return new Promise<File>((resolve, reject) => { resolve(src) }).then(res => { return res });
+    }
+
+    return new Promise<File>((resolve, reject) => {
+
+      try {
+
+        var reader = new FileReader();
+
+        reader.onload = (_event) => {
+
+          this.imageCompress.getOrientation(src).then(ori => {
+
+            this.imageCompress.compressFile(reader.result.toString(), ori, undefined, this.getspecificQuality(src))
+              .then(async res => {
+
+                let response = await fetch(res);
+                let blob = await response.blob();
+
+                const file = new File([blob], "result.png", { type: "image/png" });
+
+                console.log('resized  size ', file.size);
+
+                resolve(file);
+
+              });
+          })
+        }
+
+        reader.readAsDataURL(src);
+      }
+      catch (err) {
+        reject(err);
+      }
+
+    }).then(file => {
+      return file;
+    });
+  }
+
+  getspecificQuality(file: File): number {
+
+    let count = file.size;
+
+    return (this.maxFileSize / count) * 100;
+
+  }
+
+
+  public async postForm(url: string, params?: HttpParams | any, loader = true): Promise<object | any> {
 
     this.loadToken(true);
 
@@ -150,6 +208,20 @@ export class HttpService {
 
     if (loader) {
       this.globalService.startLoading();
+    }
+
+    let arr = Object.keys(params || {});
+
+    for (let i = 0; i < arr.length; i++) {
+
+      let p = arr[i];
+
+      if (params[p] instanceof File) {
+
+        params[p] = await this.compressImage(params[p]);
+
+      }
+
     }
 
     var body = this.parseFormdata(params);
@@ -168,9 +240,12 @@ export class HttpService {
   }
 
   private parseFormdata(model: any) {
+
     const formdata = new FormData();
     Object.keys(model || {}).forEach(p => {
+
       formdata.append(p, model[p]);
+
     });
 
     return formdata;

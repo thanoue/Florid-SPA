@@ -118,7 +118,10 @@ export class OrderDetailViewModel {
         viewModel.PercentDiscount = model.PercentDiscount;
         viewModel.AmountDiscount = model.AmountDiscount;
         viewModel.ShippingNote = model.ShippingNote;
-        viewModel.NoteImages = model.NoteImages;
+
+        if (model.NoteImages) {
+            Object.assign(viewModel.NoteImages, model.NoteImages);
+        }
 
         if (model.SeenUsers && model.SeenUsers.length > 0) {
             model.SeenUsers.forEach(user => {
@@ -132,6 +135,14 @@ export class OrderDetailViewModel {
 
         if (model.MakingNote) {
             Object.assign(viewModel.MakingNote, model.MakingNote);
+        }
+
+        if (model.Shippers) {
+            Object.assign(viewModel.Shippers, model.Shippers);
+        }
+
+        if (model.Florists) {
+            Object.assign(viewModel.Florists, model.Florists);
         }
 
         return viewModel;

@@ -34,10 +34,17 @@
                                             class="item-detail-thumb">
                                         <div class="item-detail-info">
                                             <span class="prodPrice">{{detail.ModifiedPrice| myCurrPipe}}</span>
-                                            <span class="prodCharge">{{detail.AdditionalFee| myCurrPipe}}</span>
-                                            <span class="item-address">{{detail.DeliveryInfo.Address}}</span>
-                                            <span class="item-time">{{detail.MakingRequestTime | myTimePipe}}</span>
-                                            <span class="item-date">{{detail.MakingRequestTime | myDatePipe}}</span>
+                                            <span class="prodCharge">Phụ phí:
+                                                {{detail.AdditionalFee| myCurrPipe}}</span>
+                                            <span class="prodCharge">Giảm
+                                                giá:
+                                                {{getDetailDiscount(detail) | myCurrPipe}}</span>
+                                            <span class="item-address">Số
+                                                lượng: {{detail.Quantity}}</span>
+                                            <span class="item-time">{{detail.MakingRequestTime | myTimePipe}}
+                                            </span>
+                                            <span class="item-date">
+                                                {{detail.MakingRequestTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>
@@ -71,10 +78,17 @@
                                             class="item-detail-thumb">
                                         <div class="item-detail-info">
                                             <span class="prodPrice">{{detail.ModifiedPrice| myCurrPipe}}</span>
-                                            <span class="prodCharge">{{detail.AdditionalFee| myCurrPipe}}</span>
-                                            <span class="item-address">{{detail.DeliveryInfo.Address}}</span>
-                                            <span class="item-time">{{detail.MakingRequestTime | myTimePipe}}</span>
-                                            <span class="item-date">{{detail.MakingRequestTime | myDatePipe}}</span>
+                                            <span class="prodCharge">Phụ phí:
+                                                {{detail.AdditionalFee| myCurrPipe}}</span>
+                                            <span class="prodCharge">Giảm
+                                                giá:
+                                                {{getDetailDiscount(detail) | myCurrPipe}}</span>
+                                            <span class="item-address">Số
+                                                lượng: {{detail.Quantity}}</span>
+                                            <span class="item-time">{{detail.MakingRequestTime | myTimePipe}}
+                                            </span>
+                                            <span class="item-date">
+                                                {{detail.MakingRequestTime | myDatePipe}}</span>
                                         </div>
                                     </div>
                                 </li>

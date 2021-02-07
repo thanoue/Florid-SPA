@@ -654,7 +654,6 @@ function getShippingNoteDialog(btnTitle, callback) {
 
     jQuery("#shipping-note-popup").fadeIn(250);
 
-
     jQuery(".overlay-dark").one('click', function () {
         jQuery("#shipping-note-popup").hide(250, function () {
             jQuery(".overlay-dark").remove();
@@ -996,6 +995,50 @@ function makingTimeRequest(saveCallback, chooseFloristCallback) {
     jQuery(".overlay-dark:not(.layer2)").off('click');
     jQuery(".overlay-dark:not(.layer2)").one('click', function () {
         jQuery('#makingTimeRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    });
+
+}
+
+function shippingRequest(saveCallback, chooseFloristCallback) {
+
+    appendInBody();
+
+    jQuery("#shippingRequest").fadeIn(350);
+
+    jQuery("#shippingRequest #submit-btn").off('click');
+    jQuery("#shippingRequest #submit-btn").on('click', function () {
+
+        jQuery('#shippingRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+            saveCallback();
+
+        });
+
+    });
+
+    jQuery("#shippingRequest #choose-florist-btn").off('click');
+    jQuery("#shippingRequest #choose-florist-btn").one('click', function () {
+
+        jQuery('#shippingRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+            chooseFloristCallback();
+
+        });
+
+    });
+
+    jQuery("#shippingRequest #cancel-btn").off('click');
+    jQuery("#shippingRequest #cancel-btn").one('click', function () {
+        jQuery('#shippingRequest').hide(250, function () {
+            jQuery(".overlay-dark:not(.layer2)").remove();
+        });
+    })
+
+    jQuery(".overlay-dark:not(.layer2)").off('click');
+    jQuery(".overlay-dark:not(.layer2)").one('click', function () {
+        jQuery('#shippingRequest').hide(250, function () {
             jQuery(".overlay-dark:not(.layer2)").remove();
         });
     });
