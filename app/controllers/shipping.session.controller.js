@@ -25,14 +25,73 @@ exports.assignSingleOD = (req, res) => {
     }).then(shippingSession => {
 
         OrderDetail.update({
-            State: ODStatuses.DeliverAssinged
+            State: ODStatuses.DeliverAssinged,
         }, {
             where: {
                 Id: orderDetailId
             }
         }).then(data => {
             res.send(shippingSession);
+
         }).catch(err => logger.error(err, res));
+
+    }).catch(err => logger.error(err, res));
+}
+
+exports.replaceShipper = (req, res) => {
+
+    let orderDetailId = req.body.orderDetailId;
+    let newShipperId = req.body.newShipperId;
+    let oldShippingId = req.body.oldShippingId;
+    let newAssignTime = req.body.newAssignTime;
+
+    Shipping.destroy({
+        where: {
+            Id: oldShippingId
+        }
+    }).then(data => {
+
+        if (newShipperId != undefined && newShipperId != -1) {
+
+            Shipping.create({
+                ShipperId: newShipperId,
+                AssignTime: newAssignTime,
+                OrderDetailId: orderDetailId
+            }).then(add => {
+                res.send({ message: 'added new shipping!' });
+            }).catch(err => logger.error(err, res));
+        } else {
+            res.send({ message: 'removed a shipping!' });
+        }
+
+    }).catch(err => logger.error(err, res));
+}
+
+exports.replaceFlorist = (req, res) => {
+
+    let orderDetailId = req.body.orderDetailId;
+    let newFloristId = req.body.newFloristId;
+    let oldMakingId = req.body.oldMakingId;
+    let newAssignTime = req.body.newAssignTime;
+
+    Making.destroy({
+        where: {
+            Id: oldMakingId
+        }
+    }).then(data => {
+
+        if (newFloristId != undefined && newFloristId != -1) {
+
+            Making.create({
+                ShipperId: newFloristId,
+                AssignTime: newAssignTime,
+                OrderDetailId: orderDetailId
+            }).then(add => {
+                res.send({ message: 'added new making!' });
+            }).catch(err => logger.error(err, res));
+        } else {
+            res.send({ message: 'removed a making!' });
+        }
 
     }).catch(err => logger.error(err, res));
 }
@@ -64,17 +123,10 @@ exports.assignSingleMaking = (req, res) => {
     }).catch(err => logger.error(err, res));
 }
 
-exports.shippingConfirm = (req, res) => {
+function shippingConfirmation(req, res, shippingImgName) {
 
-    let shippingImgName = "";
-    let shipping = req.body.shipping;
-
-    if (req.files) {
-
-        shippingImgName = commonService.getNewFileName(req.files.shippingImg);
-
-        req.files.shippingImg.mv(shippingImgFolderPath + shippingImgName);
-    }
+    let shippingId = req.body.shippingId;
+    let orderrDetailId = req.body.orderrDetailId;
 
     let updateObj = {
         DeliveryImageUrl: shippingImgName,
@@ -84,7 +136,7 @@ exports.shippingConfirm = (req, res) => {
 
     Shipping.update(updateObj, {
         where: {
-            Id: shipping.Id
+            Id: shippingId
         }
     }).then(() => {
 
@@ -92,7 +144,7 @@ exports.shippingConfirm = (req, res) => {
             State: ODStatuses.Deliveried
         }, {
             where: {
-                Id: shipping.OrderDetailId
+                Id: orderrDetailId
             }
         }).then(data => {
 
@@ -101,6 +153,30 @@ exports.shippingConfirm = (req, res) => {
         }).catch(err => logger.error(err, res));
 
     }).catch(err => logger.error(err, res));
+}
+
+exports.shippingConfirm = (req, res) => {
+
+    let shippingImgName = "";
+
+    if (req.files) {
+
+        shippingImgName = commonService.getNewFileName(req.files.shippingImg);
+
+        req.files.shippingImg.mv(shippingImgFolderPath + shippingImgName, (err => {
+
+            if (err) {
+                logger.error(err, res);
+                return;
+            }
+
+            shippingConfirmation(req, res, shippingImgName);
+
+        }));
+
+    } else {
+        shippingConfirmation(req, res, '');
+    }
 
 }
 
@@ -133,14 +209,14 @@ exports.getMakingOrderDetails = (req, res) => {
     OrderDetail.findAll({
         where: {
             State: {
-                [Op.in]: [ODStatuses.Making, ODStatuses.FixerAssigned, ODStatuses.Fixing]
+                [Op.in]: [ODStatuses.FloristAssigned, ODStatuses.Making, ODStatuses.FixerAssigned, ODStatuses.Fixing]
             }
         },
-        order: ['MakingRequestTime', 'ASC'],
+        order: [['MakingRequestTime', 'ASC']],
         include: [
             {
                 model: Making,
-                as: 'makings',
+                as: 'orderDetailMakings',
                 where: {
                     FloristId: floristId
                 },
@@ -161,11 +237,11 @@ exports.getShippingOrderDetails = (req, res) => {
                 [Op.in]: [ODStatuses.DeliverAssinged, ODStatuses.OnTheWay]
             }
         },
-        order: ['ReceivingTime', 'ASC'],
+        order: [['ReceivingTime', 'ASC']],
         include: [
             {
                 model: Shipping,
-                as: 'shippings',
+                as: 'orderDedailShippings',
                 where: {
                     ShipperId: shipperId
                 },
@@ -223,12 +299,21 @@ exports.assignFloristForOrderDetails = (req, res) => {
         returning: true
     }).then(data => {
 
-        let command = '';
+        var command = "";
 
         makings.forEach(mak => {
-            command += 'UPDATE  `orderdetails` set `State` = \'' +
-                + mak.MakingType == MakingTypes.Fixing ? ODStatuses.FixerAssigned : ODStatuses.FloristAssigned + '\'  WHERE  `Id`= ' + mak.OrderDetailId + ';';
+
+            let status = mak.MakingType == MakingTypes.Fixing ? ODStatuses.FixerAssigned : ODStatuses.FloristAssigned;
+
+            let item = "UPDATE  `orderdetails` set `State` = \'" + status + "\'  WHERE  `Id`=" + mak.OrderDetailId + ";";
+
+            console.log(item);
+
+            command += item;
+
         });
+
+        console.log('command is:', command);
 
         sequelize.query(command).then(data => {
             res.send({ message: 'updated some data' });

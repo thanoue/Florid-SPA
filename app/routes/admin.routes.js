@@ -210,13 +210,15 @@ module.exports = function (app) {
         [authJwt.verifyToken], shippingSessionController.updateShippingFields)
     app.post(`${shippingSessionPrefix}shippingConfirm`,
         [authJwt.verifyToken], shippingSessionController.shippingConfirm)
+    app.post(`${shippingSessionPrefix}replaceShipper`,
+        [authJwt.verifyToken], shippingSessionController.replaceShipper)
+    app.post(`${shippingSessionPrefix}replaceFlorist`,
+        [authJwt.verifyToken], shippingSessionController.replaceFlorist)
 
     app.post(`${makingPrefix}getMakingOrderDetails`,
         [authJwt.verifyToken], shippingSessionController.getMakingOrderDetails)
     app.post(`${makingPrefix}assignSingleMaking`,
         [authJwt.verifyToken], shippingSessionController.assignSingleMaking)
-    app.post(`${makingPrefix}updateFields`,
-        [authJwt.verifyToken], shippingSessionController.updateMakingFields)
     app.post(`${makingPrefix}updateFields`,
         [authJwt.verifyToken], shippingSessionController.updateMakingFields)
     app.post(`${makingPrefix}assignFloristForOrderDetails`,

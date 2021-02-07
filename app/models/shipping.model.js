@@ -7,11 +7,11 @@ module.exports = (sequelize, Sequelize) => {
         },
         ShipperId: {
             type: Sequelize.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         OrderDetailId: {
             type: Sequelize.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         AssignTime: {
             type: Sequelize.BIGINT(11)
@@ -36,6 +36,17 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DATE,
             allowNull: true
         }
+    }, {
+        indexes: [
+            {
+                unique: false,
+                fields: ['ShipperId', 'OrderDetailId']
+            },
+            {
+                unique: false,
+                fields: ['OrderDetailId', 'ShipperId']
+            }
+        ]
     });
 
     return Shipping;

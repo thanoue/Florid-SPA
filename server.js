@@ -18,8 +18,10 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(fileUpload({
-    createParentPath: true
+    createParentPath: true,
+    limits: { fileSize: 50 * 1024 * 1024 },
 }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

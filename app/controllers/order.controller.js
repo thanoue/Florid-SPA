@@ -701,7 +701,14 @@ exports.searchOrders = (req, res) => {
                         },
                         {
                             model: Shipping,
-                            as: 'orderDedailShippings'
+                            as: 'orderDedailShippings',
+                            include: [
+                                {
+                                    model: User,
+                                    as: 'shippingShipper'
+                                }
+                            ],
+                            order: [['AssignTime', 'DESC']],
                         },
                         {
                             model: User,
@@ -709,7 +716,14 @@ exports.searchOrders = (req, res) => {
                         },
                         {
                             model: Making,
-                            as: 'orderDetailMakings'
+                            include: [
+                                {
+                                    model: User,
+                                    as: 'makingFlorist'
+                                }
+                            ],
+                            as: 'orderDetailMakings',
+                            order: [['AssignTime', 'DESC']],
                         }
                     ]
                 },

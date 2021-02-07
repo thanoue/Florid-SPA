@@ -21,27 +21,60 @@ exports.resultConfirm = (req, res) => {
 
     let resultImgName = "";
 
-    if (req.files) {
+    if (req.files && req.files.resultImg != null) {
 
         resultImgName = commonService.getNewFileName(req.files.resultImg);
 
-        req.files.resultImg.mv(resultImgFolderPath + resultImgName);
+        req.files.resultImg.mv(resultImgFolderPath + resultImgName, (err => {
+
+            if (err) {
+                logger.error(err)
+                return;
+            }
+
+            updateODResult(req, res, resultImgName);
+        }));
+    } else {
+        updateODResult(req, res);
     }
+}
+
+function updateODResult(req, res, resultImgName) {
+
+    let makingId = req.body.makingId;
+    let orderDetailId = req.body.orderDetailId;
+
     let updateObj = {
         State: ODStatuses.DeliveryWaiting,
-        ResultImageUrl: resultImgName
     };
 
     OrderDetail.update(updateObj, {
         where: {
-            Id: req.body.orderDetailId
+            Id: orderDetailId
         }
     }).then(data => {
-        res.send(updateObj);
+
+        if (resultImgName != undefined) {
+            Making.update({
+                ResultImageUrl: resultImgName
+            }, {
+                where: {
+                    Id: makingId
+                }
+            }).then(() => {
+
+                res.send({ message: 'an order detail is confirmed' });
+
+            }).catch(err => logger.error(err, res));
+
+        } else {
+
+            res.send({ message: 'an order detail is confirmed' });
+
+        }
+
     }).catch(err => logger.error(err, res));
-
 }
-
 
 
 exports.deleteOrderDetailByOrderId = (req, res) => {
@@ -97,12 +130,23 @@ exports.uploadNoteImage = (req, res) => {
 
             noteImg = commonService.getNewFileName(req.files.noteImg);
 
-            req.files.noteImg.mv(orderDetailNoteImg + noteImg);
-        }
+            req.files.noteImg.mv(orderDetailNoteImg + noteImg, (err) => {
 
-        res.send({
-            imgName: noteImg
-        });
+                if (err) {
+
+                    logger.error(err);
+                    return;
+
+                }
+                res.send({
+                    imgName: noteImg
+                });
+            });
+        } else {
+            res.status(401).send({
+                message: 'Files im empty'
+            });
+        }
     }
     catch (err) {
         logger.error(err, res);
@@ -113,7 +157,6 @@ exports.updateStatusByOrderId = (req, res) => {
 
     let orderId = req.body.orderId;
     let status = req.body.status;
-    let doneTime = req.body.doneTime;
 
     OrderDetail.update({
         State: status
@@ -122,19 +165,11 @@ exports.updateStatusByOrderId = (req, res) => {
             OrderId: orderId
         }
     }).then(data => {
-        Order.update({
-            DoneTime: doneTime
-        }, {
-            where: {
-                Id: orderId
-            }
-        }).then(() => {
-            res.send({ data });
-        }).catch(err => logger.error(err, res));
+
+        res.send({ data });
+
     }).catch(err => logger.error(err, res));
 }
-
-
 
 exports.updateOrderInfos = (req, res) => {
 
@@ -426,12 +461,34 @@ exports.getDetailByStates = (req, res) => {
         ],
         include: [
             {
-                model: Making,
-                as: 'makings',
+                model: User,
+                as: 'shippers'
             },
             {
                 model: Shipping,
-                as: 'shippings',
+                as: 'orderDedailShippings',
+                include: [
+                    {
+                        model: User,
+                        as: 'shippingShipper'
+                    }
+                ],
+                order: [['AssignTime', 'DESC']],
+            },
+            {
+                model: User,
+                as: 'florists'
+            },
+            {
+                model: Making,
+                include: [
+                    {
+                        model: User,
+                        as: 'makingFlorist'
+                    }
+                ],
+                as: 'orderDetailMakings',
+                order: [['AssignTime', 'DESC']],
             }
         ]
     }).then(data => {
