@@ -14,9 +14,9 @@ module.exports = env !== 'development' ? {
     }
 } : {
         HOST: "localhost",
-        USER: "root",
-        PASSWORD: "123456a@A",
-        DB: "florid_local",
+        USER: "vpsuser",
+        PASSWORD: "123456789",
+        DB: "florid_main_test",
         dialect: "mysql",
         pool: {
             max: 5,
