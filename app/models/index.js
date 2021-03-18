@@ -30,7 +30,6 @@ db.sequelize = sequelize;
 
 db.user = require("./user.model.js")(sequelize, Sequelize);
 db.role = require("./role.model.js")(sequelize, Sequelize);
-db.session = require("./session.model.js")(sequelize, Sequelize);
 db.user_role = require("./user.role.model.js")(sequelize, Sequelize);
 db.tag = require('./tag.model.js')(sequelize, Sequelize);
 db.product = require('./product.model.js')(sequelize, Sequelize);
@@ -81,24 +80,24 @@ db.districtAddress.hasMany(db.wardAddress, {
 
 db.product.hasMany(db.orderDetail, {
     foreignKey: 'ProductId',
-    onDelete: 'SET NULL'
+    onDelete: 'SET NULL',
 });
 
 db.orderDetail.belongsToMany(db.user, {
     through: "shippings",
     foreignKey: "OrderDetailId",
     otherKey: "ShipperId",
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'shippers'
 });
 db.orderDetail.hasMany(db.shipping, {
     foreignKey: 'OrderDetailId',
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'orderDedailShippings'
 });
 db.shipping.belongsTo(db.orderDetail, {
     foreignKey: 'OrderDetailId',
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'shippingOrderDetail'
 });
 
@@ -106,55 +105,56 @@ db.user.belongsToMany(db.orderDetail, {
     through: "shippings",
     foreignKey: "ShipperId",
     otherKey: "OrderDetailId",
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'shippingOrderDetails'
 });
 db.user.hasMany(db.shipping, {
     foreignKey: 'ShipperId',
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'userShippings'
 });
 db.shipping.belongsTo(db.user, {
     foreignKey: 'ShipperId',
-    onDelete: 'SET NULL',
-    as: 'shippingShipper'
-});
-
-db.user.belongsToMany(db.orderDetail, {
-    through: "makings",
-    foreignKey: "FloristId",
-    otherKey: "OrderDetailId",
-    onDelete: 'SET NULL',
-    as: 'makingOrderDetails'
-});
-db.user.hasMany(db.making, {
-    foreignKey: 'FloristId',
-    onDelete: 'SET NULL',
-    as: 'userMakings'
-});
-db.making.belongsTo(db.user, {
-    foreignKey: 'FloristId',
-    onDelete: 'SET NULL',
-    as: 'makingFlorist'
+    onDelete: 'CASCADE',
+    as: 'shipper'
 });
 
 db.orderDetail.belongsToMany(db.user, {
     through: "makings",
     foreignKey: "OrderDetailId",
     otherKey: "FloristId",
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'florists'
 });
 db.orderDetail.hasMany(db.making, {
     foreignKey: 'OrderDetailId',
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'orderDetailMakings'
 });
 db.making.belongsTo(db.orderDetail, {
     foreignKey: 'OrderDetailId',
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
     as: 'makingOrderDetail'
 });
+
+db.user.belongsToMany(db.orderDetail, {
+    through: "makings",
+    foreignKey: "FloristId",
+    otherKey: "OrderDetailId",
+    onDelete: 'CASCADE',
+    as: 'makingOrderDetails'
+});
+db.user.hasMany(db.making, {
+    foreignKey: 'FloristId',
+    onDelete: 'CASCADE',
+    as: 'userMakings'
+});
+db.making.belongsTo(db.user, {
+    foreignKey: 'FloristId',
+    onDelete: 'CASCADE',
+    as: 'florist'
+});
+
 
 
 db.user.hasMany(db.orderDetailSeen, {

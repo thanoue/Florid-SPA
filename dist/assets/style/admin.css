@@ -687,6 +687,14 @@ span.item-address {
     background: #2222f2;
 }
 
+.item-status.floristAssined span{
+    background: #23a2f2;
+}
+
+.item-status.fixerAssigned span{
+    background: #aff8dd;
+}
+
 #colorBoard .item-status span,#customerInfo .item-status span
 {
     width: 20px;

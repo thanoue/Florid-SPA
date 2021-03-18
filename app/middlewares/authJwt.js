@@ -3,7 +3,6 @@ const config = require("../config/auth.config.js");
 const db = require("../models");
 const RoleTypes = require('../config/app.config').Roles;
 const User = db.user;
-const Session = db.session;
 
 verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
@@ -26,25 +25,7 @@ verifyToken = (req, res, next) => {
         req.userId = decoded.id;
         req.token = token;
 
-        Session.findOne({
-            where: {
-                UserId: req.userId,
-                Token: token,
-                IsExpired: true
-            }
-        }).then(expiredSess => {
-
-            if (!expiredSess) {
-                next();
-                return;
-            }
-
-            res.status(401).send({
-                message: "Unauthorized!"
-            });
-
-            return;
-        });
+        next();
 
     });
 };

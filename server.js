@@ -12,7 +12,7 @@ const app = express();
 const env = process.env.NODE_ENV || 'development';
 
 var corsOptions = {
-    origin: [env === 'development' ? "http://localhost:4200" : ""]
+    origin: [env === 'development' ? "http://192.168.1.28:4200" : ""]
 };
 
 app.use(cors(corsOptions));

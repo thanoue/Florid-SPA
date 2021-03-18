@@ -2,7 +2,6 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
-const Session = db.session;
 const logger = require('../config/logger');
 
 const Op = db.Sequelize.Op;
@@ -35,7 +34,6 @@ exports.signup = (req, res) => {
                     });
                 });
             } else {
-                // user role = 1
                 user.setRoles([1]).then(() => {
                     res.send({ message: "User was registered successfully!" });
                 });
@@ -45,15 +43,7 @@ exports.signup = (req, res) => {
 };
 
 exports.signout = (req, res) => {
-    Session.update({
-        IsExpired: true
-    }, {
-        where: {
-            Token: req.token
-        }
-    }).then(() => {
-        res.send({ message: "User was logged out!" });
-    });
+    res.send({ message: "User was logged out!" });
 }
 
 exports.signin = (req, res) => {
@@ -106,28 +96,6 @@ exports.signin = (req, res) => {
                     avtUrl: user.AvtUrl,
                     phoneNumber: user.PhoneNumber,
                     isPrinter: user.IsPrinter
-                });
-
-                var expireDate = new Date()
-                expireDate.setDate(expireDate.getDate() + 1);
-
-                //   var aestTime = expireDate.toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
-                // aestTime = new Date(aestTime);
-
-                Session.destroy({
-                    where: {
-                        UserId: user.Id,
-                        ExpireTime: {
-                            [Op.lt]: new Date()
-                        }
-                    }
-                }).then(() => {
-                    Session.create({
-                        UserId: user.Id,
-                        Token: token,
-                        ExpireTime: expireDate,
-                        IsExpired: false,
-                    });
                 });
 
 
