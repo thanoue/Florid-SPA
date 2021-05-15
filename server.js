@@ -12,7 +12,7 @@ const app = express();
 const env = process.env.NODE_ENV || 'development';
 
 var corsOptions = {
-    origin: [env === 'development' ? "http://192.168.1.28:4200" : ""]
+    origin: [env === 'development' ? "http://localhost:4200" : ""]
 };
 
 app.use(cors(corsOptions));
@@ -50,6 +50,7 @@ app.get('*', (req, res) => {
 });
 
 const { user, role, category, customer } = require("./app/models/index");
+
 const db = require("./app/models/index");
 db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');

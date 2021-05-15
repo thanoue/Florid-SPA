@@ -155,8 +155,6 @@ db.making.belongsTo(db.user, {
     as: 'florist'
 });
 
-
-
 db.user.hasMany(db.orderDetailSeen, {
     foreignKey: 'UserId',
     onDelete: 'CASCADE',

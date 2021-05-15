@@ -212,7 +212,9 @@
             }
         }
 
-        connectSocket('');
+        function round(num) {
+            return Math.round(num * 100) / 100;
+        }
 
         function removeSign(str) {
 
@@ -495,9 +497,9 @@
             else {
                 template = template.replace("{{CustomerInfo}}", customInfoTemplate);
 
-                template = template.replace("{{ScoreUsed}}", data.scoreUsed);
-                template = template.replace("{{GainedScore}}", data.gainedScore);
-                template = template.replace("{{TotalScore}}", data.totalScore);
+                template = template.replace("{{ScoreUsed}}", round(data.scoreUsed));
+                template = template.replace("{{GainedScore}}", round(data.gainedScore));
+                template = template.replace("{{TotalScore}}", round(data.totalScore));
                 template = template.replace("{{CustomerName}}", !data.customerName ? "KHACH LE" : data.customerName);
             }
 
@@ -560,9 +562,11 @@
 
             setTimeout(() => {
                 window.print();
-            }, 1000);
+            }, 500);
 
         }
+
+        connectSocket('');
 
     </script>
 

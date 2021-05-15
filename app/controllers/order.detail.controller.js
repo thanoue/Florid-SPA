@@ -470,7 +470,7 @@ exports.getDetailByStates = (req, res) => {
                 include: [
                     {
                         model: User,
-                        as: 'shippingShipper'
+                        as: 'shipper'
                     }
                 ],
                 order: [['AssignTime', 'DESC']],
@@ -484,7 +484,7 @@ exports.getDetailByStates = (req, res) => {
                 include: [
                     {
                         model: User,
-                        as: 'makingFlorist'
+                        as: 'florist'
                     }
                 ],
                 as: 'orderDetailMakings',
