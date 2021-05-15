@@ -23,15 +23,15 @@ export class ExchangeService {
             return MembershipTypes.NewCustomer;
         }
 
-        if (amount >= 5000000 && amount < 10000000) {
+        if (amount >= 5000000 && amount < 50000000) {
             return MembershipTypes.Member;
         }
 
-        if (amount >= 10000000 && amount < 30000000) {
+        if (amount >= 50000000 && amount < 100000000) {
             return MembershipTypes.Vip;
         }
 
-        if (amount >= 30000000) {
+        if (amount >= 100000000) {
             return MembershipTypes.VVip;
         }
     }
@@ -179,7 +179,7 @@ export class ExchangeService {
 
             if (res.toString().indexOf('/') > -1) {
 
-                var nums = res.split('/',3);
+                var nums = res.split('/', 3);
 
                 console.log(nums);
 
@@ -193,7 +193,7 @@ export class ExchangeService {
 
                     return date.getTime();
                 }
-                
+
             } else {
 
                 let dateVal = parseInt(res);
