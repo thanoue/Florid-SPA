@@ -6,7 +6,6 @@ import { DatePipe, registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import vi from '@angular/common/locales/vi';
 import { SharedModule } from './shared.module';
-import { OwlDateTimeIntl, OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './components/admin/not-found/not-found.component';
 import { FormsModule } from '@angular/forms';

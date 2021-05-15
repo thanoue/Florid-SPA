@@ -6,6 +6,7 @@ import { shareReplay, timeout, catchError } from 'rxjs/operators';
 import { REQUEST_TIMEOUT } from 'src/app/app.constants';
 import { Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { compress, compressAccurately } from 'image-conversion';
 import { Router } from '@angular/router';
 import { NgxImageCompressService, DOC_ORIENTATION } from 'ngx-image-compress';
 
@@ -30,7 +31,7 @@ export class HttpService {
   protected apiHost = environment.base_domain;
   protected apiUrlPrefix = '/api';
 
-  maxFileSize = 800000;
+  maxFileSize = 950000;
 
   protected headers: HttpHeaders;
 
@@ -148,6 +149,7 @@ export class HttpService {
   public async compressImage(src: File): Promise<File> {
 
     let fileSize = src.size;
+
     console.log('original size ', fileSize);
 
     if (fileSize <= this.maxFileSize) {
@@ -158,29 +160,47 @@ export class HttpService {
 
       try {
 
-        var reader = new FileReader();
+        // var quality = this.getspecificQuality(src);
 
-        reader.onload = (_event) => {
+        compressAccurately(src, {
+          size: this.maxFileSize / 1000,    //The compressed image size is 100kb
+          accuracy: 0.8,//the accuracy of image compression size,range 0.8-0.99,default 0.95;
+          //this means if the picture size is set to 1000Kb and the
+          //accuracy is 0.9, the image with the compression result
+          //of 900Kb-1100Kb is considered acceptable;
+        }).then(compressed => {
 
-          this.imageCompress.getOrientation(src).then(ori => {
+          const file = new File([compressed], "result.png", { type: "image/png" });
 
-            this.imageCompress.compressFile(reader.result.toString(), ori, undefined, this.getspecificQuality(src))
-              .then(async res => {
+          console.log('resized  size ', file.size);
 
-                let response = await fetch(res);
-                let blob = await response.blob();
+          resolve(file);
 
-                const file = new File([blob], "result.png", { type: "image/png" });
+        });
 
-                console.log('resized  size ', file.size);
+        // var reader = new FileReader();
 
-                resolve(file);
+        // reader.onload = (_event) => {
 
-              });
-          })
-        }
+        //   this.imageCompress.getOrientation(src).then(ori => {
 
-        reader.readAsDataURL(src);
+        //     this.imageCompress.compressFile(reader.result.toString(), ori, 50, quality)
+        //       .then(async res => {
+
+        //         let response = await fetch(res);
+        //         let blob = await response.blob();
+
+        //         const file = new File([blob], "result.png", { type: "image/png" });
+
+        //         console.log('resized  size ', file.size);
+
+        //         resolve(file);
+
+        //       });
+        //   })
+        // }
+
+        // reader.readAsDataURL(src);
       }
       catch (err) {
         reject(err);
@@ -195,7 +215,11 @@ export class HttpService {
 
     let count = file.size;
 
-    return (this.maxFileSize / count) * 100;
+    let percent = (this.maxFileSize / count);
+
+    console.log('percent to recuce:' + percent);
+
+    return percent;
 
   }
 
