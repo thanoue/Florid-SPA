@@ -48,7 +48,8 @@ db.wardAddress = require('./ward.address.model')(sequelize, Sequelize);
 db.promotion = require('./promotion.model')(sequelize, Sequelize);
 db.shipping = require('./shipping.model')(sequelize, Sequelize);
 db.purchase = require('./purchase.model')(sequelize, Sequelize);
-
+db.config = require('./config.model')(sequelize, Sequelize);
+    
 db.order.hasMany(db.purchase, {
     foreignKey: 'OrderId',
     onDelete: 'SET NULL'

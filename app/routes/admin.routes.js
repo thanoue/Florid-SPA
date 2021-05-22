@@ -12,6 +12,7 @@ const orderDetailController = require('../controllers/order.detail.controller');
 const shippingSessionController = require('../controllers/shipping.session.controller')
 const orderDetailSeenerController = require('../controllers/order.detail.seener.controller');
 const purchaseController = require('../controllers/purchase.controller');
+const configController = require('../controllers/config.controller');
 
 const authJwt = middlewares.authJwt;
 const verifySignUp = middlewares.verifySignUp;
@@ -32,6 +33,7 @@ module.exports = function (app) {
     const orderDetailSeenerPrefix = "/api/orderDetailSeener/";
     const shippingSessionPrefix = "/api/shippingSession/";
     const purchasePrefix = '/api/purchase/';
+    const configPrefix = '/api/config/'
 
     app.use(function (req, res, next) {
         res.header(
@@ -40,6 +42,16 @@ module.exports = function (app) {
         );
         next();
     });
+
+    //config
+    app.post(`${configPrefix}update`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        configController.updateConfig
+    );
+    app.post(`${configPrefix}get`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        configController.getCurrent
+    );
 
     //purchase
     app.post(`${purchasePrefix}add`,
@@ -245,6 +257,10 @@ module.exports = function (app) {
     app.get(`${customerPrefix}getList`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         customerController.getList
+    )
+    app.post(`${customerPrefix}updateAllCustomerMemberType`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        customerController.updateAllCustomerMemberType
     )
     app.get(`${customerPrefix}updateTotalAmount`,
         customerController.updateTotalAmount

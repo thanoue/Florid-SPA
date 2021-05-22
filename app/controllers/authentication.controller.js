@@ -4,6 +4,7 @@ const User = db.user;
 const Role = db.role;
 const Session = db.session;
 const logger = require('../config/logger');
+const Config = db.config;
 
 const Op = db.Sequelize.Op;
 
@@ -57,6 +58,7 @@ exports.signout = (req, res) => {
 }
 
 exports.signin = (req, res) => {
+
     User.findOne({
         where: {
             LoginName: req.body.loginName
@@ -96,41 +98,23 @@ exports.signin = (req, res) => {
                     authorities.push(roles[i].Name);
                 }
 
-                res.status(200).send({
-                    id: user.Id,
-                    fullName: user.FullName,
-                    loginName: user.LoginName,
-                    email: user.Email,
-                    roles: authorities,
-                    accessToken: token,
-                    avtUrl: user.AvtUrl,
-                    phoneNumber: user.PhoneNumber,
-                    isPrinter: user.IsPrinter
-                });
+                Config.findOne()
+                    .then(configData => {
 
-                var expireDate = new Date()
-                expireDate.setDate(expireDate.getDate() + 1);
+                        res.status(200).send({
+                            id: user.Id,
+                            fullName: user.FullName,
+                            loginName: user.LoginName,
+                            email: user.Email,
+                            roles: authorities,
+                            accessToken: token,
+                            avtUrl: user.AvtUrl,
+                            phoneNumber: user.PhoneNumber,
+                            isPrinter: user.IsPrinter,
+                            config: configData
+                        });
 
-                //   var aestTime = expireDate.toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
-                // aestTime = new Date(aestTime);
-
-                Session.destroy({
-                    where: {
-                        UserId: user.Id,
-                        ExpireTime: {
-                            [Op.lt]: new Date()
-                        }
-                    }
-                }).then(() => {
-                    Session.create({
-                        UserId: user.Id,
-                        Token: token,
-                        ExpireTime: expireDate,
-                        IsExpired: false,
                     });
-                });
-
-
             });
         })
         .catch(err => logger.error(err, res));
