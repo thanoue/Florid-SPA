@@ -7,7 +7,6 @@ import { PurchaseService } from 'src/app/services/purchase.service';
 import { BaseComponent } from '../base.component';
 
 declare function openAddPurchaseDialog(): any;
-declare function moveCursor(id: string, pos: number);
 declare function dissmissAddPurchaseDialog(): any;
 
 @Component({

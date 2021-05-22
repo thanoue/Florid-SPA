@@ -15,7 +15,7 @@ export class Order extends BaseEntity {
     ScoreUsed = 0;
 
     PercentDiscount = 0;
-    AmountDiscount = 0;
+    AmountDiscount = 0; 
 
     DoneTime: number;
     Index: number;

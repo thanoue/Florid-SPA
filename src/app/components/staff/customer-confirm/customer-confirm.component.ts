@@ -11,14 +11,13 @@ import { Order } from 'src/app/models/entities/order.entity';
 import { OrderService } from 'src/app/services/order.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Customer } from 'src/app/models/entities/customer.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { basename } from 'path';
 
 declare function shareImageCus(contactInfo: string): any;
 declare function shareImageCusWithData(img: string, contactInfo: string): any;
 declare function deleteTempImage(): any;
 declare function getShippingNoteDialog(btnTitle: string, callback: (note: string) => void): any;
-declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string) => void) => void, placeHolder: string, oldValue: number): any;
 
 @Component({
   selector: 'app-customer-confirm',

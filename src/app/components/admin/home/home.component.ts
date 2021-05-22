@@ -9,7 +9,7 @@ import { utils, WorkBook, WorkSheet, read, writeFile } from 'xlsx';
 import { Customer, MembershipInfo } from 'src/app/models/entities/customer.entity';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Order, OrderDetail } from 'src/app/models/entities/order.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { async } from '@angular/core/testing';

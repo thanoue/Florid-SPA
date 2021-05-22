@@ -20,6 +20,8 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   title: string;
   headerUpdate: Subscription;
 
+  logoutInvoker: Subscription;
+
   constructor(public router: Router, private globalService: GlobalService, private authService: AuthService
     , private printJobService: PrintJobService, private realtimeService: RealtimeService) {
 
@@ -38,33 +40,39 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
       });
 
   }
+
   ngOnInit(): void {
+
+    this.logoutInvoker = this.realtimeService.LogouOutBehavier.subscribe(res => {
+
+      if (res == false)
+        return;
+      
+      this.authService.logOut((isSuccess) => {
+
+        if (isSuccess)
+          this.router.navigate(['/staff/login']);
+
+      });
+
+    });
 
     let userId = LocalService.getUserId();
     let isPrinter = LocalService.isPrinter();
 
     if (userId) {
 
-      this.realtimeService.connect(+userId, isPrinter, () => {
+      this.realtimeService.connect(+userId, isPrinter, LocalService.getRole(), () => {
 
       });
 
     }
 
-    // this.realtimeService.forceLogoutRegister((message) => {
-
-    //   this.globalService.showError(message);
-    //   this.authService.logOut((isSuccess) => {
-    //     if (isSuccess) {
-    //       this.router.navigate(['/staff-login']);
-    //     }
-    //   });
-
-    // });
-
     this.globalService.setStatusBarColor(false);
 
   }
+
+
 
   public updateHeaderBar(title: string, navigateClass: string) {
     setTimeout(() => {
@@ -74,7 +82,10 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy(): void {
+
     this.headerUpdate.unsubscribe();
+    this.logoutInvoker.unsubscribe();
+
   }
 
   navigateOnClick() {

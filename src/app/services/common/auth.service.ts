@@ -74,13 +74,10 @@ export class AuthService {
         LocalService.setRole(result.roles[0]);
         LocalService.setUserName(result.fullName);
         LocalService.setUserId(result.id);
+        LocalService.setConfig(result.config);
 
-        this.realTimeService.connect(result.id, result.isPrinter, () => {
-          this.ngZone.run(() => {
-            this.globalService.stopLoading();
-            loginCallback(true);
-          });
-        });
+        this.globalService.stopLoading();
+        loginCallback(true);
 
       })
       .catch(err => {

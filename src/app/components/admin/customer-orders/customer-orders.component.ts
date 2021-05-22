@@ -54,8 +54,6 @@ export class CustomerOrdersComponent extends BaseComponent {
 
   doPrintJob(order: OrderViewModel) {
 
-    console.log(order);
-
     let tempSummary = 0;
     const products: PrintSaleItem[] = [];
 

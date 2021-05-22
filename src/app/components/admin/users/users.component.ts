@@ -7,7 +7,7 @@ import { User } from 'src/app/models/entities/user.entity';
 import { ROLES, IMAGE_FOLDER_PATHS } from 'src/app/app.constants';
 import { NgForm } from '@angular/forms';
 import { Guid } from 'guid-typescript';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 declare function hideAdd(): any;
 declare function showUserEditPopup(): any;
 @Component({

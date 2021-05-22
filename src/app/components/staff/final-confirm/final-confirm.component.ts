@@ -6,7 +6,7 @@ import { OrderDetailStates, MembershipTypes } from 'src/app/models/enums';
 import { StorageService } from 'src/app/services/storage.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Customer, MembershipInfo } from 'src/app/models/entities/customer.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { TagService } from 'src/app/services/tag.service';
 import { switchMapTo } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';

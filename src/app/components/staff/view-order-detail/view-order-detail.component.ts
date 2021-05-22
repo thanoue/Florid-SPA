@@ -6,7 +6,7 @@ import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { ODSeenUserInfo } from 'src/app/models/entities/order.entity';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { User } from 'src/app/models/entities/user.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { ImgPipe } from 'src/app/pipes/img.pipe';
 
 declare function viewImages(onCancel: () => void): any;

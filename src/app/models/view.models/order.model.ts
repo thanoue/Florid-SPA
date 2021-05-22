@@ -1,7 +1,7 @@
 import { OrderDetailStates, OrderType } from '../../models/enums';
 import { MembershipTypes } from '../enums';
 import { Customer, SpecialDay } from '../entities/customer.entity';
-import { ExchangeService } from '../../services/exchange.service';
+import { ExchangeService } from '../../services/common/exchange.service';
 import { CustomerReceiverDetail, OrderDetail, Order, ODFloristInfo, ODShipperInfo, ODSeenUserInfo } from '../entities/order.entity';
 import { Purchase } from './purchase.entity';
 

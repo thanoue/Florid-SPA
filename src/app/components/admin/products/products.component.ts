@@ -7,7 +7,7 @@ import { MenuItems, ProductSearchingMode } from 'src/app/models/enums';
 import { NgForm } from '@angular/forms';
 import { TagService } from 'src/app/services/tag.service';
 import { Tag } from 'src/app/models/entities/tag.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { ProductImageService } from 'src/app/services/product.image.service';
 import { ProductTagViewModel } from 'src/app/models/view.models/product.tag.model';
 import { Category } from 'src/app/models/entities/category.entity';
