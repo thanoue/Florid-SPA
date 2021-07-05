@@ -12,6 +12,7 @@ const guid = require('guid');
 var fs = require('fs');
 const MemberShipType = require('../config/app.config').MemberShipType;
 
+
 exports.updateList = (req, res) => {
 
     let obj = [];
@@ -440,7 +441,7 @@ exports.create = (req, res) => {
     }).then(customer => {
 
         if (!customer) {
-            
+
             res.status(500).send({
                 message: "Create customer err"
             });
@@ -484,6 +485,54 @@ exports.deleteMany = (req, res) => {
     }).catch((err) => logger.error(err, res));
 }
 
+function getMemberType(amount, config) {
+
+    if (amount < config.MemberValue) {
+        return MemberShipType.NewCustomer;
+    }
+
+    if (amount >= config.MemberValue && amount < config.VipValue) {
+        return MemberShipType.Member;
+    }
+
+    if (amount >= config.VipValue && amount < config.VVipValue) {
+        return MemberShipType.Vip;
+    }
+
+    if (amount >= config.VVipValue) {
+        return MemberShipType.VVip;
+    }
+}
+
+exports.updateAllCustomerMemberType = (req, res) => {
+
+    let config = req.body.config;
+
+    Customer.findAll({
+        where: {
+            Id: {
+                [Op.ne]: 'KHACH_LE'
+            }
+        }
+    }).then(customers => {
+
+        let command = '';
+
+        customers.forEach(customer => {
+
+            command += "UPDATE `customers` SET `MembershipType` = \'" + getMemberType(customer.AccumulatedAmount, config) + "\' WHERE `Id` = \'" + customer.Id + "\';";
+
+        });
+
+        sequelize.query(command).then(data => {
+
+            res.send({ update: data });
+
+        }).catch(err => logger.error(err, res));
+
+    });
+}
+
 exports.updateFields = (req, res) => {
 
     let obj = req.body.obj;
@@ -495,5 +544,4 @@ exports.updateFields = (req, res) => {
     }).then(val => {
         res.send({ result: val });
     }).catch(err => logger.error(err, res));
-
 }

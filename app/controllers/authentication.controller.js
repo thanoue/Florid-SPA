@@ -3,6 +3,7 @@ const config = require("../config/auth.config");
 const User = db.user;
 const Role = db.role;
 const logger = require('../config/logger');
+const Config = db.config;
 
 const Op = db.Sequelize.Op;
 
@@ -47,6 +48,7 @@ exports.signout = (req, res) => {
 }
 
 exports.signin = (req, res) => {
+
     User.findOne({
         where: {
             LoginName: req.body.loginName
@@ -86,19 +88,23 @@ exports.signin = (req, res) => {
                     authorities.push(roles[i].Name);
                 }
 
-                res.status(200).send({
-                    id: user.Id,
-                    fullName: user.FullName,
-                    loginName: user.LoginName,
-                    email: user.Email,
-                    roles: authorities,
-                    accessToken: token,
-                    avtUrl: user.AvtUrl,
-                    phoneNumber: user.PhoneNumber,
-                    isPrinter: user.IsPrinter
-                });
+                Config.findOne()
+                    .then(configData => {
 
+                        res.status(200).send({
+                            id: user.Id,
+                            fullName: user.FullName,
+                            loginName: user.LoginName,
+                            email: user.Email,
+                            roles: authorities,
+                            accessToken: token,
+                            avtUrl: user.AvtUrl,
+                            phoneNumber: user.PhoneNumber,
+                            isPrinter: user.IsPrinter,
+                            config: configData
+                        });
 
+                    });
             });
         })
         .catch(err => logger.error(err, res));

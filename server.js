@@ -49,8 +49,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-const { user, role, category, customer } = require("./app/models/index");
-
+const { user, role, category, customer, config } = require("./app/models/index");
 const db = require("./app/models/index");
 db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
@@ -74,10 +73,21 @@ const io = require('socket.io')(serverApp);
 
 io.on('connection', (socket) => {
 
-    socket.emit('connected');
-
     socket.userId = 0;
     socket.isPrinter = false;
+    socket.role = '';
+
+    socket.emit('connected');
+
+    socket.on('login', (data) => {
+
+        console.log('client:',data);
+
+        socket.userId = data.userId;
+        socket.isPrinter = data.isPrinter;
+        socket.role = data.role;
+
+    });
 
     socket.on('doPrintJob', (data) => {
 
@@ -99,15 +109,28 @@ io.on('connection', (socket) => {
         });
 
         if (!isHasPrinter) {
+            console.log('----------','There is no printer');
             socket.emit('printingNoResponse');
         }
 
-    })
+    });
 
-    socket.on('login', (data) => {
+    socket.on('forceAccountLogout', () => {
 
-        socket.userId = data.userId;
-        socket.isPrinter = data.isPrinter;
+        var clients = io.sockets.clients();
+
+        const keys = Object.keys(clients.connected);
+
+
+        keys.forEach(key => {
+            let itemSocket = clients.connected[key];
+
+            if (itemSocket.role == 'Admin' || itemSocket.role == 'Account') {
+                console.log('about to login ');
+                itemSocket.emit('forceLogout', { message: 'Đăng nhập lại để cập nhật cấu hình.' });
+            }
+
+        });
 
     });
 
@@ -115,11 +138,29 @@ io.on('connection', (socket) => {
 
 function createDir(path) {
     if (!fs.existsSync(path)) {
-        fs.mkdirSync(path);
+        fs.mkdirSync(path); ``
     }
 }
 
 function initial() {
+
+    config.findAll()
+        .then(configs => {
+
+            if (configs && configs.length > 0) {
+                return;
+            }
+
+            config.create({
+                MemberValue: 5000000,
+                MemberDiscount: 5,
+                VipValue: 50000000,
+                VipDiscount: 10,
+                VVipValue: 100000000,
+                VVipDiscount: 15
+            });
+
+        });
 
     let id = 'KHACH_LE';
 

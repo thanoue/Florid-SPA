@@ -1,4 +1,4 @@
-const { role } = require("../models");
+const { role, making } = require("../models");
 const db = require("../models");
 const OrderDetail = db.orderDetail;
 const Op = db.Sequelize.Op;
@@ -12,30 +12,64 @@ const logger = require('../config/logger');
 const sequelize = db.sequelize;
 const MakingTypes = appConstant.MakingTypes;
 
-exports.assignSingleOD = (req, res) => {
+exports.assignSingleOD = function(req, res){
 
-    let orderDetailId = req.body.orderDetailId;
-    let shipperId = req.body.shipperId;
-    let assignTime = req.body.assignTime;
+    var orderDetailId = req.body.orderDetailId;
+    var shipperId = req.body.shipperId;
+    var assignTime = req.body.assignTime;
 
-    Shipping.create({
-        ShipperId: shipperId,
-        AssignTime: assignTime,
-        OrderDetailId: orderDetailId
-    }).then(shippingSession => {
+    Shipping.findOne({
+        where:{
+            ShipperId: shipperId,
+            OrderDetailId: orderDetailId
+        }
+    }).then(function(oldShipping){
 
-        OrderDetail.update({
-            State: ODStatuses.DeliverAssinged,
-        }, {
-            where: {
-                Id: orderDetailId
-            }
-        }).then(data => {
-            res.send(shippingSession);
+        if(!oldShipping || oldShipping == null || oldShipping==undefined){
 
-        }).catch(err => logger.error(err, res));
+            Shipping.create({
+                ShipperId: shipperId,
+                AssignTime: assignTime,
+                OrderDetailId: orderDetailId
+            }).then(shippingSession => {
+        
+                OrderDetail.update({
+                    State: ODStatuses.DeliverAssinged,
+                }, {
+                    where: {
+                        Id: orderDetailId
+                    }
+                }).then(data => {
+                    res.send(shippingSession);
+        
+                }).catch(err => logger.error(err, res));
+        
+            }).catch(err => logger.error(err, res));
+        }
+        else{
+            Shipping.update({
+                AssignTime: assignTime,
+                Note:'',
+                CompleteTime:0,
+                StartTime:0,
+                DeliveryImageUrl:''
+            }).then(function(shipping){
 
-    }).catch(err => logger.error(err, res));
+                OrderDetail.update({
+                    State: ODStatuses.DeliverAssinged,
+                }, {
+                    where: {
+                        Id: orderDetailId
+                    }
+                }).then(data => {
+
+                    res.send(shipping);
+        
+                }).catch(err => logger.error(err, res));
+
+            }).catch(err => logger.error(err, res));
+        }
+    });
 }
 
 exports.replaceShipper = (req, res) => {
@@ -103,24 +137,63 @@ exports.assignSingleMaking = (req, res) => {
     let assignTime = req.body.assignTime;
     let makingType = req.body.makingType;
 
-    Making.create({
-        FloristId: floristId,
-        AssignTime: assignTime,
-        OrderDetailId: orderDetailId,
-        MakingType: makingType
-    }).then(making => {
+    Making.findOne({
+        where:{
+            FloristId : floristId,
+            OrderDetailId :orderDetailId
+        }
+    }).then(oldMaking => {
 
-        OrderDetail.update({
-            State: makingType == MakingTypes.Fixing ? ODStatuses.FixerAssigned : ODStatuses.FloristAssigned
-        }, {
-            where: {
-                Id: orderDetailId
-            }
-        }).then(data => {
-            res.send(making);
-        }).catch(err => logger.error(err, res));
+        if (!oldMaking || oldMaking == null) {
 
-    }).catch(err => logger.error(err, res));
+            Making.create({
+                FloristId: floristId,
+                AssignTime: assignTime,
+                OrderDetailId: orderDetailId,
+                MakingType: makingType
+            }).then(making => {
+        
+                OrderDetail.update({
+                    State: makingType == MakingTypes.Fixing ? ODStatuses.FixerAssigned : ODStatuses.FloristAssigned
+                }, {
+                    where: {
+                        Id: orderDetailId
+                    }
+                }).then(function(){
+                    res.send(making);
+                }).catch(function(err){logger.error(err, res);});
+        
+            }).catch(function(err){logger.error(err, res);});
+        }        
+        else{
+
+            Making.update({
+                AssignTime: assignTime,
+                MakingType: makingType,
+                StartTime:0,
+                CompleteTime:0,
+                ResultImageUrl:''
+            },{
+                where:{
+                    FloristId : floristId,
+                    OrderDetailId :orderDetailId
+                }
+            }).then(making =>{
+                OrderDetail.update({
+                    State: makingType == MakingTypes.Fixing ? ODStatuses.FixerAssigned : ODStatuses.FloristAssigned
+                }, {
+                    where: {
+                        Id: orderDetailId
+                    }
+                }).then(data => {
+                    res.send(making);
+                }).catch(err => logger.error(err, res));
+
+            }).catch(err => logger.error(err, res));
+        }
+
+    });
+
 }
 
 function shippingConfirmation(req, res, shippingImgName) {
