@@ -109,7 +109,6 @@ io.on('connection', (socket) => {
         });
 
         if (!isHasPrinter) {
-            console.log('----------','There is no printer');
             socket.emit('printingNoResponse');
         }
 
