@@ -7,7 +7,7 @@ import { GlobalService } from './common/global.service';
 import { API_END_POINT } from '../app.constants';
 import { promise } from 'protractor';
 import { OrderViewModel, OrderCustomerInfoViewModel, OrderDetailViewModel } from '../models/view.models/order.model';
-import { ExchangeService } from './exchange.service';
+import { ExchangeService } from './common/exchange.service';
 import { SaleTotalModel } from '../models/view.models/sale.total.model';
 import { NgModelGroup } from '@angular/forms';
 import { Purchase } from '../models/view.models/purchase.entity';
@@ -19,7 +19,7 @@ import { User } from '../models/entities/user.entity';
 })
 export class OrderService {
 
-  constructor(private httpService: HttpService, private globalService: GlobalService) {
+  constructor(private httpService: HttpService) {
   }
 
   getCustomerInfo(customer: Customer, order: OrderViewModel): OrderCustomerInfoViewModel {

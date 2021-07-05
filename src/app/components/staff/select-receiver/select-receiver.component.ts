@@ -4,7 +4,7 @@ import { OrderDetailDeliveryInfo } from 'src/app/models/view.models/order.model'
 import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { formatDate } from '@angular/common';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 
 declare function getDateTimeSelecting(year: number, month: number, day: number, hour: number, minute: number): any;
 declare function getTimeSelecting(hour: number, minute: number): any;

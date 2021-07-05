@@ -12,10 +12,10 @@
                     <h5 class="item-code">{{orderDetail.ProductName}}</h5>
                     <span class="prodPrice">{{orderDetail.ModifiedPrice| myCurrPipe}}</span>
 
-                    <span class="prodCharge">Phụ phí: {{orderDetail.AdditionalFee| myCurrPipe}}
-                    </span>
                     <span class="prodCharge">Giảm giá:
                         {{getDetailDiscount(orderDetail)| myCurrPipe}}</span>
+                    <span class="prodCharge">Phụ phí:
+                        {{orderDetail.AdditionalFee| myCurrPipe}}</span>
                     <span class="prodCharge">Số lượng:
                         {{orderDetail.Quantity}}</span>
                 </div>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="prodMakingTime infoGroup" *ngIf="CurrentUser.Role != 'Shipper'">
                     <span class="itemlabel">Yêu cầu xong trước:</span>
-                    <span class="itemVal">{{orderDetail.MakingRequestTime | myDatePipe: 'HH:mm  dd/MM/yyyy'}}</span>
+                    <span class="itemVal">{{orderDetail.MakingRequestTime | myDatePipe: 'HH:mm dd/MM/yyyy'}}</span>
                 </div>
                 <div *ngIf="orderDetail.Description != ''" class="prodDesc infoGroup">
                     <span class="itemlabel">Mô tả KH:</span>
@@ -71,7 +71,7 @@
                     class="main-filter">Đã xem
             </div>
 
-            <div *ngIf="CurrentUser.Role == 'Admin' || CurrentUser.Role == 'Account' " class="viewed"
+            <div class="viewed"
                 (click)="openNoteImages()"><img src="../../../assets/images/eye.svg" alt="" class="main-filter">Ảnh ghi
                 chú
             </div>

@@ -1,10 +1,11 @@
 import { OrderDetailStates, OrderType } from '../../models/enums';
 import { MembershipTypes } from '../enums';
 import { Customer, SpecialDay } from '../entities/customer.entity';
-import { ExchangeService } from '../../services/exchange.service';
+import { ExchangeService } from '../../services/common/exchange.service';
 import { CustomerReceiverDetail, OrderDetail, Order, ODSeenUserInfo, Making, Shipping } from '../entities/order.entity';
 import { Purchase } from './purchase.entity';
 import { User } from '../entities/user.entity';
+import { from } from 'rxjs';
 
 export class OrderViewModel {
 
@@ -199,8 +200,9 @@ export class OrderCustomerInfoViewModel {
 
     static toViewModel(customer: Customer, vm: OrderCustomerInfoViewModel = null): OrderCustomerInfoViewModel {
 
-        if (!vm || vm == null)
+        if (!vm || vm == null){
             vm = new OrderCustomerInfoViewModel();
+        }
 
         vm.Id = customer.Id;
         vm.Name = customer.FullName;

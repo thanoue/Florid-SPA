@@ -58,6 +58,7 @@ export enum MenuItems {
     DaysChart,
     MonthsChart,
     Debts,
+    Config
 }
 
 export enum OrderDetailStates {

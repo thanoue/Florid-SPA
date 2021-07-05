@@ -3,7 +3,7 @@ import { BaseComponent } from '../base.component';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { MenuItems } from 'src/app/models/enums';
 import { Category } from 'src/app/models/entities/category.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { NgForm } from '@angular/forms';
 

@@ -4,7 +4,7 @@ import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { MenuItems, Sexes, MembershipTypes } from 'src/app/models/enums';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Customer } from 'src/app/models/entities/customer.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 

@@ -1,5 +1,6 @@
 import { LOCAL_STORAGE_VARIABLE } from '../../app.constants';
 import { Roles } from 'src/app/models/enums';
+import { Config } from 'src/app/models/entities/config.entity';
 
 export class LocalService {
 
@@ -29,15 +30,6 @@ export class LocalService {
 
     static setUserId(id: any) {
         LocalService.setItem(LOCAL_STORAGE_VARIABLE.user_id, id);
-    }
-
-    static isPrinter(): boolean {
-        const stringValue = LocalService.getItem(LOCAL_STORAGE_VARIABLE.is_printer);
-        return stringValue.toLowerCase() === 'true';
-    }
-
-    static setIsPrinter(isPrinter: boolean) {
-        LocalService.setItem(LOCAL_STORAGE_VARIABLE.is_printer, isPrinter);
     }
 
     static getRole(): string {
@@ -85,6 +77,21 @@ export class LocalService {
 
     static setPhoneNumber(phoneNumber: string) {
         LocalService.setItem(LOCAL_STORAGE_VARIABLE.phone_number, phoneNumber);
+    }
+
+    static setConfig(config: Config) {
+        LocalService.setItem(LOCAL_STORAGE_VARIABLE.config, JSON.stringify(config));
+    }
+
+    static getConfig(): Config {
+
+        let val = LocalService.getItem(LOCAL_STORAGE_VARIABLE.config);
+
+        if (val && val != null) {
+            return JSON.parse(val);
+        }
+
+        return new Config();
     }
 }
 

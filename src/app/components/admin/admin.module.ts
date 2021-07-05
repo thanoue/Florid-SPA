@@ -20,6 +20,7 @@ import { PromotionComponent } from './promotion/promotion.component';
 import { UsersComponent } from './users/users.component';
 import { PurchasesComponent } from './purchases/purchases.component';
 import { DebtsComponent } from './debts/debts.component';
+import { ConfigComponent } from './config/config.component';
 
 // routes
 export const ROUTES: Routes = [
@@ -92,6 +93,10 @@ export const ROUTES: Routes = [
             {
                 path: 'debts',
                 component: DebtsComponent,
+            },
+            {
+                path: 'config',
+                component: ConfigComponent,
             }
         ]
     },
@@ -123,6 +128,7 @@ export const ROUTES: Routes = [
         LoginComponent,
         PurchasesComponent,
         DebtsComponent,
+        ConfigComponent
     ]
 })
 export class AdminModule { }

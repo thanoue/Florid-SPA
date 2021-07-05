@@ -3,7 +3,7 @@ import { BaseComponent } from '../base.component';
 import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from 'src/app/models/view.models/order.model';
 import { OrderDetailStates, MembershipTypes, OrderType, PurchaseMethods } from 'src/app/models/enums';
 import { Router } from '@angular/router';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { OrderService } from 'src/app/services/order.service';
 import { Order, OrderDetail, CustomerReceiverDetail } from 'src/app/models/entities/order.entity';
 import { CustomerService } from 'src/app/services/customer.service';
@@ -14,7 +14,6 @@ import { PromotionService } from 'src/app/services/promotion.service';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { MembershipInfo } from 'src/app/models/entities/customer.entity';
-import { stringify } from 'querystring';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
 declare function dismissPurchaseDialog();
@@ -684,8 +683,7 @@ export class AddOrderComponent extends BaseComponent {
 
         resolve('added');
 
-      }
-      catch (err) {
+      } catch (err) {
         reject(err);
       }
 
@@ -902,7 +900,7 @@ export class AddOrderComponent extends BaseComponent {
 
     let newMemberInfo = new MembershipInfo();
 
-    let gainedScore = ExchangeService.getScoreFromOrder(this.order)
+    let gainedScore = ExchangeService.getScoreFromOrder(this.order);
 
     newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + gainedScore;
     newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);

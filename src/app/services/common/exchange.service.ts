@@ -1,12 +1,13 @@
-import { MembershipTypes, CusContactInfoTypes } from '../models/enums';
+import { MembershipTypes, CusContactInfoTypes } from '../../models/enums';
 import { Injectable } from '@angular/core';
-import { OrderDetailDeliveryInfo, OrderDetailViewModel, OrderViewModel } from '../models/view.models/order.model';
-import { OrderReceiverDetail, CustomerReceiverDetail } from '../models/entities/order.entity';
+import { OrderDetailDeliveryInfo, OrderDetailViewModel, OrderViewModel } from '../../models/view.models/order.model';
+import { OrderReceiverDetail, CustomerReceiverDetail } from '../../models/entities/order.entity';
 import { getTranslationDeclStmts } from '@angular/compiler/src/render3/view/template';
 import { float } from 'html2canvas/dist/types/css/property-descriptors/float';
-import { Customer } from '../models/entities/customer.entity';
+import { Customer } from '../../models/entities/customer.entity';
 import { env } from 'process';
 import { environment } from 'src/environments/environment';
+import { LocalService } from './local.service';
 
 @Injectable({
     providedIn: 'root'
@@ -19,33 +20,36 @@ export class ExchangeService {
 
     static detectMemberShipType(amount: number): MembershipTypes {
 
-        if (amount < 5000000) {
+        let config = LocalService.getConfig();
+
+        if (amount < config.MemberValue) {
             return MembershipTypes.NewCustomer;
         }
 
-        if (amount >= 5000000 && amount < 50000000) {
+        if (amount >= config.MemberValue && amount < config.VipValue) {
             return MembershipTypes.Member;
         }
 
-        if (amount >= 50000000 && amount < 100000000) {
+        if (amount >= config.VipValue && amount < config.VVipValue) {
             return MembershipTypes.Vip;
         }
 
-        if (amount >= 100000000) {
+        if (amount >= config.VVipValue) {
             return MembershipTypes.VVip;
         }
     }
 
     static getMemberDiscountPercent(membershipTypes: MembershipTypes): number {
+        let config = LocalService.getConfig();
         switch (membershipTypes) {
             case MembershipTypes.NewCustomer:
                 return 0;
             case MembershipTypes.Member:
-                return 5;
+                return config.MemberDiscount;
             case MembershipTypes.Vip:
-                return 10;
+                return config.VipDiscount;
             case MembershipTypes.VVip:
-                return 15;
+                return config.VVipDiscount;
         }
     }
 

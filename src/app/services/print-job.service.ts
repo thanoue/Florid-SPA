@@ -16,18 +16,11 @@ export class PrintJobService {
 
   }
 
-  doPrintJob(printJob: PrintJob) {
-    doPrintJob(printJob);
-  }
-
   addPrintJob(printJob: PrintJob) {
 
-    if (LocalService.isPrinter()) {
-      this.doPrintJob(printJob);
-    }
-    else {
-      invokePrintJob(printJob);
-    }
+    console.log(printJob);
+    invokePrintJob(printJob);
+
   }
 
 }

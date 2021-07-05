@@ -11,7 +11,8 @@ export const LOCAL_STORAGE_VARIABLE = {
     user_avt_url: 'user_avt_url',
     user_email: 'user_email',
     is_printer: 'is_printer',
-    firebase_config: 'firebase_config'
+    firebase_config: 'firebase_config',
+    config: 'config'
 };
 
 export const API_END_POINT = {
@@ -69,6 +70,7 @@ export const API_END_POINT = {
     getAllCustomer: '/customer/getAll',
     updateCustomerFields: '/customer/updateFields',
     updateCustomerList: '/customer/updateList',
+    updateAllCustomerMemberType: '/customer/updateAllCustomerMemberType',
 
     getMaxOrderNumberId: '/order/getMaxNumberId',
     addOrder: '/order/add',
@@ -106,7 +108,8 @@ export const API_END_POINT = {
     getODSeeners: '/orderDetailSeener/getODSeeners',
 
     assignSingleOD: '/shippingSession/assignSingleOD',
-    replaceShipper: '/shippingSession/replaceFlorist',
+    replaceFlorist: '/shippingSession/replaceFlorist',
+    replaceShipper: '/shippingSession/replaceShipper',
     assignOrderDetails: '/shippingSession/assignOrderDetails',
     getShippingOrderDetails: '/shippingSession/getShippingOrderDetails',
     shippingConfirm: '/shippingSession/shippingConfirm',
@@ -125,6 +128,9 @@ export const API_END_POINT = {
     updatePurchaseOrder: '/purchase/updateOrder',
     assignPurchaseOrder: '/purchase/assignOrder',
     deletePurchase: '/purchase/deletePurchase',
+
+    getCurrentConfig: '/config/get',
+    updateConfig: '/config/update',
 };
 
 export const IMAGE_FOLDER_PATHS = {

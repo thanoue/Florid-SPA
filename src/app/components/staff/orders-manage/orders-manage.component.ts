@@ -17,6 +17,7 @@ import { UserService } from 'src/app/services/user.service';
 import { MyDatepipe } from 'src/app/pipes/date.pipe';
 import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
+import { doesNotReject } from 'assert';
 
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
@@ -83,15 +84,15 @@ export class OrdersManageComponent extends BaseComponent {
   }
 
   constructor(private customerService: CustomerService,
-    protected activatedRoute: ActivatedRoute,
-    private router: Router, private orderService: OrderService,
-    protected storageService: StorageService,
-    protected productService: ProductService,
-    private orderDetailService: OrderDetailService,
-    protected http: HttpClient,
-    private datePipe: MyDatepipe,
-    private userService: UserService,
-    private printJobService: PrintJobService) {
+              protected activatedRoute: ActivatedRoute,
+              private router: Router, private orderService: OrderService,
+              protected storageService: StorageService,
+              protected productService: ProductService,
+              private orderDetailService: OrderDetailService,
+              protected http: HttpClient,
+              private datePipe: MyDatepipe,
+              private userService: UserService,
+              private printJobService: PrintJobService) {
 
     super();
     this.globalService.currentOrderViewModel = new OrderViewModel();
@@ -180,10 +181,10 @@ export class OrdersManageComponent extends BaseComponent {
   }
 
   filterByState() {
-    var menuitems = [];
+    const menuitems = [];
 
     menuitems.push({
-      Name: "Tất cả",
+      Name: 'Tất cả',
       Value: 'ALL'
     });
 
@@ -198,7 +199,7 @@ export class OrdersManageComponent extends BaseComponent {
 
       this.currentPage = 0;
 
-      this.statuses = state == 'ALL' ? this.allStatuses : [
+      this.statuses = state === 'ALL' ? this.allStatuses : [
         state
       ];
 
@@ -312,6 +313,8 @@ export class OrdersManageComponent extends BaseComponent {
 
       });
 
+    console.log('avaiable score:',order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed );
+
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
       doneTime: new Date(order.DoneTime).toLocaleString('en-US', { hour12: false }),
@@ -329,7 +332,7 @@ export class OrdersManageComponent extends BaseComponent {
       memberDiscount: order.CustomerInfo.DiscountPercent,
       scoreUsed: order.CustomerInfo.ScoreUsed,
       gainedScore: order.CustomerInfo.GainedScore,
-      totalScore: order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
+      totalScore: order.CustomerInfo.AvailableScore,
       customerName: order.CustomerInfo.Name,
       customerId: order.CustomerInfo.Id,
       discount: this.getDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
@@ -884,7 +887,7 @@ export class OrdersManageComponent extends BaseComponent {
         case 0:
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-            State: orderDetail.State == OrderDetailStates.Making ? OrderDetailStates.Added : OrderDetailStates.FixingRequest,
+            State: orderDetail.State === OrderDetailStates.Making ? OrderDetailStates.Added : OrderDetailStates.FixingRequest,
             MakingRequestTime: 0,
             FloristId: null
           })

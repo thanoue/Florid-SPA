@@ -24,6 +24,7 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
   currentMenu: MenuItems;
 
   userName: string;
+  logoutInvoker: Subscription;
   userAvt: string;
 
   menus = MenuItems;
@@ -37,25 +38,22 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
   ngOnInit(): void {
 
+    this.logoutInvoker = this.realtimeService.LogouOutBehavier.subscribe(res => {
+
+      if (res == false)
+        return;
+
+      console.log('admin will logout');
+
+      this.authService.logOut((isSuccess) => {
+
+        if (isSuccess)
+          this.router.navigate(['/admin/login']);
+
+      })
+    });
+
     let userId = LocalService.getUserId();
-    let isPrinter = LocalService.isPrinter();
-
-    if (userId) {
-
-      this.realtimeService.connect(+userId, isPrinter, () => {
-
-      });
-
-    }
-
-    // this.realtimeService.forceLogoutRegister((message) => {
-    //   this.globalService.showError(message);
-    //   this.authService.logOut((isSuccess) => {
-    //     if (isSuccess) {
-    //       this.router.navigate(['/login']);
-    //     }
-    //   });
-    // });
 
     this.currentMenu = MenuItems.None;
 
@@ -63,6 +61,15 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
     this.userName = LocalService.getUserName();
     this.userAvt = LocalService.getUserAvtUrl();
+
+
+    if (userId) {
+
+      this.realtimeService.connect(+userId, LocalService.getRole(), () => {
+
+      });
+
+    }
 
     this.headerUpdate = this.globalService.updateHeader
       .subscribe(pageComponent => {
@@ -93,6 +100,7 @@ export class MainLayoutComponent implements OnDestroy, OnInit {
 
   ngOnDestroy(): void {
     this.headerUpdate.unsubscribe();
+    this.logoutInvoker.unsubscribe();
   }
 
 

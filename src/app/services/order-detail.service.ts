@@ -17,7 +17,6 @@ export class OrderDetailService {
   }
 
   updateFields(id: number, value: any): Promise<any> {
-    console.log(value);
     return this.httpService.post(API_END_POINT.updateODFields, {
       obj: value,
       orderDetailId: +id
@@ -85,6 +84,7 @@ export class OrderDetailService {
 
 
   getFromRaw(orderDetail: any): OrderDetailViewModel {
+
     let orderDetailVM = new OrderDetailViewModel();
 
     orderDetailVM.ProductName = orderDetail.ProductName;
@@ -205,6 +205,7 @@ export class OrderDetailService {
 
     }
 
+    orderDetailVM.NoteImages = orderDetail.NoteImages ? (orderDetail.NoteImages.split(',')) : [];
 
     return orderDetailVM;
   }
@@ -426,7 +427,7 @@ export class OrderDetailService {
 
   }
 
-  getMakingOrderDetails(floristId: number): Promise<OrderDetailViewModel[]> {
+    getMakingOrderDetails(floristId: number): Promise<OrderDetailViewModel[]> {
 
     return this.httpService.post(API_END_POINT.getMakingWaitOrderDetails, {
       floristId: floristId

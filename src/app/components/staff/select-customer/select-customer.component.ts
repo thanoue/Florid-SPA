@@ -6,7 +6,7 @@ import { CustomerService } from 'src/app/services/customer.service';
 import { NgForm } from '@angular/forms';
 import { MembershipTypes } from 'src/app/models/enums';
 import { OrderCustomerInfoViewModel } from 'src/app/models/view.models/order.model';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 
 declare function closeAddCustomerDialog(): any;
 declare function viewCustomerInfo(): any;

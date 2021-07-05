@@ -10,7 +10,6 @@ import { browser } from 'protractor';
 declare function customerSupport(): any;
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
 declare function getShippingNoteDialog(btnTitle: string, callback: (note: string) => void): any;
-declare function getNumberValidateInput(resCallback: (res: number, validCallback: (isvalid: boolean, error: string) => void) => void, placeHolder: string, oldValue: number): any;
 
 @Component({
   selector: 'app-shipper-main',

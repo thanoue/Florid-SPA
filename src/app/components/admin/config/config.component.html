@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-6">
+    <div class="leftDetail">
+      <form #form="ngForm" (submit)="updateConfigValue(form)" autocomplete="off">
+        <div class="infoCard">
+          <h3 class="infoTitle">Hạn mức thành viên (tổng tiền mua hàng)</h3>
+          <ul class="infoList">
+            <li><label>Member </label><input class="form-control" type="text" [(ngModel)]="config.MemberValue"
+                id="MemberValue" name="MemberValue">
+
+            </li>
+
+            <li><label>VIP </label><input class="form-control" type="text" [(ngModel)]="config.VipValue" id="VipValue"
+                name="VipValue">
+
+            </li>
+
+            <li><label>VVIP</label><input class="form-control" type="text" [(ngModel)]="config.VVipValue" id="VVipValue"
+                name="VVipValue">
+
+            </li>
+
+          </ul>
+        </div>
+        <div class="w-100 text-right">
+          <button type="submit" class="btn btn-outline-info"><i class="fa fa-check"></i>Cập nhật</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="leftDetail">
+      <form #form="ngForm" (submit)="updateConfigDiscount(form)" autocomplete="off">
+        <div class="infoCard">
+          <h3 class="infoTitle">Mức giảm giá (%)</h3>
+          <ul class="infoList">
+
+            <li><label>Giảm giá MEMBER</label><input class="form-control" type="number"
+                [(ngModel)]="config.MemberDiscount" id="MemberDiscount" name="MemberDiscount">
+            </li>
+
+            <li><label>Giảm giá VIP </label><input class="form-control" type="text" [(ngModel)]="config.VipDiscount"
+                id="VipDiscount" name="VipDiscount">
+
+            </li>
+
+            <li><label>Giảm giá VVIP</label><input class="form-control" type="text" [(ngModel)]="config.VVipDiscount"
+                id="VVipDiscount" name="VVipDiscount">
+
+            </li>
+          </ul>
+        </div>
+        <div class="w-100 text-right">
+          <button type="submit" class="btn btn-outline-info"><i class="fa fa-check"></i>Cập nhật</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

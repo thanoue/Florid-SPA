@@ -11,7 +11,7 @@ import { District, Ward } from '../../models/entities/address.entity';
 import { LocalService } from '../../services/common/local.service';
 import { Roles } from '../../models/enums';
 import { Purchase } from 'src/app/models/view.models/purchase.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 
 declare function pickFile(isSaveUrl: boolean): any;
 declare function isRememberPassChecking(): any;

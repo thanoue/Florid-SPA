@@ -6,7 +6,7 @@ import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { ODSeenUserInfo } from 'src/app/models/entities/order.entity';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { User } from 'src/app/models/entities/user.entity';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { ImgPipe } from 'src/app/pipes/img.pipe';
 import { OrderService } from 'src/app/services/order.service';
 
@@ -44,8 +44,9 @@ export class ViewOrderDetailComponent extends BaseComponent {
     this.orderService.getById(this.orderDetail.OrderId)
       .then(order => {
 
-        if (order != null)
+        if (order != null){
           this.order = order;
+        }
 
       });
 
@@ -53,9 +54,7 @@ export class ViewOrderDetailComponent extends BaseComponent {
 
     this.orderDetail.NoteImages.forEach(noteImg => {
 
-      let url = ImgPipe.getImgUrl(noteImg, ImgType.NoteImg);
-
-      this.noteImgs.push(url);
+      this.noteImgs.push(ImgPipe.getImgUrl(noteImg, ImgType.NoteImg));
 
     });
 
@@ -64,7 +63,7 @@ export class ViewOrderDetailComponent extends BaseComponent {
       if (!this.canSeen)
         return;
 
-      if (this.CurrentUser.Role == Roles.Florist || this.CurrentUser.Role === Roles.Shipper) {
+      if (this.CurrentUser.Role === Roles.Florist || this.CurrentUser.Role === Roles.Shipper) {
 
         this.orderDetailService.updateDetailSeen(this.orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime(), false).then(res => {
 

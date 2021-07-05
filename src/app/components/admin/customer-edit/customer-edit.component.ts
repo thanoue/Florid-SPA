@@ -6,7 +6,7 @@ import { Customer, SpecialDay } from 'src/app/models/entities/customer.entity';
 import { NgForm } from '@angular/forms';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Router } from '@angular/router';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 
 @Component({
   selector: 'app-customer-edit',
@@ -64,8 +64,6 @@ export class CustomerEditComponent extends BaseComponent {
       this.showError('Điểm đã sử dụng vượt quá tổng điểm!');
       return;
     }
-
-    console.log(this.customer);
 
     this.customerService.updateCustomer(this.customer)
       .then(() => {

@@ -7,7 +7,7 @@ import { TagService } from 'src/app/services/tag.service';
 import { threadId } from 'worker_threads';
 import { NgForm } from '@angular/forms';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { ExchangeService } from 'src/app/services/exchange.service';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 declare function hideAdd(): any;
 declare function showTagEditPopup(): any;
 

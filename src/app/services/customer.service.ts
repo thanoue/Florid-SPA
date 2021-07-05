@@ -7,6 +7,7 @@ import { GlobalService } from './common/global.service';
 import { API_END_POINT } from '../app.constants';
 import { Product } from '../models/entities/product.entity';
 import { MembershipTypes } from '../models/enums';
+import { Config } from '../models/entities/config.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,15 @@ export class CustomerService {
 
   constructor(private httpService: HttpService, private globalService: GlobalService) {
 
+  }
+
+  updateAllCustomerMemberType(config: Config): Promise<any> {
+    return this.httpService.post(API_END_POINT.updateAllCustomerMemberType, {
+      config: config
+    }).then(data => { console.log(data); return data; }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
   }
 
   updateFields(id: string, obj: any): Promise<any> {

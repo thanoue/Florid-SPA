@@ -1,19 +1,30 @@
 
-var socket;
+var socket = undefined;
 
-function connectSocket(host, connectedCallback) {
+function connectSocket(host, connectedCallback, forceLogout) {
+
+    if (socket != undefined)
+        return;
 
     socket = io.connect(host);
 
     socket.on('connected', (data) => {
         connectedCallback();
-        console.log('socket is connected');
     });
 
     socket.on('printingNoResponse', () => {
         errorToast('Không có thiết bị nào có thể kết nối tới máy in lúc này!');
     });
 
+    socket.on('forceLogout', (data) => {
+        forceLogout(data.message);
+    });
+}
+
+function forceAccountLogout(userId) {
+    if (socket) {
+        socket.emit('forceAccountLogout', { userId: userId });
+    }
 }
 
 function disConnectSocket() {
@@ -29,9 +40,9 @@ function disConnectSocket() {
     }
 }
 
-function login(userId, isPrinter) {
+function login(userId, role) {
     if (socket)
-        socket.emit('login', { userId: userId, isPrinter: isPrinter });
+        socket.emit('login', { userId: userId, isPrinter: false, role: role });
 }
 
 function registerPrintEvent(callback) {

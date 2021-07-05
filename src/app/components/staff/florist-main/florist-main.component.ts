@@ -92,7 +92,6 @@ export class FloristMainComponent extends BaseComponent {
     this.orderDetailService.getMakingOrderDetails(this.CurrentUser.Id)
       .then(details => {
 
-        console.log('making', details);
         this.makingOrderDetails = details;
 
       });

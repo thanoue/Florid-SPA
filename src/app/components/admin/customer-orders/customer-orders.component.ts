@@ -54,8 +54,6 @@ export class CustomerOrdersComponent extends BaseComponent {
 
   doPrintJob(order: OrderViewModel) {
 
-    console.log(order);
-
     let tempSummary = 0;
     const products: PrintSaleItem[] = [];
 
@@ -100,7 +98,7 @@ export class CustomerOrdersComponent extends BaseComponent {
       memberDiscount: order.CustomerInfo.DiscountPercent,
       scoreUsed: order.CustomerInfo.ScoreUsed,
       gainedScore: order.CustomerInfo.GainedScore,
-      totalScore: order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
+      totalScore: order.CustomerInfo.AvailableScore,
       customerName: order.CustomerInfo.Name,
       customerId: order.CustomerInfo.Id,
       discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
