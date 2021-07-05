@@ -40,9 +40,9 @@ function disConnectSocket() {
     }
 }
 
-function login(userId, isPrinter, role) {
+function login(userId, role) {
     if (socket)
-        socket.emit('login', { userId: userId, isPrinter: isPrinter, role: role });
+        socket.emit('login', { userId: userId, isPrinter: false, role: role });
 }
 
 function registerPrintEvent(callback) {
