@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const fileUpload = require('express-fileupload');
-var bcrypt = require("bcryptjs");
 const cors = require('cors');
 const path = require('path');
 const http = require('http');
@@ -25,31 +24,11 @@ app.use(fileUpload({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-app.use('/file', express.static('uploads'));
-app.use('/user/avt', express.static('uploads/userAvt'));
-app.use('/product/img', express.static('uploads/productImg'));
-app.use('/orderDetail/resultImg', express.static('uploads/resultImg'));
-app.use('/orderDetail/shippingImg', express.static('uploads/shipppingImg'));
-app.use('/orderDetail/orderDetailNotes', express.static('uploads/orderDetailNotes'));
-app.use('/ios/install', express.static('uploads/ios'));
+createDir('./uploads/userAvt');
+app.use('/files/users', express.static('uploads/userAvt'));
 
 require('./app/routes/admin.routes')(app);
 
-createDir('./uploads/orderDetailNotes');
-createDir('./uploads/shipppingImg');
-createDir('./uploads/userAvt');
-createDir('./uploads/productImg');
-createDir('./uploads/resultImg');
-
-app.use(express.static(path.join(__dirname, 'dist')));
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
-
-const { user, role, category, customer, config } = require("./app/models/index");
 const db = require("./app/models/index");
 db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
@@ -59,7 +38,7 @@ db.sequelize.sync({ alter: true }).then(() => {
 /**
  * Get port from environment and store in Express.
  */
-const port = process.env.PORT || '3001';
+const port = process.env.PORT || '30010';
 app.set('port', port);
 
 const serverApp = http.createServer(app);
@@ -67,72 +46,6 @@ const serverApp = http.createServer(app);
 serverApp.listen(port, () => {
     console.log(`API running on host with port:${port}`);
     console.log('Env:', env);
-});
-
-const io = require('socket.io')(serverApp);
-
-io.on('connection', (socket) => {
-
-    socket.userId = 0;
-    socket.isPrinter = false;
-    socket.role = '';
-
-    socket.emit('connected');
-
-    socket.on('login', (data) => {
-
-        console.log('client:',data);
-
-        socket.userId = data.userId;
-        socket.isPrinter = data.isPrinter;
-        socket.role = data.role;
-
-    });
-
-    socket.on('doPrintJob', (data) => {
-
-        var clients = io.sockets.clients();
-
-        const keys = Object.keys(clients.connected);
-
-        let isHasPrinter = false;
-
-        keys.forEach(key => {
-
-            let itemSocket = clients.connected[key];
-
-            if (itemSocket.isPrinter && itemSocket.userId == 0) {
-                itemSocket.emit('doPrintJob', { printJob: data.printJob });
-                isHasPrinter = true;
-            }
-
-        });
-
-        if (!isHasPrinter) {
-            socket.emit('printingNoResponse');
-        }
-
-    });
-
-    socket.on('forceAccountLogout', () => {
-
-        var clients = io.sockets.clients();
-
-        const keys = Object.keys(clients.connected);
-
-
-        keys.forEach(key => {
-            let itemSocket = clients.connected[key];
-
-            if (itemSocket.role == 'Admin' || itemSocket.role == 'Account') {
-                console.log('about to login ');
-                itemSocket.emit('forceLogout', { message: 'Đăng nhập lại để cập nhật cấu hình.' });
-            }
-
-        });
-
-    });
-
 });
 
 function createDir(path) {
@@ -143,168 +56,4 @@ function createDir(path) {
 
 function initial() {
 
-    config.findAll()
-        .then(configs => {
-
-            if (configs && configs.length > 0) {
-                return;
-            }
-
-            config.create({
-                MemberValue: 5000000,
-                MemberDiscount: 5,
-                VipValue: 50000000,
-                VipDiscount: 10,
-                VVipValue: 100000000,
-                VVipDiscount: 15
-            });
-
-        });
-
-    let id = 'KHACH_LE';
-
-    customer.findOne({
-        where: {
-            Id: id
-        }
-    })
-        .then((cus) => {
-
-            if (cus) {
-                return;
-            }
-
-            customer.create({
-                Id: 'KHACH_LE',
-                Sex: 'Male',
-                FullName: 'Khách lẻ',
-                BirthDay: 0,
-                AccumulatedAmount: 0,
-                AvailableScore: 0,
-                UsedScoreTotal: 0,
-                MembershipType: 'NewCustomer',
-                NumberId: 0
-            })
-        });
-
-    role.findAll()
-        .then((roles) => {
-
-            if (roles && roles.length > 0) {
-                return;
-            }
-
-            let addingRoles = [
-                {
-                    Id: 1,
-                    Name: "User"
-                },
-                {
-                    Id: 2,
-                    Name: "Shipper"
-                },
-                {
-                    Id: 3,
-                    Name: "Florist"
-                },
-                {
-                    Id: 4,
-                    Name: "Account"
-                },
-                {
-                    Id: 5,
-                    Name: "Admin"
-                }
-            ]
-
-            role.bulkCreate(addingRoles, {
-                returning: true
-            }).then(res => {
-                user.create({
-                    FullName: 'Hà Thu Mai',
-                    Email: 'thumai@florid.com',
-                    LoginName: 'admin',
-                    Password: bcrypt.hashSync('123456', 8),
-                    PhoneNumber: '0987654321',
-                    IsPrinter: false,
-                    AvtUrl: 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg',
-                }).then(user1 => {
-                    user1.setRoles([5]).then(() => {
-                        user.create({
-                            FullName: 'Mai Van Ba',
-                            Email: 'bamai@florid.com',
-                            LoginName: 'account',
-                            Password: bcrypt.hashSync('123456', 8),
-                            PhoneNumber: '0987654321',
-                            IsPrinter: true,
-                            AvtUrl: 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg',
-                        }).then(user2 => {
-                            user2.setRoles([4]).then(() => {
-
-                            });
-                        });
-                    });
-                });
-
-                var categories = [
-                    {
-                        Id: 1,
-                        Name: "Valentine",
-                        Description: "Hoa lễ tình nhân"
-                    },
-                    {
-                        Id: 2,
-                        Name: "Bó hoa tươi",
-                        Description: "Bó hoa tươi"
-                    },
-                    {
-                        Id: 3,
-                        Name: "Bình hoa tươi",
-                        Description: "Bình hoa tươi"
-                    },
-                    {
-                        Id: 4,
-                        Name: "Hộp hoa tươi",
-                        Description: "Hộp hoa tươi"
-                    },
-                    {
-                        Id: 5,
-                        Name: "Giỏ hoa tươi",
-                        Description: "Giỏ hoa tươi"
-                    },
-                    {
-                        Id: 6,
-                        Name: "Hoa cưới",
-                        Description: "Hoa cưới"
-                    },
-                    {
-                        Id: 7,
-                        Name: "Hoa nghệ thuật",
-                        Description: "Hoa nghệ thuật"
-                    },
-                    {
-                        Id: 8,
-                        Name: "Kệ hoa tươi",
-                        Description: "Kệ hoa tươi"
-                    },
-                    {
-                        Id: 9,
-                        Name: "Hoa sự kiện",
-                        Description: "Hoa sự kiện"
-                    },
-                    {
-                        Id: 10,
-                        Name: "Lan hồ điệp",
-                        Description: "Lan hồ điệp"
-                    }
-                ]
-
-                category.bulkCreate(categories, {
-                    returning: true
-                }).then(() => {
-                    console.log('added bulk category');
-                });
-            });
-
-        });
 }

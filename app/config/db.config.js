@@ -4,7 +4,7 @@ module.exports = env !== 'development' ? {
     HOST: "localhost",
     USER: "vpsuser",
     PASSWORD: "123456789",
-    DB: "florid_main",
+    DB: "icho_main",
     dialect: "mysql",
     pool: {
         max: 5,
@@ -16,7 +16,7 @@ module.exports = env !== 'development' ? {
         HOST: "localhost",
         USER: "root",
         PASSWORD: "123456a@A",
-        DB: "florid_local",
+        DB: "icho_local",
         dialect: "mysql",
         pool: {
             max: 5,

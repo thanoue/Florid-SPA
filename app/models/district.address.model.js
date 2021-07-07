@@ -6,6 +6,12 @@ module.exports = (sequelize, Sequelize) => {
         },
         Name: {
             type: Sequelize.STRING,
+        }, 
+        Type: {
+            type: Sequelize.STRING,
+        },
+        ProvinceId: {
+            type: Sequelize.STRING,
         },
         createdAt: {
             type: Sequelize.DATE,

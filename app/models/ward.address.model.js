@@ -7,6 +7,9 @@ module.exports = (sequelize, Sequelize) => {
         DistrictId: {
             type: Sequelize.STRING,
         },
+        Type: {
+            type: Sequelize.STRING,
+        },
         Name: {
             type: Sequelize.STRING,
         },

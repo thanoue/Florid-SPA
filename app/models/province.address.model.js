@@ -1,18 +1,14 @@
 module.exports = (sequelize, Sequelize) => {
-    const Tag = sequelize.define("tags", {
+    const DistrictAddress = sequelize.define("address_provinces", {
         Id: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             primaryKey: true,
-            autoIncrement: true,
-        },
-        Description: {
-            type: Sequelize.STRING
         },
         Name: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
         },
-        Alias: {
-            type: Sequelize.STRING
+        Type: {
+            type: Sequelize.STRING,
         },
         createdAt: {
             type: Sequelize.DATE,
@@ -23,6 +19,5 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true
         }
     });
-
-    return Tag;
-};
+    return DistrictAddress;
+}

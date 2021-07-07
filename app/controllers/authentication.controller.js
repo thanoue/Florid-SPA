@@ -1,9 +1,7 @@
 const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
-const Role = db.role;
 const logger = require('../config/logger');
-const Config = db.config;
 
 const Op = db.Sequelize.Op;
 
@@ -11,34 +9,20 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
+
+    if(!req.body.phoneNumber){
+        res.status(403).send({ message: 'Phone Number is required!'});
+    }
     // Save User to Database
     User.create({
         FullName: req.body.fullName,
         Email: req.body.email,
-        LoginName: req.body.loginName,
         Password: bcrypt.hashSync(req.body.password, 8),
         PhoneNumber: req.body.phoneNumber,
         AvtUrl: 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg',
-        IsPrinter: req.body.isPrinter
     })
         .then(user => {
-            if (req.body.roles) {
-                Role.findAll({
-                    where: {
-                        Name: {
-                            [Op.or]: req.body.roles
-                        }
-                    }
-                }).then(roles => {
-                    user.setRoles(roles).then(() => {
-                        res.send({ message: "User was registered successfully!" });
-                    });
-                });
-            } else {
-                user.setRoles([1]).then(() => {
-                    res.send({ message: "User was registered successfully!" });
-                });
-            }
+            res.send({ user: user});
         })
         .catch(err => logger.error(err, res));
 };
@@ -47,11 +31,11 @@ exports.signout = (req, res) => {
     res.send({ message: "User was logged out!" });
 }
 
-exports.signin = (req, res) => {
+exports.loginByEmail = (req, res) => {
 
     User.findOne({
         where: {
-            LoginName: req.body.loginName
+            Email: req.body.email
         }
     })
         .then(user => {
@@ -80,31 +64,14 @@ exports.signin = (req, res) => {
                 expiresIn: 86400 // 24 hours
             });
 
-            var authorities = [];
 
-            user.getRoles().then(roles => {
-
-                for (let i = 0; i < roles.length; i++) {
-                    authorities.push(roles[i].Name);
-                }
-
-                Config.findOne()
-                    .then(configData => {
-
-                        res.status(200).send({
-                            id: user.Id,
-                            fullName: user.FullName,
-                            loginName: user.LoginName,
-                            email: user.Email,
-                            roles: authorities,
-                            accessToken: token,
-                            avtUrl: user.AvtUrl,
-                            phoneNumber: user.PhoneNumber,
-                            isPrinter: user.IsPrinter,
-                            config: configData
-                        });
-
-                    });
+            res.status(200).send({
+                id: user.Id,
+                fullName: user.FullName,
+                email: user.Email,
+                accessToken: token,
+                avtUrl: user.AvtUrl,
+                phoneNumber: user.PhoneNumber
             });
         })
         .catch(err => logger.error(err, res));

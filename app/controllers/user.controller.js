@@ -2,90 +2,16 @@ const db = require("../models");
 const guid = require('guid');
 var bcrypt = require("bcryptjs");
 const User = db.user;
-const Role = db.role;
-const UsersRoles = db.user_role;
 const fs = require('fs');
 const commonService = require("../services/common.service");
-const RoleTypes = require('../config/app.config').Roles;
-
 const appConstant = require('../config/app.config');
 const userAvtFolderPath = appConstant.fileFolderPath.userAvt;
 
 exports.getAll = (req, res) => {
-    User.findAll({
-        include: [
-            {
-                model: Role
-            }
-        ]
-    }).then(users => {
+    User.findAll().then(users => {
         res.send({ users: users });
     }).catch(err => logger.error(err, res));
 }
-
-exports.getByRole = (req, res) => {
-    User.findAll({
-        include: [
-            {
-                model: Role,
-                where: {
-                    Name: req.body.role
-                }
-            }
-        ]
-    }).then(users => {
-        res.send({ users: users });
-    }).catch(err => logger.error(err, res));
-}
-
-exports.createUser = (req, res) => {
-
-    const guid = require('guid');
-
-    var avtname = 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg';
-
-    if (req.files) {
-
-        avtname = commonService.getNewFileName(req.files.avatar);
-
-        req.files.avatar.mv(userAvtFolderPath + avtname);
-    }
-
-    // Save User to Database
-    User.create({
-        FullName: req.body.fullName,
-        Email: req.body.email,
-        LoginName: req.body.loginName,
-        Password: bcrypt.hashSync(req.body.password, 8),
-        PhoneNumber: req.body.phoneNumber,
-        AvtUrl: avtname,
-        IsPrinter: req.body.isPrinter,
-        IsExternalShipper: req.body.isExternalShipper
-    })
-        .then(user => {
-            if (req.body.role) {
-                Role.findOne({
-                    where: {
-                        Name: req.body.role
-                    }
-                }).then(role => {
-                    if (!role || role == null) {
-                        res.status(500).send({ message: "Invalid Role!" });
-                    } else {
-                        user.setRoles(role).then(() => {
-                            res.send({ user: user });
-                        });
-                    }
-                }).catch(err => logger.error(err, res));
-            } else {
-                // user role = 1
-                user.setRoles([1]).then(() => {
-                    res.send({ user: user });
-                });
-            }
-        })
-        .catch(err => logger.error(err, res));
-};
 
 exports.editUser = (req, res) => {
 
@@ -110,8 +36,6 @@ exports.editUser = (req, res) => {
         LoginName: req.body.loginName,
         PhoneNumber: req.body.phoneNumber,
         AvtUrl: avtname,
-        IsPrinter: req.body.isPrinter,
-        IsExternalShipper: req.body.isExternalShipper
     }
 
     if (req.body.password && req.body.password != '') {
@@ -124,40 +48,7 @@ exports.editUser = (req, res) => {
             Id: req.body.id
         }
     }).then(user => {
-        if (req.body.role) {
-            Role.findOne({
-                where: {
-                    Name: req.body.role
-                }
-            }).then(role => {
-
-                if (!role || role == null) {
-
-                    res.status(500).send({ message: "Invalid Role!" });
-
-                } else {
-
-                    UsersRoles.destroy({
-                        where: {
-                            UserId: req.body.id
-                        }
-                    }).then(() => {
-
-                        UsersRoles.create({
-                            RoleId: role.Id,
-                            UserId: req.body.id
-                        }).then(() => {
-                            res.send({ avtUrl: avtname });
-                        });
-
-                    });
-
-                }
-            }).catch(err => logger.error(err, res));
-
-        } else {
-            res.send({ avtUrl: avtname });
-        }
+        res.send({ user: user });
     }).catch(err => logger.error(err, res));
 };
 

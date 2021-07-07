@@ -8,9 +8,6 @@ module.exports = (sequelize, Sequelize) => {
         FullName: {
             type: Sequelize.STRING
         },
-        LoginName: {
-            type: Sequelize.STRING
-        },
         Email: {
             type: Sequelize.STRING
         },
@@ -22,12 +19,6 @@ module.exports = (sequelize, Sequelize) => {
         },
         AvtUrl: {
             type: Sequelize.STRING
-        },
-        IsPrinter: {
-            type: Sequelize.BOOLEAN
-        },
-        IsExternalShipper: {
-            type: Sequelize.BOOLEAN
         },
         createdAt: {
             type: Sequelize.DATE,
