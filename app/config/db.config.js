@@ -2,8 +2,8 @@ const env = process.env.NODE_ENV || 'development';
 
 module.exports = env !== 'development' ? {
     HOST: "localhost",
-    USER: "vpsuser",
-    PASSWORD: "123456789",
+    USER: "main",
+    PASSWORD: "namidth123",
     DB: "icho_main",
     dialect: "mysql",
     pool: {
