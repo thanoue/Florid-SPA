@@ -38,7 +38,7 @@ db.sequelize.sync({ alter: true }).then(() => {
 /**
  * Get port from environment and store in Express.
  */
-const port = process.env.PORT || '30010';
+const port = process.env.PORT || '3010';
 app.set('port', port);
 
 const serverApp = http.createServer(app);
