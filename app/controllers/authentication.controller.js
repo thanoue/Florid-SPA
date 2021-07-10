@@ -7,7 +7,7 @@ const { OAuth2Client } = require('google-auth-library');
 const GOOGLE_CLIENT_ID = '840849713145-99mbcnnl6nra282nsj0a361lraebi1rk.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECERT = 'oxkrbmlrhW1tgfRJMx14RrKJ';
 const GOOGLE_CALLBACK_URL = 'https://di-cho.xyz/auth/google/callback';
-const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECERT); // Replace by your client ID
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID); // Replace by your client ID
 
 const Op = db.Sequelize.Op;
 
