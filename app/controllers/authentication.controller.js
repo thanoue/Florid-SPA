@@ -100,7 +100,7 @@ exports.loginByGoogle = (req,res)=>{
 
         User.findOne({
             where:{
-                GoogleId:googleUser.user_id
+                GoogleId:googleUser.sub
             }
         }).then((oldUser)=>{
     
@@ -111,8 +111,10 @@ exports.loginByGoogle = (req,res)=>{
             }else{
            
                 User.create({
-                    GoogleId: googleUser.user_id,
-                    Email:googleUser.email
+                    GoogleId: googleUser.sub,
+                    Email:googleUser.email,
+                    AvtUrl:googleUser.picture,
+                    FullName: googleUser.given_name + googleClient.family_name
                 }).then(newUser=>{
                     
                     GenerateTokenAndSend(newUser,true,res);
