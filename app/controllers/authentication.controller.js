@@ -90,6 +90,8 @@ exports.loginByFacebook = (req,res)=>{
 
 exports.loginByGoogle = (req,res)=>{
 
+    console.log(req.body.token);
+
     verifyGoogleToken(req.body.token).then(googleUser => {
 
         console.log(googleUser); // Token is valid, do whatever you want with the user 
@@ -114,6 +116,7 @@ exports.loginByGoogle = (req,res)=>{
                     GenerateTokenAndSend(newUser,true,res);
            
                 }).catch(err =>{ 
+                    console.log('DB error:' ,err);
                     res.status(401).send(err)
                 });
             }
@@ -123,7 +126,7 @@ exports.loginByGoogle = (req,res)=>{
             res.status(401).send(err)
         });
         
-    }).catch(err =>res.status(401).send(err));
+    }).catch(err => {console.log('Google error:' ,err); res.status(401).send(err);});
 }
 
 async function verifyGoogleToken(token) {
