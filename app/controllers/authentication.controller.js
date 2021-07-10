@@ -4,10 +4,10 @@ const User = db.user;
 const logger = require('../config/logger');
 const https = require('https');
 const { OAuth2Client } = require('google-auth-library');
-const GOOGLE_CLIENT_ID = '840849713145-99mbcnnl6nra282nsj0a361lraebi1rk.apps.googleusercontent.com';
+const ANDROID_GOOGLE_CLIENT_ID = '840849713145-99mbcnnl6nra282nsj0a361lraebi1rk.apps.googleusercontent.com';    
+const IOS_GOOGLE_CLIENT_ID = '840849713145-senhpjr8joitrh08si7mb5p7dopgql4b.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECERT = 'oxkrbmlrhW1tgfRJMx14RrKJ';
 const GOOGLE_CALLBACK_URL = 'https://di-cho.xyz/auth/google/callback';
-const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID); // Replace by your client ID
 
 const Op = db.Sequelize.Op;
 
@@ -94,7 +94,9 @@ exports.loginByGoogle = (req,res)=>{
 
     console.log(req.body.token);
 
-    verifyGoogleToken(req.body.token).then(googleUser => {
+    let clientId = req.body.type == 'IOS' ? IOS_GOOGLE_CLIENT_ID  : ANDROID_GOOGLE_CLIENT_ID ;
+
+    verifyGoogleToken(req.body.token,clientId).then(googleUser => {
 
         console.log(googleUser); // Token is valid, do whatever you want with the user 
 
@@ -135,13 +137,17 @@ exports.loginByGoogle = (req,res)=>{
     }).catch(err => {console.log('Google error:' ,err); res.status(401).send(err);});
 }
 
-async function verifyGoogleToken(token) {
+async function verifyGoogleToken(token,clientId) {
+
+   let googleClient = new OAuth2Client(clientId); // Replace by your client ID
 
     const ticket = await googleClient.verifyIdToken({
       idToken: token,
-      audience: GOOGLE_CLIENT_ID  // Replace by your client ID 
-    }).catch(err => {console.log('Google error:' ,err);});;
+      audience: clientId  // Replace by your client ID 
+    }).catch(err => {console.log('Google error:' ,err);});
+    
     const payload = ticket.getPayload();
+
     return payload;
   }
 
