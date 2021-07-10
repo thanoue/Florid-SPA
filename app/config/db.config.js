@@ -4,7 +4,7 @@ module.exports = env !== 'development' ? {
     HOST: "localhost",
     USER: "myuser",
     PASSWORD: "mypass",
-    DB: "icho_main",
+    DB: "icho_prod",
     dialect: "mysql",
     pool: {
         max: 5,
