@@ -29,7 +29,16 @@ app.use('/files/users', express.static('uploads/userAvt'));
 
 require('./app/routes/admin.routes')(app);
 
+app.get('/auth/facebook/callback',function(req,res){
+    res.send("Facebook login success");
+});
+
+app.get('/auth/google/callback',function(req,res){
+    res.send("Facebook login success");
+});
+
 const db = require("./app/models/index");
+
 db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
     initial();
@@ -47,6 +56,8 @@ serverApp.listen(port, () => {
     console.log(`API running on host with port:${port}`);
     console.log('Env:', env);
 });
+
+
 
 function createDir(path) {
     if (!fs.existsSync(path)) {

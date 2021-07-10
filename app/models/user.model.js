@@ -20,6 +20,12 @@ module.exports = (sequelize, Sequelize) => {
         AvtUrl: {
             type: Sequelize.STRING
         },
+        FacebookId: {
+            type: Sequelize.STRING
+        },
+        GoogleId: {
+            type: Sequelize.STRING
+        },
         createdAt: {
             type: Sequelize.DATE,
             allowNull: true

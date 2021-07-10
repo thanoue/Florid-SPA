@@ -12,6 +12,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
+    "google-auth-library": "^7.3.0",
     "guid": "0.0.12",
     "guid-typescript": "^1.0.9",
     "js-sha256": "^0.9.0",

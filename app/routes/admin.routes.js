@@ -51,6 +51,8 @@ module.exports = function (app) {
         authController.signout
     );
     app.post(`${authPrefix}loginByEmail`, authController.loginByEmail);
+    app.post(`${authPrefix}loginByFacebook`, authController.loginByFacebook);
+    app.post(`${authPrefix}loginByGoogle`, authController.loginByGoogle);
 
     //user
 
