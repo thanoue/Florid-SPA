@@ -7,7 +7,7 @@ const { OAuth2Client } = require('google-auth-library');
 const GOOGLE_CLIENT_ID = '840849713145-99mbcnnl6nra282nsj0a361lraebi1rk.apps.googleusercontent.com';
 const GOOGLE_CLIENT_SECERT = 'oxkrbmlrhW1tgfRJMx14RrKJ';
 const GOOGLE_CALLBACK_URL = 'https://di-cho.xyz/auth/google/callback';
-const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECERT,GOOGLE_CALLBACK_URL); // Replace by your client ID
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECERT); // Replace by your client ID
 
 const Op = db.Sequelize.Op;
 
@@ -100,7 +100,7 @@ exports.loginByGoogle = (req,res)=>{
 
         User.findOne({
             where:{
-                FacebookId:googleUser.id
+                GoogleId:googleUser.user_id
             }
         }).then((oldUser)=>{
     
@@ -111,8 +111,8 @@ exports.loginByGoogle = (req,res)=>{
             }else{
            
                 User.create({
-                    FullName: googleUser.name,
-                    GoogleId: googleUser.id,
+                    GoogleId: googleUser.user_id,
+                    Email:googleUser.email
                 }).then(newUser=>{
                     
                     GenerateTokenAndSend(newUser,true,res);
@@ -132,10 +132,11 @@ exports.loginByGoogle = (req,res)=>{
 }
 
 async function verifyGoogleToken(token) {
+
     const ticket = await googleClient.verifyIdToken({
       idToken: token,
       audience: GOOGLE_CLIENT_ID  // Replace by your client ID 
-    });
+    }).catch(err => {console.log('Google error:' ,err);});;
     const payload = ticket.getPayload();
     return payload;
   }
