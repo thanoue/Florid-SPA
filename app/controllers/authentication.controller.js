@@ -119,6 +119,7 @@ exports.loginByGoogle = (req,res)=>{
             }
     
         }).catch(err =>{ 
+            console.log('Google error:' ,err);
             res.status(401).send(err)
         });
         

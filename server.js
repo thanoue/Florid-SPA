@@ -1,7 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const fileUpload = require('express-fileupload');
-const cors = require('cors');
 const path = require('path');
 const http = require('http');
 var fs = require('fs');
@@ -10,11 +9,11 @@ const app = express();
 
 const env = process.env.NODE_ENV || 'development';
 
-var corsOptions = {
-    origin: [env === 'development' ? "http://localhost:4200" : ""]
-};
+// var corsOptions = {
+//     origin: [env === 'development' ? "http://localhost:4200" : ""]
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use(fileUpload({
     createParentPath: true,
