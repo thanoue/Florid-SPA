@@ -109,12 +109,14 @@ exports.loginByGoogle = (req,res)=>{
                 GenerateTokenAndSend(oldUser,false,res);
     
             }else{
+
+                var fullName = googleUser.given_name ? googleUser.given_name : '' + ' ' + googleUser.family_name ? googleUser.family_name : '';
            
                 User.create({
                     GoogleId: googleUser.sub,
                     Email:googleUser.email,
                     AvtUrl:googleUser.picture,
-                    FullName: googleUser.given_name + googleClient.family_name
+                    FullName: fullName
                 }).then(newUser=>{
                     
                     GenerateTokenAndSend(newUser,true,res);
