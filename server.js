@@ -57,8 +57,6 @@ serverApp.listen(port, () => {
     console.log('Env:', env);
 });
 
-
-
 function createDir(path) {
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path); ``

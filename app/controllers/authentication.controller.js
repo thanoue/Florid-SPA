@@ -2,7 +2,6 @@ const db = require("../models");
 const config = require("../config/auth.config");
 const User = db.user;
 const logger = require('../config/logger');
-const passport = require('passport');
 const https = require('https');
 const { OAuth2Client } = require('google-auth-library');
 const GOOGLE_CLIENT_ID = '840849713145-99mbcnnl6nra282nsj0a361lraebi1rk.apps.googleusercontent.com';
