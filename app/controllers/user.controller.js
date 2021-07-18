@@ -6,6 +6,7 @@ const fs = require('fs');
 const commonService = require("../services/common.service");
 const appConstant = require('../config/app.config');
 const userAvtFolderPath = appConstant.fileFolderPath.userAvt;
+const logger = require('../config/logger');
 
 exports.getAll = (req, res) => {
     User.findAll().then(users => {

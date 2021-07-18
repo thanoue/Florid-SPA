@@ -23,8 +23,15 @@ app.use(fileUpload({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-createDir('./uploads/userAvt');
-app.use('/files/users', express.static('uploads/userAvt'));
+
+app.use('/files/user/avts', express.static('uploads/user/avts'));
+app.use('/files/house/avts', express.static('uploads/house/avts'));
+
+createDir('./uploads/user/');
+createDir('./uploads/user/avts');
+createDir('./uploads/house');
+createDir('./uploads/house/avts');
+
 
 require('./app/routes/admin.routes')(app);
 
@@ -58,7 +65,7 @@ serverApp.listen(port, () => {
 
 function createDir(path) {
     if (!fs.existsSync(path)) {
-        fs.mkdirSync(path); ``
+        fs.mkdirSync(path); 
     }
 }
 

@@ -2,6 +2,7 @@ const middlewares = require("../middlewares");
 const authController = require("../controllers/authentication.controller");
 const userController = require("../controllers/user.controller");
 const addressController = require("../controllers/address.controller");
+const houseController = require("../controllers/house.controller");
 
 const authJwt = middlewares.authJwt;
 const verifySignUp = middlewares.verifySignUp;
@@ -11,6 +12,7 @@ module.exports = function (app) {
     const authPrefix = "/api/auth/";
     const userPrefix = "/api/user/";
     const addressPrefix = "/api/address/";
+    const housePrefix = "/api/house/";
 
     app.use(function (req, res, next) {
 
@@ -55,7 +57,6 @@ module.exports = function (app) {
     app.post(`${authPrefix}loginByGoogle`, authController.loginByGoogle);
 
     //user
-
     app.post(
         `${userPrefix}editUser`,
         [authJwt.verifyToken,
@@ -67,4 +68,11 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         userController.deleteUser
     )
+
+    //house
+    app.post(
+        `${housePrefix}create`,
+        [authJwt.verifyToken],
+        houseController.create
+    );
 };
