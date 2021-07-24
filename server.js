@@ -3,7 +3,8 @@ const bodyParser = require("body-parser");
 const fileUpload = require('express-fileupload');
 const path = require('path');
 const http = require('http');
-var fs = require('fs');
+const fs = require('fs');
+const ytdl = require('ytdl-core');
 
 const app = express();
 
@@ -23,15 +24,22 @@ app.use(fileUpload({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
+app.use('/files/user/milestones', express.static('/uploads/user/milestones'));
 app.use('/files/user/avts', express.static('uploads/user/avts'));
 app.use('/files/house/avts', express.static('uploads/house/avts'));
+app.use('/files/trip/pictures', express.static('/uploads/trip/pictures'));
 
-createDir('./uploads/user/');
+createDir('./uploads');
+
+createDir('./uploads/user');
 createDir('./uploads/user/avts');
+createDir('./uploads/user/milestones');
+
 createDir('./uploads/house');
 createDir('./uploads/house/avts');
 
+createDir('./uploads/trip');
+createDir('./uploads/trip/pictures');
 
 require('./app/routes/admin.routes')(app);
 
@@ -47,7 +55,7 @@ const db = require("./app/models/index");
 
 db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
-    initial();
+   // await initial();
 });
 
 /**
@@ -69,6 +77,31 @@ function createDir(path) {
     }
 }
 
-function initial() {
+async function initial() {
 
+    let info = await ytdl.getInfo('a80UUwVfUjA');
+    
+    let formats = ytdl.filterFormats(info.formats,'audioonly');
+
+    let format = ytdl.chooseFormat(formats,{
+        quality: 'highestaudio'
+    });
+
+    console.log(format.url);
+
+    ytdl.downloadFromInfo(info,{
+        format: format
+    }).pipe(fs.createWriteStream('my7video.mp4'))
+    .on('pipe',function(src){
+
+        src.emit('data',function(chunk){
+            console.log(chunk);
+        });
+
+    })
+    .on('finish',function(){
+
+     console.log('completed');
+
+    });
 }

@@ -2,14 +2,15 @@ const db = require("../models");
 const User = db.user;
 const Op = db.Sequelize.Op;
 
-checkDuplicatePhoneNumber = (req, res, next) => {
+checkDuplicateLoginName = (req, res, next) => {
 
-    if(req.body.phoneNumber){
+    if(req.body.loginName){
     
         let ext ={};
+
         if(req.body.id){
             ext = {
-                PhoneNumber:req.body.phoneNumber,
+                LoginName:req.body.loginName,
                 Id:{
                     [Op.ne]:req.body.id
                 }
@@ -17,7 +18,7 @@ checkDuplicatePhoneNumber = (req, res, next) => {
         }
         else{
             ext = {
-                PhoneNumber:req.body.phoneNumber,
+                LoginName:req.body.loginName,
             }
         }
 
@@ -27,7 +28,7 @@ checkDuplicatePhoneNumber = (req, res, next) => {
     
             if (user) {
                 res.status(400).send({
-                    message: "Failed! phoneNumber is already in use!"
+                    message: "Failed! login name is already in use!"
                 });
                 return;
             }
@@ -40,7 +41,7 @@ checkDuplicatePhoneNumber = (req, res, next) => {
 };
 
 const verifySignUp = {
-    checkDuplicatePhoneNumber: checkDuplicatePhoneNumber,
+    checkDuplicateLoginName: checkDuplicateLoginName,
 };
 
 module.exports = verifySignUp;

@@ -1,24 +1,31 @@
 module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("houses", {
+    const TripLocation = sequelize.define("tripLocations", {
         Id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        FullName: {
+        UserId :{
+            type: Sequelize.INTEGER,
+            allowNull:false
+        },
+        Name: {
             type: Sequelize.STRING
         },
         Address:{
             type: Sequelize.STRING
         },
-        PhoneNumber:{
+        Description: {
             type: Sequelize.STRING
-        }, 
-        OwnerId:{
-            type: Sequelize.INTEGER
         },
-        ImgUrl: {
+        DisplayImgUrl:{
             type: Sequelize.STRING
+        },
+        Latitude:{
+            type: Sequelize.DOUBLE
+        }, 
+        Longitude:{
+            type: Sequelize.DOUBLE
         },
         createdAt: {
             type: Sequelize.DATE,
@@ -30,5 +37,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    return User;
+    return TripLocation;
 };

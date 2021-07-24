@@ -20,12 +20,34 @@ exports.signup = (req, res) => {
     User.create({
         FullName: req.body.fullName,
         Email: req.body.email,
+        LoginName: req.body.loginName,
         Password: bcrypt.hashSync(req.body.password, 8),
         PhoneNumber: req.body.phoneNumber,
         AvtUrl: 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg',
     })
         .then(user => {
-            res.send({ user: user});
+            res.send(user);
+        })
+        .catch(err => logger.error(err, res));
+};
+
+exports.updateUserLoginInfo = (req, res) => {
+
+    // Save User to Database
+    User.update({
+        FullName: req.body.fullName,
+        Email: req.body.email,
+        LoginName: req.body.loginName,
+        Password: bcrypt.hashSync(req.body.password, 8),
+        PhoneNumber: req.body.phoneNumber,
+        AvtUrl: 'https://cdn1.vectorstock.com/i/thumb-large/95/10/bald-man-with-mustache-in-business-suit-ico-vector-1979510.jpg',
+    },{
+        where:{
+            Id: req.body.id
+        }
+    })
+        .then(user => {
+            res.send(user);
         })
         .catch(err => logger.error(err, res));
 };
@@ -146,35 +168,13 @@ async function verifyGoogleToken(token,clientId) {
     const payload = ticket.getPayload();
 
     return payload;
-  }
-
-function GenerateTokenAndSend(user, isNewUser,res){
-
-    var token = jwt.sign({ id: user.Id }, config.secret, {
-        expiresIn: 86400 // 24 hours
-    });
-
-    var expire = new Date();
-
-    expire.setDate(expire.getDate() +1);
-
-    res.status(200).send({
-        id: user.Id,
-        fullName: user.FullName,
-        email: user.Email,
-        accessToken: token,
-        avtUrl: user.AvtUrl,
-        phoneNumber: user.PhoneNumber,
-        isNewUser:isNewUser,
-        expireTimeMilisecond: Date.parse(((expire).toUTCString()))
-    });
 }
 
-exports.loginByEmail = (req, res) => {
+exports.loginByLoginName = (req, res) => {
 
     User.findOne({
         where: {
-            Email: req.body.email
+            LoginName: req.body.loginName
         }
     })
         .then(user => {
@@ -199,19 +199,31 @@ exports.loginByEmail = (req, res) => {
                 return;
             }
 
-            var token = jwt.sign({ id: user.Id }, config.secret, {
-                expiresIn: 86400 // 24 hours
-            });
-
-
-            res.status(200).send({
-                id: user.Id,
-                fullName: user.FullName,
-                email: user.Email,
-                accessToken: token,
-                avtUrl: user.AvtUrl,
-                phoneNumber: user.PhoneNumber
-            });
+            GenerateTokenAndSend(user,false,res);
         })
         .catch(err => logger.error(err, res));
 };
+
+function GenerateTokenAndSend(user, isNewUser,res){
+
+    var token = jwt.sign({ id: user.Id }, config.secret, {
+        expiresIn: 86400 // 24 hours
+    });
+
+    var expire = new Date();
+
+    expire.setDate(expire.getDate() +1);
+
+    res.status(200).send({
+        id: user.Id,
+        fullName: user.FullName,
+        email: user.Email,
+        accessToken: token,
+        avtUrl: user.AvtUrl,
+        phoneNumber: user.PhoneNumber,
+        isNewUser:isNewUser,
+        expireTimeMilisecond: Date.parse(((expire).toUTCString())),
+        loginName:user.LoginName
+    });
+}
+

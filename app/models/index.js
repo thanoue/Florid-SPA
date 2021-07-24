@@ -30,35 +30,36 @@ db.user = require("./user.model.js")(sequelize, Sequelize);
 db.districtAddress = require('./district.address.model')(sequelize, Sequelize);
 db.wardAddress = require('./ward.address.model')(sequelize, Sequelize);
 db.provinceAddress = require('./province.address.model')(sequelize, Sequelize);
-db.house = require('./house.model')(sequelize,Sequelize);
-db.user_house = require('./user.house.model')(sequelize,Sequelize);
+db.trip = require('./trip.model')(sequelize,Sequelize);
+db.user_trip = require('./user.trip.model')(sequelize,Sequelize);
+db.milestone = require('./milestone.model')(sequelize,Sequelize);
 
-db.house.belongsToMany(db.user, {
-    through: "users_houses",
-    foreignKey: "HouseId",
+db.trip.belongsToMany(db.user, {
+    through: "users_trips",
+    foreignKey: "TripId",
     otherKey: "UserId",
     onDelete: 'CASCADE',
-    as: 'houseMembers'
+    as: 'members'
 });
 
-db.user.belongsToMany(db.house, {
-    through: "users_houses",
+db.user.belongsToMany(db.trip, {
+    through: "users_trips",
     foreignKey: "UserId",
-    otherKey: "HouseId",
+    otherKey: "TripId",
     onDelete: 'CASCADE',
-    as: 'userHouses'
+    as: 'trips'
 });
 
-db.house.belongsTo(db.user, {
+db.trip.belongsTo(db.user, {
     foreignKey: 'OwnerId',
     onDelete: 'SET NULL',
-    as:'houseOwner'
+    as:'tripOwner'
 });
 
-db.user.hasMany(db.house, {
+db.user.hasMany(db.trip, {
     foreignKey: 'OwnerId',
     onDelete: 'SET NULL',
-    as:'ownHouses'
+    as:'ownTrips'
 });
 
 module.exports = db;

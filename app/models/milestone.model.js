@@ -1,33 +1,31 @@
 module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("users", {
+    const MileStone = sequelize.define("milestones", {
         Id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        FullName: {
+        UserId :{
+            type: Sequelize.INTEGER,
+            allowNull:false
+        },
+        Name: {
             type: Sequelize.STRING
         },
-        Email: {
+        Address:{
             type: Sequelize.STRING
         },
-        LoginName: {
+        Description: {
             type: Sequelize.STRING
         },
-        Password: {
+        DisplayImgUrl:{
             type: Sequelize.STRING
         },
-        PhoneNumber: {
-            type: Sequelize.STRING
-        },
-        AvtUrl: {
-            type: Sequelize.STRING
-        },
-        FacebookId: {
-            type: Sequelize.STRING
-        },
-        GoogleId: {
-            type: Sequelize.STRING
+        Latitude:{
+            type: Sequelize.DOUBLE
+        }, 
+        Longitude:{
+            type: Sequelize.DOUBLE
         },
         createdAt: {
             type: Sequelize.DATE,
@@ -39,5 +37,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
 
-    return User;
+    return MileStone;
 };

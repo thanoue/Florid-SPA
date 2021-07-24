@@ -2,7 +2,7 @@ const middlewares = require("../middlewares");
 const authController = require("../controllers/authentication.controller");
 const userController = require("../controllers/user.controller");
 const addressController = require("../controllers/address.controller");
-const houseController = require("../controllers/house.controller");
+const youtubeController = require("../controllers/youtube.controller");
 
 const authJwt = middlewares.authJwt;
 const verifySignUp = middlewares.verifySignUp;
@@ -12,7 +12,7 @@ module.exports = function (app) {
     const authPrefix = "/api/auth/";
     const userPrefix = "/api/user/";
     const addressPrefix = "/api/address/";
-    const housePrefix = "/api/house/";
+    const tripPrefix = "/api/trip/";
 
     app.use(function (req, res, next) {
 
@@ -44,35 +44,37 @@ module.exports = function (app) {
     //authen
     app.post(
         `${authPrefix}signup`,
-        [verifySignUp.checkDuplicatePhoneNumber],
+        [verifySignUp.checkDuplicateLoginName],
         authController.signup
     );
     app.post(
         `${authPrefix}signout`,
         [authJwt.verifyToken],
         authController.signout
+    ); 
+    app.post(
+        `${authPrefix}updateUserLoginInfo`,
+        [authJwt.verifyToken],
+        authController.updateUserLoginInfo
     );
-    app.post(`${authPrefix}loginByEmail`, authController.loginByEmail);
+    app.post(`${authPrefix}loginByLoginName`, authController.loginByLoginName);
     app.post(`${authPrefix}loginByFacebook`, authController.loginByFacebook);
     app.post(`${authPrefix}loginByGoogle`, authController.loginByGoogle);
 
-    //user
-    app.post(
-        `${userPrefix}editUser`,
-        [authJwt.verifyToken,
-        verifySignUp.checkDuplicatePhoneNumber],
-        userController.editUser
-    )
-    app.post(
-        `${userPrefix}deleteUser`,
-        [authJwt.verifyToken],
-        userController.deleteUser
-    )
+    app.post(`${authPrefix}get`, youtubeController.getDownloadUrls);
 
-    //house
-    app.post(
-        `${housePrefix}create`,
-        [authJwt.verifyToken],
-        houseController.create
-    );
+    // //user
+    // app.post(
+    //     `${userPrefix}editUser`,
+    //     [authJwt.verifyToken,
+    //     verifySignUp.checkDuplicatePhoneNumber],
+    //     userController.editUser
+    // );
+
+    // app.post(
+    //     `${userPrefix}deleteUser`,
+    //     [authJwt.verifyToken],
+    //     userController.deleteUser
+    // ) 
+
 };
