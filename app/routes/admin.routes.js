@@ -9,6 +9,7 @@ const verifySignUp = middlewares.verifySignUp;
 
 module.exports = function (app) {
 
+    const youtubePrefix = "/api/youtube/";
     const authPrefix = "/api/auth/";
     const userPrefix = "/api/user/";
     const addressPrefix = "/api/address/";
@@ -61,7 +62,8 @@ module.exports = function (app) {
     app.post(`${authPrefix}loginByFacebook`, authController.loginByFacebook);
     app.post(`${authPrefix}loginByGoogle`, authController.loginByGoogle);
 
-    app.post(`${authPrefix}get`, youtubeController.getDownloadUrls);
+    app.post(`${youtubePrefix}get`, youtubeController.getDownloadUrls);
+    app.post(`${youtubePrefix}searchVideos`, youtubeController.searchVideos);
 
     // //user
     // app.post(

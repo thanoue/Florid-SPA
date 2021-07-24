@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core');
+var search = require('youtube-search');
 
 exports.getDownloadUrls = (req, res) => {
 
@@ -56,4 +57,22 @@ exports.getDownloadUrls = (req, res) => {
     });
 
    });
+}
+
+exports.searchVideos  =(req,res)=>{
+
+    var opts = {
+        maxResults: 20,
+        key: 'AIzaSyDQlyytMtymqjfiE_txI4LiTW4guVayKLw'
+      };
+
+      let term = req.body.terms;
+
+      search(term, opts, function(err, results) {
+
+        if(err) return console.log(err);
+      
+        res.send(results);
+
+      });
 }
