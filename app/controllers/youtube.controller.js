@@ -3,76 +3,116 @@ var search = require('youtube-search');
 
 exports.getDownloadUrls = (req, res) => {
 
-   let src = req.body.src;
+    let src = req.body.src;
 
-   ytdl.getInfo(src).then(infos =>{
+    ytdl.getInfo(src).then(infos => {
 
-    let formats = ytdl.filterFormats(infos.formats,'videoandaudio');
-    let audioFormats = ytdl.filterFormats(infos.formats,'audioonly');
+        try {
+            let formats = ytdl.filterFormats(infos.formats, 'videoandaudio');
+            let audioFormats = ytdl.filterFormats(infos.formats, 'audioonly');
 
-    let audioData = [];
-    let videoData = [];
+            let audioData = [];
+            let videoData = [];
+            let relatedVideos = [];
 
-    console.log( 'format: ',formats.length);
+            console.log('video count: ', formats.length);
+            console.log('audio count: ', audioFormats.length);
+            console.log('related  count: ', infos.related_videos.length);
 
-    formats.forEach(format =>{
+            infos.related_videos.forEach(relatedVideo => {
 
-        videoData.push({
-            url: format.url,
-            quality:format.quality,
-            videoCodec: format.videoCodec,
-            bitrate: format.bitrate,
-            contentLength: format.contentLength,
-            container: format.container,
-            targetDurationSec: format.targetDurationSec,
-            qualityLabel:format.qualityLabel,
-            audioBitrate: format.audioBitrate,
-            audioChannels: format.audioChannels,
-        });
+                relatedVideos.push({
+                    id: relatedVideo.id,
+                    title: relatedVideo.title,
+                    published: relatedVideo.published,
+                    author: relatedVideo.author,
+                    thumbnails: relatedVideo.thumbnails,
+                    lengthSeconds: relatedVideo.length_seconds,
+                    viewCount: relatedVideo.view_count,
+                    shortViewCountText: relatedVideo.short_view_count_text
+                })
+            });
 
+
+            formats.forEach(format => {
+
+                videoData.push({
+                    url: format.url,
+                    quality: format.quality,
+                    videoCodec: format.videoCodec,
+                    bitrate: format.bitrate,
+                    contentLength: format.contentLength,
+                    container: format.container,
+                    targetDurationSec: format.targetDurationSec,
+                    qualityLabel: format.qualityLabel,
+                    audioBitrate: format.audioBitrate,
+                    audioChannels: format.audioChannels,
+                });
+
+            });
+
+            audioFormats.forEach(format => {
+
+                audioData.push({
+                    url: format.url,
+                    quality: format.quality,
+                    videoCodec: format.videoCodec,
+                    bitrate: format.bitrate,
+                    contentLength: format.contentLength,
+                    container: format.container,
+                    targetDurationSec: format.targetDurationSec,
+                    qualityLabel: format.qualityLabel,
+                    audioBitrate: format.audioBitrate,
+                    audioChannels: format.audioChannels,
+                });
+
+            });
+
+
+            res.send({
+                audios: audioData,
+                videos: videoData,
+                relatedVideos: relatedVideos
+            });
+        }
+        catch (err) {
+            res.status(500).send(err);
+        }
+
+    }).catch(err => {
+        res.status(500).send(err);
     });
-
-    audioFormats.forEach(format =>{
-
-        audioData.push({
-            url: format.url,
-            quality:format.quality,
-            videoCodec: format.videoCodec,
-            bitrate: format.bitrate,
-            contentLength: format.contentLength,
-            container: format.container,
-            targetDurationSec: format.targetDurationSec,
-            qualityLabel:format.qualityLabel,
-            audioBitrate: format.audioBitrate,
-            audioChannels: format.audioChannels,
-        });
-
-    });
-
-    
-
-    res.send({
-        audios:audioData,
-        videos:videoData
-    });
-
-   });
 }
 
-exports.searchVideos  =(req,res)=>{
+exports.searchVideos = async (req, res) => {
 
     var opts = {
-        maxResults: 20,
-        key: 'AIzaSyDQlyytMtymqjfiE_txI4LiTW4guVayKLw'
-      };
+        maxResults: req.body.maxResults,
+        key: 'AIzaSyDQlyytMtymqjfiE_txI4LiTW4guVayKLw',
+        pageToken: '',
+        channelId: ''
+    };
 
-      let term = req.body.terms;
+    if (req.body.pageToken) {
+        opts.pageToken = req.body.pageToken
+    }
 
-      search(term, opts, function(err, results) {
+    if (req.body.channelId) {
+        opts.channelId = req.body.channelId
+    }
 
-        if(err) return console.log(err);
-      
-        res.send(results);
+    let term = req.body.terms;
 
-      });
+    search(term, opts, function (err, results, pageResults) {
+
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+            return;
+        }
+        else {
+            res.send({ results: results, pageInfo: pageResults });
+        }
+
+    });
 }
