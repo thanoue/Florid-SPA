@@ -90,7 +90,9 @@ exports.searchVideos = async (req, res) => {
         maxResults: req.body.maxResults,
         key: 'AIzaSyDQlyytMtymqjfiE_txI4LiTW4guVayKLw',
         pageToken: '',
-        channelId: ''
+        channelId: '',
+        type: 'video',
+        order: 'viewCount'
     };
 
     if (req.body.pageToken) {
