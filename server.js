@@ -43,19 +43,21 @@ createDir('./uploads/trip/pictures');
 
 require('./app/routes/admin.routes')(app);
 
-app.get('/auth/facebook/callback',function(req,res){
+app.get('/auth/facebook/callback', function (req, res) {
     res.send("Facebook login success");
 });
 
-app.get('/auth/google/callback',function(req,res){
+app.get('/auth/google/callback', function (req, res) {
     res.send("Facebook login success");
 });
 
 const db = require("./app/models/index");
 
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync({ alter: true }).then(async () => {
     console.log('Drop and Resync Db');
-   // await initial();
+    //  await initial();
+    //testEncoder();
+    //await initial();
 });
 
 /**
@@ -73,35 +75,54 @@ serverApp.listen(port, () => {
 
 function createDir(path) {
     if (!fs.existsSync(path)) {
-        fs.mkdirSync(path); 
+        fs.mkdirSync(path);
     }
 }
 
 async function initial() {
 
     let info = await ytdl.getInfo('a80UUwVfUjA');
-    
-    let formats = ytdl.filterFormats(info.formats,'audioonly');
 
-    let format = ytdl.chooseFormat(formats,{
-        quality: 'highestaudio'
+
+    let formats = ytdl.filterFormats(info.formats.filter(p => p.container === 'mp4'), 'videoandaudio');
+
+    let format = ytdl.chooseFormat(formats, {
+        quality: 'highest',
     });
 
-    console.log(format.url);
-
-    ytdl.downloadFromInfo(info,{
+    ytdl.downloadFromInfo(info, {
         format: format
-    }).pipe(fs.createWriteStream('my7video.mp4'))
-    .on('pipe',function(src){
+    }).pipe(fs.createWriteStream('myvideo.mp4'))
+        .on('pipe', function (src) {
 
-        src.emit('data',function(chunk){
-            console.log(chunk);
+            src.emit('data', function (chunk) {
+                console.log(chunk);
+            });
+
+        })
+        .on('finish', function () {
+
+            console.log('completed');
+
         });
-
-    })
-    .on('finish',function(){
-
-     console.log('completed');
-
-    });
 }
+
+// function testEncoder() {
+
+//     const encoder = new Lame({
+//         output: "test.mp3",
+//         bitrate: 192,
+//     }).setFile("test.webm");
+
+//     encoder
+//         .encode()
+//         .then(() => {
+//             console.log('done');
+//             // Encoding finished
+//         })
+//         .catch((error) => {
+//             // Something went wrong
+//             console.log(error);
+//         });
+
+// }

@@ -15,9 +15,14 @@ exports.getDownloadUrls = (req, res) => {
             let videoData = [];
             let relatedVideos = [];
 
-            console.log('video count: ', formats.length);
-            console.log('audio count: ', audioFormats.length);
-            console.log('related  count: ', infos.related_videos.length);
+            let vidInfo = {
+                id: infos.player_response.videoDetails.videoId,
+                title: infos.player_response.videoDetails.title,
+                author: infos.player_response.videoDetails.author,
+                authorId: infos.player_response.videoDetails.channelId,
+                description: infos.player_response.videoDetails.shortDescription,
+                thumbnails: infos.player_response.videoDetails.thumbnail.thumbnails,
+            }
 
             infos.related_videos.forEach(relatedVideo => {
 
@@ -72,7 +77,8 @@ exports.getDownloadUrls = (req, res) => {
             res.send({
                 audios: audioData,
                 videos: videoData,
-                relatedVideos: relatedVideos
+                relatedVideos: relatedVideos,
+                info: vidInfo
             });
         }
         catch (err) {
