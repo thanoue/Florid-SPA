@@ -11,7 +11,7 @@ exports.error = (err, res) => {
     log(logString, function (error) {
         console.error(err);
         if (res != undefined)
-            res.status(500).send({ message: err.message | err });
+            res.status(500).send({ message: err.toString() });
     });
 
 }

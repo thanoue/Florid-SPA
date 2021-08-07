@@ -3,6 +3,7 @@ const authController = require("../controllers/authentication.controller");
 const userController = require("../controllers/user.controller");
 const addressController = require("../controllers/address.controller");
 const youtubeController = require("../controllers/youtube.controller");
+const soundCloudController = require("../controllers/soundcloud.controller");
 
 const authJwt = middlewares.authJwt;
 const verifySignUp = middlewares.verifySignUp;
@@ -10,6 +11,7 @@ const verifySignUp = middlewares.verifySignUp;
 module.exports = function (app) {
 
     const youtubePrefix = "/api/youtube/";
+    const soundCloudPrefix = "/api/soundCloud/";
     const authPrefix = "/api/auth/";
     const userPrefix = "/api/user/";
     const addressPrefix = "/api/address/";
@@ -31,10 +33,10 @@ module.exports = function (app) {
     )
     app.get(`${addressPrefix}getAllWards`,
         addressController.getAllWards
-    ) 
+    )
     app.get(`${addressPrefix}getAllProvinces`,
         addressController.getAllProvinces
-    )  
+    )
     app.post(`${addressPrefix}getDistrictsByProvinceId`,
         addressController.getDistrictsByProvinceId
     )
@@ -52,7 +54,7 @@ module.exports = function (app) {
         `${authPrefix}signout`,
         [authJwt.verifyToken],
         authController.signout
-    ); 
+    );
     app.post(
         `${authPrefix}updateUserLoginInfo`,
         [authJwt.verifyToken],
@@ -64,6 +66,10 @@ module.exports = function (app) {
 
     app.post(`${youtubePrefix}get`, youtubeController.getDownloadUrls);
     app.post(`${youtubePrefix}searchVideos`, youtubeController.searchVideos);
+
+    app.post(`${soundCloudPrefix}searchSongs`, soundCloudController.searchSong);
+    app.get(`${soundCloudPrefix}getFile`, soundCloudController.getFile);
+    app.post(`${soundCloudPrefix}getRelativedSongs`, soundCloudController.getRelativedSongs);
 
     // //user
     // app.post(
