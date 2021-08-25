@@ -5,6 +5,10 @@ const path = require('path');
 const http = require('http');
 const fs = require('fs');
 const ytdl = require('ytdl-core');
+const udid = require('./app/controllers/udid.controller')
+
+var cookieParser = require('cookie-parser')
+const helmet = require("helmet");
 
 const app = express();
 
@@ -41,15 +45,6 @@ createDir('./uploads/house/avts');
 createDir('./uploads/trip');
 createDir('./uploads/trip/pictures');
 
-require('./app/routes/admin.routes')(app);
-
-app.get('/auth/facebook/callback', function (req, res) {
-    res.send("Facebook login success");
-});
-
-app.get('/auth/google/callback', function (req, res) {
-    res.send("Facebook login success");
-});
 
 const db = require("./app/models/index");
 
@@ -65,6 +60,41 @@ db.sequelize.sync({ alter: true }).then(async () => {
  */
 const port = process.env.PORT || '3010';
 app.set('port', port);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'pug');
+
+app.use(cookieParser(process.env.COOKIE_KEY || 'f76210bc2acc4f54af5754e15b0aab05'));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.raw({
+    'type': 'application/pkcs7-signature'
+}))
+
+var isProd = env != 'development';
+
+if (isProd) {
+    app.use(helmet({
+        hsts: {
+            preload: true,
+            maxAge: 31536000,
+            includeSubDomains: true
+        }
+    }));
+}
+
+require('./app/routes/admin.routes')(app);
+
+app.get('/auth/facebook/callback', function (req, res) {
+    res.send("Facebook login success");
+});
+
+app.get('/auth/google/callback', function (req, res) {
+    res.send("Facebook login success");
+});
+
+app.get('/', udid.index);
+
+app.post('/enroll', udid.enroll);
+app.get('/enrollment', udid.enrollment);
 
 const serverApp = http.createServer(app);
 
@@ -78,51 +108,3 @@ function createDir(path) {
         fs.mkdirSync(path);
     }
 }
-
-async function initial() {
-
-    let info = await ytdl.getInfo('a80UUwVfUjA');
-
-
-    let formats = ytdl.filterFormats(info.formats.filter(p => p.container === 'mp4'), 'videoandaudio');
-
-    let format = ytdl.chooseFormat(formats, {
-        quality: 'highest',
-    });
-
-    ytdl.downloadFromInfo(info, {
-        format: format
-    }).pipe(fs.createWriteStream('myvideo.mp4'))
-        .on('pipe', function (src) {
-
-            src.emit('data', function (chunk) {
-                console.log(chunk);
-            });
-
-        })
-        .on('finish', function () {
-
-            console.log('completed');
-
-        });
-}
-
-// function testEncoder() {
-
-//     const encoder = new Lame({
-//         output: "test.mp3",
-//         bitrate: 192,
-//     }).setFile("test.webm");
-
-//     encoder
-//         .encode()
-//         .then(() => {
-//             console.log('done');
-//             // Encoding finished
-//         })
-//         .catch((error) => {
-//             // Something went wrong
-//             console.log(error);
-//         });
-
-// }
