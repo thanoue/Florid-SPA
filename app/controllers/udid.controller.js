@@ -50,6 +50,8 @@ exports.enrollment = function (req, res) {
 }
 exports.enroll = function (req, res) {
 
+    console.info(req.body);
+
     var udid = extractValidUdid(req.body.toString())
 
     if (udid) {

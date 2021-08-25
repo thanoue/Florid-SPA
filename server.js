@@ -51,6 +51,7 @@ const db = require("./app/models/index");
 
 db.sequelize.sync({ alter: true }).then(async () => {
     console.log('Drop and Resync Db');
+    console.log('Env:', env);
     //  await initial();
     //testEncoder();
     //await initial();
@@ -92,7 +93,7 @@ app.get('/auth/google/callback', function (req, res) {
     res.send("Facebook login success");
 });
 
-app.use(sslRedirect(['vps'], 301));
+// app.use(sslRedirect([env], 301));
 
 app.get('/', udid.index);
 
