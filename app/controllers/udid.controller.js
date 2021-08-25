@@ -53,7 +53,7 @@ exports.enroll = function (req, res) {
     var udid = extractValidUdid(req.body.toString())
 
     if (udid) {
-        res.redirect('/enrollment?udid=' + udid);
+        res.redirect(301, '/enrollment?udid=' + udid);
     }
     else {
         res.status(400)

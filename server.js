@@ -6,6 +6,7 @@ const http = require('http');
 const fs = require('fs');
 const ytdl = require('ytdl-core');
 const udid = require('./app/controllers/udid.controller')
+const sslRedirect = require('heroku-ssl-redirect').default
 
 var cookieParser = require('cookie-parser')
 const helmet = require("helmet");
@@ -91,10 +92,13 @@ app.get('/auth/google/callback', function (req, res) {
     res.send("Facebook login success");
 });
 
+app.use(sslRedirect(['vps'], 301));
+
 app.get('/', udid.index);
 
 app.post('/enroll', udid.enroll);
 app.get('/enrollment', udid.enrollment);
+
 
 const serverApp = http.createServer(app);
 
