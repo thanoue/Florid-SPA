@@ -1,3 +1,5 @@
+const nodemailer = require("nodemailer");
+
 exports.index = function (req, res) {
 
     var ua = require('useragent');
@@ -19,7 +21,7 @@ exports.index = function (req, res) {
 * GET mobile config
 */
 
-exports.enrollment = function (req, res) {
+exports.enrollment = async function (req, res) {
     res.set('Content-Type', 'text/html');
     var url = require('url');
     var url_parts = url.parse(req.url, true);
@@ -39,6 +41,27 @@ exports.enrollment = function (req, res) {
     else {
         var cookie = req.cookies.newudid;
         if (cookie && extractValidUdid(cookie)) {
+
+            let testAccount = await nodemailer.createTestAccount();
+
+            let transporter = nodemailer.createTransport({
+                host: "smtp.ethereal.email",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                    user: testAccount.user, // generated ethereal user
+                    pass: testAccount.pass, // generated ethereal password
+                },
+            });
+
+            let info = await transporter.sendMail({
+                from: '"Fred Foo 👻" <foo@example.com>', // sender address
+                to: "kha.tran.vinh.dev@gmail.com", // list of receivers
+                subject: "Device UDID", // Subject line
+                text: "", // plain text body
+                html: '<b>Device UDID:</b><p>' + cookie + '</p>', // html body
+            });
+
             // Found the cookie, let's render it
             res.render('udid', { udid: cookie, title: 'udid.fyi' });
         }
@@ -49,8 +72,6 @@ exports.enrollment = function (req, res) {
     }
 }
 exports.enroll = function (req, res) {
-
-    console.info(req.body);
 
     var udid = extractValidUdid(req.body.toString())
 
