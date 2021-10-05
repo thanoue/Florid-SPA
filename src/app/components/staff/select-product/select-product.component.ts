@@ -52,8 +52,12 @@ export class SelectProductComponent extends BaseComponent {
 
   protected IsDataLosingWarning = false;
 
-  constructor(private route: ActivatedRoute, private router: Router, private orderDetailService: OrderDetailService,
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private orderDetailService: OrderDetailService,
     // tslint:disable-next-line: align
+    // tslint:disable-next-line:variable-name
     private productService: ProductService, private _ngZone: NgZone, private tempProductService: TempProductService,
     // tslint:disable-next-line: align
     private tagService: TagService,
@@ -120,7 +124,7 @@ export class SelectProductComponent extends BaseComponent {
 
   tagsSelected() {
 
-    let tags: number[] = [];
+    const tags: number[] = [];
 
     this.globalTags.forEach(tag => {
 
@@ -130,8 +134,9 @@ export class SelectProductComponent extends BaseComponent {
 
     });
 
-    if (tags.length <= 0)
+    if (tags.length <= 0) {
       return;
+    }
 
     this.currentPage = 1;
 
@@ -149,9 +154,9 @@ export class SelectProductComponent extends BaseComponent {
 
   setSelectedProduct(data: number) {
 
-    this.selectedProduct = this.pagingProducts.filter(p => p.Id == data)[0];
+    this.selectedProduct = this.pagingProducts.filter(p => p.Id === data)[0];
 
-    let menuItems: string[] = ['Xem hình Sản phảm'];
+    const menuItems: string[] = ['Xem hình Sản phảm'];
 
     if (!this.selectedProduct.PriceList || this.selectedProduct.PriceList.length <= 0) {
       this.selectedProduct.PriceList = [this.selectedProduct.Price];
@@ -169,9 +174,9 @@ export class SelectProductComponent extends BaseComponent {
 
         case 0:
 
-          let url = ImgPipe.getImgUrl(this.selectedProduct.ImageUrl, ImgType.ProductImg);
+          const url = ImgPipe.getImgUrl(this.selectedProduct.ImageUrl, ImgType.ProductImg);
           this.images = [url];
-          
+
           setTimeout(() => {
             viewProductImg(url, () => {
               this.images = [];
@@ -233,7 +238,7 @@ export class SelectProductComponent extends BaseComponent {
 
     let prods: any;
 
-    if (this.productSearchingMode != ProductSearchingMode.Price) {
+    if (this.productSearchingMode !== ProductSearchingMode.Price) {
       prods = await this.productService.getRecords(page, this.itemsPerPage, this.productCategory, tagIds, this.searchTerm)
     } else {
       prods = await this.productService.getRecordsByPrice(page, this.itemsPerPage, this.productCategory, this.priceSearchTerm);
@@ -247,19 +252,23 @@ export class SelectProductComponent extends BaseComponent {
 
       this.currentMaxPage = prods.totalPages;
 
-    } else
+    } else {
       this.currentMaxPage = 1;
+    }
 
   }
 
   searchProduct(term: string) {
 
-    if (term.indexOf('k') == term.length - 1 || term.indexOf('K') == term.length - 1) {
-      let newTerm = term.toLowerCase().split('k')[0];
+    if (term.indexOf('k') === term.length - 1 || term.indexOf('K') === term.length - 1) {
+      const newTerm = term.toLowerCase().split('k')[0];
 
-      var price = parseInt(newTerm);
+      // tslint:disable-next-line:radix
+      const price = parseInt(newTerm);
 
-      if (price != NaN && price > 0) {
+      // tslint:disable-next-line:triple-equals
+      // tslint:disable-next-line:use-isnan
+      if (price !== NaN && price > 0) {
 
         this.productSearchingMode = ProductSearchingMode.Price;
         this.priceSearchTerm = price * 1000;
@@ -274,8 +283,7 @@ export class SelectProductComponent extends BaseComponent {
 
       }
 
-    }
-    else {
+    } else {
 
       this.productSearchingMode = ProductSearchingMode.Name;
       this.priceSearchTerm = 0;

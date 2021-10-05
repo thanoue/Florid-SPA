@@ -2,13 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
-import { OrderDetailStates, MembershipTypes } from 'src/app/models/enums';
+import { OrderDetailStates } from 'src/app/models/enums';
 import { StorageService } from 'src/app/services/storage.service';
 import { CustomerService } from 'src/app/services/customer.service';
-import { Customer, MembershipInfo } from 'src/app/models/entities/customer.entity';
+import { Customer } from 'src/app/models/entities/customer.entity';
 import { ExchangeService } from 'src/app/services/common/exchange.service';
-import { TagService } from 'src/app/services/tag.service';
-import { switchMapTo } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { IMAGE_FOLDER_PATHS } from 'src/app/app.constants';
 import { Router } from '@angular/router';
@@ -64,21 +62,22 @@ export class FinalConfirmComponent extends BaseComponent {
 
   getShippingImg(): string {
 
-    let shipping = this.orderDetailService.getLastestShipping(this.orderDetail) ;
+    const shipping = this.orderDetailService.getLastestShipping(this.orderDetail);
 
-    if (shipping != null)
+    if (shipping != null) {
       return shipping.DeliveryImageUrl;
+    }
 
     return '';
-
-    return
   }
 
   getResultImg() {
-    let making = this.orderDetailService.getLastestMaking(this.orderDetail);
 
-    if (making != null)
+    const making = this.orderDetailService.getLastestMaking(this.orderDetail);
+
+    if (making != null) {
       return making.ResultImageUrl;
+    }
 
     return '';
   }
@@ -91,18 +90,18 @@ export class FinalConfirmComponent extends BaseComponent {
 
       this.stopLoading();
 
-      var reader = new FileReader();
+      const reader = new FileReader();
 
       reader.readAsDataURL(file);
 
       reader.onloadend = () => {
 
-        var base64data = reader.result.toString();
+        const base64data = reader.result.toString();
         this.sharingImage = base64data;
 
         shareImageCusWithData(this.sharingImage, ExchangeService.getMainContact(this.customer));
 
-      }
+      };
 
     });
 

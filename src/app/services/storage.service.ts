@@ -26,10 +26,10 @@ export class StorageService {
 
     downloadFIle(url: string, callback: (file: Blob) => void) {
 
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.responseType = 'blob';
-        xhr.onload = function (event) {
-            var blob = xhr.response;
+        xhr.onload = (event) => {
+            const blob = xhr.response;
             callback(blob);
         };
 

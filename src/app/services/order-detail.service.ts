@@ -29,10 +29,13 @@ export class OrderDetailService {
   }
 
   updateStatusByOrderId(orderId: string, status: OrderDetailStates): Promise<any> {
-    return this.httpService.post(API_END_POINT.updateStatusByOrderId, {
-      orderId: orderId,
-      status: status,
-    }).then(res => {
+
+    const obj = {
+      orderId,
+      status,
+    };
+
+    return this.httpService.post(API_END_POINT.updateStatusByOrderId, obj).then(res => {
       return res;
     }).catch(err => {
       this.httpService.handleError(err);
@@ -44,9 +47,9 @@ export class OrderDetailService {
   resultConfirm(orderDetailId: number, makingId: number, resultImg: File): Promise<any> {
 
     return this.httpService.postForm(API_END_POINT.resultConfirm, {
-      orderDetailId: orderDetailId,
-      resultImg: resultImg,
-      makingId: makingId
+      orderDetailId,
+      resultImg,
+      makingId
     }).then(obj => {
 
       return obj;
@@ -61,14 +64,14 @@ export class OrderDetailService {
 
   shippingConfirm(orderDetail: OrderDetailViewModel, shippingImg: File, note: string): Promise<any> {
 
-    let lastestShipping = this.getLastestShipping(orderDetail);
+    const lastestShipping = this.getLastestShipping(orderDetail);
 
     return this.httpService.postForm(API_END_POINT.shippingConfirm, {
       shippingId: lastestShipping.Id,
-      shippingImg: shippingImg,
+      shippingImg,
       orderrDetailId: orderDetail.OrderDetailId,
       deliveryCompletedTime: (new Date()).getTime(),
-      note: note
+      note
     }).then(obj => {
 
       return obj;
@@ -85,7 +88,7 @@ export class OrderDetailService {
 
   getFromRaw(orderDetail: any): OrderDetailViewModel {
 
-    let orderDetailVM = new OrderDetailViewModel();
+    const orderDetailVM = new OrderDetailViewModel();
 
     orderDetailVM.ProductName = orderDetail.ProductName;
     orderDetailVM.OrderId = orderDetail.OrderId;
@@ -120,7 +123,7 @@ export class OrderDetailService {
 
       orderDetail.orderDedailShippings.forEach(rawShipping => {
 
-        let shipping = new Shipping();
+        const shipping = new Shipping();
 
         shipping.AssignTime = rawShipping.AssignTime;
         shipping.CompleteTime = rawShipping.CompleteTime;
@@ -143,7 +146,7 @@ export class OrderDetailService {
 
       orderDetail.shippers.forEach(rawShipper => {
 
-        let shipper = new User();
+        const shipper = new User();
 
         shipper.Id = rawShipper.Id;
         shipper.AvtUrl = rawShipper.AvtUrl;
@@ -164,7 +167,7 @@ export class OrderDetailService {
 
       orderDetail.orderDetailMakings.forEach(rawMaking => {
 
-        let making = new Making();
+        const making = new Making();
 
         making.AssignTime = rawMaking.AssignTime;
         making.CompleteTime = rawMaking.CompleteTime;
@@ -190,7 +193,7 @@ export class OrderDetailService {
 
       orderDetail.florists.forEach(rawShipper => {
 
-        let user = new User();
+        const user = new User();
 
         user.Id = rawShipper.Id;
         user.AvtUrl = rawShipper.AvtUrl;
@@ -214,17 +217,51 @@ export class OrderDetailService {
     return this.getByStates([state], orderColumn, direction);
   }
 
+  async getDetailWithTimeSort(states: OrderDetailStates[], orderColumn: string): Promise<OrderDetailViewModel[]> {
+
+    const details = await this.getByStates(states, orderColumn);
+
+    if (!details) {
+      return [];
+    }
+
+    return this.sortOrderDetail(details, orderColumn);
+  }
+
+  sortOrderDetail(orderDetails: OrderDetailViewModel[], orderColumn: string): OrderDetailViewModel[] {
+
+    let finalRes: {
+      detail: OrderDetailViewModel,
+      delta: number
+    }[] = [];
+
+    orderDetails.forEach(detail => {
+
+      finalRes.push({
+        detail,
+        delta: Math.abs((new Date()).getTime() - (orderColumn === 'ReceivingTime' ? detail.DeliveryInfo.DateTime.getTime() : detail.MakingRequestTime))
+      });
+
+    });
+
+    finalRes = finalRes.sort((a, b) => a.delta - b.delta);
+
+    return finalRes.map(p => p.detail);
+
+  }
+
   getByStates(states: OrderDetailStates[], orderColumn: string, direction: string = 'ASC'): Promise<OrderDetailViewModel[]> {
 
     return this.httpService.post(API_END_POINT.getOrderDetailByStates, {
-      states: states,
-      orderColumn: orderColumn,
-      direction: direction
+      states,
+      orderColumn,
+      direction
     }).then(data => {
-      let orderDetailVMs: OrderDetailViewModel[] = [];
+      const orderDetailVMs: OrderDetailViewModel[] = [];
 
-      if (data == null || data.orderDetails == null)
+      if (data == null || data.orderDetails == null) {
         return [];
+      }
 
       data.orderDetails.forEach(orderDetail => {
 
@@ -242,13 +279,14 @@ export class OrderDetailService {
 
   getByOrderId(orderId: string): Promise<OrderDetailViewModel[]> {
     return this.httpService.post(API_END_POINT.getOrderDetailsByOrderId, {
-      orderId: orderId
+      orderId
     }).then(data => {
 
-      let orderDetailVMs: OrderDetailViewModel[] = [];
+      const orderDetailVMs: OrderDetailViewModel[] = [];
 
-      if (data == null || data.orderDetails == null)
+      if (data == null || data.orderDetails == null) {
         return [];
+      }
 
       data.orderDetails.forEach(orderDetail => {
 
@@ -266,31 +304,31 @@ export class OrderDetailService {
 
   assignSingleMaking(orderDetailId: number, floristId: number, assignTime: number, makingType: MakingType): Promise<any> {
     return this.httpService.post(API_END_POINT.assignSingleMaking, {
-      orderDetailId: orderDetailId,
-      floristId: floristId,
-      assignTime: assignTime,
-      makingType: makingType
+      orderDetailId,
+      floristId,
+      assignTime,
+      makingType
     }).then(data => {
       return data;
-    })
+    });
   }
 
   assignSingleOD(orderDetailId: number, shipperId: number, assignTime: number): Promise<any> {
     return this.httpService.post(API_END_POINT.assignSingleOD, {
-      orderDetailId: orderDetailId,
-      shipperId: shipperId,
-      assignTime: assignTime,
+      orderDetailId,
+      shipperId,
+      assignTime,
     }).then(data => {
       return data;
-    })
+    });
   }
 
   replaceShipper(orderDetailId: number, oldShippingId: number, newShipperId: number = -1) {
 
     return this.httpService.post(API_END_POINT.replaceShipper, {
-      orderDetailId: orderDetailId,
-      newShipperId: newShipperId,
-      oldShippingId: oldShippingId,
+      orderDetailId,
+      newShipperId,
+      oldShippingId,
       newAssignTime: new Date().getTime()
     }).then(data => {
       return data;
@@ -301,9 +339,9 @@ export class OrderDetailService {
   replaceFlorist(orderDetailId: number, oldMakingId: number, newFloristId: number = -1) {
 
     return this.httpService.post(API_END_POINT.replaceShipper, {
-      orderDetailId: orderDetailId,
-      newFloristId: newFloristId,
-      oldMakingId: oldMakingId,
+      orderDetailId,
+      newFloristId,
+      oldMakingId,
       newAssignTime: new Date().getTime()
     }).then(data => {
       return data;
@@ -314,10 +352,10 @@ export class OrderDetailService {
   updateShippingFields(shippingId: number, obj: any): Promise<any> {
 
     return this.httpService.post(API_END_POINT.updateShippingFields, {
-      obj: obj,
+      obj,
       id: shippingId
     }).then(data => {
-      return data
+      return data;
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;
@@ -327,10 +365,10 @@ export class OrderDetailService {
   updateMakingFields(makingId: number, obj: any): Promise<any> {
 
     return this.httpService.post(API_END_POINT.updateMakingFields, {
-      obj: obj,
+      obj,
       id: makingId
     }).then(data => {
-      return data
+      return data;
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;
@@ -340,9 +378,9 @@ export class OrderDetailService {
 
   assignOrderDetails(orderDetailIds: number[], shipperId: number, assignTime: number): Promise<any> {
     return this.httpService.post(API_END_POINT.assignOrderDetails, {
-      orderDetailIds: orderDetailIds,
-      shipperId: shipperId,
-      assignTime: assignTime
+      orderDetailIds,
+      shipperId,
+      assignTime
     }).then(data => {
       return data;
     }).catch(err => {
@@ -353,14 +391,14 @@ export class OrderDetailService {
 
   assignFloristForOrderDetails(orderDetailIds: OrderDetailViewModel[], floristdId: number, assignTime: number): Promise<any> {
 
-    let makings: any[] = [];
+    const makings: any[] = [];
 
     orderDetailIds.forEach(orderDetail => {
 
-      let making: { AssignTime: number, FloristId: number, MakingType: MakingType, OrderDetailId: number } = {
+      const making: { AssignTime: number, FloristId: number, MakingType: MakingType, OrderDetailId: number } = {
         AssignTime: assignTime,
         FloristId: floristdId,
-        MakingType: orderDetail.State == OrderDetailStates.FixingRequest ? MakingType.Fixing : MakingType.Making,
+        MakingType: orderDetail.State === OrderDetailStates.FixingRequest ? MakingType.Fixing : MakingType.Making,
         OrderDetailId: orderDetail.OrderDetailId
       };
 
@@ -369,7 +407,7 @@ export class OrderDetailService {
     });
 
     return this.httpService.post(API_END_POINT.assignFloristForOrderDetails, {
-      makings: makings,
+      makings,
     }).then(data => {
       return data;
     }).catch(err => {
@@ -385,10 +423,11 @@ export class OrderDetailService {
   getByStatesAndFloristId(floristId: number, states: OrderDetailStates[]): Promise<OrderDetailViewModel[]> {
 
     return this.httpService.post(API_END_POINT.getOrderDetailByStatesAndFloristId, {
-      states: states,
-      floristId: floristId
+      states,
+      floristId
     }).then(data => {
-      let orderDetailVMs: OrderDetailViewModel[] = [];
+
+      const orderDetailVMs: OrderDetailViewModel[] = [];
 
       data.orderDetails.forEach(orderDetail => {
 
@@ -406,19 +445,20 @@ export class OrderDetailService {
   getShippingOrderDetails(shipperId: number): Promise<OrderDetailViewModel[]> {
 
     return this.httpService.post(API_END_POINT.getShippingOrderDetails, {
-      shipperId: shipperId
+      shipperId
     }).then(data => {
 
-      let orderDetailVMs: OrderDetailViewModel[] = [];
+      const orderDetailVMs: OrderDetailViewModel[] = [];
 
-      if (data == null || data.length <= 0)
+      if (data == null || data.length <= 0) {
         return [];
+      }
 
       data.forEach(item => {
         orderDetailVMs.push(this.getFromRaw(item));
       });
 
-      return orderDetailVMs;
+      return this.sortOrderDetail(orderDetailVMs, 'ReceivingTime');
 
     }).catch(err => {
       this.httpService.handleError(err);
@@ -427,22 +467,23 @@ export class OrderDetailService {
 
   }
 
-    getMakingOrderDetails(floristId: number): Promise<OrderDetailViewModel[]> {
+  getMakingOrderDetails(floristId: number): Promise<OrderDetailViewModel[]> {
 
     return this.httpService.post(API_END_POINT.getMakingWaitOrderDetails, {
-      floristId: floristId
+      floristId
     }).then(data => {
 
-      let orderDetailVMs: OrderDetailViewModel[] = [];
+      const orderDetailVMs: OrderDetailViewModel[] = [];
 
-      if (data == null || data.length <= 0)
+      if (data == null || data.length <= 0) {
         return [];
+      }
 
       data.forEach(item => {
         orderDetailVMs.push(this.getFromRaw(item));
       });
 
-      return orderDetailVMs;
+      return this.sortOrderDetail(orderDetailVMs, 'MakingRequestTime');
 
     }).catch(err => {
       this.httpService.handleError(err);
@@ -491,9 +532,9 @@ export class OrderDetailService {
 
   updateDetailSeen(orderDetailId: number, userId: number, seenTime: number, isAnim: boolean = true): Promise<any> {
     return this.httpService.post(API_END_POINT.updateDetailSeen, {
-      userId: userId,
-      orderDetailId: orderDetailId,
-      seenTime: seenTime
+      userId,
+      orderDetailId,
+      seenTime
     }, isAnim).then(data => {
 
       return data;
@@ -512,7 +553,7 @@ export class OrderDetailService {
   }> {
 
     return this.httpService.post(API_END_POINT.getOrderDetailShipperAndFlorist, {
-      orderDetailId: orderDetailId
+      orderDetailId
     }).then(data => {
 
       return {
@@ -532,10 +573,10 @@ export class OrderDetailService {
 
   getODSeeners(orderDetailId: number): Promise<ODSeenUserInfo[]> {
     return this.httpService.post(API_END_POINT.getODSeeners, {
-      orderDetailId: orderDetailId
+      orderDetailId
     }).then(data => {
 
-      let users: ODSeenUserInfo[] = [];
+      const users: ODSeenUserInfo[] = [];
 
       if (data && data != null && data.seeners.length > 0) {
         data.seeners.forEach(seenTime => {

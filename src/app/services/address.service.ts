@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from './common/base.service';
 import { District, Ward } from 'src/app/models/entities/address.entity';
 import { HttpService } from './common/http.service';
 import { API_END_POINT } from '../app.constants';
@@ -17,7 +16,7 @@ export class AddressService {
 
     return this.httpService.get(API_END_POINT.getAllDistricts).then(data => {
 
-      let districts: District[] = [];
+      const districts: District[] = [];
 
       data.districts.forEach(districtRaw => {
         districts.push({
@@ -37,7 +36,7 @@ export class AddressService {
 
   getAllWards(): Promise<Ward[]> {
     return this.httpService.get(API_END_POINT.getAllWards).then(data => {
-      let wards: Ward[] = [];
+      const wards: Ward[] = [];
 
       data.wards.forEach(wardRaw => {
         wards.push({

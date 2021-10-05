@@ -1,6 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { BaseComponent } from '../base.component';
-import { CustomerViewModel } from 'src/app/models/view.models/customer.model';
 import { Customer } from 'src/app/models/entities/customer.entity';
 import { CustomerService } from 'src/app/services/customer.service';
 import { NgForm } from '@angular/forms';
@@ -26,6 +25,7 @@ export class SelectCustomerComponent extends BaseComponent {
   protected IsDataLosingWarning = false;
   totalCount = 0;
 
+  // tslint:disable-next-line:variable-name
   constructor(private customerService: CustomerService, private _ngZone: NgZone) {
     super();
 
@@ -45,8 +45,8 @@ export class SelectCustomerComponent extends BaseComponent {
   setSelectedCustomer(id: string) {
     this.selectedCustomer = this.customers.filter(p => p.Id === id)[0];
 
-    let menuItems = ["Chọn Khách hàng",
-      "Xem thông tin chi tiết"];
+    const menuItems = ['Chọn Khách hàng',
+      'Xem thông tin chi tiết'];
 
     this.menuOpening((pos) => {
       switch (+pos) {
@@ -61,7 +61,7 @@ export class SelectCustomerComponent extends BaseComponent {
           viewCustomerInfo();
 
           break;
-      };
+      }
 
     }, menuItems);
   }
@@ -144,7 +144,7 @@ export class SelectCustomerComponent extends BaseComponent {
 
   searchCustomer(term) {
 
-    if (!term || term == '') {
+    if (!term || term === '') {
       this.customers = [];
       return;
     }
@@ -161,7 +161,7 @@ export class SelectCustomerComponent extends BaseComponent {
           }
         }, 50);
 
-      })
+      });
   }
 
 

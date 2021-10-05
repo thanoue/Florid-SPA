@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
-import { PageComponent } from "../../../models/view.models/menu.model";
+import { PageComponent } from '../../../models/view.models/menu.model';
 import { MenuItems } from 'src/app/models/enums';
 import { Tag } from 'src/app/models/entities/tag.entity';
 import { ConfigService } from 'src/app/services/config.service';
@@ -59,6 +59,16 @@ export class ConfigComponent extends BaseComponent {
       this.showError('Giá trị không hợp lệ!');
     }
 
+  }
+
+  updateAllCustomers() {
+    this.openConfirm('Bạn muốn cập nhật mức thành viên của tất cả KH?', () => {
+
+      this.configService.updateMemberships()
+        .then(() => {
+          this.showInfo('Đã cập nhật thông tin thành viên của tất cả KH.');
+        });
+    });
   }
 
   updateConfigDiscount(form: NgForm) {

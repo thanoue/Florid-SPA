@@ -16,7 +16,7 @@ export class TagService {
 
   bulkAdd(tags: Tag[]): Promise<any> {
 
-    let obj = [];
+    const obj = [];
 
     tags.forEach(tag => {
       obj.push({
@@ -41,17 +41,17 @@ export class TagService {
       }).catch(err => {
         this.htttService.handleError(err);
         throw err;
-      })
+      });
   }
 
   getAll(): Promise<Tag[]> {
     return this.htttService.get(API_END_POINT.getAllTags)
       .then(datas => {
-        let tags: Tag[] = [];
+        const tags: Tag[] = [];
 
         datas.forEach(rawTag => {
 
-          let tag = new Tag();
+          const tag = new Tag();
 
           tag.Id = rawTag.Id;
           tag.Description = rawTag.Description;
@@ -66,7 +66,7 @@ export class TagService {
       .catch(err => {
         this.htttService.handleError(err);
         throw err;
-      })
+      });
   }
 
   createTag(tag: Tag): Promise<Tag> {
@@ -77,7 +77,8 @@ export class TagService {
       description: tag.Description
     }).then((res) => {
 
-      let tag = new Tag();
+      // tslint:disable-next-line:no-shadowed-variable
+      const tag = new Tag();
       tag.Id = res.tag.Id;
       tag.Description = res.tag.Description;
       tag.Name = res.tag.Name;
@@ -109,7 +110,7 @@ export class TagService {
 
   deleteTag(id: number): Promise<any> {
     return this.htttService.post(API_END_POINT.deleteTag, {
-      id: id
+      id
     }).then((res) => {
       return res;
     }).catch(err => {
@@ -142,7 +143,7 @@ export class TagService {
         return null;
       }
 
-      let res: any = {};
+      const res: any = {};
 
       res.totalItemCount = +datas.totalItemCount;
       res.totalPages = +datas.totalPages;
@@ -161,7 +162,7 @@ export class TagService {
     }).catch(err => {
       this.htttService.handleError(err);
       throw err;
-    })
+    });
 
   }
 

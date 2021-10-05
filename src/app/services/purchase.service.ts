@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { start } from 'repl';
 import { API_END_POINT } from '../app.constants';
 import { Purchase } from '../models/view.models/purchase.entity';
-import { GlobalService } from './common/global.service';
 import { HttpService } from './common/http.service';
 
 @Injectable({
@@ -14,7 +12,7 @@ export class PurchaseService {
 
   delete(purchaseId: number): Promise<any> {
     return this.httpService.post(API_END_POINT.deletePurchase, {
-      purchaseId: purchaseId
+      purchaseId
     }).then(data => {
 
       return data;
@@ -38,14 +36,14 @@ export class PurchaseService {
 
     return this.httpService.post(API_END_POINT.getPurchaseByTerm, {
       page: page - 1,
-      size: size,
-      startTime: startTime,
-      endTime: endTime,
-      term: term,
-      isUnknownOnly: isUnknownOnly
+      size,
+      startTime,
+      endTime,
+      term,
+      isUnknownOnly
     }).then(data => {
 
-      let res = {
+      const res = {
         totalItemCount: 0,
         items: [],
         totalPages: 0,
@@ -57,14 +55,14 @@ export class PurchaseService {
       res.totalPages = data.totalPages;
 
       data.items.forEach(rawPurchase => {
-        let newPur = new Purchase();
+        const newPur = new Purchase();
 
         newPur.Id = rawPurchase.Id;
         newPur.AddingTime = rawPurchase.AddingTime;
         newPur.Amount = rawPurchase.Amount;
         newPur.Method = rawPurchase.Method;
-        newPur.OrderId = rawPurchase.OrderId ? rawPurchase.OrderId : "";
-        newPur.Note = rawPurchase.Note ? rawPurchase.Note : "";
+        newPur.OrderId = rawPurchase.OrderId ? rawPurchase.OrderId : '';
+        newPur.Note = rawPurchase.Note ? rawPurchase.Note : '';
 
         res.items.push(newPur);
 
@@ -75,14 +73,14 @@ export class PurchaseService {
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;
-    })
+    });
 
   }
 
   bulkInsert(purchases: Purchase[]): Promise<any> {
 
     return this.httpService.post(API_END_POINT.bulkInsertPurchase, {
-      purchases: purchases,
+      purchases,
     }).then(data => {
       return data;
     });
@@ -91,19 +89,21 @@ export class PurchaseService {
 
   bulkCreate(purchases: Purchase[], orderId: string, callback: () => void): void {
 
-    let addingPurchase = [];
+    const addingPurchase = [];
 
     purchases.forEach(item => {
-      if (!item.Id || item.Id == 0)
+      if (!item.Id || item.Id === 0) {
         addingPurchase.push(item);
+      }
     });
 
-    if (addingPurchase.length <= 0)
+    if (addingPurchase.length <= 0) {
       callback();
+    }
 
     this.httpService.post(API_END_POINT.bulkAddPurchase, {
       purchases: addingPurchase,
-      orderId: orderId
+      orderId
     }).then(data => {
       callback();
     }).catch(err => {
@@ -114,12 +114,12 @@ export class PurchaseService {
 
   assignToOrder(purchaseId: number, orderId: string, amount: number): Promise<any> {
     return this.httpService.post(API_END_POINT.assignPurchaseOrder, {
-      orderId: orderId,
-      purchaseId: purchaseId,
-      amount: amount
+      orderId,
+      purchaseId,
+      amount
     }).then(data => {
       return data;
-    })
+    });
   }
 
   update(purchase: Purchase, oldOrderId: string, oldAmount: number): Promise<any> {
@@ -128,8 +128,8 @@ export class PurchaseService {
       amount: purchase.Amount,
       method: purchase.Method,
       id: purchase.Id,
-      oldAmount: oldAmount,
-      oldOrderId: oldOrderId,
+      oldAmount,
+      oldOrderId,
       addingTime: purchase.AddingTime,
       note: purchase.Note
     }).then(data => {
@@ -145,7 +145,7 @@ export class PurchaseService {
       orderId: purchase.OrderId,
       amount: purchase.Amount,
       method: purchase.Method,
-      newtotalPaidAmount: newtotalPaidAmount,
+      newtotalPaidAmount,
       id: purchase.Id,
       addingTime: purchase.AddingTime,
       note: purchase.Note

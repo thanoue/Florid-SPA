@@ -1,4 +1,10 @@
 <div class="row">
+  <div class="w-400 col-6">
+          <button type="submit" (click)="updateAllCustomers()" class="btn btn-outline-info"><i class="fa fa-check"></i>Cập nhật thành viên cho tất cả khác hàng</button>
+  </div>
+</div>
+<br/>
+<div class="row">
   <div class="col-6">
     <div class="leftDetail">
       <form #form="ngForm" (submit)="updateConfigValue(form)" autocomplete="off">

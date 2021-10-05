@@ -3,10 +3,7 @@ import { BaseComponent } from '../base.component';
 import { OrderDetailViewModel, OrderViewModel } from 'src/app/models/view.models/order.model';
 import { ORDER_DETAIL_STATES, ImgType } from 'src/app/app.constants';
 import { OrderDetailStates, Roles } from 'src/app/models/enums';
-import { ODSeenUserInfo } from 'src/app/models/entities/order.entity';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
-import { User } from 'src/app/models/entities/user.entity';
-import { ExchangeService } from 'src/app/services/common/exchange.service';
 import { ImgPipe } from 'src/app/pipes/img.pipe';
 import { OrderService } from 'src/app/services/order.service';
 
@@ -44,7 +41,7 @@ export class ViewOrderDetailComponent extends BaseComponent {
     this.orderService.getById(this.orderDetail.OrderId)
       .then(order => {
 
-        if (order != null){
+        if (order != null) {
           this.order = order;
         }
 
@@ -60,11 +57,13 @@ export class ViewOrderDetailComponent extends BaseComponent {
 
     setTimeout(() => {
 
-      if (!this.canSeen)
+      if (!this.canSeen) {
         return;
+      }
 
       if (this.CurrentUser.Role === Roles.Florist || this.CurrentUser.Role === Roles.Shipper) {
 
+        // tslint:disable-next-line:new-parens
         this.orderDetailService.updateDetailSeen(this.orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime(), false).then(res => {
 
         });

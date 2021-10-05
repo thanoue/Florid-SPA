@@ -23,7 +23,7 @@ export class ViewPurchaseComponent extends BaseComponent {
   purchaseType = PurchaseMethods;
   protected IsDataLosingWarning = false;
   qrContent: string;
-  qrContentTemplate = "";
+  qrContentTemplate = '';
   currTotalPaidAmount = 0;
   currentPurchase: Purchase;
 
@@ -35,7 +35,7 @@ export class ViewPurchaseComponent extends BaseComponent {
     super();
     this.purchaseItems = [];
     this.order = this.globalOrder;
-    this.qrContent = "";
+    this.qrContent = '';
     this.currentPurchase = new Purchase();
   }
 
@@ -74,7 +74,7 @@ export class ViewPurchaseComponent extends BaseComponent {
 
     this.currentPurchase.Amount = this.totalBalance;
     this.currentPurchase.Method = PurchaseMethods.Cash;
-    this.currentPurchase.Note = ''
+    this.currentPurchase.Note = '';
 
     purchaseDoing(() => {
 
@@ -112,7 +112,7 @@ export class ViewPurchaseComponent extends BaseComponent {
       return;
     }
 
-    let purchase = new Purchase();
+    const purchase = new Purchase();
 
     purchase.OrderId = this.order.OrderId;
     purchase.Id = this.currentPurchase.Id;
@@ -127,7 +127,8 @@ export class ViewPurchaseComponent extends BaseComponent {
 
       if (purchase.Id > 0) {
 
-        let item = this.purchaseItems.filter(p => p.Id == purchase.Id)[0];
+        // tslint:disable-next-line:no-shadowed-variable
+        const item = this.purchaseItems.filter(p => p.Id === purchase.Id)[0];
 
         item.OrderId = purchase.OrderId;
         item.Id = purchase.Id;
@@ -161,7 +162,7 @@ export class ViewPurchaseComponent extends BaseComponent {
 
     this.currentPurchase.Method = purchaseType;
 
-    if (purchaseType == PurchaseMethods.Momo && this.currentPurchase.Amount > 0) {
+    if (purchaseType === PurchaseMethods.Momo && this.currentPurchase.Amount > 0) {
 
       this.qrContent = this.qrContentTemplate + this.currentPurchase.Amount.toString();
 

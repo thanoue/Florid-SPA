@@ -131,6 +131,7 @@ export const API_END_POINT = {
 
     getCurrentConfig: '/config/get',
     updateConfig: '/config/update',
+    updateMembership: '/config/updateMembership'
 };
 
 export const IMAGE_FOLDER_PATHS = {
@@ -139,15 +140,15 @@ export const IMAGE_FOLDER_PATHS = {
     result_img: '/orderDetail/resultImg/',
     shipping_img: '/orderDetail/shippingImg/',
     order_detail_note: '/orderDetail/orderDetailNotes/'
-}
+};
 
 export enum ImgType {
     UserAvt = 'UserAvt',
-    ProductImg = "ProductImg",
-    OrderImg = "OrderImg",
-    ResultImg = "ResultImg",
-    ShippingImg = "ShippingImg",
-    NoteImg = "NoteImg"
+    ProductImg = 'ProductImg',
+    OrderImg = 'OrderImg',
+    ResultImg = 'ResultImg',
+    ShippingImg = 'ShippingImg',
+    NoteImg = 'NoteImg'
 }
 
 export const ROLES = [
@@ -171,7 +172,7 @@ export const ROLES = [
         Role: Roles.User,
         DisplayName: 'Khác'
     }
-]
+];
 
 export const ORDER_DETAIL_STATES = [
     {
@@ -234,6 +235,6 @@ export const ORDER_DETAIL_STATES = [
         State: OrderDetailStates.Canceled,
         DisplayName: 'Đã huỷ'
     }
-]
+];
 
 export const REQUEST_TIMEOUT = 30000;

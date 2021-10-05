@@ -77,7 +77,7 @@ export class FloristMainComponent extends BaseComponent {
 
     this.waitingOrderDetails = [];
 
-    this.orderDetailService.getByStates([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
       .then(details => {
 
         this.waitingOrderDetails = details;

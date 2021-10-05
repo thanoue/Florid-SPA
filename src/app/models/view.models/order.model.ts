@@ -5,7 +5,6 @@ import { ExchangeService } from '../../services/common/exchange.service';
 import { CustomerReceiverDetail, OrderDetail, Order, ODSeenUserInfo, Making, Shipping } from '../entities/order.entity';
 import { Purchase } from './purchase.entity';
 import { User } from '../entities/user.entity';
-import { from } from 'rxjs';
 
 export class OrderViewModel {
 
@@ -86,7 +85,7 @@ export class OrderDetailViewModel {
     constructor() {
         this.DeliveryInfo = new OrderDetailDeliveryInfo();
         this.Makings = [];
-        this.Shippings = []
+        this.Shippings = [];
         this.SeenUsers = [];
         this.NoteImages = [];
         this.Shippers = [];
@@ -169,7 +168,7 @@ export class OrderDetailDeliveryInfo {
         dest.FullName = source.FullName;
         dest.PhoneNumber = source.PhoneNumber;
 
-        let time = source.DateTime.getTime();
+        const time = source.DateTime.getTime();
         dest.DateTime = new Date(time);
 
         return dest;
@@ -200,7 +199,7 @@ export class OrderCustomerInfoViewModel {
 
     static toViewModel(customer: Customer, vm: OrderCustomerInfoViewModel = null): OrderCustomerInfoViewModel {
 
-        if (!vm || vm == null){
+        if (!vm || vm == null) {
             vm = new OrderCustomerInfoViewModel();
         }
 

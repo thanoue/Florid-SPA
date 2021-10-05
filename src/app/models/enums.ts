@@ -1,5 +1,3 @@
-import { emit } from 'process';
-
 export enum EntityType {
     User,
     Product,
@@ -14,7 +12,7 @@ export enum Roles {
     Florist = 'Florist',
     Account = 'Account',
     Shipper = 'Shipper'
-};
+}
 
 export enum MembershipTypes {
     All = 'All',

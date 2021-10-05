@@ -41,20 +41,22 @@ export class AddOrderComponent extends BaseComponent {
   purchaseType = PurchaseMethods;
   currentPayAmount: number;
   qrContent: string;
-  qrContentTemplate = "";
-  purchaseNote: string = '';
+  qrContentTemplate = '';
+  purchaseNote = '';
   wishingDoneTime: Date;
 
   get AcctualBalance(): number {
 
-    if (!this.order)
+    if (!this.order) {
       return 0;
+    }
 
     return this.order.TotalAmount - this.order.TotalPaidAmount;
 
   }
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private orderService: OrderService,
     private customerService: CustomerService,
     private printJobService: PrintJobService,
@@ -63,7 +65,7 @@ export class AddOrderComponent extends BaseComponent {
     super();
     this.promotions = [];
     this.currentPayAmount = 0;
-    this.qrContent = "";
+    this.qrContent = '';
     this.wishingDoneTime = new Date();
   }
 
@@ -82,7 +84,7 @@ export class AddOrderComponent extends BaseComponent {
 
       if (!this.order.OrderId) {
 
-        let year = new Date().getFullYear();
+        const year = new Date().getFullYear();
 
         this.orderService.getMaxNumberId(year)
           .then(count => {
@@ -128,16 +130,16 @@ export class AddOrderComponent extends BaseComponent {
   }
 
   getPromotionAmount(promotion: Promotion): string {
-    return promotion.PromotionType == PromotionType.Amount ? promotion.Amount + " ₫" : promotion.Amount + " %";
+    return promotion.PromotionType === PromotionType.Amount ? promotion.Amount + ' ₫' : promotion.Amount + ' %';
   }
 
   selectPromotion(index: number) {
 
     this.order.AmountDiscount = this.order.PercentDiscount = 0;
 
-    let promotion = this.promotions[index];
+    const promotion = this.promotions[index];
 
-    if (promotion.PromotionType == PromotionType.Amount) {
+    if (promotion.PromotionType === PromotionType.Amount) {
       this.order.AmountDiscount = promotion.Amount;
     } else {
       this.order.PercentDiscount = promotion.Amount;
@@ -146,7 +148,7 @@ export class AddOrderComponent extends BaseComponent {
     hideReceiverPopup();
 
     this.onVATIncludedChange();
-  };
+  }
 
   completingOrder() {
     this.placeOrder(true);
@@ -242,7 +244,7 @@ export class AddOrderComponent extends BaseComponent {
 
     this.orderService.updateOrderInfos(this.order.OrderId, orderDetails, this.order.TotalPaidAmount, this.order.CustomerInfo.Id)
       .then(() => {
-        if (this.order.CustomerInfo.Id != 'KHACH_LE') {
+        if (this.order.CustomerInfo.Id !== 'KHACH_LE') {
           this.customerService.updateReceiverList(this.order.CustomerInfo.Id, receiverInfos).then(isSuccess => {
             this.OnBackNaviage();
           });
@@ -353,7 +355,7 @@ export class AddOrderComponent extends BaseComponent {
 
     });
 
-    let purhases: purchaseItem[] = [];
+    const purhases: purchaseItem[] = [];
 
     this.globalPurchases.forEach(purchase => {
 
@@ -522,7 +524,7 @@ export class AddOrderComponent extends BaseComponent {
           this.orderService.addOrderDetails(orderDetails)
             .then(() => {
 
-              if (orderDB.CustomerId != 'KHACH_LE') {
+              if (orderDB.CustomerId !== 'KHACH_LE') {
 
                 this.customerService.updateReceiverList(orderDB.CustomerId, receiverInfos).then(isSuccess => {
 
@@ -536,8 +538,7 @@ export class AddOrderComponent extends BaseComponent {
 
                 });
 
-              }
-              else {
+              } else {
 
                 this.stopLoading();
 
@@ -566,7 +567,7 @@ export class AddOrderComponent extends BaseComponent {
     this.currentPurType = purchaseType;
 
 
-    if (purchaseType == PurchaseMethods.Momo && this.currentPayAmount > 0) {
+    if (purchaseType === PurchaseMethods.Momo && this.currentPayAmount > 0) {
 
       this.qrContent = this.qrContentTemplate + this.currentPayAmount.toString();
 
@@ -583,7 +584,7 @@ export class AddOrderComponent extends BaseComponent {
       return;
     }
 
-    let purchase = new Purchase();
+    const purchase = new Purchase();
 
     purchase.OrderId = this.order.OrderId;
     purchase.Amount = +this.currentPayAmount;
@@ -621,16 +622,16 @@ export class AddOrderComponent extends BaseComponent {
 
       for (let i = 0; i < orderDetail.NoteImages.length; i++) {
 
-        let noteImgData = orderDetail.NoteImages[i];
+        const noteImgData = orderDetail.NoteImages[i];
 
-        let response = await fetch(noteImgData);
-        let blob = await response.blob();
+        const response = await fetch(noteImgData);
+        const blob = await response.blob();
 
         if (blob != null) {
 
-          const file = new File([blob], "result.png", { type: "image/png" });
+          const file = new File([blob], 'result.png', { type: 'image/png' });
 
-          let url = await this.orderService.uploadNoteImg(file)
+          const url = await this.orderService.uploadNoteImg(file)
             .catch(err => {
 
               this.showError(err);
@@ -641,7 +642,7 @@ export class AddOrderComponent extends BaseComponent {
 
             });
 
-          imageUrls = i == orderDetail.NoteImages.length - 1 ? imageUrls + url : imageUrls + url + ',';
+          imageUrls = i === orderDetail.NoteImages.length - 1 ? imageUrls + url : imageUrls + url + ',';
 
         }
       }
@@ -650,7 +651,7 @@ export class AddOrderComponent extends BaseComponent {
 
     }).then(url => {
       return url;
-    })
+    });
 
   }
 
@@ -660,13 +661,14 @@ export class AddOrderComponent extends BaseComponent {
 
       try {
 
+        // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < orderDetails.length; i++) {
 
-          let orderDetail = orderDetails[i];
+          const orderDetail = orderDetails[i];
 
           if (orderDetail.NoteImages && orderDetail.NoteImages.length > 0) {
 
-            let urls = await this.uploadImages(orderDetail).catch(err => {
+            const urls = await this.uploadImages(orderDetail).catch(err => {
               reject(err);
               return;
             });
@@ -703,28 +705,30 @@ export class AddOrderComponent extends BaseComponent {
         detail.AdditionalFee = 0;
       }
 
-      let tempAmount = detail.ModifiedPrice * detail.Quantity;
+      const tempAmount = detail.ModifiedPrice * detail.Quantity;
 
       let amount = tempAmount;
 
-      if (detail.PercentDiscount && detail.PercentDiscount > 0)
+      if (detail.PercentDiscount && detail.PercentDiscount > 0) {
         amount -= (amount / 100) * detail.PercentDiscount;
+      }
 
-      if (detail.AmountDiscount && detail.AmountDiscount > 0)
+      if (detail.AmountDiscount && detail.AmountDiscount > 0) {
         amount -= detail.AmountDiscount;
+      }
 
-
-      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent && this.order.CustomerInfo.DiscountPercent > 0 && this.order.IsMemberDiscountApply)
+      if (this.order.CustomerInfo && this.order.CustomerInfo.DiscountPercent && this.order.CustomerInfo.DiscountPercent > 0 && this.order.IsMemberDiscountApply) {
         this.order.TotalAmount += amount - (tempAmount / 100) * this.order.CustomerInfo.DiscountPercent + detail.AdditionalFee;
-      else
+      } else {
         this.order.TotalAmount += amount + detail.AdditionalFee;
+      }
 
     });
 
     this.orderDiscount = 0;
 
     if (this.order.PercentDiscount && this.order.PercentDiscount > 0) {
-      this.orderDiscount = (this.order.TotalAmount / 100) * this.order.PercentDiscount
+      this.orderDiscount = (this.order.TotalAmount / 100) * this.order.PercentDiscount;
       this.order.TotalAmount -= this.orderDiscount;
     }
 
@@ -893,14 +897,14 @@ export class AddOrderComponent extends BaseComponent {
 
   completeOrder() {
 
-    if (this.order.CustomerInfo.Id == 'KHACH_LE') {
+    if (this.order.CustomerInfo.Id === 'KHACH_LE') {
       this.OnBackNaviage();
       return;
     }
 
-    let newMemberInfo = new MembershipInfo();
+    const newMemberInfo = new MembershipInfo();
 
-    let gainedScore = ExchangeService.getScoreFromOrder(this.order);
+    const gainedScore = ExchangeService.getScoreFromOrder(this.order);
 
     newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + gainedScore;
     newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);

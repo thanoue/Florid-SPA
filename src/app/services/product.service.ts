@@ -1,14 +1,7 @@
-import { BaseService } from './common/base.service';
 import { Injectable } from '@angular/core';
 
-import { from, of } from 'rxjs';
-import { promise } from 'protractor';
 import { Product } from '../models/entities/product.entity';
-import { async } from '@angular/core/testing';
-import { constants } from 'crypto';
 import { GlobalService } from './common/global.service';
-import { ProductImage } from '../models/entities/file.entity';
-import { StorageService } from './storage.service';
 import { HttpService } from './common/http.service';
 import { API_END_POINT } from '../app.constants';
 import { Category } from '../models/entities/category.entity';
@@ -53,8 +46,9 @@ export class ProductService {
             product.PriceList = [product.Price && product.Price > 0 ? product.Price : 0];
         }
 
-        if (!product.Price || product.Price <= 0)
+        if (!product.Price || product.Price <= 0) {
             product.Price = product.PriceList[0];
+        }
 
         if (product.PriceList.indexOf(product.Price) < 0) {
             product.PriceList.push(product.Price);
@@ -68,14 +62,14 @@ export class ProductService {
 
     insertListWithOneCate(categoryId: number, products: Product[]): Promise<any> {
         return this.htttService.post(API_END_POINT.addBulkOneCate, {
-            products: products,
-            categoryId: categoryId
+            products,
+            categoryId
         }).then(res => {
             return;
         }).catch(err => {
             this.htttService.handleError(err);
             throw err;
-        })
+        });
     }
 
     updateProduct(product: Product, categoryIds: number[] = [], tagIds: number[] = [], productImg: File): Promise<any> {
@@ -84,17 +78,17 @@ export class ProductService {
 
         console.log(product);
 
-        let par = {
+        const par = {
             categoryIds: JSON.stringify(categoryIds),
             tagIds: JSON.stringify(tagIds),
             description: product.Description,
             price: product.Price,
             name: product.Name,
-            productImg: productImg,
+            productImg,
             id: product.Id,
             oldProductImg: product.ImageUrl,
             priceList: JSON.stringify(product.PriceList)
-        }
+        };
 
         return this.htttService.postForm(API_END_POINT.updateProduct, par).then(data => {
 
@@ -103,7 +97,7 @@ export class ProductService {
 
         }).catch(err => {
             this.htttService.handleError(err);
-        })
+        });
 
     }
 
@@ -111,15 +105,15 @@ export class ProductService {
 
         product = this.validateProductPrices(product);
 
-        let par = {
+        const par = {
             categoryIds: JSON.stringify(categoryIds),
             tagIds: JSON.stringify(tagIds),
             description: product.Description,
             price: product.Price,
             name: product.Name,
-            productImg: productImg,
+            productImg,
             priceList: JSON.stringify(product.PriceList)
-        }
+        };
 
         return this.htttService.postForm(API_END_POINT.createProduct, par).then(data => {
 
@@ -137,7 +131,7 @@ export class ProductService {
         Categories: Category[]
     }[] {
 
-        let products: {
+        const products: {
             Product: Product,
             Tags: Tag[],
             Categories: Category[]
@@ -145,7 +139,7 @@ export class ProductService {
 
         items.forEach(item => {
 
-            let product = new Product();
+            const product = new Product();
 
             product.Id = item.Id;
             product.Name = item.Name;
@@ -154,10 +148,10 @@ export class ProductService {
             product.PriceList = item.PriceList ? JSON.parse(item.PriceList) : [];
             product.Description = item.Description;
 
-            let tags: Tag[] = [];
+            const tags: Tag[] = [];
             item.tags.forEach(rawTag => {
 
-                let tag = new Tag();
+                const tag = new Tag();
                 tag.Name = rawTag.Name;
                 tag.Description = rawTag.Description;
                 tag.Alias = rawTag.Alias;
@@ -166,9 +160,9 @@ export class ProductService {
                 tags.push(tag);
             });
 
-            let categories: Category[] = [];
+            const categories: Category[] = [];
             item.categories.forEach(rawCategory => {
-                let category = new Category();
+                const category = new Category();
                 category.Id = rawCategory.Id;
                 category.Description = rawCategory.Description;
                 category.Name = rawCategory.Name;
@@ -180,7 +174,7 @@ export class ProductService {
                 Product: product,
                 Tags: tags,
                 Categories: categories
-            })
+            });
 
         });
 
@@ -214,7 +208,7 @@ export class ProductService {
                 return null;
             }
 
-            let res: {
+            const res: {
                 products: {
                     Product: Product,
                     Tags: Tag[],
@@ -241,7 +235,7 @@ export class ProductService {
         }).catch(err => {
             this.htttService.handleError(err);
             throw err;
-        })
+        });
     }
 
     getRecords(page: number, itemsPerPage: number, categoryId: number, tagIds: number[] = [], name: string = ''): Promise<{
@@ -257,9 +251,9 @@ export class ProductService {
         return this.get(API_END_POINT.getProducts, {
             page: page - 1,
             size: itemsPerPage,
-            name: name,
-            categoryId: categoryId,
-            tagIds: tagIds
+            name,
+            categoryId,
+            tagIds
         });
     }
 
@@ -276,8 +270,8 @@ export class ProductService {
         return this.get(API_END_POINT.getProductsByPrice, {
             page: page - 1,
             size: itemsPerPage,
-            price: price,
-            categoryId: categoryId,
+            price,
+            categoryId,
         });
     }
 

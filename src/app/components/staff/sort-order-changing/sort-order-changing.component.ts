@@ -19,7 +19,7 @@ export class SortOrderChangingComponent extends BaseComponent {
 
   Title = 'Thứ tự ưu tiên';
   protected IsDataLosingWarning = false;
-  isAssigningShipper: boolean = false;
+  isAssigningShipper = false;
   shippers: User[];
   florists: User[];
 
@@ -56,21 +56,21 @@ export class SortOrderChangingComponent extends BaseComponent {
     this.userService.getByRole(Roles.Florist)
       .then(users => {
         this.florists = users;
-      })
+      });
   }
 
   loadMakingDetails() {
 
-    this.makingODs = []
+    this.makingODs = [];
 
-    this.orderDetailService.getByStates([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
       .then(details => {
 
         details.forEach(detail => {
           this.makingODs.push({
             OrderDetail: detail,
             IsSelect: false
-          })
+          });
         });
 
       });
@@ -80,7 +80,7 @@ export class SortOrderChangingComponent extends BaseComponent {
   loadShippingDetails() {
 
     this.shippingODs = [];
-    this.orderDetailService.getByStates([OrderDetailStates.DeliveryWaiting], 'ReceivingTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.DeliveryWaiting], 'ReceivingTime')
       .then(details => {
 
         details.forEach(detail => {
@@ -151,7 +151,7 @@ export class SortOrderChangingComponent extends BaseComponent {
 
       if (this.isAssigningShipper) {
 
-        let orderDetailIds: number[] = [];
+        const orderDetailIds: number[] = [];
 
         this.shippingODs.forEach(od => {
 
@@ -170,7 +170,7 @@ export class SortOrderChangingComponent extends BaseComponent {
 
       } else {
 
-        let orderDetails: OrderDetailViewModel[] = [];
+        const orderDetails: OrderDetailViewModel[] = [];
         this.makingODs.forEach(od => {
 
           if (od.IsSelect) {
@@ -206,7 +206,7 @@ export class SortOrderChangingComponent extends BaseComponent {
     if (isHas) {
       chooseShipper((id) => {
         this.assignUsers(+id);
-      })
+      });
     }
 
   }
@@ -226,7 +226,7 @@ export class SortOrderChangingComponent extends BaseComponent {
     if (isHas) {
       chooseFlorist((id) => {
         this.assignUsers(+id);
-      })
+      });
     }
 
   }

@@ -14,11 +14,22 @@ export class ConfigService {
     return this.httpService.post(API_END_POINT.getCurrentConfig)
       .then(res => {
 
-        if (res == {} || res == undefined) {
+        if (res === {} || res === undefined) {
           return new Config();
         }
 
         return res.config;
+
+      }).catch(err => {
+        this.httpService.handleError(err);
+      });
+  }
+
+  updateMemberships(): Promise<any> {
+    return this.httpService.post(API_END_POINT.updateMembership)
+      .then(res => {
+
+        return res;
 
       }).catch(err => {
         this.httpService.handleError(err);

@@ -115,7 +115,7 @@ export abstract class BaseComponent implements OnInit, AfterViewInit, OnDestroy 
             Avt: LocalService.getUserAvtUrl(),
             Id: LocalService.getUserId(),
             PhoneNumber: LocalService.getPhoneNumber(),
-        }
+        };
     }
 
     constructor() {

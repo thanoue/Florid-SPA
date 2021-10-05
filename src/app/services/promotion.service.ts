@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from './common/base.service';
 import { Promotion, PromotionType } from '../models/entities/promotion.entity';
 import { GlobalService } from './common/global.service';
-import { StorageService } from './storage.service';
 import { HttpService } from './common/http.service';
 import { API_END_POINT } from '../app.constants';
 
@@ -15,7 +13,7 @@ export class PromotionService {
   }
 
   formatDate(time: number): number {
-    let startTime = new Date(time);
+    const startTime = new Date(time);
     startTime.setHours(0);
     startTime.setMinutes(0);
     startTime.setSeconds(0);
@@ -74,7 +72,7 @@ export class PromotionService {
   deletePromotion(id: number): Promise<any> {
 
     return this.htttpService.post(API_END_POINT.deletePromotion, {
-      id: id
+      id
     }).then((res) => {
       return res;
     }).catch(err => {
@@ -96,13 +94,13 @@ export class PromotionService {
 
   getAvailablePromotions(currentTime: number, isLoad: boolean = true) {
 
-    let currentDate = this.formatDate(currentTime);
+    const currentDate = this.formatDate(currentTime);
 
     return this.htttpService.post(API_END_POINT.getAvailable, {
-      currentDate: currentDate
+      currentDate
     }, isLoad).then(res => {
 
-      let promotions: Promotion[] = [];
+      const promotions: Promotion[] = [];
 
       res.promotions.forEach(rawPromotion => {
         promotions.push(this.getPromotionFromRaw(rawPromotion));
@@ -122,7 +120,7 @@ export class PromotionService {
     return this.htttpService.get(API_END_POINT.getAllPromotions)
       .then(datas => {
 
-        let promotions: Promotion[] = [];
+        const promotions: Promotion[] = [];
 
         datas.forEach(rawPromotion => {
           promotions.push(this.getPromotionFromRaw(rawPromotion));
@@ -133,11 +131,11 @@ export class PromotionService {
       .catch(err => {
         this.htttpService.handleError(err);
         throw err;
-      })
+      });
   }
 
   private getPromotionFromRaw(rawPromotion: any): Promotion {
-    let promotion = new Promotion();
+    const promotion = new Promotion();
 
     promotion.Id = rawPromotion.Id;
     promotion.PromotionType = rawPromotion.PromotionType == 'Amount' ? PromotionType.Amount : PromotionType.Percent;
@@ -165,7 +163,7 @@ export class PromotionService {
         return null;
       }
 
-      let res: any = {};
+      const res: any = {};
 
       res.totalItemCount = +datas.totalItemCount;
       res.totalPages = +datas.totalPages;
@@ -184,7 +182,7 @@ export class PromotionService {
     }).catch(err => {
       this.htttpService.handleError(err);
       throw err;
-    })
+    });
 
   }
 

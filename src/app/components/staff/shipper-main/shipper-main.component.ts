@@ -5,7 +5,6 @@ import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { OrderDetailStates, Roles } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
-import { browser } from 'protractor';
 
 declare function customerSupport(): any;
 declare function menuOpen(callBack: (index: any) => void, items: string[]): any;
@@ -18,7 +17,7 @@ declare function getShippingNoteDialog(btnTitle: string, callback: (note: string
 })
 export class ShipperMainComponent extends BaseComponent {
 
-  Title = "Người giao hàng";
+  Title = 'Người giao hàng';
   NavigateClass = 'nav-icon ';
   protected IsDataLosingWarning = false;
   waitingOrderDetails: OrderDetailViewModel[];
@@ -83,7 +82,7 @@ export class ShipperMainComponent extends BaseComponent {
 
     this.waitingOrderDetails = [];
 
-    this.orderDetailService.getByState(OrderDetailStates.DeliveryWaiting, 'ReceivingTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.DeliveryWaiting], 'ReceivingTime')
       .then(details => {
 
         this.waitingOrderDetails = details;
@@ -107,7 +106,7 @@ export class ShipperMainComponent extends BaseComponent {
 
     getShippingNoteDialog(btnTitl, (note) => {
 
-      if (destState == OrderDetailStates.SentBack) {
+      if (destState === OrderDetailStates.SentBack) {
 
         this.orderDetailService.updateShippingFields(this.orderDetailService.getLastestShipping(orderDetail).Id, {
           Note: note,
@@ -155,6 +154,7 @@ export class ShipperMainComponent extends BaseComponent {
 
             case OrderDetailStates.DeliveryWaiting:
 
+              // tslint:disable-next-line:new-parens
               this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
                 .then(data => {
 

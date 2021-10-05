@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BaseService } from './common/base.service';
 import { Customer, SpecialDay } from '../models/entities/customer.entity';
 import { Order, OrderDetail, CustomerReceiverDetail, Shipping, Making } from '../models/entities/order.entity';
 import { HttpService } from './common/http.service';
-import { GlobalService } from './common/global.service';
 import { API_END_POINT } from '../app.constants';
-import { promise } from 'protractor';
 import { OrderViewModel, OrderCustomerInfoViewModel, OrderDetailViewModel } from '../models/view.models/order.model';
 import { ExchangeService } from './common/exchange.service';
 import { SaleTotalModel } from '../models/view.models/sale.total.model';
-import { NgModelGroup } from '@angular/forms';
 import { Purchase } from '../models/view.models/purchase.entity';
 import { OrderDetailStates } from '../models/enums';
 import { User } from '../models/entities/user.entity';
@@ -23,7 +19,7 @@ export class OrderService {
   }
 
   getCustomerInfo(customer: Customer, order: OrderViewModel): OrderCustomerInfoViewModel {
-    let info = new OrderCustomerInfoViewModel();
+    const info = new OrderCustomerInfoViewModel();
 
     info.Name = customer.FullName;
     info.PhoneNumber = customer.PhoneNumber;
@@ -40,14 +36,14 @@ export class OrderService {
     info.ReceiverInfos = [];
 
     customer.ReceiverInfos.forEach(receiver => {
-      let item = new CustomerReceiverDetail();
+      const item = new CustomerReceiverDetail();
       item.PhoneNumber = receiver.PhoneNumber;
       item.FullName = receiver.FullName;
       info.ReceiverInfos.push(item);
     });
 
     customer.SpecialDays.forEach(date => {
-      let item = new SpecialDay();
+      const item = new SpecialDay();
       item.Date = date.Date;
       item.Description = date.Description;
       info.SpecialDays.push(item);
@@ -58,10 +54,11 @@ export class OrderService {
 
   getOrderVMByRaw(order: any): OrderViewModel {
 
-    let orderVM = new OrderViewModel();
+    const orderVM = new OrderViewModel();
 
-    if (order == null)
+    if (order == null) {
       return null;
+    }
 
     orderVM.OrderId = order.Id;
     orderVM.TotalAmount = order.TotalAmount;
@@ -78,7 +75,7 @@ export class OrderService {
 
       order.purchases.forEach(purchase => {
 
-        var purchaseEntity = new Purchase();
+        const purchaseEntity = new Purchase();
 
         purchaseEntity.Id = purchase.Id;
         purchaseEntity.OrderId = purchase.OrderId;
@@ -117,7 +114,7 @@ export class OrderService {
 
       order.orderdetails.forEach(orderDetail => {
 
-        let orderDetailVM = new OrderDetailViewModel();
+        const orderDetailVM = new OrderDetailViewModel();
 
         orderDetailVM.ProductName = orderDetail.ProductName;
         orderDetailVM.OrderId = orderDetail.OrderId;
@@ -174,7 +171,7 @@ export class OrderService {
 
           orderDetail.shippers.forEach(rawShipper => {
 
-            let shipper = new User();
+            const shipper = new User();
 
             shipper.Id = rawShipper.Id;
             shipper.AvtUrl = rawShipper.AvtUrl;
@@ -195,7 +192,7 @@ export class OrderService {
 
           orderDetail.orderDetailMakings.forEach(rawMaking => {
 
-            let making = new Making();
+            const making = new Making();
 
             making.AssignTime = rawMaking.AssignTime;
             making.CompleteTime = rawMaking.CompleteTime;
@@ -216,7 +213,7 @@ export class OrderService {
 
           orderDetail.florists.forEach(rawShipper => {
 
-            let user = new User();
+            const user = new User();
 
             user.Id = rawShipper.Id;
             user.AvtUrl = rawShipper.AvtUrl;
@@ -251,10 +248,10 @@ export class OrderService {
 
   getSaleModels(orderVMs: OrderViewModel[]): SaleTotalModel[] {
 
-    var models: SaleTotalModel[] = [];
+    const models: SaleTotalModel[] = [];
 
     orderVMs.forEach(orderVM => {
-      var model = new SaleTotalModel();
+      const model = new SaleTotalModel();
 
       model.OrderId = orderVM.OrderId;
       model.CreatedDate = orderVM.CreatedDate;
@@ -276,8 +273,7 @@ export class OrderService {
 
         model.FinalTotal = model.AmountTotal;
 
-      }
-      else {
+      } else {
 
         model.FinalTotal = ExchangeService.getPreVATVal(model.AmountTotal);
 
@@ -300,7 +296,7 @@ export class OrderService {
       endDate: endTime
     }).then(orders => {
 
-      var orderVMs = this.getOrderVMsByRaw(orders.orders);
+      const orderVMs = this.getOrderVMsByRaw(orders.orders);
       return this.getSaleModels(orderVMs);
 
     }).catch(err => {
@@ -311,11 +307,11 @@ export class OrderService {
 
   getSaleTotalByYear(year: number): Promise<SaleTotalModel[]> {
 
-    let startTime = new Date();
+    const startTime = new Date();
     startTime.setFullYear(year, 0, 1);
     startTime.setHours(0, 0, 0, 0);
 
-    let endTime = new Date();
+    const endTime = new Date();
     endTime.setFullYear(year, 11, 31);
     endTime.setHours(23, 59, 59, 0);
 
@@ -324,7 +320,7 @@ export class OrderService {
 
   getSaleTotalByRange(times: number[]): Promise<SaleTotalModel[]> {
 
-    let endDay = new Date(times[1]);
+    const endDay = new Date(times[1]);
     endDay.setDate(endDay.getDate() + 1);
 
     return this.getSaleTotalByTimes(times[0], endDay.getTime());
@@ -333,10 +329,11 @@ export class OrderService {
 
   getOrderVMsByRaw(orders: any): OrderViewModel[] {
 
-    let orderVMs: OrderViewModel[] = [];
+    const orderVMs: OrderViewModel[] = [];
 
-    if (!orders || orders.length <= 0)
+    if (!orders || orders.length <= 0) {
       return [];
+    }
 
     orders.forEach(order => {
 
@@ -357,12 +354,12 @@ export class OrderService {
 
     return this.httpService.post(API_END_POINT.getDebts, {
       page: page - 1,
-      size: size,
-      startTime: startTime,
-      endTime: endTime
+      size,
+      startTime,
+      endTime
     }).then(data => {
 
-      let res: {
+      const res: {
         orders: OrderViewModel[],
         totalItemCount: number,
         totalPages: number
@@ -387,28 +384,32 @@ export class OrderService {
 
   getById(id: string): Promise<OrderViewModel> {
     return this.httpService.post(API_END_POINT.getById, {
-      id: id
+      id
     }).then(data => {
-      if (data)
+
+      if (data) {
         return this.getOrderVMByRaw(data.order);
+      }
+
       return null;
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;
-    });;
+    });
   }
 
   getSingleById(id: string): Promise<OrderViewModel> {
     return this.httpService.post(API_END_POINT.getOrderNotLazyById, {
-      id: id
+      id
     }).then(data => {
-      if (data)
+      if (data) {
         return this.getOrderVMByRaw(data.order);
+      }
       return null;
     }).catch(err => {
       this.httpService.handleError(err);
       throw err;
-    });;
+    });
   }
 
   updateFields(id: string, value: any): Promise<any> {
@@ -425,7 +426,7 @@ export class OrderService {
 
   getOrderViewModelsByCusId(customerId: string): Promise<OrderViewModel[]> {
     return this.httpService.post(API_END_POINT.getOrdersByCustomerId, {
-      customerId: customerId
+      customerId
     }).then(orders => {
       return this.getOrderVMsByRaw(orders.orders);
     }).catch(err => {
@@ -441,13 +442,13 @@ export class OrderService {
   }> {
 
     return this.httpService.post(API_END_POINT.searchOrders, {
-      term: term,
-      page: page,
-      size: size,
+      term,
+      page,
+      size,
       statuses: statues
     }).then(data => {
 
-      let res: {
+      const res: {
         orders: OrderViewModel[],
         totalItemCount: number,
         totalPages: number
@@ -461,7 +462,7 @@ export class OrderService {
       res.totalPages = data.totalPages;
       res.orders = this.getOrderVMsByRaw(data.items);
 
-      return res;//this.getOrderVMsByRaw(orders.orders);
+      return res;
 
     }).catch(err => {
       this.httpService.handleError(err);
@@ -474,7 +475,7 @@ export class OrderService {
 
     return this.httpService.post(API_END_POINT.getMaxOrderNumberId,
       {
-        year: year
+        year
       })
       .then(data => {
         return data.max;
@@ -487,7 +488,7 @@ export class OrderService {
 
   deleteOrderDetailByOrderId(orderId: string): Promise<any> {
     return this.httpService.post(API_END_POINT.deleteOrderDetailByOrderId, {
-      orderId: orderId
+      orderId
     })
       .then(res => {
         return;
@@ -516,7 +517,7 @@ export class OrderService {
     console.log(orderDetails);
 
     return this.httpService.post(API_END_POINT.addOrderDetails, {
-      orderDetails: orderDetails
+      orderDetails
     }).then(res => {
       return res;
     }).catch(err => {
@@ -528,10 +529,10 @@ export class OrderService {
   updateOrderInfos(orderId: string, orderDetails: OrderDetail[], totalPaidAmount: number, customerId: string): Promise<any> {
 
     return this.httpService.post(API_END_POINT.updateOrderInfos, {
-      orderDetails: orderDetails,
-      orderId: orderId,
-      totalPaidAmount: totalPaidAmount,
-      customerId: customerId
+      orderDetails,
+      orderId,
+      totalPaidAmount,
+      customerId
     }).then(data => {
       return data;
     }).catch(err => {

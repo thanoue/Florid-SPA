@@ -16,7 +16,7 @@ declare function dissmissAddPurchaseDialog(): any;
 })
 export class AddPurchaseComponent extends BaseComponent {
 
-  Title = "Thanh toán nặc danh";
+  Title = 'Thanh toán nặc danh';
 
   purchases: Purchase[];
   currPurchase: Purchase;
@@ -109,8 +109,9 @@ export class AddPurchaseComponent extends BaseComponent {
 
   saveChanges() {
 
-    if (this.purchases.length <= 0)
+    if (this.purchases.length <= 0) {
       return;
+    }
 
     this.purchaseService.bulkCreate(this.purchases, '', () => {
       this.purchases = [];

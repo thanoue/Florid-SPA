@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderViewModel, OrderDetailViewModel, OrderCustomerInfoViewModel } from '../../../models/view.models/order.model';
+import { OrderViewModel, OrderDetailViewModel } from '../../../models/view.models/order.model';
 import { OrderDetailStates, Roles, MakingType } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
@@ -9,15 +9,12 @@ import { CustomerService } from 'src/app/services/customer.service';
 import { ORDER_DETAIL_STATES } from 'src/app/app.constants';
 import { StorageService } from 'src/app/services/storage.service';
 import { ProductService } from 'src/app/services/product.service';
-import { promise } from 'protractor';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { User } from 'src/app/models/entities/user.entity';
 import { UserService } from 'src/app/services/user.service';
 import { MyDatepipe } from 'src/app/pipes/date.pipe';
 import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
-import { doesNotReject } from 'assert';
 
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
@@ -61,7 +58,7 @@ export class OrdersManageComponent extends BaseComponent {
   currentPage = 0;
   totalPage = 0;
   statuses: any[] = [];
-  searchTerm: string = "";
+  searchTerm = '';
   allStatuses: any[] = [
     OrderDetailStates.Added,
     OrderDetailStates.Comfirming,
@@ -83,16 +80,17 @@ export class OrdersManageComponent extends BaseComponent {
     customerSupport();
   }
 
-  constructor(private customerService: CustomerService,
-              protected activatedRoute: ActivatedRoute,
-              private router: Router, private orderService: OrderService,
-              protected storageService: StorageService,
-              protected productService: ProductService,
-              private orderDetailService: OrderDetailService,
-              protected http: HttpClient,
-              private datePipe: MyDatepipe,
-              private userService: UserService,
-              private printJobService: PrintJobService) {
+  constructor(
+    private customerService: CustomerService,
+    protected activatedRoute: ActivatedRoute,
+    private router: Router, private orderService: OrderService,
+    protected storageService: StorageService,
+    protected productService: ProductService,
+    private orderDetailService: OrderDetailService,
+    protected http: HttpClient,
+    private datePipe: MyDatepipe,
+    private userService: UserService,
+    private printJobService: PrintJobService) {
 
     super();
     this.globalService.currentOrderViewModel = new OrderViewModel();
@@ -232,8 +230,9 @@ export class OrdersManageComponent extends BaseComponent {
 
   goToPage(page: number) {
 
-    if (page >= this.totalPage || page < 0)
+    if (page >= this.totalPage || page < 0) {
       return;
+    }
 
     this.currentPage = page;
 
@@ -281,7 +280,7 @@ export class OrdersManageComponent extends BaseComponent {
     this.userService.getByRole(Roles.Shipper)
       .then(users => {
         this.shippers = users;
-      })
+      });
   }
 
   doPrintJob(order: OrderViewModel) {
@@ -301,9 +300,9 @@ export class OrdersManageComponent extends BaseComponent {
       tempSummary += product.ModifiedPrice;
     });
 
-    let purhases: purchaseItem[] = [];
+    const purhases: purchaseItem[] = [];
 
-    if (order.PurchaseItems)
+    if (order.PurchaseItems) {
       order.PurchaseItems.forEach(purchase => {
 
         purhases.push({
@@ -312,8 +311,7 @@ export class OrdersManageComponent extends BaseComponent {
         });
 
       });
-
-    console.log('avaiable score:',order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed );
+    }
 
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
@@ -347,18 +345,20 @@ export class OrdersManageComponent extends BaseComponent {
 
     let discount = 0;
 
-    if (percentDiscount && percentDiscount > 0)
+    if (percentDiscount && percentDiscount > 0) {
       discount = (price / 100) * percentDiscount;
+    }
 
-    if (amountDidcount && amountDidcount > 0)
+    if (amountDidcount && amountDidcount > 0) {
       discount = discount + amountDidcount;
+    }
 
     return discount;
   }
 
   selectOrder(order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Thêm thanh toán',
       'In hoá đơn',
       'Hoàn tất đơn',
@@ -460,16 +460,18 @@ export class OrdersManageComponent extends BaseComponent {
 
   getDetailById(id: number): OrderDetailViewModel {
 
-    return this.orders.filter(p => p.OrderDetails.filter(p => p.OrderDetailId == id).length > 0)[0].OrderDetails.filter(c => c.OrderDetailId == id)[0];
+    // tslint:disable-next-line:no-shadowed-variable
+    return this.orders.filter(p => p.OrderDetails.filter(p => p.OrderDetailId === id).length > 0)[0].OrderDetails.filter(c => c.OrderDetailId === id)[0];
 
   }
 
   openDetailInfo(id: number) {
 
-    let orderDetail = this.getDetailById(id);
+    const orderDetail = this.getDetailById(id);
 
-    if (!orderDetail)
+    if (!orderDetail) {
       return;
+    }
 
     this.selectedDetail.Shippers = orderDetail.Shippers ? orderDetail.Shippers : [];
     this.selectedDetail.Florists = orderDetail.Florists ? orderDetail.Florists : [];
@@ -482,7 +484,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateAssignedShipperDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Chọn lại Shipper',
       'Hoàn thành giao',
       'Trả đơn về',
@@ -496,11 +498,11 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 0:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, 'HH:mm dd-MM-yyyy');
           this.selectReceiveRequestTime = orderDetail.DeliveryInfo.DateTime;
           this.shippingNote = orderDetail.ShippingNote;
 
-          let newObj = {
+          const newObj = {
             State: OrderDetailStates.DeliveryWaiting,
             ReceivingTime: this.selectReceiveRequestTime.getTime(),
             ShippingNote: this.shippingNote
@@ -565,7 +567,7 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 2:
 
-          if (orderDetail.State == OrderDetailStates.DeliverAssinged) {
+          if (orderDetail.State === OrderDetailStates.DeliverAssinged) {
             this.showInfo('Đơn chưa bắt đầu giao!');
             return;
           }
@@ -627,11 +629,12 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateFixingRequestDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
-      'Chọn Florist',
-      'Xem chi tiết',
-      'Huỷ  đơn'
-    ];
+    const
+      items = [
+        'Chọn Florist',
+        'Xem chi tiết',
+        'Huỷ  đơn'
+      ];
 
     this.menuOpening((index) => {
       switch ((+index)) {
@@ -646,15 +649,15 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 0:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm  dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, 'HH:mm  dd-MM-yyyy');
           this.selectMakingRequestTime = new Date();
           this.makingNote = orderDetail.MakingNote;
 
           makingTimeRequest(() => {
-            this.transferToFlorist(orderDetail, MakingType.Fixing)
+            this.transferToFlorist(orderDetail, MakingType.Fixing);
           }, () => {
             chooseFlorist((floristId) => {
-              this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId)
+              this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId);
             });
           });
 
@@ -679,7 +682,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateSentBackDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Giao sau',
       'Làm lại đơn',
       'Xem chi tiết',
@@ -705,15 +708,15 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 1:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, 'HH:mm dd-MM-yyyy');
           this.selectMakingRequestTime = new Date();
           this.makingNote = orderDetail.MakingNote;
 
           makingTimeRequest(() => {
-            this.transferToFlorist(orderDetail, MakingType.Fixing)
+            this.transferToFlorist(orderDetail, MakingType.Fixing);
           }, () => {
             chooseFlorist((floristId) => {
-              this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId)
+              this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId);
             });
           });
 
@@ -740,7 +743,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateDeliveringetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Xem chi tiết',
       'Hoàn thành đơn',
       'Huỷ chi tiết đơn'
@@ -764,7 +767,7 @@ export class OrdersManageComponent extends BaseComponent {
             this.orderDetailService.shippingConfirm(orderDetail, null, '')
               .then(() => {
                 this.getOrders();
-              })
+              });
           });
 
           break;
@@ -788,11 +791,11 @@ export class OrdersManageComponent extends BaseComponent {
 
   assignShipper(orderDetail: OrderDetailViewModel) {
 
-    this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+    this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, 'HH:mm dd-MM-yyyy');
     this.selectReceiveRequestTime = orderDetail.DeliveryInfo.DateTime;
     this.shippingNote = '';
 
-    let obj = {
+    const obj = {
       State: OrderDetailStates.DeliveryWaiting,
       ReceivingTime: this.selectReceiveRequestTime.getTime(),
       ShippingNote: this.shippingNote
@@ -820,7 +823,7 @@ export class OrdersManageComponent extends BaseComponent {
         this.orderDetailService.updateFields(orderDetail.OrderDetailId, obj).then(res => {
 
           this.orderDetailService.assignSingleOD(orderDetail.OrderDetailId, +id, (new Date()).getTime())
-            .then(res => {
+            .then(() => {
 
               this.getOrders();
 
@@ -836,7 +839,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateDeliveryWaitingDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Chọn Shipper',
       'Xem chi tiết',
       'Huỷ chi tiết đơn'
@@ -874,7 +877,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateMakingDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Xử lý sau',
       'Đổi florist',
       'Giao hàng',
@@ -901,11 +904,11 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 1:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, 'HH:mm dd-MM-yyyy');
           this.selectMakingRequestTime = new Date(orderDetail.MakingRequestTime);
           this.makingNote = orderDetail.MakingNote;
 
-          let newObj = {
+          const newObj = {
             State: OrderDetailStates.Waiting,
             MakingRequestTime: this.selectMakingRequestTime.getTime(),
             MakingNote: this.makingNote
@@ -1001,7 +1004,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updatConfirmingDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Xác nhận thành phẩm',
       'Giao hàng',
       'Làm lại đơn',
@@ -1027,12 +1030,12 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 2:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd-MM-yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, 'HH:mm dd-MM-yyyy');
           this.selectMakingRequestTime = orderDetail.DeliveryInfo.DateTime;
           this.makingNote = '';
 
           makingTimeRequest(() => {
-            this.transferToFlorist(orderDetail, MakingType.Fixing)
+            this.transferToFlorist(orderDetail, MakingType.Fixing);
           }, () => {
             chooseFlorist((floristId) => {
               this.transferToFlorist(orderDetail, MakingType.Fixing, +floristId);
@@ -1068,7 +1071,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateDeliveriedDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Xác nhận giao',
       'Xem chi tiết',
       'Huỷ đơn'
@@ -1111,7 +1114,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateWaitingDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Xử lý sau',
       'Giao hàng',
       'Xem chi tiết',
@@ -1169,7 +1172,7 @@ export class OrdersManageComponent extends BaseComponent {
     if (!floristId) {
 
       this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-        State: makingType == MakingType.Making ? OrderDetailStates.Waiting : OrderDetailStates.FixingRequest,
+        State: makingType === MakingType.Making ? OrderDetailStates.Waiting : OrderDetailStates.FixingRequest,
         MakingNote: this.makingNote,
         MakingRequestTime: this.selectMakingRequestTime.getTime()
       })
@@ -1178,15 +1181,14 @@ export class OrdersManageComponent extends BaseComponent {
           this.getOrders();
 
         });
-    }
-    else {
+    } else {
 
       this.orderDetailService.assignSingleMaking(orderDetail.OrderDetailId, floristId, new Date().getTime(), makingType)
         .then(() => {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
             MakingNote: this.makingNote,
-            State: makingType == MakingType.Making ? OrderDetailStates.FloristAssigned : OrderDetailStates.FixerAssigned,
+            State: makingType === MakingType.Making ? OrderDetailStates.FloristAssigned : OrderDetailStates.FixerAssigned,
             MakingRequestTime: this.selectMakingRequestTime.getTime()
           })
             .then(() => {
@@ -1202,7 +1204,7 @@ export class OrdersManageComponent extends BaseComponent {
 
   updateAddedDetailState(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let items = [
+    const items = [
       'Chuyển cho Florist',
       'Xem chi tiết',
       'Giao hàng',
@@ -1213,7 +1215,7 @@ export class OrdersManageComponent extends BaseComponent {
       switch ((+index)) {
         case 0:
 
-          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, "HH:mm dd/MM/yyyy");
+          this.selectDeliveryTime = this.datePipe.transform(orderDetail.DeliveryInfo.DateTime, 'HH:mm dd/MM/yyyy');
           this.selectMakingRequestTime = orderDetail.MakingRequestTime ? new Date(orderDetail.MakingRequestTime) : orderDetail.DeliveryInfo.DateTime;
           this.makingNote = orderDetail.MakingNote ? orderDetail.MakingNote : '';
 
@@ -1261,12 +1263,12 @@ export class OrdersManageComponent extends BaseComponent {
 
   deleteOrderDetail(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
 
-    let index = order.OrderDetails.indexOf(orderDetail);
+    const index = order.OrderDetails.indexOf(orderDetail);
     order.OrderDetails.splice(index, 1);
 
     if (order.OrderDetails.length <= 0) {
 
-      let selectedOrder = this.orders.filter(p => p.OrderId == order.OrderId)[0];
+      const selectedOrder = this.orders.filter(p => p.OrderId === order.OrderId)[0];
 
       this.orders.splice(this.orders.indexOf(selectedOrder), 1);
     }

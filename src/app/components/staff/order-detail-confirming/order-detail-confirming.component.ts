@@ -47,6 +47,7 @@ export class OrderDetailConfirmingComponent extends BaseComponent {
 
         this.orderDetailService.updateFields(this.globalOrderDetail.OrderDetailId, {
           State: OrderDetailStates.Deliveried,
+          // tslint:disable-next-line:new-parens
           DeliveryCompletedTime: (new Date).getTime(),
         })
           .then(() => {
@@ -54,6 +55,8 @@ export class OrderDetailConfirmingComponent extends BaseComponent {
             this.router.navigate(['staff/shipper-main']);
 
           });
+
+        break;
 
       default:
         break;

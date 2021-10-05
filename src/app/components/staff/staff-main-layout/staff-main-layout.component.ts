@@ -22,8 +22,11 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
 
   logoutInvoker: Subscription;
 
-  constructor(public router: Router, private globalService: GlobalService, private authService: AuthService
-    , private realtimeService: RealtimeService) {
+  constructor(
+    public router: Router,
+    private globalService: GlobalService,
+    private authService: AuthService,
+    private realtimeService: RealtimeService) {
 
     this.navigateClass = '';
     this.title = '';
@@ -45,19 +48,21 @@ export class StaffMainLayoutComponent implements OnDestroy, OnInit {
 
     this.logoutInvoker = this.realtimeService.LogouOutBehavier.subscribe(res => {
 
-      if (res == false)
+      if (res === false) {
         return;
-      
+      }
+
       this.authService.logOut((isSuccess) => {
 
-        if (isSuccess)
+        if (isSuccess) {
           this.router.navigate(['/staff/login']);
+        }
 
       });
 
     });
 
-    let userId = LocalService.getUserId();
+    const userId = LocalService.getUserId();
 
     if (userId) {
 

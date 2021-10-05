@@ -18,7 +18,7 @@ export class TempProductService extends BaseService<TempProduct> {
 
   public deleteFile(name: string): Promise<any> {
 
-    var model = new TempProduct();
+    const model = new TempProduct();
     return this.storageService.deleteFile(name, model.FolderName);
   }
 

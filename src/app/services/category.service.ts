@@ -14,11 +14,11 @@ export class CategoryService {
   constructor(private htttpService: HttpService, private globalService: GlobalService) {
   }
 
-  createCategory(Category: Category): Promise<any> {
+  createCategory(category: Category): Promise<any> {
 
     return this.htttpService.post(API_END_POINT.createCategory, {
-      name: Category.Name,
-      description: Category.Description
+      name: category.Name,
+      description: category.Description
     }).then((res) => {
 
       return res;
@@ -28,12 +28,12 @@ export class CategoryService {
     });
   }
 
-  updateCategory(Category: Category): Promise<any> {
+  updateCategory(category: Category): Promise<any> {
 
     return this.htttpService.post(API_END_POINT.updateCategory, {
-      name: Category.Name,
-      description: Category.Description,
-      id: Category.Id
+      name: category.Name,
+      description: category.Description,
+      id: category.Id
     }).then((res) => {
 
       return res;
@@ -47,7 +47,7 @@ export class CategoryService {
   deleteCategory(id: number): Promise<any> {
 
     return this.htttpService.post(API_END_POINT.deleteCategory, {
-      id: id
+      id
     }).then((res) => {
       return res;
     }).catch(err => {
@@ -69,11 +69,12 @@ export class CategoryService {
   getAll(): Promise<Category[]> {
     return this.htttpService.get(API_END_POINT.getAllCategories, false)
       .then(datas => {
-        let categories: Category[] = [];
+
+        const categories: Category[] = [];
 
         datas.forEach(rawCategory => {
 
-          let category = new Category();
+          const category = new Category();
 
           category.Id = rawCategory.Id;
           category.Description = rawCategory.Description;
@@ -88,7 +89,7 @@ export class CategoryService {
       .catch(err => {
         this.htttpService.handleError(err);
         throw err;
-      })
+      });
   }
 
   getRecords(page: number, itemsPerPage: number, descriptionTerm: string = ''): Promise<{
@@ -106,7 +107,7 @@ export class CategoryService {
         return null;
       }
 
-      let res: any = {};
+      const res: any = {};
 
       res.totalItemCount = +datas.totalItemCount;
       res.totalPages = +datas.totalPages;
@@ -125,7 +126,7 @@ export class CategoryService {
     }).catch(err => {
       this.htttpService.handleError(err);
       throw err;
-    })
+    });
 
   }
 

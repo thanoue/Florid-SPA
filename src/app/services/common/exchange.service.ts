@@ -1,11 +1,8 @@
 import { MembershipTypes, CusContactInfoTypes } from '../../models/enums';
 import { Injectable } from '@angular/core';
 import { OrderDetailDeliveryInfo, OrderDetailViewModel, OrderViewModel } from '../../models/view.models/order.model';
-import { OrderReceiverDetail, CustomerReceiverDetail } from '../../models/entities/order.entity';
-import { getTranslationDeclStmts } from '@angular/compiler/src/render3/view/template';
-import { float } from 'html2canvas/dist/types/css/property-descriptors/float';
+import { CustomerReceiverDetail } from '../../models/entities/order.entity';
 import { Customer } from '../../models/entities/customer.entity';
-import { env } from 'process';
 import { environment } from 'src/environments/environment';
 import { LocalService } from './local.service';
 
@@ -20,7 +17,7 @@ export class ExchangeService {
 
     static detectMemberShipType(amount: number): MembershipTypes {
 
-        let config = LocalService.getConfig();
+        const config = LocalService.getConfig();
 
         if (amount < config.MemberValue) {
             return MembershipTypes.NewCustomer;
@@ -40,7 +37,7 @@ export class ExchangeService {
     }
 
     static getMemberDiscountPercent(membershipTypes: MembershipTypes): number {
-        let config = LocalService.getConfig();
+        const config = LocalService.getConfig();
         switch (membershipTypes) {
             case MembershipTypes.NewCustomer:
                 return 0;
@@ -59,18 +56,18 @@ export class ExchangeService {
         }
 
         if (count > 999) {
-            return `FD-0${count.toString()}`
+            return `FD-0${count.toString()}`;
         }
 
         if (count > 99) {
-            return `FD-00${count.toString()}`
+            return `FD-00${count.toString()}`;
         }
 
         if (count > 9) {
-            return `FD-000${count.toString()}`
+            return `FD-000${count.toString()}`;
         }
 
-        return `FD-0000${count.toString()}`
+        return `FD-0000${count.toString()}`;
     }
 
     static getFullImgUrl(relativeFolderPath: string, fileName: string): string {
@@ -97,8 +94,9 @@ export class ExchangeService {
 
     static getFinalPrice(requestPrice: number, discountPercent: number, additionalFee: number, isDiscount: boolean) {
 
-        if (isDiscount)
+        if (isDiscount) {
             return requestPrice - (requestPrice / 100) * discountPercent + additionalFee;
+        }
 
         return requestPrice + additionalFee;
     }
@@ -120,8 +118,9 @@ export class ExchangeService {
         }
 
         order.OrderDetails.forEach(orderDetail => {
-            if (orderDetail.AdditionalFee)
+            if (orderDetail.AdditionalFee) {
                 amount = amount - orderDetail.AdditionalFee;
+            }
         });
 
         return amount / 100000;
@@ -131,11 +130,13 @@ export class ExchangeService {
 
         let discount = 0;
 
-        if (orderDetail.PercentDiscount && orderDetail.PercentDiscount > 0)
+        if (orderDetail.PercentDiscount && orderDetail.PercentDiscount > 0) {
             discount = (orderDetail.ModifiedPrice / 100) * orderDetail.PercentDiscount;
+        }
 
-        if (orderDetail.AmountDiscount && orderDetail.AmountDiscount > 0)
+        if (orderDetail.AmountDiscount && orderDetail.AmountDiscount > 0) {
             discount = discount + orderDetail.AmountDiscount;
+        }
 
         return discount;
     }
@@ -179,34 +180,39 @@ export class ExchangeService {
 
 
     static getTimeFromExcel(res: any): number {
-        if (res && res != '') {
+        if (res && res !== '') {
 
             if (res.toString().indexOf('/') > -1) {
 
-                var nums = res.split('/', 3);
+                const nums = res.split('/', 3);
 
                 console.log(nums);
 
-                if (nums.length == 3) {
+                if (nums.length === 3) {
 
-                    let year = nums[2].indexOf('.') > -1 ? 0 : parseInt(nums[2]);
-                    let month = parseInt(nums[1]) - 1;
-                    let day = parseInt(nums[0]);
+                    // tslint:disable-next-line:radix
+                    const year = nums[2].indexOf('.') > -1 ? 0 : parseInt(nums[2]);
+                    // tslint:disable-next-line:radix
+                    const month = parseInt(nums[1]) - 1;
+                    // tslint:disable-next-line:radix
+                    const day = parseInt(nums[0]);
 
-                    let date = new Date(year, month, day, 0, 0, 0, 0);
+                    const date = new Date(year, month, day, 0, 0, 0, 0);
 
                     return date.getTime();
                 }
 
             } else {
 
-                let dateVal = parseInt(res);
-                var date = new Date((dateVal - (25567 + 2)) * 86400 * 1000)
+                // tslint:disable-next-line:radix
+                const dateVal = parseInt(res);
+                const date = new Date((dateVal - (25567 + 2)) * 86400 * 1000);
                 return date.getTime();
             }
 
-        } else
+        } else {
             return 0;
+        }
     }
 
     static stringPriceToNumber(res: string): number {
@@ -225,16 +231,16 @@ export class ExchangeService {
             return '';
         }
 
-        var str = source.toLowerCase();
-        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-        str = str.replace(/đ/g, "d");
-        str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
-        str = str.replace(/ + /g, " ");
+        let str = source.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+        str = str.replace(/đ/g, 'd');
+        str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, ' ');
+        str = str.replace(/ + /g, ' ');
         str = str.trim().replace(/ /g, '-');
 
         return str;

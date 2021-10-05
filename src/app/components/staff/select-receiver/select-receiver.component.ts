@@ -23,6 +23,7 @@ export class SelectReceiverComponent extends BaseComponent {
 
   protected IsDataLosingWarning = false;
 
+  // tslint:disable-next-line:variable-name
   constructor(private route: ActivatedRoute, private _ngZone: NgZone) {
     super();
     this.currentList = [];

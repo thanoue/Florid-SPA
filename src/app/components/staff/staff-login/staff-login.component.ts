@@ -41,7 +41,7 @@ export class StaffLoginComponent extends BaseComponent {
 
   protected savedLoginInforReturn(loginName: string, passcode: string) {
     this.model.passcode = passcode;
-    this.model.userName = loginName; //admin
+    this.model.userName = loginName;
   }
 
   afterLogin() {
@@ -52,7 +52,7 @@ export class StaffLoginComponent extends BaseComponent {
 
     }
 
-    var role = LocalService.getRole();
+    const role = LocalService.getRole();
 
     switch (role) {
       case Roles.Admin:

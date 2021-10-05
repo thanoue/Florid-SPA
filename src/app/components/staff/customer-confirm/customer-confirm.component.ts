@@ -2,17 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { OrderDetailViewModel, OrderViewModel } from 'src/app/models/view.models/order.model';
-import { OrderDetailStates, Roles } from 'src/app/models/enums';
-import { StorageService } from 'src/app/services/storage.service';
-import { ResultImage, DeliveryImage } from 'src/app/models/entities/file.entity';
-import html2canvas from 'html2canvas';
+import { Roles } from 'src/app/models/enums';
 import { Router } from '@angular/router';
-import { Order } from 'src/app/models/entities/order.entity';
 import { OrderService } from 'src/app/services/order.service';
 import { CustomerService } from 'src/app/services/customer.service';
 import { Customer } from 'src/app/models/entities/customer.entity';
 import { ExchangeService } from 'src/app/services/common/exchange.service';
-import { basename } from 'path';
 
 declare function shareImageCus(contactInfo: string): any;
 declare function shareImageCusWithData(img: string, contactInfo: string): any;
@@ -27,14 +22,15 @@ declare function getShippingNoteDialog(btnTitle: string, callback: (note: string
 export class CustomerConfirmComponent extends BaseComponent {
 
   Title = 'Xác nhận với khách hàng';
-  edittingImageUrl: string = '';
+  edittingImageUrl = '';
   selectedBlob: Blob;
   orderDetail: OrderDetailViewModel;
   order: OrderViewModel;
   totalBalance = 0;
   customer: Customer;
 
-  constructor(private orderDetailService: OrderDetailService,
+  constructor(
+    private orderDetailService: OrderDetailService,
     private customerService: CustomerService,
     private router: Router,
     private orderService: OrderService) {
@@ -74,23 +70,25 @@ export class CustomerConfirmComponent extends BaseComponent {
 
     const filesUpload: File = event.target.files[0];
 
-    if (!filesUpload)
+    if (!filesUpload) {
       return;
+    }
 
-    var mimeType = filesUpload.type;
+    const mimeType = filesUpload.type;
     if (mimeType.match(/image\/*/) == null) {
       this.showError('Phải chọn hình !!');
       return;
     }
 
-    var reader = new FileReader();
+    const reader = new FileReader();
 
     reader.readAsDataURL(filesUpload);
+    // tslint:disable-next-line:variable-name
     reader.onload = (_event) => {
 
       this.edittingImageUrl = reader.result.toString();
 
-    }
+    };
   }
 
   destroy() {
@@ -111,11 +109,11 @@ export class CustomerConfirmComponent extends BaseComponent {
       case Roles.Account:
       case Roles.Admin:
 
-        if (this.edittingImageUrl != '') {
+        if (this.edittingImageUrl !== '') {
           fetch(this.edittingImageUrl)
             .then(res => res.blob())
             .then(blob => {
-              const file = new File([blob], "result.png", { type: "image/png" });
+              const file = new File([blob], 'result.png', { type: 'image/png' });
               this.orderDetailService.resultConfirm(this.orderDetail.OrderDetailId, this.orderDetailService.getLastestMaking(this.orderDetail).Id, file)
                 .then(res => {
                   this.router.navigate(['staff/account-main']);
@@ -132,20 +130,20 @@ export class CustomerConfirmComponent extends BaseComponent {
 
       case Roles.Shipper:
 
-        if (this.edittingImageUrl != '') {
+        if (this.edittingImageUrl !== '') {
 
           fetch(this.edittingImageUrl)
             .then(res => res.blob())
             .then(blob => {
 
-              const file = new File([blob], "shipping.png", { type: "image/png" });
+              const file = new File([blob], 'shipping.png', { type: 'image/png' });
 
               this.orderDetailService.shippingConfirm(this.orderDetail, file, note)
                 .then(res => {
                   this.router.navigate(['staff/shipper-main']);
                 });
 
-            })
+            });
 
         } else {
 
@@ -165,7 +163,7 @@ export class CustomerConfirmComponent extends BaseComponent {
 
   shareForCus() {
 
-    if (this.edittingImageUrl == '') {
+    if (this.edittingImageUrl === '') {
       return;
     }
 

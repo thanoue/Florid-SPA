@@ -17,16 +17,16 @@ export class UserService {
 
     getByRole(role: Roles): Promise<User[]> {
         return this.httpService.post(API_END_POINT.getByRole, {
-            role: role
+            role
         })
             .then(data => {
 
-                let users: User[] = [];
+                const users: User[] = [];
 
                 if (data && data.users) {
                     data.users.forEach(rawUser => {
 
-                        let user = new User();
+                        const user = new User();
 
                         user.Id = rawUser.Id.toString();
                         user.AvtUrl = rawUser.AvtUrl;
@@ -35,7 +35,7 @@ export class UserService {
                         user.LoginName = rawUser.LoginName;
                         user.FullName = rawUser.FullName;
                         user.IsPrinter = rawUser.IsPrinter;
-                        user.IsExternalShipper = rawUser.IsExternalShipper
+                        user.IsExternalShipper = rawUser.IsExternalShipper;
 
                         if (rawUser.roles && rawUser.roles[0]) {
                             user.Role = rawUser.roles[0].Name;
@@ -77,8 +77,8 @@ export class UserService {
     deleteUser(userId: number, avtUrl: string): Promise<any> {
 
         return this.httpService.post(API_END_POINT.deleteUser, {
-            userId: userId,
-            avtUrl: avtUrl
+            userId,
+            avtUrl
         }).then(res => {
             return true;
         }).catch(err => {
@@ -95,7 +95,7 @@ export class UserService {
             fullName: user.FullName,
             email: user.Email,
             loginName: user.LoginName,
-            password: !user.Password || user.Password == '' ? '' : user.Password,
+            password: !user.Password || user.Password === '' ? '' : user.Password,
             phoneNumber: user.PhoneNumber,
             oldAvtUrl: user.AvtUrl,
             newAvatar: avatarFile,
@@ -115,12 +115,12 @@ export class UserService {
         return this.httpService.get(API_END_POINT.getAllUser)
             .then(data => {
 
-                let users: User[] = [];
+                const users: User[] = [];
 
                 if (data && data.users) {
                     data.users.forEach(rawUser => {
 
-                        let user = new User();
+                        const user = new User();
 
                         user.Id = rawUser.Id.toString();
                         user.AvtUrl = rawUser.AvtUrl;
@@ -129,7 +129,7 @@ export class UserService {
                         user.LoginName = rawUser.LoginName;
                         user.FullName = rawUser.FullName;
                         user.IsPrinter = rawUser.IsPrinter;
-                        user.IsExternalShipper = rawUser.IsExternalShipper
+                        user.IsExternalShipper = rawUser.IsExternalShipper;
 
                         if (rawUser.roles && rawUser.roles[0]) {
                             user.Role = rawUser.roles[0].Name;

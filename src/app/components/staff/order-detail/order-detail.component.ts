@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { BaseComponent } from '../base.component';
 import { OrderDetailViewModel } from 'src/app/models/view.models/order.model';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { CategoryService } from 'src/app/services/category.service';
 import { Promotion, PromotionType } from 'src/app/models/entities/promotion.entity';
@@ -37,7 +37,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     this.promotions = [];
     this.images = [];
 
-    if (!this.globalOrderDetail.NoteImages) this.globalOrderDetail.NoteImages = [];
+    if (!this.globalOrderDetail.NoteImages) { this.globalOrderDetail.NoteImages = []; }
 
   }
 
@@ -52,9 +52,9 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
       this.detailIndex = + params.id;
 
-      if (!this.globalOrderDetail.PurposeOf) this.globalOrderDetail.PurposeOf = 'Mua tặng';
+      if (!this.globalOrderDetail.PurposeOf) { this.globalOrderDetail.PurposeOf = 'Mua tặng'; }
 
-      if (!this.globalOrderDetail.ProductName) this.globalOrderDetail.ProductName = '....';
+      if (!this.globalOrderDetail.ProductName) { this.globalOrderDetail.ProductName = '....'; }
 
 
       createNumbericElement(false, (val) => {
@@ -66,7 +66,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
   }
 
   getPromotionAmount(promotion: Promotion): string {
-    return promotion.PromotionType == PromotionType.Amount ? promotion.Amount + " ₫" : promotion.Amount + " %";
+    return promotion.PromotionType === PromotionType.Amount ? promotion.Amount + ' ₫' : promotion.Amount + ' %';
   }
 
   onAmountDiscountChanged(value) {
@@ -100,30 +100,32 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
   protected fileChosen(path: string) {
 
     this.globalOrderDetail.NoteImages.push('data:image/png;base64,' + path);
-    
+
   }
 
   onChange(event) {
 
     const filesUpload: File = event.target.files[0];
 
-    if (!filesUpload)
+    if (!filesUpload) {
       return;
+    }
 
-    var mimeType = filesUpload.type;
+    const mimeType = filesUpload.type;
     if (mimeType.match(/image\/*/) == null) {
       this.showError('Phải chọn hình !!');
       return;
     }
 
-    var reader = new FileReader();
+    const reader = new FileReader();
 
     reader.readAsDataURL(filesUpload);
+    // tslint:disable-next-line:variable-name
     reader.onload = (_event) => {
 
       this.globalOrderDetail.NoteImages.push(reader.result.toString());
 
-    }
+    };
 
   }
 
@@ -140,7 +142,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
         case 1:
 
-          let url = ImgPipe.getImgUrl(this.globalOrderDetail.NoteImages[index], ImgType.NoteImg);
+          const url = ImgPipe.getImgUrl(this.globalOrderDetail.NoteImages[index], ImgType.NoteImg);
           this.images = [url];
 
           setTimeout(() => {
@@ -205,8 +207,9 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   clearProductImg() {
 
-    if (!this.globalOrderDetail.ProductImageUrl)
+    if (!this.globalOrderDetail.ProductImageUrl) {
       return;
+    }
 
     if (!this.globalOrderDetail.IsFromHardCodeProduct) {
       this.openConfirm('Chắc chăc xoá ảnh này? ', () => {
@@ -222,13 +225,14 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
     getTextInput(res => {
 
-      if (res == '')
+      if (res === '') {
         return;
+      }
 
       this.globalOrderDetail.ProductName = res;
       this.globalOrderDetail.IsFromHardCodeProduct = true;
 
-    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName == '....' ? '' : this.globalOrderDetail.ProductName);
+    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName === '....' ? '' : this.globalOrderDetail.ProductName);
 
   }
 
@@ -297,9 +301,9 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
     this.globalOrderDetail.PercentDiscount = this.globalOrderDetail.AmountDiscount = 0;
 
-    let promotion = this.promotions[index];
+    const promotion = this.promotions[index];
 
-    if (promotion.PromotionType == PromotionType.Amount) {
+    if (promotion.PromotionType === PromotionType.Amount) {
       this.globalOrderDetail.AmountDiscount = promotion.Amount;
     } else {
       this.globalOrderDetail.PercentDiscount = promotion.Amount;
@@ -307,6 +311,6 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
     hideReceiverPopup();
 
-  };
+  }
 
 }

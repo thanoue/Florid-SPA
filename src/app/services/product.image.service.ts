@@ -13,11 +13,11 @@ export class ProductImageService extends BaseService<ProductImage> {
   protected tableName = '/productImages';
 
   constructor() {
-    super()
+    super();
   }
 
   public deleteFile(name: string): Promise<any> {
-    var model = new ProductImage();
+    const model = new ProductImage();
     return this.storageService.deleteFile(name, model.FolderName);
   }
 
@@ -31,8 +31,9 @@ export class ProductImageService extends BaseService<ProductImage> {
           prodImg = snap.val() as ProductImage;
         });
 
-        if (prodImg == null)
+        if (prodImg == null) {
           return;
+        }
 
         return this.storageService.deleteFile(prodImg.Name, prodImg.FolderName);
 

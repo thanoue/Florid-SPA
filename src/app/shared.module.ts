@@ -14,7 +14,7 @@ import { SearchBoxComponent } from './controls/search-box/search-box.component';
 import { StatusPointComponent } from './controls/status-point/status-point.component';
 import { MyCurrPipe, MyDatepipe, MyTimepipe } from './pipes/date.pipe';
 import { ImgPipe } from './pipes/img.pipe';
-import { AngularImageViewerModule } from "angular-x-image-viewer";
+import { AngularImageViewerModule } from 'angular-x-image-viewer';
 import { NgxImageCompressService } from 'ngx-image-compress';
 
 // here is the default text string
@@ -79,7 +79,7 @@ export class DefaultIntl extends OwlDateTimeIntl {
 
     /** A label for the hour12 button (PM) */
     hour12PMLabel = 'CH';
-};
+}
 
 
 @NgModule({

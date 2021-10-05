@@ -20,7 +20,7 @@ export class CustomerService {
 
   updateAllCustomerMemberType(config: Config): Promise<any> {
     return this.httpService.post(API_END_POINT.updateAllCustomerMemberType, {
-      config: config
+      config
     }).then(data => { console.log(data); return data; }).catch(err => {
       this.httpService.handleError(err);
       throw err;
@@ -30,7 +30,7 @@ export class CustomerService {
   updateFields(id: string, obj: any): Promise<any> {
     return this.httpService.post(API_END_POINT.updateCustomerFields, {
       customerId: id,
-      obj: obj
+      obj
     }).then(res => {
       return res;
     }).catch(err => {
@@ -41,12 +41,12 @@ export class CustomerService {
 
   getById(id: string): Promise<Customer> {
     return this.httpService.get(API_END_POINT.getCustomeById, {
-      id: id
+      id
     }).then(data => {
 
-      let item = data.customer;
+      const item = data.customer;
 
-      let customer = new Customer();
+      const customer = new Customer();
 
       customer.Id = item.Id;
       customer.FullName = item.FullName;
@@ -77,14 +77,16 @@ export class CustomerService {
       customer.SpecialDays = [];
 
       item.customerreceivers.forEach(receiver => {
-        let item = new CustomerReceiverDetail();
+        // tslint:disable-next-line:no-shadowed-variable
+        const item = new CustomerReceiverDetail();
         item.PhoneNumber = receiver.PhoneNumber;
         item.FullName = receiver.FullName;
         customer.ReceiverInfos.push(item);
       });
 
       item.customerspecialdays.forEach(date => {
-        let item = new SpecialDay();
+        // tslint:disable-next-line:no-shadowed-variable
+        const item = new SpecialDay();
         item.Date = date.Date;
         item.Description = date.Description;
         customer.SpecialDays.push(item);
@@ -101,7 +103,7 @@ export class CustomerService {
   updateReceiverList(customerId: string, receiverDetails: CustomerReceiverDetail[], isBlockUI: boolean = true): Promise<any> {
 
     return this.httpService.post(API_END_POINT.updateReciverInfo, {
-      customerId: customerId,
+      customerId,
       receiverList: receiverDetails
     }, isBlockUI).then(res => {
       return res;
@@ -124,7 +126,7 @@ export class CustomerService {
 
   updateCustomer(customer: Customer): Promise<any> {
 
-    let specialdays = [];
+    const specialdays = [];
 
     if (customer.SpecialDays) {
       customer.SpecialDays.forEach(specialDay => {
@@ -132,7 +134,7 @@ export class CustomerService {
           date: specialDay.Date,
           description: specialDay.Description
         });
-      })
+      });
     }
 
     return this.httpService.post(API_END_POINT.updateCustomer, {
@@ -161,7 +163,7 @@ export class CustomerService {
       .catch(err => {
         this.httpService.handleError(err);
         throw err;
-      })
+      });
   }
 
   updateList(obj: any[]): Promise<any> {
@@ -172,12 +174,12 @@ export class CustomerService {
       .catch(err => {
         this.httpService.handleError(err);
         throw err;
-      })
+      });
   }
 
   async createCustomers(customers: Customer[]): Promise<void> {
 
-    let cuses = [];
+    const cuses = [];
 
     customers.forEach(customer => {
       cuses.push({
@@ -201,7 +203,8 @@ export class CustomerService {
       });
     });
 
-    var i, j, chunk = 100;
+    let i = 100; let j = 100; const chunk = 100;
+
     let temparray: Customer[] = [];
     for (i = 0, j = cuses.length; i < j; i += chunk) {
       temparray = cuses.slice(i, i + chunk);
@@ -215,7 +218,7 @@ export class CustomerService {
 
   createCustomer(customer: Customer): Promise<any> {
 
-    let cus = {
+    const cus = {
       fullName: customer.FullName,
       phoneNumber: customer.PhoneNumber,
       birthday: customer.Birthday,
@@ -238,12 +241,12 @@ export class CustomerService {
     })
       .catch(err => {
         this.httpService.handleError(err);
-      })
+      });
   }
 
   delete(id: string): Promise<any> {
     return this.httpService.post(API_END_POINT.deleteCustomer, {
-      id: id
+      id
     }).then(() => {
       return;
     }).catch((err) => {
@@ -254,7 +257,7 @@ export class CustomerService {
 
   deleteMany(ids: string[]): Promise<any> {
     return this.httpService.post(API_END_POINT.deleteManyCustomer, {
-      ids: ids
+      ids
     }).then(() => {
       return;
     }).catch((err) => {
@@ -265,11 +268,11 @@ export class CustomerService {
 
   private getCustomerFromRaw(items: any[]): Customer[] {
 
-    let customers = [];
+    const customers = [];
 
     items.forEach(item => {
 
-      let customer = new Customer();
+      const customer = new Customer();
 
       customer.Id = item.Id;
       customer.FullName = item.FullName;
@@ -303,7 +306,8 @@ export class CustomerService {
 
         item.customerreceivers.forEach(receiver => {
 
-          let item = new CustomerReceiverDetail();
+          // tslint:disable-next-line:no-shadowed-variable
+          const item = new CustomerReceiverDetail();
 
           item.PhoneNumber = receiver.PhoneNumber;
           item.FullName = receiver.FullName;
@@ -316,7 +320,8 @@ export class CustomerService {
 
       if (item.customerspecialdays && item.customerspecialdays.length > 0) {
         item.customerspecialdays.forEach(date => {
-          let item = new SpecialDay();
+          // tslint:disable-next-line:no-shadowed-variable
+          const item = new SpecialDay();
           item.Date = date.Date;
           item.Description = date.Description;
           customer.SpecialDays.push(item);
@@ -349,11 +354,11 @@ export class CustomerService {
     return this.httpService.get(API_END_POINT.getCustomers, {
       page: page - 1,
       size: itemsPerPage,
-      term: term,
-      memberShipType: memberShipType
+      term,
+      memberShipType
     }).then(data => {
 
-      let res: {
+      const res: {
         Customers: Customer[],
         totalItemCount: number,
         totalPages: number
