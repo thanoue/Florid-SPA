@@ -1,8 +1,9 @@
 const db = require("../models");
 const Config = db.config;
+const Customer = db.customer;
 const logger = require('../config/logger');
 const Op = db.Sequelize.Op;
-
+const MemberTyepes = require('../config/app.config').MemberShipType;
 exports.getCurrent = (req, res) => {
 
     Config.findAll()
@@ -10,6 +11,61 @@ exports.getCurrent = (req, res) => {
             res.send({ config: data && data.length > 0 ? data[0] : {} });
         })
         .catch(err => logger.error(err, res));
+}
+
+exports.updateMembership = (req, res) => {
+
+    Config.findOne().then(config => {
+
+        Customer.update({
+            MembershipType: MemberTyepes.NewCustomer
+        }, {
+            where: {
+                AccumulatedAmount: {
+                    [Op.lt]: config.MemberValue
+                }
+            }
+        }).then(() => {
+
+            Customer.update({
+                MembershipType: MemberTyepes.Member
+            }, {
+                where: {
+                    AccumulatedAmount: {
+                        [Op.between]: [config.MemberValue, config.VipValue - 1]
+                    }
+                }
+            }).then(() => {
+
+                Customer.update({
+                    MembershipType: MemberTyepes.Vip
+                }, {
+                    where: {
+                        AccumulatedAmount: {
+                            [Op.between]: [config.VipValue, config.VVipValue - 1]
+                        }
+                    }
+                }).then(() => {
+
+                    Customer.update({
+                        MembershipType: MemberTyepes.VVip
+                    }, {
+                        where: {
+                            AccumulatedAmount: {
+                                [Op.gte]: config.VVipValue
+                            }
+                        }
+                    }).then(() => {
+                        res.send({ message: 'updated' });
+                    });
+
+                });
+
+            });
+
+        });
+
+    });
 }
 
 function addConfig(config, res) {

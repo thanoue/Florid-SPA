@@ -53,6 +53,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         configController.getCurrent
     );
+    app.post(`${configPrefix}updateMembership`,
+        [authJwt.verifyToken, authJwt.isAdmin],
+        configController.updateMembership
+    );
 
     //purchase
     app.post(`${purchasePrefix}add`,
