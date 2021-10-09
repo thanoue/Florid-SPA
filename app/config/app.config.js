@@ -48,7 +48,8 @@ exports.Roles = {
 exports.PurchaseMethods = {
     Cash: 'Cash',
     Banking: 'Banking',
-    Momo: 'Momo'
+    Momo: 'Momo',
+    Refund: 'Refund'
 }
 
 exports.PurchaseStatus = {

@@ -4,6 +4,7 @@ const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 const Purchase = db.purchase;
 const logger = require('../config/logger');
+const PurchaseMethods = require('../config/app.config').PurchaseMethods;
 const Order = db.order;
 
 exports.bulkAdd = (req, res) => {
@@ -151,6 +152,26 @@ exports.updateIds = (req, res) => {
 
             res.send({ message: 'done' });
         });
+}
+
+exports.addRefund = (req, res) => {
+
+    let purchase = req.body;
+
+    Purchase.create({
+        OrderId: purchase.orderId,
+        Amount: purchase.amount,
+        Method: PurchaseMethods.Refund,
+        AddingTime: purchase.addingTime,
+        Note: 'Refund'
+    }).then(pur => {
+
+        res.send({ message: true });
+
+    }).catch(err => {
+        logger.error(err, res);
+    });
+
 }
 
 exports.addAndAsign = (req, res) => {

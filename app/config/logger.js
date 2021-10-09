@@ -15,3 +15,13 @@ exports.error = (err, res) => {
     });
 
 }
+
+exports.log = (err) => {
+
+    let logString = `===================================================================\n${err}\n===================================================================`;
+
+    log(logString, function (error) {
+        console.error(err);
+
+    });
+}

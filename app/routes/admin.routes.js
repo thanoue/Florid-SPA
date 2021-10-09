@@ -91,6 +91,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAdmin],
         purchaseController.deletePurchase
     );
+    app.post(`${purchasePrefix}addRefund`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        purchaseController.addRefund
+    );
 
     //promotion
     app.get(`${promotionPrefix}getList`,
@@ -183,6 +187,9 @@ module.exports = function (app) {
     );
     app.post(`${orderPrefix}insertMissingCustomer`,
         orderController.insertMissingCustomer
+    );
+    app.post(`${orderPrefix}revertUsedScore`, [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.revertUsedScore
     );
 
     //order detail

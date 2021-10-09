@@ -14,6 +14,7 @@ const resultImgFolderPath = appConstant.fileFolderPath.resultImg;
 const shippingImgFolderPath = appConstant.fileFolderPath.shipppingImg;
 const orderDetailNoteImg = appConstant.fileFolderPath.orderDetailNoteImg;
 const logger = require('../config/logger');
+const fs = require('fs');
 
 let KhachLeId = 'KHACH_LE';
 
@@ -76,8 +77,9 @@ function updateODResult(req, res, resultImgName) {
     }).catch(err => logger.error(err, res));
 }
 
-
 exports.deleteOrderDetailByOrderId = (req, res) => {
+
+    const exceptImgNames = req.body.exceptImgNames;
 
     if (!req.body.orderId) {
 
@@ -88,14 +90,51 @@ exports.deleteOrderDetailByOrderId = (req, res) => {
         return;
     }
 
-    OrderDetail.destroy({
+    OrderDetail.findAll({
         where: {
             OrderId: req.body.orderId
         }
-    }).then(data => {
-        res.send({ message: 'deleted some orderDetails' });
-    }).catch(err => logger.error(err, res));
+    }).then(details => {
 
+        let deleteImages = [];
+
+        details.forEach(detail => {
+
+            let imgNames = detail.NoteImages.split(',');
+
+            if (imgNames && imgNames.length) {
+
+                imgNames.forEach(imgName => {
+
+                    if (!exceptImgNames.includes(imgName)) {
+                        deleteImages.push(imgName);
+                    }
+
+                });
+            }
+        });
+
+        if (deleteImages.length > 0) {
+
+            deleteImages.forEach(deleteImage => {
+
+                fs.unlink(orderDetailNoteImg + deleteImage, (err) => {
+                    logger.log(err);
+                });
+
+            });
+        }
+
+        OrderDetail.destroy({
+            where: {
+                OrderId: req.body.orderId
+            }
+        }).then(data => {
+
+            res.send({ message: 'deleted some orderDetails' });
+
+        }).catch(err => logger.error(err, res));
+    });
 }
 
 exports.getByOrderId = (req, res) => {

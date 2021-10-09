@@ -3,13 +3,15 @@ const Order = db.order;
 const User = db.user;
 const Shipping = db.shipping;
 const Making = db.making;
-const OrderDetail = db.orderDetail;
 const Customer = db.customer;
+const OrderDetail = db.orderDetail;
+const Config = db.config;
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 const commonService = require('../services/common.service');
 const Purchase = db.purchase;
 const logger = require('../config/logger');
+const MemberShipTypes = require('../config/app.config').MemberShipType;
 
 exports.getByCustomer = (req, res) => {
 
@@ -34,6 +36,75 @@ exports.getByCustomer = (req, res) => {
 
     }).then(orders => {
         res.send({ orders: orders });
+    }).catch(err => logger.error(err, res));
+}
+
+function detectMemberShipType(amount, config) {
+
+    if (amount < config.MemberValue) {
+        return MemberShipTypes.NewCustomer;
+    }
+
+    if (amount >= config.MemberValue && amount < config.VipValue) {
+        return MemberShipTypes.Member;
+    }
+
+    if (amount >= config.VipValue && amount < config.VVipValue) {
+        return MemberShipTypes.Vip;
+    }
+
+    if (amount >= config.VVipValue) {
+        return MemberShipTypes.VVip;
+    }
+}
+
+exports.revertUsedScore = async (req, res) => {
+
+    Order.findOne({
+        where: {
+            Id: req.body.orderId
+        },
+        include: [
+            { model: OrderDetail },
+            { model: Customer },
+        ]
+    }).then(order => {
+
+        if (!order) {
+            res.status(500).send({ message: false });
+            return;
+        }
+
+        if (order.CustomerId == 'KHACH_LE') {
+
+            res.send({ message: true });
+
+            return;
+
+        }
+
+        Config.findAll().then(configs => {
+
+            const config = configs[0];
+            let availableScore = order.customer.AvailableScore + order.ScoreUsed - order.GainedScore;
+            let accumulatedAmount = order.customer.AccumulatedAmount - order.GainedScore * 100000;
+            let usedScoreTotal = order.customer.UsedScoreTotal - order.ScoreUsed;
+
+            Customer.update({
+                AccumulatedAmount: accumulatedAmount,
+                UsedScoreTotal: usedScoreTotal,
+                AvailableScore: availableScore,
+                MembershipType: detectMemberShipType(accumulatedAmount, config)
+            }, {
+                where: {
+                    Id: order.CustomerId
+                }
+            }).then(updated => {
+                res.send(updated);
+            });
+
+        })
+
     }).catch(err => logger.error(err, res));
 }
 
@@ -233,9 +304,10 @@ exports.editOrder = (req, res) => {
         TotalPaidAmount: body.totalPaidAmount,
         GainedScore: body.gaindedScore,
         ScoreUsed: body.scoreUsed,
-        CreatedDate: body.createdDate,
         PercentDiscount: body.percentDiscount,
-        AmountDiscount: body.amountDiscount
+        AmountDiscount: body.amountDiscount,
+        IsMemberDiscountApply: body.isMemberDiscountApply ? body.isMemberDiscountApply : false,
+        DoneTime: body.doneTime
     }
 
     Order.update(order, {

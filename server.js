@@ -81,8 +81,6 @@ io.on('connection', (socket) => {
 
     socket.on('login', (data) => {
 
-        console.log('client:',data);
-
         socket.userId = data.userId;
         socket.isPrinter = data.isPrinter;
         socket.role = data.role;
@@ -119,7 +117,6 @@ io.on('connection', (socket) => {
         var clients = io.sockets.clients();
 
         const keys = Object.keys(clients.connected);
-
 
         keys.forEach(key => {
             let itemSocket = clients.connected[key];
