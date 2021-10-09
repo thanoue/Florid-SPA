@@ -203,9 +203,12 @@ function qrDone() {
     });
 }
 
-function dismissPurchaseDialog() {
+function dismissPurchaseDialog(callback) {
     jQuery("#purchase-dialog").slideUp(250, function () {
         jQuery(".overlay-dark").remove();
+        setTimeout(() => {
+            callback();
+        }, 200);
     });
 }
 
