@@ -64,7 +64,8 @@ export class DebtsComponent extends BaseComponent {
     IsChecked: boolean
   }[];
 
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private customerService: CustomerService,
     private orderService: OrderService,
     private purchaseService: PurchaseService) {
@@ -73,14 +74,14 @@ export class DebtsComponent extends BaseComponent {
     this.newPurchase = new Purchase();
     this.newPurchaseAddingTime = new Date();
 
-    let startTime = new Date();
+    const startTime = new Date();
     startTime.setMilliseconds(0);
     startTime.setSeconds(0);
     startTime.setMinutes(0);
     startTime.setHours(0);
     startTime.setDate(1);
 
-    let endTime = new Date();
+    const endTime = new Date();
     endTime.setMilliseconds(0);
     endTime.setSeconds(0);
     endTime.setMinutes(0);

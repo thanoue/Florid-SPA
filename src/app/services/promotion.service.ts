@@ -138,7 +138,7 @@ export class PromotionService {
     const promotion = new Promotion();
 
     promotion.Id = rawPromotion.Id;
-    promotion.PromotionType = rawPromotion.PromotionType == 'Amount' ? PromotionType.Amount : PromotionType.Percent;
+    promotion.PromotionType = rawPromotion.PromotionType === 'Amount' ? PromotionType.Amount : PromotionType.Percent;
     promotion.Name = rawPromotion.Name;
     promotion.Amount = rawPromotion.Amount;
     promotion.StartTime = rawPromotion.StartTime;

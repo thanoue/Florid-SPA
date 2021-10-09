@@ -16,7 +16,7 @@ import { PurchaseService } from 'src/app/services/purchase.service';
 import { MembershipInfo } from 'src/app/models/entities/customer.entity';
 
 declare function openExcForm(resCallback: (result: number, validateCalback: (isSuccess: boolean) => void) => void): any;
-declare function dismissPurchaseDialog();
+declare function dismissPurchaseDialog(callback: () => void);
 declare function hideReceiverPopup(): any;
 declare function purchaseDoing(): any;
 declare function openQR(): any;
@@ -44,6 +44,8 @@ export class AddOrderComponent extends BaseComponent {
   qrContentTemplate = '';
   purchaseNote = '';
   wishingDoneTime: Date;
+  isCompleting = false;
+
 
   get AcctualBalance(): number {
 
@@ -154,108 +156,101 @@ export class AddOrderComponent extends BaseComponent {
     this.placeOrder(true);
   }
 
-  editOrder() {
 
-    const orderDetails: OrderDetail[] = [];
-    const receiverInfos: CustomerReceiverDetail[] = [];
+  async editOrder() {
 
-    this.order.OrderDetails.forEach(detailVM => {
+    //get old note images
+    const exceptImgNames = [];
+    this.order.OrderDetails.forEach(od => {
 
-      const detail = new OrderDetail();
+      if (od.NoteImages && od.NoteImages.length > 0) {
+        od.NoteImages.forEach(imgName => {
 
-      detail.OrderId = this.globalOrder.OrderId;
-      detail.Id = detailVM.OrderDetailId;
-      detail.State = detailVM.State;
+          if (!ExchangeService.isBase64(imgName)) {
+            exceptImgNames.push(imgName);
+          }
 
-      detail.CustomerName = this.globalOrder.CustomerInfo.Name;
-      detail.CustomerPhoneNumber = this.globalOrder.CustomerInfo.PhoneNumber;
-
-      const receiverInfo = new CustomerReceiverDetail();
-
-      if (!detailVM.DeliveryInfo.Address) {
-        receiverInfo.Address = this.order.CustomerInfo.Address ? this.order.CustomerInfo.Address : '';
-      } else {
-        receiverInfo.Address = detailVM.DeliveryInfo.Address;
-      }
-
-      if (!detailVM.DeliveryInfo.FullName) {
-        receiverInfo.FullName = this.order.CustomerInfo.Name ? this.order.CustomerInfo.Name : '';
-      } else {
-        receiverInfo.FullName = detailVM.DeliveryInfo.FullName;
-      }
-
-      if (!detailVM.DeliveryInfo.PhoneNumber) {
-        receiverInfo.PhoneNumber = this.order.CustomerInfo.PhoneNumber ? this.order.CustomerInfo.PhoneNumber : '';
-      } else {
-        receiverInfo.PhoneNumber = detailVM.DeliveryInfo.PhoneNumber;
-      }
-
-      if (!detailVM.DeliveryInfo.DateTime) {
-        detail.DeliveryInfo.ReceivingTime = (new Date()).getTime();
-      } else {
-        detail.DeliveryInfo.ReceivingTime = detailVM.DeliveryInfo.DateTime.getTime();
-      }
-
-      detail.DeliveryInfo.ReceiverDetail = receiverInfo;
-
-      orderDetails.push(detail);
-
-      let isAdd = true;
-
-      receiverInfos.forEach(info => {
-
-        if (ExchangeService.receiverInfoCompare(info, receiverInfo)) {
-          isAdd = false;
-          return;
-        }
-
-      });
-
-      if (isAdd) {
-        receiverInfos.push(receiverInfo);
+        });
       }
 
     });
 
-    this.globalOrder.CustomerInfo.ReceiverInfos.forEach(receiver => {
+    try {
 
-      let isAdd = true;
+      //remove old details
+      const deleteDetails = await this.orderService.deleteOrderDetailByOrderId(this.order.OrderId, exceptImgNames);
 
-      receiverInfos.forEach(item => {
+      //revert score used
+      const revert = await this.orderService.revertUsedScore(this.order.OrderId);
 
-        if (ExchangeService.receiverInfoCompare(receiver, item)) {
-          isAdd = false;
-          return;
-        }
+      this.orderConfirm();
 
-      });
+    } catch (ex) {
 
-      if (isAdd) {
-        receiverInfos.push(receiver);
-      }
+      console.error(ex);
 
-    });
-
-    if (this.globalPurchases.length > 0) {
-      this.purchaseService.bulkCreate(this.globalPurchases, this.order.OrderId, () => {
-        this.globalPurchases = [];
-      });
     }
 
-    this.orderService.updateOrderInfos(this.order.OrderId, orderDetails, this.order.TotalPaidAmount, this.order.CustomerInfo.Id)
-      .then(() => {
-        if (this.order.CustomerInfo.Id !== 'KHACH_LE') {
-          this.customerService.updateReceiverList(this.order.CustomerInfo.Id, receiverInfos).then(isSuccess => {
-            this.OnBackNaviage();
-          });
-        } else {
-          this.OnBackNaviage();
-        }
-      });
+  }
+
+
+  refundChecking() {
+
+    //update purchases
+    //Delete details -> delete images
+    //Update used score, update total amount to customer
+    // update order
+    //add new details
+
+    if (this.totalBalance < 0) {
+
+      this.openConfirm(`Số tiền cần trả lại cho KH là ${ExchangeService.toFormatCurrency(this.totalBalance * (-1))}`, () => {
+
+        this.purchaseService.refund(this.totalBalance, this.order.OrderId).then(() => {
+
+          this.order.TotalPaidAmount = this.order.TotalAmount;
+          this.totalBalance = 0;
+
+          this.editOrder();
+
+        });
+
+      }, () => {
+
+        this.editOrder();
+
+      }, () => {
+
+
+      }, 'Xác nhận đã trả', 'Để sau');
+
+      return;
+
+    } else {
+
+      if (this.totalBalance == 0) {
+        this.editOrder();
+      } else {
+
+        this.openConfirm('Thêm thanh toán cho đơn này?', () => {
+
+          this.addPurchase();
+
+        }, () => {
+
+          this.editOrder();
+
+        }, null, 'Thêm', 'Để sau');
+
+      }
+
+    }
 
   }
 
   placeOrder(isCompleting: boolean) {
+
+    this.isCompleting = isCompleting;
 
     this.currentPayAmount = this.order.TotalAmount - this.order.TotalPaidAmount;
     this.order.DoneTime = this.wishingDoneTime.getTime();
@@ -269,7 +264,7 @@ export class AddOrderComponent extends BaseComponent {
     }
 
     if (this.isEdittingOrder) {
-      this.editOrder();
+      this.refundChecking();
       return;
     }
 
@@ -283,22 +278,18 @@ export class AddOrderComponent extends BaseComponent {
       return;
     }
 
-    if (this.order.TotalPaidAmount <= 0) {
-
-      this.openConfirm('Hoá đơn chưa được thanh toán, có muốn tiếp tục?', () => {
+    if (this.AcctualBalance > 0) {
+      this.openConfirm('Thêm thanh toán cho đơn này?', () => {
 
         this.addPurchase();
 
       }, () => {
 
-        this.printConfirmation(isCompleting);
+        this.printConfirmation();
 
-      }, null, 'Thanh Toán', 'Tiếp tục');
-
+      }, null, 'Thêm', 'Để sau');
     } else {
-
-      this.printConfirmation(isCompleting);
-
+      this.printConfirmation();
     }
 
   }
@@ -312,7 +303,7 @@ export class AddOrderComponent extends BaseComponent {
     purchaseDoing();
   }
 
-  printConfirmation(isCompleting: boolean) {
+  printConfirmation() {
 
     if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
 
@@ -320,13 +311,15 @@ export class AddOrderComponent extends BaseComponent {
 
     this.openConfirm('In hoá đơn?', () => {
 
-      this.doPrintJob(isCompleting);
+      this.doPrintJob();
 
     }, () => {
 
-      this.orderConfirm(isCompleting);
+      this.orderConfirm();
 
     }, () => {
+
+      this.orderConfirm();
 
     });
 
@@ -336,7 +329,7 @@ export class AddOrderComponent extends BaseComponent {
     return ExchangeService.getDetailDiscount(orderDetail);
   }
 
-  doPrintJob(isCompleting: boolean) {
+  doPrintJob() {
 
     let tempSummary = 0;
     const products: PrintSaleItem[] = [];
@@ -393,10 +386,10 @@ export class AddOrderComponent extends BaseComponent {
 
     this.printJobService.addPrintJob(orderData);
 
-    this.orderConfirm(isCompleting);
+    this.orderConfirm();
   }
 
-  orderConfirm(isCompleting: boolean) {
+  orderConfirm() {
 
     this.startLoading();
 
@@ -442,7 +435,7 @@ export class AddOrderComponent extends BaseComponent {
           detail.AdditionalFee = detailVM.AdditionalFee;
           detail.ProductName = detailVM.ProductName;
           detail.Description = detailVM.Description;
-          detail.State = isCompleting ? OrderDetailStates.Completed : OrderDetailStates.Added;
+          detail.State = this.isCompleting ? OrderDetailStates.Completed : OrderDetailStates.Added;
           detail.IsVATIncluded = orderDB.VATIncluded;
           detail.PurposeOf = detailVM.PurposeOf;
           detail.Index = detailVM.Index;
@@ -604,7 +597,11 @@ export class AddOrderComponent extends BaseComponent {
 
     if (this.totalBalance <= 0) {
 
-      dismissPurchaseDialog();
+      dismissPurchaseDialog(() => {
+
+        if (this.isEdittingOrder) this.editOrder(); else this.printConfirmation();
+
+      });
 
     } else {
 
@@ -623,6 +620,14 @@ export class AddOrderComponent extends BaseComponent {
       for (let i = 0; i < orderDetail.NoteImages.length; i++) {
 
         const noteImgData = orderDetail.NoteImages[i];
+
+        if (!ExchangeService.isBase64(noteImgData)) {
+
+          imageUrls = i === orderDetail.NoteImages.length - 1 ? imageUrls + noteImgData : imageUrls + noteImgData + ',';
+
+          continue;
+
+        }
 
         const response = await fetch(noteImgData);
         const blob = await response.blob();
@@ -674,6 +679,8 @@ export class AddOrderComponent extends BaseComponent {
             });
 
             if (urls) {
+
+              console.log(urls);
 
               orderDetail.NoteImages = [];
               orderDetail.NoteImagesBlobbed = urls;
@@ -744,7 +751,6 @@ export class AddOrderComponent extends BaseComponent {
     this.order.TotalAmount -= ExchangeService.geExchangableAmount(this.order.CustomerInfo.ScoreUsed);
 
     this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
-
   }
 
   onDiscountChanged(value) {
@@ -904,7 +910,7 @@ export class AddOrderComponent extends BaseComponent {
 
     const newMemberInfo = new MembershipInfo();
 
-    const gainedScore = ExchangeService.getScoreFromOrder(this.order);
+    const gainedScore = this.order.CustomerInfo.GainedScore;
 
     newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + gainedScore;
     newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);

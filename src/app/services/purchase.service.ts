@@ -166,4 +166,16 @@ export class PurchaseService {
     });
   }
 
+  refund(refundAmount: number, orderId: string): Promise<any> {
+    return this.httpService.post(API_END_POINT.addRefund, {
+      orderId,
+      amount: refundAmount,
+      addingTime: (new Date()).getTime()
+    }).then(data => {
+      return data.message;
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+  }
 }

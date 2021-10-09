@@ -486,9 +486,10 @@ export class OrderService {
       });
   }
 
-  deleteOrderDetailByOrderId(orderId: string): Promise<any> {
+  deleteOrderDetailByOrderId(orderId: string, exceptImgNames: string[]): Promise<any> {
     return this.httpService.post(API_END_POINT.deleteOrderDetailByOrderId, {
-      orderId
+      orderId,
+      exceptImgNames
     })
       .then(res => {
         return;
@@ -498,6 +499,21 @@ export class OrderService {
         throw err;
       });
   }
+
+  revertUsedScore(orderId: string): Promise<any> {
+    return this.httpService.post(API_END_POINT.revertUsedScore, {
+      orderId,
+    })
+      .then(res => {
+        return res;
+      })
+      .catch(err => {
+        this.httpService.handleError(err);
+        throw err;
+      });
+  }
+
+
 
   uploadNoteImg(fileData: File): Promise<string> {
 

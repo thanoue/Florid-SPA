@@ -236,6 +236,7 @@ export class CustomerService {
       id: customer.Id
     };
 
+    // tslint:disable-next-line:no-shadowed-variable
     return this.httpService.post(API_END_POINT.createCustomer, cus).then((customer) => {
       return customer;
     })

@@ -5,6 +5,7 @@ import { CustomerReceiverDetail } from '../../models/entities/order.entity';
 import { Customer } from '../../models/entities/customer.entity';
 import { environment } from 'src/environments/environment';
 import { LocalService } from './local.service';
+import { CurrencyPipe } from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -107,6 +108,18 @@ export class ExchangeService {
 
     static getAmountFromScore(score: number): number {
         return score * 100000;
+    }
+
+    static toFormatCurrency(amount: number): string {
+        return new CurrencyPipe('vi-VN').transform(amount, 'VND', 'symbol-narrow', '', 'vi-VN');
+    }
+
+    static isBase64(str): boolean {
+        try {
+            return str.length > 1000;
+        } catch (err) {
+            return false;
+        }
     }
 
     static getScoreFromOrder(order: OrderViewModel) {

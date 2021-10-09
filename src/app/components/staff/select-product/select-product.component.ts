@@ -154,7 +154,8 @@ export class SelectProductComponent extends BaseComponent {
 
   setSelectedProduct(data: number) {
 
-    this.selectedProduct = this.pagingProducts.filter(p => p.Id === data)[0];
+    // tslint:disable-next-line:triple-equals
+    this.selectedProduct = this.pagingProducts.filter(p => p.Id == data)[0];
 
     const menuItems: string[] = ['Xem hình Sản phảm'];
 

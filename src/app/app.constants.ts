@@ -84,6 +84,7 @@ export const API_END_POINT = {
     searchOrders: '/order/searchOrders',
     addBulkOrder: '/order/addBulk',
     getDebts: '/order/getDebts',
+    revertUsedScore: '/order/revertUsedScore',
 
     getAllDistricts: '/address/getAllDistricts',
     getAllWards: '/address/getAllWards',
@@ -128,6 +129,7 @@ export const API_END_POINT = {
     updatePurchaseOrder: '/purchase/updateOrder',
     assignPurchaseOrder: '/purchase/assignOrder',
     deletePurchase: '/purchase/deletePurchase',
+    addRefund: '/purchase/addRefund',
 
     getCurrentConfig: '/config/get',
     updateConfig: '/config/update',

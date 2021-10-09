@@ -96,7 +96,7 @@
     </form>
 </div>
 
-<div id="colorBoard" class="popup-content">
+<div id="colorBoard" class="popup-content" *ngIf="selectedCustomer">
     <ul class="colorList">
         <li class="colorInfo">
             <label>Họ tên:</label> <span>{{selectedCustomer.FullName}}</span>

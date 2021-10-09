@@ -6,6 +6,8 @@ import { NgForm } from '@angular/forms';
 import { MembershipTypes } from 'src/app/models/enums';
 import { OrderCustomerInfoViewModel } from 'src/app/models/view.models/order.model';
 import { ExchangeService } from 'src/app/services/common/exchange.service';
+import { MenuItems } from '../../../models/enums';
+import { TouchSequence } from 'selenium-webdriver';
 
 declare function closeAddCustomerDialog(): any;
 declare function viewCustomerInfo(): any;
@@ -29,7 +31,6 @@ export class SelectCustomerComponent extends BaseComponent {
   constructor(private customerService: CustomerService, private _ngZone: NgZone) {
     super();
 
-    this.selectedCustomer = new Customer();
     const key = 'searchProdReference';
     this.newCustomer = new Customer();
     this.customers = [];
@@ -43,16 +44,34 @@ export class SelectCustomerComponent extends BaseComponent {
   }
 
   setSelectedCustomer(id: string) {
-    this.selectedCustomer = this.customers.filter(p => p.Id === id)[0];
 
-    const menuItems = ['Chọn Khách hàng',
-      'Xem thông tin chi tiết'];
+    const clickedCus = this.customers.filter(p => p.Id === id)[0];
+
+    const menuItems = [];
+
+    let isSelecting = true;
+
+    if (this.selectedCustomer && this.selectedCustomer.Id == clickedCus.Id) {
+
+      menuItems.push('Bỏ chọn');
+      isSelecting = false;
+
+    } else {
+      this.selectedCustomer = clickedCus;
+      menuItems.push('Chọn');
+    }
+
+    menuItems.push('Xem thông tin chi tiết');
 
     this.menuOpening((pos) => {
       switch (+pos) {
         case 0:
 
-          this.selectConfirm();
+          if (isSelecting) {
+            this.selectConfirm();
+          } else {
+            this.unSelectCustomer();
+          }
 
           break;
 
@@ -124,6 +143,11 @@ export class SelectCustomerComponent extends BaseComponent {
 
   }
 
+  unSelectCustomer() {
+    this.globalOrder.CustomerInfo = new OrderCustomerInfoViewModel();
+    this.OnBackNaviage();
+  }
+
   selectConfirm() {
 
     if (this.selectedCustomer == null) {
@@ -155,7 +179,8 @@ export class SelectCustomerComponent extends BaseComponent {
         this.customers = data.Customers;
 
         setTimeout(() => {
-          if (this.globalOrder.CustomerInfo.Id) {
+          if (this.globalOrder.CustomerInfo.Id != undefined) {
+            console.log(this.globalOrder.CustomerInfo.Id);
             setSelectedCustomerItem(this.globalOrder.CustomerInfo.Id);
             this.selectedCustomer = data.Customers.find(p => p.Id === this.globalOrder.CustomerInfo.Id);
           }
