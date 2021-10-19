@@ -362,7 +362,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Thêm thanh toán',
       'In hoá đơn',
       'Hoàn tất đơn',
-      'Huỷ đơn'
+      'Xoá đơn'
     ];
 
     this.menuOpening((index) => {
@@ -398,23 +398,26 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 3:
 
-          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Canceled)
-            .then(res => {
+          this.openConfirm('Thao tác này không hể hoàn lại, chắc chắn xoá?', () => {
+            this.orderService.revertUsedScore(order.OrderId)
+              .then(res => {
+                this.orderService.deleteOrder(order.OrderId)
+                  .then(res2 => {
+                    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                      .then(orders => {
 
-              this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
-                .then(orders => {
+                        this.totalPage = orders.totalPages;
+                        this.orders = orders.orders;
 
-                  this.totalPage = orders.totalPages;
-                  this.orders = orders.orders;
-
-                });
-            });
+                      });
+                  });
+              });
+          });
 
           break;
 
       }
     }, items);
-
 
   }
 

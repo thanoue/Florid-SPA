@@ -85,6 +85,7 @@ export const API_END_POINT = {
     addBulkOrder: '/order/addBulk',
     getDebts: '/order/getDebts',
     revertUsedScore: '/order/revertUsedScore',
+    deleteOrder: '/order/deleteOrder',
 
     getAllDistricts: '/address/getAllDistricts',
     getAllWards: '/address/getAllWards',
