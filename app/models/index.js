@@ -49,14 +49,14 @@ db.shipping = require('./shipping.model')(sequelize, Sequelize);
 db.making = require('./making.model')(sequelize, Sequelize);
 db.purchase = require('./purchase.model')(sequelize, Sequelize);
 db.config = require('./config.model')(sequelize, Sequelize);
-    
+
 db.order.hasMany(db.purchase, {
     foreignKey: 'OrderId',
-    onDelete: 'SET NULL'
+    onDelete: 'CASCADE'
 });
 db.purchase.belongsTo(db.order, {
     foreignKey: 'OrderId',
-    onDelete: 'SET NULL'
+    onDelete: 'CASCADE'
 })
 
 db.order.hasMany(db.orderDetail, {

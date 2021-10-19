@@ -58,6 +58,18 @@ function detectMemberShipType(amount, config) {
     }
 }
 
+exports.deleteOrder = (req, res) => {
+    Order.destroy({
+        where: {
+            Id: req.body.orderId
+        }
+    }).then(data => {
+
+        res.status(200).send({ data: data });
+
+    }).catch(err => logger.error(err, res));
+}
+
 exports.revertUsedScore = async (req, res) => {
 
     Order.findOne({
@@ -80,7 +92,6 @@ exports.revertUsedScore = async (req, res) => {
             res.send({ message: true });
 
             return;
-
         }
 
         Config.findAll().then(configs => {
@@ -101,9 +112,9 @@ exports.revertUsedScore = async (req, res) => {
                 }
             }).then(updated => {
                 res.send(updated);
-            });
+            }).catch(err => logger.error(err, res));
 
-        })
+        }).catch(err => logger.error(err, res));
 
     }).catch(err => logger.error(err, res));
 }

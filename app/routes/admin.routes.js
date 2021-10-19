@@ -191,6 +191,9 @@ module.exports = function (app) {
     app.post(`${orderPrefix}revertUsedScore`, [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.revertUsedScore
     );
+    app.post(`${orderPrefix}deleteOrder`, [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.deleteOrder
+    );
 
     //order detail
     app.post(`${orderDetailPrefix}updateFields`,
