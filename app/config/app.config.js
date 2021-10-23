@@ -46,6 +46,7 @@ exports.Roles = {
 };
 
 exports.PurchaseMethods = {
+    All : 'All',
     Cash: 'Cash',
     Banking: 'Banking',
     Momo: 'Momo',

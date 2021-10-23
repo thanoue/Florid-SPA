@@ -232,8 +232,8 @@ exports.getById = (req, res) => {
 
     Customer.findByPk(req.query.id, {
         include: [
-            { model: CustomerReciverInfo },
-            { model: CustomerSpecialDay },
+            { model: CustomerReciverInfo, as: 'receivers' },
+            { model: CustomerSpecialDay, as: 'specialDays' },
         ],
     }).then(customer => {
         res.send({ customer: customer });
@@ -265,9 +265,11 @@ exports.getList = (req, res) => {
             }
         ]
 
-    } : memberShipType == 'All' ? {} : {
-        MembershipType: memberShipType
-    };
+    } : {};
+
+    if (memberShipType !== 'All') {
+        condition['MembershipType'] = memberShipType;
+    }
 
     if (page == -1 || size == -1) {
 
@@ -276,8 +278,8 @@ exports.getList = (req, res) => {
             subQuery: false,
             order: [['createdAt', 'DESC']],
             include: [
-                { model: CustomerReciverInfo },
-                { model: CustomerSpecialDay },
+                { model: CustomerReciverInfo, as: 'receivers' },
+                { model: CustomerSpecialDay, as: 'specialDays' },
             ],
         })
             .then(customers => {
@@ -294,36 +296,31 @@ exports.getList = (req, res) => {
 
         const { limit, offset } = commonService.getPagination(page, size);
 
-        let countClause = {
+        Customer.count({
             where: condition
-        }
+        }).then(data => {
 
-        Customer.count(countClause)
-            .then(data => {
+            const count = data;
 
-                const count = data;
+            Customer.findAndCountAll({
+                subQuery: false,
+                order: [['createdAt', 'DESC']],
+                where: condition,
+                limit: limit,
+                offset: offset
+            }).then(newData => {
 
-                Customer.findAndCountAll({
-                    subQuery: false,
-                    order: [['createdAt', 'DESC']],
-                    include: [
-                        { model: CustomerReciverInfo },
-                        { model: CustomerSpecialDay },
-                    ],
-                    where: condition,
-                    limit: limit,
-                    offset: offset
-                }).then(newData => {
+                newData.count = count;
 
-                    newData.count = count;
+                const newResponse = commonService.getPagingData(newData, page, limit);
 
-                    const newResponse = commonService.getPagingData(newData, page, limit);
+                console.log('count:', count);
+                console.log('items:', newResponse.items.length);
 
-                    res.send(newResponse);
-                })
-
+                res.send(newResponse);
             })
-            .catch(err => logger.error(err, res));
+
+        }).catch(err => logger.error(err, res));
     }
 
 }

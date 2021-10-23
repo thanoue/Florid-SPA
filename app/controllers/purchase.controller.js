@@ -321,6 +321,7 @@ exports.getByTerm = (req, res) => {
     const startTime = req.body.startTime ? req.body.startTime : 0;
     const endTime = req.body.endTime ? req.body.endTime : Number.MAX_VALUE;
     const term = req.body.term;
+    const method = req.body.method;
 
     const isUnknownOnly = req.body.isUnknownOnly ? req.body.isUnknownOnly : false;
 
@@ -337,32 +338,39 @@ exports.getByTerm = (req, res) => {
             }
         };
 
-    const { limit, offset } = commonService.getPagination(page, size);
-
-    let countClause = {
-        where: condition
+    if (term) {
+        condition['OrderId'] = {
+            [Op.like]: `%${term}%`
+        }
     }
 
-    Purchase.count(countClause)
-        .then(data => {
+    if (method != PurchaseMethods.All) {
+        condition['Method'] = method;
+    }
 
-            const count = data;
+    const { limit, offset } = commonService.getPagination(page, size);
 
-            Purchase.findAndCountAll({
-                where: countClause.where,
-                order: [['AddingTime', 'DESC']],
-                limit: limit,
-                offset: offset
-            }).then(newData => {
+    Purchase.count({
+        where: condition
+    }).then(data => {
 
-                newData.count = count;
+        const count = data;
 
-                const newResponse = commonService.getPagingData(newData, page, limit);
-                newResponse.totalItemCount = count;
-                res.send(newResponse);
-            }).catch(err => logger.error(err, res));
+        Purchase.findAndCountAll({
+            where: condition,
+            order: [['AddingTime', 'DESC']],
+            limit: limit,
+            offset: offset
+        }).then(newData => {
 
-        })
+            newData.count = count;
+
+            const newResponse = commonService.getPagingData(newData, page, limit);
+            newResponse.totalItemCount = count;
+            res.send(newResponse);
+        }).catch(err => logger.error(err, res));
+
+    })
         .catch(err => {
             logger.error(err, res);
         });

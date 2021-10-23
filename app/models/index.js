@@ -178,11 +178,25 @@ db.orderDetail.hasMany(db.orderDetailSeen, {
 db.customer.hasMany(db.customerReceiverInfo, {
     foreignKey: 'CustomerId',
     onDelete: 'CASCADE',
+    as: 'receivers',
+});
+
+db.customerReceiverInfo.belongsTo(db.customer, {
+    foreignKey: 'CustomerId',
+    onDelete: 'CASCADE',
+    as: 'customer',
 });
 
 db.customer.hasMany(db.customerSpecialDay, {
     foreignKey: 'CustomerId',
     onDelete: 'CASCADE',
+    as: 'specialDays'
+});
+
+db.customerSpecialDay.belongsTo(db.customer, {
+    foreignKey: 'CustomerId',
+    onDelete: 'CASCADE',
+    as: 'customer'
 });
 
 db.tag.belongsToMany(db.product, {

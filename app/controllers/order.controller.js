@@ -12,6 +12,8 @@ const commonService = require('../services/common.service');
 const Purchase = db.purchase;
 const logger = require('../config/logger');
 const MemberShipTypes = require('../config/app.config').MemberShipType;
+const { purchase } = require("../models");
+const { PurchaseMethods } = require("../config/app.config");
 
 exports.getByCustomer = (req, res) => {
 
@@ -123,6 +125,23 @@ exports.getByDayRange = (req, res) => {
 
     var startTime = req.body.startDate;
     var endTime = req.body.endDate;
+    var purchaseMethod = req.body.purchaseMethod;
+
+    let include = [
+        { model: Customer },
+        { model: OrderDetail },
+    ];
+
+    if (purchaseMethod != PurchaseMethods.All) {
+        include.push({
+            model: Purchase,
+            where: {
+                Method: purchaseMethod
+            }
+        });
+    } else {
+        include.push({ model: Purchase });
+    }
 
     Order.findAll({
         where: {
@@ -130,14 +149,10 @@ exports.getByDayRange = (req, res) => {
                 [Op.between]: [startTime, endTime]
             },
             TotalPaidAmount: {
-                [Op.gte]: sequelize.col('TotalAmount')
+                [Op.gt]: 0
             }
         },
-        include: [
-            { model: Customer },
-            { model: OrderDetail },
-            { model: Purchase }
-        ]
+        include: include
     }).then(orders => {
         res.send({ orders: orders });
     }).catch(err => logger.error(err, res));
