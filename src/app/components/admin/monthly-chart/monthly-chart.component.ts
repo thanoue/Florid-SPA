@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItems } from 'src/app/models/enums';
+import { MenuItems, PurchaseMethods } from 'src/app/models/enums';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { BaseComponent } from '../base.component';
 import { ChartDataSets, ChartOptions } from "chart.js";
@@ -49,7 +49,7 @@ export class MonthlyChartComponent extends BaseComponent {
     this.lineChartLabels = [];
     this.lineChartData = [];
 
-    this.orderService.getSaleTotalByYear(this.curentYear)
+    this.orderService.getSaleTotalByYear(this.curentYear, PurchaseMethods.All)
       .then(data => {
 
         if (data == null)

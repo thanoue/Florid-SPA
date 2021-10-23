@@ -76,7 +76,7 @@ export class CustomerService {
       customer.ReceiverInfos = [];
       customer.SpecialDays = [];
 
-      item.customerreceivers.forEach(receiver => {
+      item.receivers.forEach(receiver => {
         // tslint:disable-next-line:no-shadowed-variable
         const item = new CustomerReceiverDetail();
         item.PhoneNumber = receiver.PhoneNumber;
@@ -84,7 +84,7 @@ export class CustomerService {
         customer.ReceiverInfos.push(item);
       });
 
-      item.customerspecialdays.forEach(date => {
+      item.specialDays.forEach(date => {
         // tslint:disable-next-line:no-shadowed-variable
         const item = new SpecialDay();
         item.Date = date.Date;
@@ -303,9 +303,9 @@ export class CustomerService {
       customer.ReceiverInfos = [];
       customer.SpecialDays = [];
 
-      if (item.customerreceivers && item.customerreceivers.length > 0) {
+      if (item.receivers && item.receivers.length > 0) {
 
-        item.customerreceivers.forEach(receiver => {
+        item.receivers.forEach(receiver => {
 
           // tslint:disable-next-line:no-shadowed-variable
           const item = new CustomerReceiverDetail();
@@ -319,8 +319,8 @@ export class CustomerService {
         });
       }
 
-      if (item.customerspecialdays && item.customerspecialdays.length > 0) {
-        item.customerspecialdays.forEach(date => {
+      if (item.specialDays && item.specialDays.length > 0) {
+        item.specialDays.forEach(date => {
           // tslint:disable-next-line:no-shadowed-variable
           const item = new SpecialDay();
           item.Date = date.Date;

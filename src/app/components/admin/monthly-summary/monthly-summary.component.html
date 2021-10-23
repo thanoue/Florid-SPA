@@ -14,6 +14,28 @@
                     </owl-date-time>
                 </div>
             </div>
+             <div class="col-md-2 col-xs-12  cateFilter">
+                <div class="form-group">
+                    <select class="form-control d-inline"  [(ngModel)]="purchaseMethod" name="purchaseMethod"
+                        id="">
+                        <option [ngValue]="'All'">
+                            Tất cả
+                        </option>
+                        <option [ngValue]="'Cash'">
+                            Tiền mặt
+                        </option>
+                        <option [ngValue]="'Banking'">
+                            Chuyển khoản
+                        </option>
+                        <option [ngValue]="'Momo'">
+                            Ví MOMO
+                        </option>
+                        <option [ngValue]="'Refund'">
+                            Hoàn tiền
+                        </option>
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Content of List Component -->
@@ -25,12 +47,11 @@
                     <th scope="col">Ngày tạo đơn</th>
                     <th scope="col" style="width:15%">Tên khách hàng</th>
                     <th scope="col">SDT khách hàng</th>
-                    <th scope="col">Ghi Chú</th>
                     <th scope="col">Giá ban đầu</th>
                     <th scope="col">Phụ phí</th>
-                    <th scope="col">Giảm giá</th>
                     <th scope="col">Thành tiền</th>
-                    <th scope="col">Doanh thu</th>
+                    <th scope="col">Không VAT</th>
+                    <th scope="col">Đã thanh toán</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,10 +67,9 @@
                         {{saleItem.CreatedDate | myDatePipe}}
                     </td>
                     <td>
-                        <a href="javascript:void(0)" class="tdName">{{saleItem.CustomerName}}</a>
+                        <a href="javascript:void(0)" (click)="viewCusDetail(saleItem.CustomerId)" class="tdName">{{saleItem.CustomerName}}</a>
                     </td>
                     <td>{{saleItem.CustomerPhoneNumber}}</td>
-                    <td>{{saleItem.IsVATIncluded? 'Có VAT':''}}</td>
                     <td>
                         {{saleItem.PriceTotal| myCurrPipe}}
                     </td>
@@ -57,21 +77,19 @@
                         {{saleItem.FeeTotal| myCurrPipe}}
                     </td>
                     <td>
-                        {{saleItem.DiscountTotal| myCurrPipe}}
-                    </td>
-                    <td>
                         {{saleItem.AmountTotal| myCurrPipe}}
                     </td>
                     <td>
                         {{saleItem.FinalTotal| myCurrPipe}}
+                    </td>
+                    <td>
+                        {{saleItem.TotalPaidAmount| myCurrPipe}}
                     </td>
 
                 </tr>
                 <tr>
                     <td scope="row">
 
-                    </td>
-                    <td>
                     </td>
                     <td>
                     </td>
@@ -84,13 +102,13 @@
                         {{feeTotal| myCurrPipe}}
                     </td>
                     <td style="border: 5px solid #1fe8cb;">
-                        {{discountTotal| myCurrPipe}}
-                    </td>
-                    <td style="border: 5px solid #1fe8cb;">
                         {{amountTotal| myCurrPipe}}
                     </td>
                     <td style="border: 5px solid #1fe8cb;">
                         {{finalTotal| myCurrPipe}}
+                    </td>
+                       <td style="border: 5px solid #1fe8cb;">
+                        {{paidTotal| myCurrPipe}}
                     </td>
                 </tr>
             </tbody>

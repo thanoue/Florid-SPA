@@ -97,7 +97,7 @@ export class SelectCustomerComponent extends BaseComponent {
     this.selectedCustomer = new Customer();
 
     if (this.globalOrder.CustomerInfo) {
-      this.searchCustomer(this.globalOrder.CustomerInfo.PhoneNumber);
+      this.searchCustomer(this.globalOrder.CustomerInfo.PhoneNumber ? this.globalOrder.CustomerInfo.PhoneNumber : this.globalOrder.CustomerInfo.Name);
     }
 
   }
@@ -145,7 +145,10 @@ export class SelectCustomerComponent extends BaseComponent {
 
   unSelectCustomer() {
     this.globalOrder.CustomerInfo = new OrderCustomerInfoViewModel();
-    this.OnBackNaviage();
+    this.selectedCustomer = null;
+    this.newCustomer = new Customer();
+    setSelectedCustomerItem('');
+
   }
 
   selectConfirm() {
@@ -180,9 +183,10 @@ export class SelectCustomerComponent extends BaseComponent {
 
         setTimeout(() => {
           if (this.globalOrder.CustomerInfo.Id != undefined) {
-            console.log(this.globalOrder.CustomerInfo.Id);
+
             setSelectedCustomerItem(this.globalOrder.CustomerInfo.Id);
             this.selectedCustomer = data.Customers.find(p => p.Id === this.globalOrder.CustomerInfo.Id);
+
           }
         }, 50);
 

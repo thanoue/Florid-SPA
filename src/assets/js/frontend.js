@@ -754,6 +754,9 @@ function selectItem(e, className) {
 }
 
 function setSelectedCustomerItem(id) {
+
+    jQuery('.customer-item').removeClass('selected');
+
     jQuery('#customer-list').each(function () {
         jQuery(this).find('.customer-item').each(function () {
             let itemId = jQuery(this).attr('data-id');
@@ -761,7 +764,8 @@ function setSelectedCustomerItem(id) {
                 jQuery(this).addClass('selected');
             }
         })
-    })
+    });
+
 }
 
 // HIển thị dialog xác nhận

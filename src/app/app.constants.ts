@@ -80,7 +80,7 @@ export const API_END_POINT = {
     getById: '/order/getById',
     getOrderNotLazyById: '/order/getNotLazyById',
     updateOrderFields: '/order/updateFields',
-    getCompletedOrderByDayRange: '/order/getByDayRange',
+    getOrderByDayRange: '/order/getByDayRange',
     searchOrders: '/order/searchOrders',
     addBulkOrder: '/order/addBulk',
     getDebts: '/order/getDebts',

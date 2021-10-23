@@ -1,8 +1,11 @@
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
-import { MenuItems } from 'src/app/models/enums';
+import { Router } from '@angular/router';
+import { MenuItems, PurchaseMethods } from 'src/app/models/enums';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
+import { OrderCustomerInfoViewModel } from 'src/app/models/view.models/order.model';
 import { SaleTotalModel } from 'src/app/models/view.models/sale.total.model';
+import { CustomerService } from 'src/app/services/customer.service';
 import { OrderService } from 'src/app/services/order.service';
 import { BaseComponent } from '../base.component';
 
@@ -22,11 +25,29 @@ export class MonthlySummaryComponent extends BaseComponent {
 
   priceTotal: number;
   feeTotal: number;
-  discountTotal: number;
+  paidTotal: number;
   amountTotal: number;
   finalTotal: number;
 
-  constructor(private orderService: OrderService) {
+  _purchaseType = PurchaseMethods.All;
+
+  get purchaseMethod(): PurchaseMethods {
+    return this._purchaseType;
+  }
+
+  set purchaseMethod(val: PurchaseMethods) {
+
+    this._purchaseType = val;
+
+    this.getItems();
+
+  }
+
+
+  constructor(
+    private router: Router,
+    private customerService: CustomerService,
+    private orderService: OrderService) {
     super();
 
     this.selectedDates = [];
@@ -45,10 +66,20 @@ export class MonthlySummaryComponent extends BaseComponent {
     this.getItems();
   }
 
-  resetSummary(){
+
+  viewCusDetail(customerId: string) {
+
+    this.customerService.getById(customerId)
+      .then((cus) => {
+        this.globalCustomer = cus;
+        this.router.navigate(['admin/customer-detail']);
+      });
+  }
+
+  resetSummary() {
     this.priceTotal = 0;
     this.feeTotal = 0;
-    this.discountTotal = 0;
+    this.paidTotal = 0;
     this.amountTotal = 0;
     this.finalTotal = 0;
   }
@@ -59,7 +90,7 @@ export class MonthlySummaryComponent extends BaseComponent {
 
     this.resetSummary();
 
-    this.orderService.getSaleTotalByRange([this.selectedDates[0].getTime(), this.selectedDates[1].getTime()])
+    this.orderService.getSaleTotalByRange([this.selectedDates[0].getTime(), this.selectedDates[1].getTime()], this.purchaseMethod)
       .then(data => {
 
         if (data == null)
@@ -71,7 +102,7 @@ export class MonthlySummaryComponent extends BaseComponent {
 
           this.priceTotal += saleItem.PriceTotal;
           this.feeTotal += saleItem.FeeTotal;
-          this.discountTotal += saleItem.DiscountTotal;
+          this.paidTotal += saleItem.TotalPaidAmount;
           this.amountTotal += saleItem.AmountTotal;
           this.finalTotal += saleItem.FinalTotal;
 

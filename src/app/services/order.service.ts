@@ -7,7 +7,7 @@ import { OrderViewModel, OrderCustomerInfoViewModel, OrderDetailViewModel } from
 import { ExchangeService } from './common/exchange.service';
 import { SaleTotalModel } from '../models/view.models/sale.total.model';
 import { Purchase } from '../models/view.models/purchase.entity';
-import { OrderDetailStates } from '../models/enums';
+import { OrderDetailStates, PurchaseMethods } from '../models/enums';
 import { User } from '../models/entities/user.entity';
 
 @Injectable({
@@ -262,6 +262,7 @@ export class OrderService {
       model.FeeTotal = 0;
       model.DiscountTotal = 0;
       model.PriceTotal = 0;
+      model.TotalPaidAmount = orderVM.TotalPaidAmount;
       model.IsVATIncluded = orderVM.VATIncluded;
 
       orderVM.OrderDetails.forEach(orderDetail => {
@@ -279,7 +280,7 @@ export class OrderService {
 
       }
 
-      model.DiscountTotal = (model.PriceTotal + model.FeeTotal) - model.FinalTotal;
+      // model.DiscountTotal = (model.PriceTotal + model.FeeTotal) - model.FinalTotal;
 
       models.push(model);
 
@@ -290,10 +291,11 @@ export class OrderService {
     return models;
   }
 
-  getSaleTotalByTimes(startTime: number, endTime: number): Promise<SaleTotalModel[]> {
-    return this.httpService.post(API_END_POINT.getCompletedOrderByDayRange, {
+  getSaleTotalByTimes(startTime: number, endTime: number, purchaseMethod: PurchaseMethods): Promise<SaleTotalModel[]> {
+    return this.httpService.post(API_END_POINT.getOrderByDayRange, {
       startDate: startTime,
-      endDate: endTime
+      endDate: endTime,
+      purchaseMethod
     }).then(orders => {
 
       const orderVMs = this.getOrderVMsByRaw(orders.orders);
@@ -305,7 +307,7 @@ export class OrderService {
     });
   }
 
-  getSaleTotalByYear(year: number): Promise<SaleTotalModel[]> {
+  getSaleTotalByYear(year: number, purchaseMethod: PurchaseMethods): Promise<SaleTotalModel[]> {
 
     const startTime = new Date();
     startTime.setFullYear(year, 0, 1);
@@ -315,15 +317,15 @@ export class OrderService {
     endTime.setFullYear(year, 11, 31);
     endTime.setHours(23, 59, 59, 0);
 
-    return this.getSaleTotalByTimes(startTime.getTime(), endTime.getTime());
+    return this.getSaleTotalByTimes(startTime.getTime(), endTime.getTime(), purchaseMethod);
   }
 
-  getSaleTotalByRange(times: number[]): Promise<SaleTotalModel[]> {
+  getSaleTotalByRange(times: number[], purchaseMethod: PurchaseMethods): Promise<SaleTotalModel[]> {
 
     const endDay = new Date(times[1]);
     endDay.setDate(endDay.getDate() + 1);
 
-    return this.getSaleTotalByTimes(times[0], endDay.getTime());
+    return this.getSaleTotalByTimes(times[0], endDay.getTime(), purchaseMethod);
 
   }
 

@@ -11,4 +11,5 @@ export class SaleTotalModel {
     PriceTotal: number;
     DiscountTotal: number;
     IsVATIncluded: boolean;
+    TotalPaidAmount : number;
 }

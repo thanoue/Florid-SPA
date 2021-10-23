@@ -52,6 +52,20 @@ export class PurchasesComponent extends BaseComponent {
     this.pageChanged(1);
   }
 
+  _purchaseType = PurchaseMethods.All;
+
+  get purchaseMethod(): PurchaseMethods {
+    return this._purchaseType;
+  }
+
+  set purchaseMethod(val: PurchaseMethods) {
+
+    this._purchaseType = val;
+
+    this.pageChanged(1);
+
+  }
+
   constructor(private purchaseService: PurchaseService, private orderService: OrderService) {
     super();
 
@@ -159,9 +173,10 @@ export class PurchasesComponent extends BaseComponent {
     this.currentPage = page;
 
     let endTime = this.selectedDates[1];
+
     endTime.setDate(endTime.getDate() + 1);
 
-    this.purchaseService.getByTerm(this.searchTerm, page, this._itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime(), this.isUnKnownOnly)
+    this.purchaseService.getByTerm(this.searchTerm, page, this._itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime(), this.isUnKnownOnly, this.purchaseMethod)
       .then(data => {
 
         this.purchases = [];

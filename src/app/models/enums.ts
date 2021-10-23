@@ -96,7 +96,9 @@ export enum AlertType {
 }
 
 export enum PurchaseMethods {
+    All = 'All',
     Cash = 'Cash',
     Banking = 'Banking',
-    Momo = 'Momo'
+    Momo = 'Momo',
+    Refund = 'Refund'
 }

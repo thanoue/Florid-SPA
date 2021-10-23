@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { API_END_POINT } from '../app.constants';
 import { Purchase } from '../models/view.models/purchase.entity';
 import { HttpService } from './common/http.service';
+import { PurchaseMethods } from '../models/enums';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class PurchaseService {
 
   }
 
-  getByTerm(term: string, page: number, size: number, startTime: number, endTime: number, isUnknownOnly: boolean):
+  getByTerm(term: string, page: number, size: number, startTime: number, endTime: number, isUnknownOnly: boolean, method: PurchaseMethods):
     Promise<{
       totalItemCount: number,
       items: Purchase[],
@@ -40,7 +41,8 @@ export class PurchaseService {
       startTime,
       endTime,
       term,
-      isUnknownOnly
+      isUnknownOnly,
+      method
     }).then(data => {
 
       const res = {

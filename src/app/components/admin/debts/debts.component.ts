@@ -181,7 +181,7 @@ export class DebtsComponent extends BaseComponent {
         .then((cus) => {
           this.globalCustomer = cus;
           this.router.navigate(['admin/customer-detail']);
-        })
+        });
     }
   }
 
@@ -194,7 +194,7 @@ export class DebtsComponent extends BaseComponent {
 
     this.purchases = [];
 
-    this.purchaseService.getByTerm('', this.purchaseCurrentPage, this._purchaseItemsPerPage, this.purchaseSelectedDates[0].getTime(), this.purchaseSelectedDates[1].getTime(), true)
+    this.purchaseService.getByTerm('', this.purchaseCurrentPage, this._purchaseItemsPerPage, this.purchaseSelectedDates[0].getTime(), this.purchaseSelectedDates[1].getTime(), true, PurchaseMethods.All)
       .then(data => {
 
         this.purchaseItemTotalCount = data.totalItemCount;

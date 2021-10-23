@@ -21,20 +21,19 @@ export class CustomersComponent extends BaseComponent {
 
   protected PageCompnent: PageComponent = new PageComponent('Khách hàng', MenuItems.Customer);
 
-  isSelectAll: boolean = false;
+  isSelectAll = false;
   currentPage = 1;
   sexes = Sexes;
   searchTerm = '';
   totalCount = 0;
 
-  _selectedMemberType: MembershipTypes = MembershipTypes.All;
+  _selectedMemberType = MembershipTypes.All;
   public get selectedMemberType(): MembershipTypes {
     return this._selectedMemberType;
   }
 
   public set selectedMemberType(val: MembershipTypes) {
     this._selectedMemberType = val;
-    this.searchTerm = '';
     this.pageChanged(1);
   }
 
@@ -48,13 +47,14 @@ export class CustomersComponent extends BaseComponent {
   pageCount = 0;
   itemTotalCount = 0;
 
-  _itemsPerPage: number = 10;
+  _itemsPerPage = 0;
 
   get itemPerpage(): number {
     return this._itemsPerPage;
   }
 
   set itemPerpage(val: number) {
+
     this._itemsPerPage = val;
 
     this.pageChanged(1);
@@ -74,8 +74,11 @@ export class CustomersComponent extends BaseComponent {
   }
 
   viewCusDetail(cus: Customer) {
-    this.globalCustomer = cus;
-    this.router.navigate(['admin/customer-detail']);
+    this.customerService.getById(cus.Id)
+      .then(customer => {
+        this.globalCustomer = customer;
+        this.router.navigate(['admin/customer-detail']);
+      });
   }
 
   addCustomer(form: NgForm) {
@@ -111,14 +114,13 @@ export class CustomersComponent extends BaseComponent {
 
     this.customers = [];
 
-    if (term == '') {
+    if (term === '') {
       this.searchTerm = '';
       this.pageChanged(1);
       return;
     }
 
     this.searchTerm = term;
-    this._selectedMemberType = MembershipTypes.All;
     this.pageChanged(1);
 
   }
@@ -149,8 +151,9 @@ export class CustomersComponent extends BaseComponent {
 
         });
 
-        if (callbac)
+        if (callbac) {
           callbac();
+        }
 
       });
 
@@ -165,7 +168,7 @@ export class CustomersComponent extends BaseComponent {
 
   deletecustomers() {
 
-    var seletedcustomers = this.customers.filter(p => p.IsChecked);
+    const seletedcustomers = this.customers.filter(p => p.IsChecked);
 
     if (seletedcustomers.length <= 0) {
       return;

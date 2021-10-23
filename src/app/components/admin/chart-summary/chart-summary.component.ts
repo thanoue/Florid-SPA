@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuItems } from 'src/app/models/enums';
+import { MenuItems, PurchaseMethods } from 'src/app/models/enums';
 import { PageComponent } from 'src/app/models/view.models/menu.model';
 import { BaseComponent } from '../base.component';
 import { ChartDataSets, ChartOptions } from "chart.js";
@@ -59,7 +59,7 @@ export class ChartSummaryComponent extends BaseComponent {
     this.lineChartLabels = [];
     this.lineChartData = [];
 
-    this.orderService.getSaleTotalByRange([this.selectedDates[0].getTime(), this.selectedDates[1].getTime()])
+    this.orderService.getSaleTotalByRange([this.selectedDates[0].getTime(), this.selectedDates[1].getTime()], PurchaseMethods.All)
       .then(data => {
 
         if (data == null)

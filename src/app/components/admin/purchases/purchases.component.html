@@ -8,15 +8,15 @@
             </div>
         </div>
         <div class="row listOptions">
-            <div class="col-md-2 col-xs-12  optionDelete">
+            <!-- <div class="col-md-2 col-xs-12  optionDelete">
                 <div class="form-group form-check">
                     <input type="checkbox" class="form-check-input" name="" id=""
                         (change)="checkAllChange(!isSelectAll)" value="checkedValue">
                     <button type="button" class="btn btn-outline-danger"><i class="fa fa-remove"></i>
                         Xóa</button>
                 </div>
-            </div>
-            <div class="col-md-4 col-xs-12  optionSearch">
+            </div> -->
+            <div class="col-md-3  optionSearch">
                 <div class="form-group">
                     <app-search-box (searchTextInvoke)="searchPurchase($event)" [delayTimeSpan]="1000"
                         placeholder="Nhập mã đơn...">
@@ -24,7 +24,7 @@
                     <button type="submit" class="btn btn-info position-absolute "><i class="fa fa-search"></i></button>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12">
+            <div class="col-md-3 ">
                 <div class="form-group">
                     <input [owlDateTime]="dt1" [selectMode]="'range'" [(ngModel)]="selectedDates"
                         [owlDateTimeTrigger]="dt1" name="currentDate" class="mainForm"
@@ -33,7 +33,29 @@
                     </owl-date-time>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12  text-right optionPerPage">
+           <div class="col-md-2 col-xs-12  cateFilter">
+                <div class="form-group">
+                    <select class="form-control d-inline"  [(ngModel)]="purchaseMethod" name="purchaseMethod"
+                        id="">
+                        <option [ngValue]="'All'">
+                            Tất cả
+                        </option>
+                        <option [ngValue]="'Cash'">
+                            Tiền mặt
+                        </option>
+                        <option [ngValue]="'Banking'">
+                            Chuyển khoản
+                        </option>
+                        <option [ngValue]="'Momo'">
+                            Ví MOMO
+                        </option>
+                        <option [ngValue]="'Refund'">
+                            Hoàn tiền
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4  text-right optionPerPage">
                 <div class="form-group">
                     <label>Hiển thị </label>
                     <select class="form-control w-25 d-inline" [(ngModel)]="itemPerpage" name="itemPerpage" id="">
