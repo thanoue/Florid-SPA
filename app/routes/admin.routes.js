@@ -194,6 +194,9 @@ module.exports = function (app) {
     app.post(`${orderPrefix}deleteOrder`, [authJwt.verifyToken, authJwt.isAccountOrAdmin],
         orderController.deleteOrder
     );
+    app.post(`${orderPrefix}finishOrders`, [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        orderController.finishOrders
+    );
 
     //order detail
     app.post(`${orderDetailPrefix}updateFields`,
@@ -220,10 +223,14 @@ module.exports = function (app) {
         [authJwt.verifyToken], orderDetailController.getByOrderId)
     app.post(`${orderDetailPrefix}updateOrderInfos`,
         [authJwt.verifyToken], orderDetailController.updateOrderInfos)
-    app.post(`${orderDetailPrefix}updateStatusByOrderId`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.updateStatusByOrderId)
+    app.post(`${orderDetailPrefix}completeOrder`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.completeOrder)
     app.post(`${orderDetailPrefix}uploadNoteImage`,
         [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.uploadNoteImage)
+    app.post(`${orderDetailPrefix}completeOD`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.completeOD)
+    app.post(`${orderDetailPrefix}getFinishedOrderIds`,
+        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.getFinishedOrderIds)
 
     //shipping session
     app.post(`${shippingSessionPrefix}assignSingleOD`,

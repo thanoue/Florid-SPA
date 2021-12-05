@@ -99,6 +99,7 @@ exports.revertUsedScore = async (req, res) => {
         Config.findAll().then(configs => {
 
             const config = configs[0];
+
             let availableScore = order.customer.AvailableScore + order.ScoreUsed - order.GainedScore;
             let accumulatedAmount = order.customer.AccumulatedAmount - order.GainedScore * 100000;
             let usedScoreTotal = order.customer.UsedScoreTotal - order.ScoreUsed;
@@ -310,7 +311,8 @@ exports.addOrder = (req, res) => {
         AmountDiscount: body.amountDiscount ? body.amountDiscount : 0,
         NumberId: numberId,
         IsMemberDiscountApply: body.isMemberDiscountApply ? body.isMemberDiscountApply : false,
-        DoneTime: body.doneTime
+        DoneTime: body.doneTime,
+        IsFinished: body.isFinished
     }
 
     Order.create(order)
@@ -333,7 +335,8 @@ exports.editOrder = (req, res) => {
         PercentDiscount: body.percentDiscount,
         AmountDiscount: body.amountDiscount,
         IsMemberDiscountApply: body.isMemberDiscountApply ? body.isMemberDiscountApply : false,
-        DoneTime: body.doneTime
+        DoneTime: body.doneTime,
+        IsFinished: body.isFinished
     }
 
     Order.update(order, {
@@ -494,6 +497,23 @@ function checkIfExist(customers, customerId) {
 
     return isExist;
 
+}
+
+exports.finishOrders = (req, res) => {
+
+    const ids = req.body;
+
+    Order.update({
+        IsFinished: true
+    }, {
+        where: {
+            Id: {
+                [Op.in]: ids
+            }
+        }
+    }).then(updated => {
+        res.send({ updatedCount: updated });
+    }).catch(err => logger.error(err, res));
 }
 
 exports.updateOldOrders = async (req, res) => {

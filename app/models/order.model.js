@@ -40,7 +40,10 @@ module.exports = (sequelize, Sequelize) => {
         NumberId: {
             type: Sequelize.INTEGER
         },
-        IsMemberDiscountApply: {    
+        IsMemberDiscountApply: {
+            type: Sequelize.BOOLEAN
+        },
+        IsFinished: {
             type: Sequelize.BOOLEAN
         },
         createdAt: {

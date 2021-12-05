@@ -192,22 +192,98 @@ exports.uploadNoteImage = (req, res) => {
     }
 }
 
-exports.updateStatusByOrderId = (req, res) => {
+exports.completeOrder = (req, res) => {
 
     let orderId = req.body.orderId;
-    let status = req.body.status;
 
     OrderDetail.update({
-        State: status
+        State: ODStatuses.Completed
     }, {
         where: {
             OrderId: orderId
         }
     }).then(data => {
 
-        res.send({ data });
+        Order.update({
+            IsFinished: true
+        }, {
+            where: {
+                Id: orderId
+            }
+        }).then(update => {
+            res.send({ data });
+        }).catch(err => logger.error(err, res));
 
     }).catch(err => logger.error(err, res));
+}
+
+exports.getFinishedOrderIds = (req, res) => {
+
+    OrderDetail.findAll({
+        where: {
+            State: {
+                [Op.in]: [ODStatuses.Completed, ODStatuses.Canceled]
+            }
+        }
+    }).then(ods => {
+
+        const orderIds = [];
+
+        ods.forEach(detail => {
+
+            if (orderIds.indexOf(detail.OrderId) < 0) {
+
+                orderIds.push(detail.OrderId)
+
+            }
+
+        });
+
+        res.send({ ids: orderIds });
+    });
+}
+
+exports.completeOD = (req, res) => {
+
+    OrderDetail.update({
+        State: ODStatuses.Completed
+    }, {
+        where: {
+            Id: req.body.OrderDetailId
+        }
+    }).then(data => {
+
+        OrderDetail.findAll({ //check if complete all already
+            where: {
+                State: {
+                    [Op.ne]: ODStatuses.Completed
+                },
+                OrderId: req.body.OrderId
+            }
+        }).then(details => {
+
+            if (details == undefined || details == null || details.length <= 0) {
+
+                Order.update({
+                    IsFinished: true
+                }, {
+                    where: {
+                        Id: req.body.OrderId
+                    }
+                }).then(update => {
+
+                    res.send({ finished: true });
+
+                }).catch(err => logger.error(err, res));
+
+            } else {
+                res.send({ finished: false });
+            }
+
+        }).catch(err => logger.error(err, res));
+
+    }).catch(err => logger.error(err, res));
+
 }
 
 exports.updateOrderInfos = (req, res) => {

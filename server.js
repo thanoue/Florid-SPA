@@ -77,7 +77,6 @@ io.on('connection', (socket) => {
     socket.isPrinter = false;
     socket.role = '';
 
-    socket.emit('connected');
 
     socket.on('login', (data) => {
 
@@ -129,6 +128,8 @@ io.on('connection', (socket) => {
         });
 
     });
+
+    socket.emit('connected');
 
 });
 

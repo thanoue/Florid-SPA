@@ -181,6 +181,8 @@
 
         function connectSocket(host) {
 
+            console.log('connecting to socket');
+
             socket = io.connect(host);
 
             socket.on('connected', (data) => {
@@ -189,13 +191,13 @@
 
                 socket.emit('login', { userId: 0, isPrinter: true });
 
+            });
+
                 socket.on('doPrintJob', (data) => {
 
                     doPrintJob(data.printJob);
 
                 });
-
-            });
 
         }
 
@@ -206,7 +208,9 @@
                 case 'Banking':
                     return 'Banking';
                 case 'Momo':
-                    return 'Momo';
+                    return 'Momo'; 
+                case 'Refund':
+                    return 'Refund';
                 default:
                     return '';
             }
@@ -250,8 +254,6 @@
         }
 
         function doPrintJob(data) {
-
-            console.log(data);
 
             let template = `<div class="wrapper myDivToPrint">
         <div style="align-content:center">
@@ -335,13 +337,13 @@
                                             <tbody>
                                                 <tr class="small-line">
                                                     <td>
-                                                        price
+                                                        Price
                                                     </td>
                                                     <td>{1}</td>
                                                 </tr>
                                                 <tr class="small-line">
                                                     <td>
-                                                        quantity
+                                                        Quantity
                                                     </td>
                                                     <td>{2}</td>
                                                 </tr>
