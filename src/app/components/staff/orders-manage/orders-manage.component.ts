@@ -15,6 +15,8 @@ import { UserService } from 'src/app/services/user.service';
 import { MyDatepipe } from 'src/app/pipes/date.pipe';
 import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
+import { MembershipInfo } from 'src/app/models/entities/customer.entity';
+import { ExchangeService } from 'src/app/services/common/exchange.service';
 
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
@@ -289,6 +291,7 @@ export class OrdersManageComponent extends BaseComponent {
     const products: PrintSaleItem[] = [];
 
     order.OrderDetails.forEach(product => {
+
       products.push({
         productName: product.ProductName,
         index: product.Index + 1,
@@ -297,7 +300,9 @@ export class OrdersManageComponent extends BaseComponent {
         discount: this.getDiscount(product.ModifiedPrice, product.PercentDiscount, product.AmountDiscount),
         quantity: product.Quantity
       });
+
       tempSummary += product.ModifiedPrice;
+
     });
 
     const purhases: purchaseItem[] = [];
@@ -330,7 +335,7 @@ export class OrdersManageComponent extends BaseComponent {
       memberDiscount: order.CustomerInfo.DiscountPercent,
       scoreUsed: order.CustomerInfo.ScoreUsed,
       gainedScore: order.CustomerInfo.GainedScore,
-      totalScore: order.CustomerInfo.AvailableScore,
+      totalScore: order.IsFinished ? order.CustomerInfo.AvailableScore : order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
       customerName: order.CustomerInfo.Name,
       customerId: order.CustomerInfo.Id,
       discount: this.getDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),
@@ -382,16 +387,26 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 2:
 
-          this.orderDetailService.updateStatusByOrderId(order.OrderId, OrderDetailStates.Completed)
+          if (order.IsFinished) {
+            return;
+          }
+
+          this.orderDetailService.completeOrder(order)
             .then(res => {
 
-              this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
-                .then(orders => {
+              this.orderService.addScoreToCustomer(order)
+                .then(() => {
 
-                  this.totalPage = orders.totalPages;
-                  this.orders = orders.orders;
+                  this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                    .then(orders => {
+
+                      this.totalPage = orders.totalPages;
+                      this.orders = orders.orders;
+
+                    });
 
                 });
+
             });
 
           break;
@@ -399,19 +414,33 @@ export class OrdersManageComponent extends BaseComponent {
         case 3:
 
           this.openConfirm('Thao tác này không hể hoàn lại, chắc chắn xoá?', () => {
-            this.orderService.revertUsedScore(order.OrderId)
-              .then(res => {
-                this.orderService.deleteOrder(order.OrderId)
-                  .then(res2 => {
-                    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
-                      .then(orders => {
 
-                        this.totalPage = orders.totalPages;
-                        this.orders = orders.orders;
+            if (order.IsFinished) {
+              this.orderService.revertUsedScore(order.OrderId)
+                .then(res => {
+                  this.orderService.deleteOrder(order.OrderId)
+                    .then(res2 => {
+                      this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                        .then(orders => {
 
-                      });
-                  });
-              });
+                          this.totalPage = orders.totalPages;
+                          this.orders = orders.orders;
+
+                        });
+                    });
+                });
+            } else {
+              this.orderService.deleteOrder(order.OrderId)
+                .then(res2 => {
+                  this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                    .then(orders => {
+
+                      this.totalPage = orders.totalPages;
+                      this.orders = orders.orders;
+
+                    });
+                });
+            }
           });
 
           break;
@@ -1211,7 +1240,7 @@ export class OrdersManageComponent extends BaseComponent {
       'Chuyển cho Florist',
       'Xem chi tiết',
       'Giao hàng',
-      'Huỷ đơn'
+      'Kết thúc chi tiết đơn'
     ];
 
     this.menuOpening((index) => {
@@ -1251,10 +1280,9 @@ export class OrdersManageComponent extends BaseComponent {
 
         case 3:
 
-          this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-            State: OrderDetailStates.Canceled,
-          })
-            .then(() => {
+          this.orderDetailService.completeOD(orderDetail, order)
+            .then(async (data) => {
+
               this.getOrders();
 
             });

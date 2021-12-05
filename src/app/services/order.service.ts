@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Customer, SpecialDay } from '../models/entities/customer.entity';
+import { Customer, MembershipInfo, SpecialDay } from '../models/entities/customer.entity';
 import { Order, OrderDetail, CustomerReceiverDetail, Shipping, Making } from '../models/entities/order.entity';
 import { HttpService } from './common/http.service';
 import { API_END_POINT } from '../app.constants';
@@ -7,15 +7,16 @@ import { OrderViewModel, OrderCustomerInfoViewModel, OrderDetailViewModel } from
 import { ExchangeService } from './common/exchange.service';
 import { SaleTotalModel } from '../models/view.models/sale.total.model';
 import { Purchase } from '../models/view.models/purchase.entity';
-import { OrderDetailStates, PurchaseMethods } from '../models/enums';
+import { OrderDetailStates, PurchaseMethods, MenuItems } from '../models/enums';
 import { User } from '../models/entities/user.entity';
+import { CustomerService } from './customer.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
 
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private customerService: CustomerService) {
   }
 
   getCustomerInfo(customer: Customer, order: OrderViewModel): OrderCustomerInfoViewModel {
@@ -70,6 +71,7 @@ export class OrderService {
     orderVM.AmountDiscount = order.AmountDiscount;
     orderVM.IsMemberDiscountApply = order.IsMemberDiscountApply;
     orderVM.DoneTime = !order.DoneTime || order.DoneTime <= 0 ? order.CreatedDate : order.DoneTime;
+    orderVM.IsFinished = order.IsFinished;
 
     if (order.purchases) {
 
@@ -291,6 +293,18 @@ export class OrderService {
     return models;
   }
 
+  finishOrders(ids: string[]): Promise<number> {
+    return this.httpService.post(API_END_POINT.finishOrders, ids)
+      .then(res => {
+
+        return res.updatedCount;
+
+      }).catch(err => {
+        this.httpService.handleError(err);
+        throw err;
+      });
+  }
+
   getSaleTotalByTimes(startTime: number, endTime: number, purchaseMethod: PurchaseMethods): Promise<SaleTotalModel[]> {
     return this.httpService.post(API_END_POINT.getOrderByDayRange, {
       startDate: startTime,
@@ -326,6 +340,30 @@ export class OrderService {
     endDay.setDate(endDay.getDate() + 1);
 
     return this.getSaleTotalByTimes(times[0], endDay.getTime(), purchaseMethod);
+
+  }
+
+  addScoreToCustomer(order: OrderViewModel): Promise<any> {
+
+    const newMemberInfo = new MembershipInfo();
+
+    const gainedScore = order.CustomerInfo.GainedScore;
+
+    newMemberInfo.AvailableScore = order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + gainedScore;
+    newMemberInfo.AccumulatedAmount = order.CustomerInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);
+    newMemberInfo.UsedScoreTotal = order.CustomerInfo.CustomerScoreUsedTotal + order.CustomerInfo.ScoreUsed;
+
+    newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);
+
+    return this.customerService.updateFields(order.CustomerInfo.Id, {
+      UsedScoreTotal: newMemberInfo.UsedScoreTotal,
+      AvailableScore: newMemberInfo.AvailableScore,
+      AccumulatedAmount: newMemberInfo.AccumulatedAmount,
+      MembershipType: newMemberInfo.MembershipType,
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
 
   }
 
@@ -584,7 +622,8 @@ export class OrderService {
       percentDiscount: order.PercentDiscount,
       amountDiscount: order.AmountDiscount,
       isMemberDiscountApply: order.IsMemberDiscountApply,
-      doneTime: order.DoneTime
+      doneTime: order.DoneTime,
+      isFinished: order.IsFinished
     })
       .then(data => {
 

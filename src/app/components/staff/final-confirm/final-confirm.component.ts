@@ -50,10 +50,8 @@ export class FinalConfirmComponent extends BaseComponent {
 
   confirmOrderDetail() {
 
-    this.orderDetailService.updateFields(this.orderDetail.OrderDetailId, {
-      State: OrderDetailStates.Completed,
-    })
-      .then(async () => {
+    this.orderDetailService.completeOD(this.orderDetail, this.globalOrder)
+      .then(async (data) => {
 
         this.router.navigate(['staff/orders-manage']);
 

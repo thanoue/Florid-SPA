@@ -15,6 +15,7 @@ export class OrderViewModel {
     VATIncluded = false;
     OrderType: OrderType;
     DoneTime: number;
+    IsFinished: boolean;
     Index: number;
 
     IsMemberDiscountApply: boolean;

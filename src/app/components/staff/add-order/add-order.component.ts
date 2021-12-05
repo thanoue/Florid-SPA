@@ -161,6 +161,7 @@ export class AddOrderComponent extends BaseComponent {
 
     //get old note images
     const exceptImgNames = [];
+
     this.order.OrderDetails.forEach(od => {
 
       if (od.NoteImages && od.NoteImages.length > 0) {
@@ -177,11 +178,7 @@ export class AddOrderComponent extends BaseComponent {
 
     try {
 
-      //remove old details
       const deleteDetails = await this.orderService.deleteOrderDetailByOrderId(this.order.OrderId, exceptImgNames);
-
-      //revert score used
-      const revert = await this.orderService.revertUsedScore(this.order.OrderId);
 
       this.orderConfirm();
 
@@ -195,12 +192,6 @@ export class AddOrderComponent extends BaseComponent {
 
 
   refundChecking() {
-
-    //update purchases
-    //Delete details -> delete images
-    //Update used score, update total amount to customer
-    // update order
-    //add new details
 
     if (this.totalBalance < 0) {
 
@@ -263,11 +254,6 @@ export class AddOrderComponent extends BaseComponent {
 
     }
 
-    if (this.isEdittingOrder) {
-      this.refundChecking();
-      return;
-    }
-
     if (!this.order.OrderDetails || this.order.OrderDetails.length <= 0) {
       this.showError('Chưa chọn sản phẩm nào!');
       return;
@@ -278,7 +264,15 @@ export class AddOrderComponent extends BaseComponent {
       return;
     }
 
+    this.order.CustomerInfo.GainedScore = ExchangeService.getScoreFromOrder(this.order);
+
+    if (this.isEdittingOrder) {
+      this.refundChecking();
+      return;
+    }
+
     if (this.AcctualBalance > 0) {
+
       this.openConfirm('Thêm thanh toán cho đơn này?', () => {
 
         this.addPurchase();
@@ -288,6 +282,7 @@ export class AddOrderComponent extends BaseComponent {
         this.printConfirmation();
 
       }, null, 'Thêm', 'Để sau');
+
     } else {
       this.printConfirmation();
     }
@@ -307,7 +302,6 @@ export class AddOrderComponent extends BaseComponent {
 
     if (!this.order.CreatedDate) { this.order.CreatedDate = new Date(); }
 
-    this.order.CustomerInfo.GainedScore = ExchangeService.getScoreFromOrder(this.order);
 
     this.openConfirm('In hoá đơn?', () => {
 
@@ -409,6 +403,7 @@ export class AddOrderComponent extends BaseComponent {
     orderDB.AmountDiscount = this.order.AmountDiscount;
     orderDB.IsMemberDiscountApply = this.order.IsMemberDiscountApply;
     orderDB.DoneTime = this.order.DoneTime;
+    orderDB.IsFinished = this.isCompleting;
 
     this.orderService.addOrEditOrder(orderDB, this.isEdittingOrder)
       .then(async res => {
@@ -908,24 +903,20 @@ export class AddOrderComponent extends BaseComponent {
       return;
     }
 
-    const newMemberInfo = new MembershipInfo();
+    if (!this.isCompleting) {
 
-    const gainedScore = this.order.CustomerInfo.GainedScore;
-
-    newMemberInfo.AvailableScore = this.order.CustomerInfo.AvailableScore - this.order.CustomerInfo.ScoreUsed + gainedScore;
-    newMemberInfo.AccumulatedAmount = this.order.CustomerInfo.AccumulatedAmount + ExchangeService.getAmountFromScore(gainedScore);
-    newMemberInfo.UsedScoreTotal = this.order.CustomerInfo.CustomerScoreUsedTotal + this.order.CustomerInfo.ScoreUsed;
-
-    newMemberInfo.MembershipType = ExchangeService.detectMemberShipType(newMemberInfo.AccumulatedAmount);
-
-    this.customerService.updateFields(this.order.CustomerInfo.Id, {
-      UsedScoreTotal: newMemberInfo.UsedScoreTotal,
-      AvailableScore: newMemberInfo.AvailableScore,
-      AccumulatedAmount: newMemberInfo.AccumulatedAmount,
-      MembershipType: newMemberInfo.MembershipType,
-    }).then((res) => {
       this.OnBackNaviage();
-    });
-  }
 
+      return;
+
+    }
+
+    this.orderService.addScoreToCustomer(this.order)
+      .then((res) => {
+
+        this.OnBackNaviage();
+
+      });
+
+  }
 }

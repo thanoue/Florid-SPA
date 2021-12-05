@@ -7,13 +7,14 @@ import { GlobalService } from './common/global.service';
 import { API_END_POINT } from '../app.constants';
 import { OrderDetailViewModel, OrderViewModel } from '../models/view.models/order.model';
 import { User } from '../models/entities/user.entity';
+import { OrderService } from './order.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderDetailService {
 
-  constructor(private httpService: HttpService, private globalService: GlobalService) {
+  constructor(private httpService: HttpService, private orderService: OrderService) {
   }
 
   updateFields(id: number, value: any): Promise<any> {
@@ -28,14 +29,43 @@ export class OrderDetailService {
     });
   }
 
-  updateStatusByOrderId(orderId: string, status: OrderDetailStates): Promise<any> {
+  getFinishedOrderIds(): Promise<string[]> {
+    return this.httpService.post(API_END_POINT.getFinishedOrderIds)
+      .then(res => {
+
+        return res.ids;
+      }).catch(err => {
+        this.httpService.handleError(err);
+        throw err;
+      });
+  }
+
+  completeOD(orderDetail: OrderDetailViewModel, order: OrderViewModel): Promise<any> {
+
+    return this.httpService.post(API_END_POINT.completeOD, orderDetail).then(res => {
+
+      const isFinished = res.finished;
+
+      if (!isFinished) {
+        return;
+      }
+
+      return this.orderService.addScoreToCustomer(order);
+
+    }).catch(err => {
+      this.httpService.handleError(err);
+      throw err;
+    });
+
+  }
+
+  completeOrder(order: OrderViewModel): Promise<any> {
 
     const obj = {
-      orderId,
-      status,
+      orderId: order.OrderId
     };
 
-    return this.httpService.post(API_END_POINT.updateStatusByOrderId, obj).then(res => {
+    return this.httpService.post(API_END_POINT.completeOrder, obj).then(res => {
       return res;
     }).catch(err => {
       this.httpService.handleError(err);
@@ -69,7 +99,7 @@ export class OrderDetailService {
     return this.httpService.postForm(API_END_POINT.shippingConfirm, {
       shippingId: lastestShipping.Id,
       shippingImg,
-      orderrDetailId: orderDetail.OrderDetailId,
+      orderDetailId: orderDetail.OrderDetailId,
       deliveryCompletedTime: (new Date()).getTime(),
       note
     }).then(obj => {
@@ -84,7 +114,6 @@ export class OrderDetailService {
     });
 
   }
-
 
   getFromRaw(orderDetail: any): OrderDetailViewModel {
 

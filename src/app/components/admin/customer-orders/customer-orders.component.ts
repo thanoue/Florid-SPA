@@ -71,7 +71,7 @@ export class CustomerOrdersComponent extends BaseComponent {
 
     let purhases: purchaseItem[] = [];
 
-    if (order.PurchaseItems)
+    if (order.PurchaseItems) {
       order.PurchaseItems.forEach(purchase => {
 
         purhases.push({
@@ -80,6 +80,7 @@ export class CustomerOrdersComponent extends BaseComponent {
         });
 
       });
+    }
 
     const orderData: PrintJob = {
       Created: (new Date()).getTime(),
@@ -98,7 +99,7 @@ export class CustomerOrdersComponent extends BaseComponent {
       memberDiscount: order.CustomerInfo.DiscountPercent,
       scoreUsed: order.CustomerInfo.ScoreUsed,
       gainedScore: order.CustomerInfo.GainedScore,
-      totalScore: order.CustomerInfo.AvailableScore,
+      totalScore: order.IsFinished ? order.CustomerInfo.AvailableScore : order.CustomerInfo.AvailableScore - order.CustomerInfo.ScoreUsed + order.CustomerInfo.GainedScore,
       customerName: order.CustomerInfo.Name,
       customerId: order.CustomerInfo.Id,
       discount: this.getDetailDiscount(order.TotalAmount, order.PercentDiscount, order.AmountDiscount),

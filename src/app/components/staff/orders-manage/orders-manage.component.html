@@ -76,7 +76,7 @@
                                 </div>
                             </li>
                         </ul>
-                        <a href="javascript:void(0);" (click)="editOrder(order.OrderId)" class="order-edit"><i
+                        <a *ngIf="!order.IsFinished" href="javascript:void(0);" (click)="editOrder(order.OrderId)" class="order-edit"><i
                                 class="fa fa-pencil"></i> Chỉnh sửa</a>
                     </div>
                 </li>

@@ -86,12 +86,14 @@ export const API_END_POINT = {
     getDebts: '/order/getDebts',
     revertUsedScore: '/order/revertUsedScore',
     deleteOrder: '/order/deleteOrder',
+    finishOrders: '/order/finishOrders',
 
     getAllDistricts: '/address/getAllDistricts',
     getAllWards: '/address/getAllWards',
 
     getMaxShippingSortOrder: '/orderDetail/getMaxShippingSortOrder',
     updateODFields: '/orderDetail/updateFields',
+    completeOD: '/orderDetail/completeOD',
     getOrderDetailByStates: '/orderDetail/getDetailByStates',
     getOrderDetailByStatesAndFloristId: '/orderDetail/getDetailByStatesAndFlorist',
     updateShippingSortOrder: '/orderDetail/updateShippingSortOrder',
@@ -103,8 +105,9 @@ export const API_END_POINT = {
     getProcessingOrderDetails: '/orderDetail/getProcessingOrderDetails',
     getOrderDetailsByOrderId: '/orderDetail/getByOrderId',
     updateOrderInfos: '/orderDetail/updateOrderInfos',
-    updateStatusByOrderId: '/orderDetail/updateStatusByOrderId',
+    completeOrder: '/orderDetail/completeOrder',
     uploadNoteImage: '/orderDetail/uploadNoteImage',
+    getFinishedOrderIds: '/orderDetail/getFinishedOrderIds',
 
     updateDetailSeen: '/orderDetailSeener/updateDetailSeen',
     getODSeeners: '/orderDetailSeener/getODSeeners',

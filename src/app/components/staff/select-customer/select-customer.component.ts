@@ -51,7 +51,7 @@ export class SelectCustomerComponent extends BaseComponent {
 
     let isSelecting = true;
 
-    if (this.selectedCustomer && this.selectedCustomer.Id == clickedCus.Id) {
+    if (this.selectedCustomer && this.selectedCustomer.Id === clickedCus.Id) {
 
       menuItems.push('Bỏ chọn');
       isSelecting = false;
@@ -133,11 +133,13 @@ export class SelectCustomerComponent extends BaseComponent {
 
       closeAddCustomerDialog();
 
-      setSelectedCustomerItem(this.selectedCustomer.Id);
-
       this.totalCount += 1;
       this.newCustomer = new Customer();
       this.newCustomer.Id = ExchangeService.detectCustomerId(this.totalCount);
+
+      setTimeout(() => {
+        setSelectedCustomerItem(this.selectedCustomer.Id);
+      }, 500);
 
     });
 
@@ -182,6 +184,7 @@ export class SelectCustomerComponent extends BaseComponent {
         this.customers = data.Customers;
 
         setTimeout(() => {
+
           if (this.globalOrder.CustomerInfo.Id != undefined) {
 
             setSelectedCustomerItem(this.globalOrder.CustomerInfo.Id);

@@ -691,5 +691,19 @@ export class HomeComponent extends BaseComponent {
   goToPrintJob() {
   }
 
+  async updateOrderStatus() {
+
+    const finishedOrderIds = await this.orderDetailService.getFinishedOrderIds();
+
+    if (finishedOrderIds == null || finishedOrderIds.length < 1) {
+      return;
+    }
+
+    this.orderService.finishOrders(finishedOrderIds)
+      .then(count => {
+        this.showInfo(`You have ${count} Orders updated`);
+      });
+
+  }
 
 }
