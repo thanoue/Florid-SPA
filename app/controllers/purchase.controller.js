@@ -6,6 +6,7 @@ const Purchase = db.purchase;
 const logger = require('../config/logger');
 const PurchaseMethods = require('../config/app.config').PurchaseMethods;
 const Order = db.order;
+const Customer = db.customer;
 
 exports.bulkAdd = (req, res) => {
 
@@ -360,19 +361,32 @@ exports.getByTerm = (req, res) => {
             where: condition,
             order: [['AddingTime', 'DESC']],
             limit: limit,
-            offset: offset
+            offset: offset,
+            include: [
+                {
+                    model: Order,
+                    as: 'order',
+                    include: [
+                        {
+                            model: Customer,
+                            as: 'customer',
+                        }
+                    ]
+                }
+            ]
         }).then(newData => {
 
             newData.count = count;
 
             const newResponse = commonService.getPagingData(newData, page, limit);
             newResponse.totalItemCount = count;
+
             res.send(newResponse);
+
         }).catch(err => logger.error(err, res));
 
-    })
-        .catch(err => {
-            logger.error(err, res);
-        });
+    }).catch(err => {
+        logger.error(err, res);
+    });
 
 }

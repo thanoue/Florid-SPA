@@ -723,7 +723,27 @@ exports.getDebts = (req, res) => {
     const { limit, offset } = commonService.getPagination(page, size);
 
     let countClause = {
-        where: condition
+        where: condition,
+    };
+
+    if (req.body.searchTerm && req.body.searchTerm !== '') {
+
+        countClause.include = [
+            { model: OrderDetail },
+            {
+                model: Customer,
+                where: {
+                    FullName: {
+                        [Op.like]: `%${req.body.searchTerm}%`
+                    }
+                }
+            }
+        ]
+    } else {
+        countClause.include = [
+            { model: OrderDetail },
+            { model: Customer }
+        ]
     }
 
     Order.count(countClause)
@@ -731,15 +751,10 @@ exports.getDebts = (req, res) => {
 
             const count = data;
 
-            Order.findAndCountAll({
-                where: countClause.where,
-                include: [
-                    { model: OrderDetail },
-                    { model: Customer }
-                ],
-                limit: limit,
-                offset: offset
-            }).then(newData => {
+            countClause.limit = limit;
+            countClause.offset = offset;
+
+            Order.findAndCountAll(countClause).then(newData => {
 
                 newData.count = count;
 
@@ -753,6 +768,7 @@ exports.getDebts = (req, res) => {
         })
         .catch(err => logger.error(err, res));
 }
+
 
 exports.searchOrders = (req, res) => {
 
