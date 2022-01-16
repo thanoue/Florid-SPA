@@ -43,7 +43,6 @@ export interface ISelectedDetail {
 })
 export class OrdersManageComponent extends BaseComponent {
 
-
   Title = 'Danh sách đơn';
   NavigateClass = 'nav-icon ';
   protected IsDataLosingWarning = false;
@@ -57,7 +56,15 @@ export class OrdersManageComponent extends BaseComponent {
   florists: User[];
   shippers: User[];
   pageSize = 20;
-  currentPage = 0;
+
+  get currentPage(): number {
+    return this.globalService.currentOrderPage;
+  }
+
+  set currentPage(page: number) {
+    this.globalService.currentOrderPage = page;
+  }
+
   totalPage = 0;
   statuses: any[] = [];
   searchTerm = '';

@@ -26,6 +26,7 @@ export class DebtsComponent extends BaseComponent {
   protected PageCompnent: PageComponent = new PageComponent("Công nợ", MenuItems.Debts)
 
   _itemsPerPage: number = 10;
+
   get itemPerpage(): number {
     return this._itemsPerPage;
   }
@@ -55,7 +56,7 @@ export class DebtsComponent extends BaseComponent {
   newPurchase: Purchase;
   newPurchaseAddingTime: Date;
   purchases: Purchase[];
-
+  searchTerm: string;
   selectedDates: Date[];
   oldAmount = 0;
   currentOrder: OrderViewModel;
@@ -133,6 +134,12 @@ export class DebtsComponent extends BaseComponent {
     showPurchaseSetupPopup();
 
   }
+
+  searchDebtByCustomerName(term: string) {
+    this.searchTerm = term;
+    this.pageChanged(1);
+  }
+
 
   savePurchase(form: NgForm) {
 
@@ -226,7 +233,7 @@ export class DebtsComponent extends BaseComponent {
 
     this.orders = [];
 
-    this.orderService.getDebtOrders(page, this._itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime())
+    this.orderService.getDebtOrders(this.searchTerm, page, this._itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime())
       .then(data => {
 
         this.itemTotalCount = data.totalItemCount;

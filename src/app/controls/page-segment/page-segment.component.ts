@@ -12,17 +12,25 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor, NgForm } from '@angular/forms'
 })
 export class PageSegmentComponent implements OnInit {
 
-  currentPage = 1;
+  _currentPage = 1;
   _pageCount: number;
 
   @Input()
   get pageCount() {
-
     return this._pageCount;
   }
+
   set pageCount(count) {
     this._pageCount = count;
-    this.currentPage = 1;
+  }
+
+  @Input()
+  get currentPage() {
+    return this._currentPage;
+  }
+
+  set currentPage(page) {
+    this._currentPage = page;
   }
 
   @Output() pageChanged: EventEmitter<number> = new EventEmitter();
@@ -39,11 +47,15 @@ export class PageSegmentComponent implements OnInit {
   }
 
   gotoPage(page: number) {
+
     if (page === this.currentPage) {
       return;
     }
+
     this.currentPage = page;
+
     this.pageChanged.next(page);
+
   }
 
 }

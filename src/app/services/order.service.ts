@@ -386,7 +386,7 @@ export class OrderService {
   }
 
 
-  getDebtOrders(page: number, size: number, startTime: number, endTime: number): Promise<{
+  getDebtOrders(searchTerm: string, page: number, size: number, startTime: number, endTime: number): Promise<{
     orders: OrderViewModel[],
     totalItemCount: number,
     totalPages: number
@@ -396,7 +396,8 @@ export class OrderService {
       page: page - 1,
       size,
       startTime,
-      endTime
+      endTime,
+      searchTerm
     }).then(data => {
 
       const res: {

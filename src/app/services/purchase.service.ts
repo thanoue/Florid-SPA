@@ -3,6 +3,7 @@ import { API_END_POINT } from '../app.constants';
 import { Purchase } from '../models/view.models/purchase.entity';
 import { HttpService } from './common/http.service';
 import { PurchaseMethods } from '../models/enums';
+import { Customer } from '../models/entities/customer.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +58,7 @@ export class PurchaseService {
       res.totalPages = data.totalPages;
 
       data.items.forEach(rawPurchase => {
+
         const newPur = new Purchase();
 
         newPur.Id = rawPurchase.Id;
@@ -65,6 +67,15 @@ export class PurchaseService {
         newPur.Method = rawPurchase.Method;
         newPur.OrderId = rawPurchase.OrderId ? rawPurchase.OrderId : '';
         newPur.Note = rawPurchase.Note ? rawPurchase.Note : '';
+
+        if (rawPurchase.order && rawPurchase.order.customer) {
+
+          newPur.Customer = new Customer();
+
+          newPur.Customer.Id = rawPurchase.order.customer.Id;
+          newPur.Customer.FullName = rawPurchase.order.customer.FullName;
+
+        }
 
         res.items.push(newPur);
 

@@ -7,6 +7,9 @@ import { MyCurrPipe } from 'src/app/pipes/date.pipe';
 import { OrderService } from 'src/app/services/order.service';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { BaseComponent } from '../base.component';
+import { Customer } from '../../../models/entities/customer.entity';
+import { CustomerService } from '../../../services/customer.service';
+import { Router } from '@angular/router';
 
 declare function showPurchaseSetupPopup(): any;
 declare function hideAdd(): any;
@@ -18,9 +21,9 @@ declare function hideAdd(): any;
 })
 export class PurchasesComponent extends BaseComponent {
 
-  protected PageCompnent: PageComponent = new PageComponent("Thanh toán", MenuItems.Purchase)
+  protected PageCompnent: PageComponent = new PageComponent('Thanh toán', MenuItems.Purchase)
 
-  isSelectAll: boolean = false;
+  isSelectAll = false;
   totalCount = 0;
   currentPage = 1;
   isUnKnownOnly = false;
@@ -40,43 +43,42 @@ export class PurchasesComponent extends BaseComponent {
   pageCount = 0;
   itemTotalCount = 0;
 
-  _itemsPerPage: number = 10;
+  itemsPerPage = 10;
 
   get itemPerpage(): number {
-    return this._itemsPerPage;
+    return this.itemsPerPage;
   }
 
   set itemPerpage(val: number) {
-    this._itemsPerPage = val;
-
+    this.itemsPerPage = val;
     this.pageChanged(1);
   }
 
-  _purchaseType = PurchaseMethods.All;
+  purchaseType = PurchaseMethods.All;
 
   get purchaseMethod(): PurchaseMethods {
-    return this._purchaseType;
+    return this.purchaseType;
   }
 
   set purchaseMethod(val: PurchaseMethods) {
 
-    this._purchaseType = val;
+    this.purchaseType = val;
 
     this.pageChanged(1);
 
   }
 
-  constructor(private purchaseService: PurchaseService, private orderService: OrderService) {
+  constructor(private router: Router, private purchaseService: PurchaseService, private orderService: OrderService, private customerService: CustomerService) {
     super();
 
-    let startTime = new Date();
+    const startTime = new Date();
     startTime.setMilliseconds(0);
     startTime.setSeconds(0);
     startTime.setMinutes(0);
     startTime.setHours(0);
     startTime.setDate(1);
 
-    let endTime = new Date();
+    const endTime = new Date();
     endTime.setMilliseconds(0);
     endTime.setSeconds(0);
     endTime.setMinutes(0);
@@ -104,34 +106,33 @@ export class PurchasesComponent extends BaseComponent {
 
   savePurchase(form: NgForm) {
 
-    if (!form.valid)
+    if (!form.valid) {
       return;
+    }
 
     this.currentPurchase.Amount = +this.currentPurchase.Amount;
 
-    if (this.currentPurchase.OrderId && this.currentPurchase.OrderId != '') {
+    if (this.currentPurchase.OrderId && this.currentPurchase.OrderId !== '') {
 
       this.orderService.getSingleById(this.currentPurchase.OrderId)
         .then(order => {
 
           if (order == null) {
-            this.showError("Mã đơn không tồn tại!");
+            this.showError('Mã đơn không tồn tại!');
             return;
           }
 
-          if (this.oldOrderId == this.currentPurchase.OrderId) {
+          if (this.oldOrderId === this.currentPurchase.OrderId) {
 
             if (order.TotalAmount < order.TotalPaidAmount - this.oldAmount + this.currentPurchase.Amount) {
-              this.showError("Giá trị tối đa là " + MyCurrPipe.currencyFormat(order.TotalAmount - order.TotalPaidAmount + this.oldAmount));
+              this.showError('Giá trị tối đa là ' + MyCurrPipe.currencyFormat(order.TotalAmount - order.TotalPaidAmount + this.oldAmount));
               return;
             }
 
-          }
-          else {
+          } else {
 
             if (order.TotalAmount < order.TotalPaidAmount + this.currentPurchase.Amount) {
-              console.log('heheeheh', order.TotalAmount, order.TotalPaidAmount, this.currentPurchase.Amount);
-              this.showError("Giá trị tối đa là " + MyCurrPipe.currencyFormat(order.TotalAmount - order.TotalPaidAmount));
+              this.showError('Giá trị tối đa là ' + MyCurrPipe.currencyFormat(order.TotalAmount - order.TotalPaidAmount));
               return;
             }
 
@@ -151,7 +152,7 @@ export class PurchasesComponent extends BaseComponent {
   updatePurchaseRecord() {
     this.currentPurchase.AddingTime = this.curentAddingDate.getTime();
 
-    var promise: Promise<any>;
+    let promise: Promise<any>;
 
     if (this.currentPurchase.Id && this.currentPurchase.Id > 0) {
       promise = this.purchaseService.update(this.currentPurchase, this.oldOrderId, this.oldAmount);
@@ -172,11 +173,11 @@ export class PurchasesComponent extends BaseComponent {
 
     this.currentPage = page;
 
-    let endTime = this.selectedDates[1];
+    const endTime = this.selectedDates[1];
 
     endTime.setDate(endTime.getDate() + 1);
 
-    this.purchaseService.getByTerm(this.searchTerm, page, this._itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime(), this.isUnKnownOnly, this.purchaseMethod)
+    this.purchaseService.getByTerm(this.searchTerm, page, this.itemsPerPage, this.selectedDates[0].getTime(), this.selectedDates[1].getTime(), this.isUnKnownOnly, this.purchaseMethod)
       .then(data => {
 
         this.purchases = [];
@@ -230,6 +231,18 @@ export class PurchasesComponent extends BaseComponent {
 
     showPurchaseSetupPopup();
 
+  }
+
+  viewCusDetail(customerInfo: Customer) {
+
+    if (customerInfo) {
+
+      this.customerService.getById(customerInfo.Id)
+        .then((cus) => {
+          this.globalCustomer = cus;
+          this.router.navigate(['admin/customer-detail']);
+        });
+    }
   }
 
   deletePurchase(purchase: Purchase) {

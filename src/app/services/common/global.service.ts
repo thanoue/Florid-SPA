@@ -47,6 +47,8 @@ export class GlobalService {
     globalCustomer: Customer;
     isEdittingOrder = false;
     isRememberPassWillCheck = false;
+    currentOrderPage = 0;
+    currentCustomerPage = 1;
 
     navigateOnClick = new Subject<boolean>();
     navigateOnClickEmitter$ = this.navigateOnClick.asObservable;

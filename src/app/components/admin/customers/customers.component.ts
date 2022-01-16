@@ -22,12 +22,21 @@ export class CustomersComponent extends BaseComponent {
   protected PageCompnent: PageComponent = new PageComponent('Khách hàng', MenuItems.Customer);
 
   isSelectAll = false;
-  currentPage = 1;
+
+  get currentPage(): number {
+    return this.globalService.currentCustomerPage;
+  }
+
+  set currentPage(page: number) {
+    this.globalService.currentCustomerPage = page;
+  }
+
   sexes = Sexes;
   searchTerm = '';
   totalCount = 0;
 
   _selectedMemberType = MembershipTypes.All;
+
   public get selectedMemberType(): MembershipTypes {
     return this._selectedMemberType;
   }
@@ -47,7 +56,7 @@ export class CustomersComponent extends BaseComponent {
   pageCount = 0;
   itemTotalCount = 0;
 
-  _itemsPerPage = 0;
+  _itemsPerPage = 10;
 
   get itemPerpage(): number {
     return this._itemsPerPage;
@@ -56,15 +65,13 @@ export class CustomersComponent extends BaseComponent {
   set itemPerpage(val: number) {
 
     this._itemsPerPage = val;
-
     this.pageChanged(1);
+
   }
 
   constructor(private customerService: CustomerService, private router: Router) {
     super();
     this.currentCustomer = new Customer();
-    this.selectedMemberType = MembershipTypes.All;
-    this._itemsPerPage = 10;
   }
 
   addRequest() {
@@ -116,27 +123,30 @@ export class CustomersComponent extends BaseComponent {
 
     if (term === '') {
       this.searchTerm = '';
+      console.log('searchCustomer');
       this.pageChanged(1);
       return;
     }
 
     this.searchTerm = term;
+    console.log('searchCustomer');
     this.pageChanged(1);
 
   }
 
   protected Init() {
 
-    this.pageChanged(1, () => {
+    this.pageChanged(this.currentPage, () => {
       this.customerService.getCount().then(res => {
         this.totalCount = res + 1;
       });
     });
   }
 
-  pageChanged(page: number, callbac?: () => void) {
+  pageChanged(page: number, callback?: () => void) {
 
     this.currentPage = page;
+
     this.customerService.getList(page, this._itemsPerPage, this.selectedMemberType, this.searchTerm)
       .then(data => {
         this.customers = [];
@@ -151,8 +161,8 @@ export class CustomersComponent extends BaseComponent {
 
         });
 
-        if (callbac) {
-          callbac();
+        if (callback) {
+          callback();
         }
 
       });
@@ -174,7 +184,7 @@ export class CustomersComponent extends BaseComponent {
       return;
     }
 
-    let ids: string[] = []
+    let ids: string[] = [];
 
     seletedcustomers.forEach(cus => {
       ids.push(cus.Customer.Id);

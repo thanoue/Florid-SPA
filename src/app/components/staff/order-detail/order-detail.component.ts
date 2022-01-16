@@ -11,7 +11,7 @@ import { ImgType } from 'src/app/app.constants';
 
 declare function openFixPriceDialog(): any;
 declare function dismissFixPriceDialog(): any;
-declare function getTextInput(resCallback: (res: string) => void, placeHolder: string, oldValue: string): any;
+declare function getInputWithType(resCallback: (res: string) => void, placeHolder: string, oldValue: string, type: string): any;
 declare function createNumbericElement(isDisabled: boolean, calback: (val: number) => void): any;
 declare function viewProductImg(url: string, onCancel: () => void): any;
 declare function hideReceiverPopup(): any;
@@ -223,7 +223,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
 
   productNameChangeRequest() {
 
-    getTextInput(res => {
+    getInputWithType(res => {
 
       if (res === '') {
         return;
@@ -232,7 +232,7 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
       this.globalOrderDetail.ProductName = res;
       this.globalOrderDetail.IsFromHardCodeProduct = true;
 
-    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName === '....' ? '' : this.globalOrderDetail.ProductName);
+    }, 'Cập nhật tên sản phẩm...', this.globalOrderDetail.ProductName === '....' ? '' : this.globalOrderDetail.ProductName, 'text');
 
   }
 
@@ -241,6 +241,20 @@ export class OrderDetailComponent extends BaseComponent implements OnDestroy {
     this.newPrice = this.globalOrderDetail.ModifiedPrice;
 
     openFixPriceDialog();
+
+  }
+
+  quantityChangeRequest() {
+
+    getInputWithType(res => {
+
+      if (!res) {
+        return;
+      }
+
+      this.globalOrderDetail.Quantity = +res;
+
+    }, 'Cập nhật số lượng...', this.globalOrderDetail.Quantity.toString(), 'number');
 
   }
 

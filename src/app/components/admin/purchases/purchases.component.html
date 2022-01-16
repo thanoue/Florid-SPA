@@ -8,14 +8,6 @@
             </div>
         </div>
         <div class="row listOptions">
-            <!-- <div class="col-md-2 col-xs-12  optionDelete">
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" name="" id=""
-                        (change)="checkAllChange(!isSelectAll)" value="checkedValue">
-                    <button type="button" class="btn btn-outline-danger"><i class="fa fa-remove"></i>
-                        Xóa</button>
-                </div>
-            </div> -->
             <div class="col-md-3  optionSearch">
                 <div class="form-group">
                     <app-search-box (searchTextInvoke)="searchPurchase($event)" [delayTimeSpan]="1000"
@@ -76,6 +68,7 @@
                 <tr>
                     <th scope="col" style="width: 10%">ID</th>
                     <th scope="col">Mã đơn hàng</th>
+                    <th scope="col">Khách hàng</th>
                     <th scope="col">Số tiền</th>
                     <th scope="col">Ghi chú</th>
                     <th scope="col">Phương thức</th>
@@ -95,6 +88,8 @@
                         </div>
                     </td>
                     <td>{{purchase.Purchase.OrderId}}</td>
+                    <td> <a href="javascript:void(0)" class="tdName" (click)="viewCusDetail(purchase.Purchase.Customer)">{{purchase.Purchase.Customer?
+                            purchase.Purchase.Customer.FullName : '' }}</a> </td>
                     <td>{{purchase.Purchase.Amount | myCurrPipe}}</td>
                     <td>{{purchase.Purchase.Note}}</td>
                     <td>{{getMethodDisplay(purchase.Purchase.Method)}}</td>

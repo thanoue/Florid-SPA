@@ -2,14 +2,17 @@
     <!-- Top of List Component -->
     <div class="listHeader">
         <div class="row listOptions">
-            <div class="col-md-2 col-xs-12  optionDelete">
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" name="" id="" value="checkedValue">
-                    <button type="button" class="btn btn-outline-danger"><i class="fa fa-remove"></i>
-                        Xóa</button>
+        
+            <div class="col-md-3 col-xs-12 optionSearch">
+                <div class="form-group">
+                    <app-search-box (searchTextInvoke)="searchDebtByCustomerName($event)" [delayTimeSpan]="1000"
+                        placeholder="Nhập Tên khách hàng...">
+                    </app-search-box>
+                    <button type="submit" class="btn btn-info position-absolute "><i class="fa fa-search"></i></button>
                 </div>
             </div>
-            <div class="col-md-5 col-xs-12">
+
+            <div class="col-md-3 col-xs-12">
                 <div class="form-group">
                     <input [owlDateTime]="dt1" [selectMode]="'range'" [(ngModel)]="selectedDates"
                         [owlDateTimeTrigger]="dt1" name="currentDate" class="mainForm"

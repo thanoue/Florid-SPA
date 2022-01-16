@@ -699,10 +699,10 @@ function getShippingNoteDialog(btnTitle, callback) {
 
 }
 
-function getTextInput(callback, placeHolder, oldValue) {
+function getInputWithType(callback, placeHolder, oldValue, type) {
 
     var html = `<div id="inputDialog-name" class="popup-content dialog-popup"><div class="form-group">
-    <input type="text" name="" id="input-value" class="mainForm" value="${oldValue}" placeholder="${placeHolder}"></div>
+    <input type="${type}" name="" id="input-value" class="mainForm" value="${oldValue}" placeholder="${placeHolder}"></div>
     <div class="row"><div class="col-6"><button id="confirm-button" class=" main-btn btn">Xác nhận</button></div>
     <div class="col-6"><button  id="cancel-button" class=" main-bg border btn">Hủy</button></div></div></div>`;
 
@@ -740,6 +740,12 @@ function getTextInput(callback, placeHolder, oldValue) {
         });
 
     });
+
+}
+
+function getTextInput(callback, placeHolder, oldValue) {
+
+    getInputWithType(callback, placeHolder, oldValue, 'text');
 
 }
 
