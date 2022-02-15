@@ -6,7 +6,7 @@ import { OrderDetailStates, Roles, MakingType } from 'src/app/models/enums';
 import { OrderService } from 'src/app/services/order.service';
 import { OrderDetailService } from 'src/app/services/order-detail.service';
 import { CustomerService } from 'src/app/services/customer.service';
-import { ORDER_DETAIL_STATES } from 'src/app/app.constants';
+import { ORDER_DETAIL_STATES, ORDER_DETAIL_SORTING_STATES } from 'src/app/app.constants';
 import { StorageService } from 'src/app/services/storage.service';
 import { ProductService } from 'src/app/services/product.service';
 import { HttpClient } from '@angular/common/http';
@@ -24,9 +24,7 @@ declare function makingTimeRequest(saveCallBack: () => void, chooseFloristCallBa
 declare function shippingRequest(saveCallBack: () => void, chooseFloristCallBack: () => void): any;
 declare function chooseFlorist(saveCallBack: (id: number) => void): any;
 declare function chooseShipper(saveCallBack: (id: number) => void): any;
-declare function saveFile(url, productId, callback: () => void): any;
 declare function filterOrderByState(menuitems: { Name: string; Value: number; }[], callback: (val: any) => void): any;
-declare function locationDetection(location: any): any;
 declare function getShippingNoteDialog(btnTitle: string, callback: (note: string) => void): any;
 
 export interface ISelectedDetail {
@@ -195,7 +193,7 @@ export class OrdersManageComponent extends BaseComponent {
       Value: 'ALL'
     });
 
-    ORDER_DETAIL_STATES.forEach(item => {
+    ORDER_DETAIL_SORTING_STATES.forEach(item => {
       menuitems.push({
         Name: item.DisplayName,
         Value: item.State

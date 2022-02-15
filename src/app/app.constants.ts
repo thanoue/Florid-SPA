@@ -243,4 +243,43 @@ export const ORDER_DETAIL_STATES = [
     }
 ];
 
+export const ORDER_DETAIL_SORTING_STATES = [
+    {
+        State: OrderDetailStates.Added,
+        DisplayName: 'Đã chốt đơn'
+    },
+    {
+        State: OrderDetailStates.Making,
+        DisplayName: 'Đang cắm'
+    },
+    {
+        State: OrderDetailStates.Comfirming,
+        DisplayName: 'Đang xác nhận thành phẩm'
+    },
+    {
+        State: OrderDetailStates.OnTheWay,
+        DisplayName: 'Đang giao'
+    },
+    {
+        State: OrderDetailStates.Deliveried,
+        DisplayName: 'Đã giao, đang xác nhận giao'
+    },
+    {
+        State: OrderDetailStates.FixingRequest,
+        DisplayName: 'Đang yêu cầu sửa'
+    },
+    {
+        State: OrderDetailStates.Fixing,
+        DisplayName: 'Đang sửa'
+    },
+    {
+        State: OrderDetailStates.Completed,
+        DisplayName: 'Đã hoàn tất'
+    },
+    {
+        State: OrderDetailStates.Canceled,
+        DisplayName: 'Đã huỷ'
+    }
+];
+
 export const REQUEST_TIMEOUT = 30000;

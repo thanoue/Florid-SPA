@@ -24,16 +24,19 @@ export class FloristMainComponent extends BaseComponent {
 
   waitingMenuItems = [
     'Nhận đơn',
+    'Hoàn thành đơn',
     'Xem chi tiết đơn',
   ];
 
   fixingRequestMenuItems = [
     'Nhận sửa đơn',
+    'Hoàn thành đơn',
     'Xem chi tiết đơn',
   ];
 
   asignedMenuItems = [
     'Bắt đầu làm/sửa',
+    'Hoàn thành đơn',
     'Xem chi tiết đơn',
   ];
 
@@ -197,12 +200,82 @@ export class FloristMainComponent extends BaseComponent {
 
                 });
 
-              })
+              });
 
               break;
           }
           break;
         case 1:
+
+          switch (orderDetail.State) {
+
+            case OrderDetailStates.FixerAssigned:
+            case OrderDetailStates.FloristAssigned:
+
+              this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
+                CompleteTime: (new Date()).getTime(),
+              }).then(() => {
+
+                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+                  State: OrderDetailStates.Comfirming,
+
+                }).then(() => {
+                  this.loadMakingDetails();
+                  this.loadWaitingDetails();
+                });
+
+              });
+
+              break;
+
+            case OrderDetailStates.Waiting:
+            case OrderDetailStates.FixingRequest:
+
+              this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
+                .then(data => {
+
+                  let typeMaking = MakingType.Making;
+
+                  if (orderDetail.State == OrderDetailStates.Waiting) {
+                    typeMaking = MakingType.Making;
+                  } else {
+                    typeMaking = MakingType.Fixing;
+                  }
+
+                  this.orderDetailService.assignSingleMaking(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime(), typeMaking).then((making) => {
+
+                    this.orderDetailService.updateMakingFields(making.Id, {
+                      CompleteTime: (new Date()).getTime(),
+                    }).then(() => {
+
+                      this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+                        State: OrderDetailStates.Comfirming,
+
+                      }).then(() => {
+                        this.loadMakingDetails();
+                        this.loadWaitingDetails();
+                      });
+
+                    });
+
+                  });
+
+                });
+
+              break;
+
+            default:
+
+              this.globalOrderDetail = orderDetail;
+              this.router.navigate(['staff/order-detail-view']);
+
+              break;
+          }
+          break;
+
+        case 2:
 
           this.globalOrderDetail = orderDetail;
           this.router.navigate(['staff/order-detail-view']);
