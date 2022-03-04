@@ -7,6 +7,7 @@ const path = require('path');
 const http = require('http');
 var fs = require('fs');
 
+
 const app = express();
 
 const env = process.env.NODE_ENV || 'development';
@@ -49,11 +50,14 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
+
+
 const { user, role, category, customer, config } = require("./app/models/index");
 const db = require("./app/models/index");
 db.sequelize.sync({ alter: true }).then(() => {
     console.log('Drop and Resync Db');
     initial();
+    //downloadDatabase();
 });
 
 /**
@@ -132,6 +136,34 @@ io.on('connection', (socket) => {
     socket.emit('connected');
 
 });
+
+function downloadDatabase() {
+
+    const firebaseAdmin = require('firebase-admin');
+    const { v4: uuidv4 } = require('uuid');
+
+    const serviceAccount = require('./localmessage-6dff7-firebase-adminsdk-6f3c9-32753f4845.json');
+
+    const admin = firebaseAdmin.initializeApp({
+        credential: firebaseAdmin.credential.cert(serviceAccount),
+    });
+
+    const storageRef = admin.storage().bucket(`gs://localmessage-6dff7.appspot.com`);
+
+    const refe = storageRef.file('backups/1645111027064.sql');
+
+    const config = {
+        action: 'read',
+        expires: Date.now() + 1000 * 60 * 2, // 2 minutes
+        content_type: 'application/x-sql',
+        version: "v4",
+    };
+
+    refe.getSignedUrl(config, (err, url) => {
+        console.log(url);
+    });
+
+}
 
 function createDir(path) {
     if (!fs.existsSync(path)) {

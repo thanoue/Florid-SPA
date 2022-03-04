@@ -15,7 +15,7 @@ module.exports = env !== 'development' ? {
 } : {
         HOST: "localhost",
         USER: "root",
-        PASSWORD: "123456a@A",
+        PASSWORD: "root",
         DB: "florid_local",
         dialect: "mysql",
         pool: {

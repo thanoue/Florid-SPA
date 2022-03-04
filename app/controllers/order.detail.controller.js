@@ -256,7 +256,7 @@ exports.completeOD = (req, res) => {
         OrderDetail.findAll({ //check if complete all already
             where: {
                 State: {
-                    [Op.ne]: ODStatuses.Completed
+                    [Op.ne]: [ODStatuses.Completed, ODStatuses.Canceled]
                 },
                 OrderId: req.body.OrderId
             }

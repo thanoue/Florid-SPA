@@ -233,10 +233,10 @@ module.exports = function (app) {
         [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.getFinishedOrderIds)
 
     //shipping session
-    app.post(`${shippingSessionPrefix}assignSingleOD`,
-        [authJwt.verifyToken], shippingSessionController.assignSingleOD)
-    app.post(`${shippingSessionPrefix}assignOrderDetails`,
-        [authJwt.verifyToken], shippingSessionController.assignOrderDetails)
+    app.post(`${shippingSessionPrefix}assignSingleShipper`,
+        [authJwt.verifyToken], shippingSessionController.assignSingleShipper)
+    app.post(`${shippingSessionPrefix}assignShipperForOrderDetails`,
+        [authJwt.verifyToken], shippingSessionController.assignShipperForOrderDetails)
     app.post(`${shippingSessionPrefix}getShippingOrderDetails`,
         [authJwt.verifyToken], shippingSessionController.getShippingOrderDetails)
     app.post(`${shippingSessionPrefix}updateFields`,
