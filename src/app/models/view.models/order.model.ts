@@ -45,7 +45,7 @@ export class OrderDetailViewModel {
     OrderDetailId = 0;
     OrderId = '';
     OrderIndex = 0;
-    State = OrderDetailStates.Waiting;
+    State: OrderDetailStates;
     ProductId = 0;
     ProductImageUrl = '';
     Quantity = 1;

@@ -28,18 +28,6 @@ export class FloristMainComponent extends BaseComponent {
     'Xem chi tiết đơn',
   ];
 
-  fixingRequestMenuItems = [
-    'Nhận sửa đơn',
-    'Hoàn thành đơn',
-    'Xem chi tiết đơn',
-  ];
-
-  asignedMenuItems = [
-    'Bắt đầu làm/sửa',
-    'Hoàn thành đơn',
-    'Xem chi tiết đơn',
-  ];
-
   makingMenuItems = [
     'Hoàn thành đơn',
     'Xem chi tiết đơn',
@@ -80,7 +68,7 @@ export class FloristMainComponent extends BaseComponent {
 
     this.waitingOrderDetails = [];
 
-    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.Added, OrderDetailStates.SentBack], 'MakingRequestTime')
       .then(details => {
 
         this.waitingOrderDetails = details;
@@ -101,71 +89,62 @@ export class FloristMainComponent extends BaseComponent {
 
   }
 
+  completeOD(orderDetail: OrderDetailViewModel) {
+
+    this.openConfirm('chắc chắn hoàn thành đơn?', () => {
+
+      this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
+        CompleteTime: (new Date()).getTime(),
+      }).then(() => {
+
+        this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
+
+          State: OrderDetailStates.Comfirming,
+
+        }).then(() => {
+          this.loadMakingDetails();
+          this.loadWaitingDetails();
+        });
+
+      });
+
+    });
+  }
+
   getMenu(orderDetail: OrderDetailViewModel) {
+
+    console.log(orderDetail.State);
 
     let menu: string[];
 
     switch (orderDetail.State) {
-      case OrderDetailStates.Waiting:
+      case OrderDetailStates.Added:
+      case OrderDetailStates.SentBack:
         menu = this.waitingMenuItems;
         break;
       case OrderDetailStates.Making:
       case OrderDetailStates.Fixing:
         menu = this.makingMenuItems;
         break;
-      case OrderDetailStates.FixingRequest:
-        menu = this.fixingRequestMenuItems;
-        break;
-
-      case OrderDetailStates.FixerAssigned:
-      case OrderDetailStates.FloristAssigned:
-
-        menu = this.asignedMenuItems;
-        break;
     }
 
     menuOpen((index) => {
 
       switch (+index) {
+
         case 0:
 
           switch (orderDetail.State) {
 
-            case OrderDetailStates.FixerAssigned:
-            case OrderDetailStates.FloristAssigned:
-
-              this.openConfirm('Bắt đầu thực hiện đơn này?', () => {
-
-                this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
-                  StartTime: (new Date()).getTime(),
-                }).then(() => {
-
-                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-
-                    State: orderDetail.State == OrderDetailStates.FixerAssigned ? OrderDetailStates.Fixing : OrderDetailStates.Making,
-
-                  }).then(() => {
-
-                    this.loadMakingDetails();
-
-                  });
-
-                });
-
-              });
-
-              break;
-
-
-            case OrderDetailStates.FixingRequest:
-            case OrderDetailStates.Waiting:
+            case OrderDetailStates.Added:
+            case OrderDetailStates.SentBack:
 
               this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
                 .then(data => {
 
                   let typeMaking = MakingType.Making;
 
-                  if (orderDetail.State == OrderDetailStates.Waiting) {
+                  if (orderDetail.State == OrderDetailStates.Added) {
                     typeMaking = MakingType.Making;
                   } else {
                     typeMaking = MakingType.Fixing;
@@ -183,61 +162,26 @@ export class FloristMainComponent extends BaseComponent {
             case OrderDetailStates.Making:
             case OrderDetailStates.Fixing:
 
-              this.openConfirm('chắc chắn hoàn thành đơn?', () => {
-
-                this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
-                  CompleteTime: (new Date()).getTime(),
-                }).then(() => {
-
-                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-
-                    State: OrderDetailStates.Comfirming,
-
-                  }).then(() => {
-                    this.loadMakingDetails();
-                    this.loadWaitingDetails();
-                  });
-
-                });
-
-              });
+              this.completeOD(orderDetail);
 
               break;
+
           }
           break;
+
         case 1:
 
           switch (orderDetail.State) {
 
-            case OrderDetailStates.FixerAssigned:
-            case OrderDetailStates.FloristAssigned:
-
-              this.orderDetailService.updateMakingFields(this.orderDetailService.getLastestMaking(orderDetail).Id, {
-                CompleteTime: (new Date()).getTime(),
-              }).then(() => {
-
-                this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-
-                  State: OrderDetailStates.Comfirming,
-
-                }).then(() => {
-                  this.loadMakingDetails();
-                  this.loadWaitingDetails();
-                });
-
-              });
-
-              break;
-
-            case OrderDetailStates.Waiting:
-            case OrderDetailStates.FixingRequest:
+            case OrderDetailStates.Added:
+            case OrderDetailStates.SentBack:
 
               this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
                 .then(data => {
 
                   let typeMaking = MakingType.Making;
 
-                  if (orderDetail.State == OrderDetailStates.Waiting) {
+                  if (orderDetail.State == OrderDetailStates.Added) {
                     typeMaking = MakingType.Making;
                   } else {
                     typeMaking = MakingType.Fixing;

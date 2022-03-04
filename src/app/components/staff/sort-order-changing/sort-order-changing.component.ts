@@ -63,7 +63,7 @@ export class SortOrderChangingComponent extends BaseComponent {
 
     this.makingODs = [];
 
-    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.Waiting, OrderDetailStates.FixingRequest], 'MakingRequestTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.Added, OrderDetailStates.SentBack], 'MakingRequestTime')
       .then(details => {
 
         details.forEach(detail => {
@@ -80,7 +80,7 @@ export class SortOrderChangingComponent extends BaseComponent {
   loadShippingDetails() {
 
     this.shippingODs = [];
-    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.DeliveryWaiting], 'ReceivingTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.OnTheWay], 'ReceivingTime')
       .then(details => {
 
         details.forEach(detail => {
@@ -148,7 +148,6 @@ export class SortOrderChangingComponent extends BaseComponent {
 
     this.openConfirm(this.isAssigningShipper ? 'Xác nhận giao đơn cho shipper?' : 'Xác nhận phân công florist?', () => {
 
-
       if (this.isAssigningShipper) {
 
         const orderDetailIds: number[] = [];
@@ -161,7 +160,7 @@ export class SortOrderChangingComponent extends BaseComponent {
 
         });
 
-        this.orderDetailService.assignOrderDetails(orderDetailIds, userId, (new Date()).getTime())
+        this.orderDetailService.assignShipperForOrderDetails(orderDetailIds, userId, (new Date()).getTime())
           .then(res => {
             this.isAssigningShipper = false;
             this.loadMakingDetails();
@@ -171,6 +170,7 @@ export class SortOrderChangingComponent extends BaseComponent {
       } else {
 
         const orderDetails: OrderDetailViewModel[] = [];
+
         this.makingODs.forEach(od => {
 
           if (od.IsSelect) {

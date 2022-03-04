@@ -32,11 +32,6 @@ export class ShipperMainComponent extends BaseComponent {
     'Xem chi tiết đơn',
   ];
 
-  shippingMenuItems = [
-    'Giao đơn',
-    'Xem chi tiết đơn',
-  ];
-
   onTheWayMenuItems = [
     'Hoàn thành đơn',
     'Chụp ảnh giao hàng',
@@ -51,6 +46,7 @@ export class ShipperMainComponent extends BaseComponent {
   }
 
   protected Init() {
+
     this.loadWaitingDetails();
     this.loadShippingDetails();
 
@@ -82,7 +78,7 @@ export class ShipperMainComponent extends BaseComponent {
 
     this.waitingOrderDetails = [];
 
-    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.DeliveryWaiting], 'ReceivingTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.Comfirming, OrderDetailStates.SentBack], 'ReceivingTime')
       .then(details => {
 
         this.waitingOrderDetails = details;
@@ -112,140 +108,155 @@ export class ShipperMainComponent extends BaseComponent {
           Note: note,
           CompleteTime: new Date().getTime(),
           DeliveryImageUrl: ''
+
         }).then(data => {
 
           this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
 
-            State: destState
+            State: OrderDetailStates.SentBack
 
           }).then(res => {
 
             this.loadShippingDetails();
 
           });
+
         }).catch(err => {
+
           this.showError(err);
+
         });
 
       } else {
 
-        this.orderDetailService.shippingConfirm(orderDetail, null, note).then(data => {
+        this.orderService.getById(orderDetail.OrderId)
+          .then(order => {
+            this.orderDetailService.shippingConfirm(orderDetail, null, note).then(data => {
 
-          this.loadShippingDetails();
+              this.orderDetailService.completeOD(orderDetail, order)
+                .then(() => {
 
-        }).catch(err => {
-          this.showError(err);
-        });
+                  this.loadShippingDetails();
 
+                });
+
+            }).catch(err => {
+
+              this.showError(err);
+
+            });
+          });
       }
 
     });
 
   }
 
-  getMenu(orderDetail: OrderDetailViewModel) {
+  updateWaitingDetail(index: number, orderDetail: OrderDetailViewModel) {
 
-    menuOpen((index) => {
+    switch (index) {
+      case 0:
 
-      switch (+index) {
-        case 0:
+        // tslint:disable-next-line:new-parens
+        this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
+          .then(data => {
 
-          switch (orderDetail.State) {
+            this.orderDetailService.assignSingleShipper(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date()).getTime()).then(() => {
 
-            case OrderDetailStates.DeliveryWaiting:
+              this.loadShippingDetails();
+              this.loadWaitingDetails();
 
-              // tslint:disable-next-line:new-parens
-              this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
-                .then(data => {
-
-                  this.orderDetailService.assignSingleOD(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date()).getTime()).then(() => {
-
-                    this.loadShippingDetails();
-                    this.loadWaitingDetails();
-
-                  });
-
-                });
-
-              break;
-
-            case OrderDetailStates.OnTheWay:
-
-              this.openConfirm('Hoàn thành giao đơn?', () => {
-
-                this.updateFinalState(orderDetail, 'Hoàn thành', OrderDetailStates.Deliveried);
-
-              });
-
-              break;
-
-            case OrderDetailStates.DeliverAssinged:
-
-              this.openConfirm('Bắt đầu giao đơn này?', () => {
-
-                this.orderDetailService.updateShippingFields(this.orderDetailService.getLastestShipping(orderDetail).Id, {
-                  StartTime: (new Date()).getTime(),
-                }).then(() => {
-
-                  this.orderDetailService.updateFields(orderDetail.OrderDetailId, {
-
-                    State: OrderDetailStates.OnTheWay,
-
-                  }).then(() => {
-
-                    this.loadShippingDetails();
-
-                  });
-
-                });
-
-              });
-
-              break;
-          }
-
-          break;
-
-        case 1:
-
-          switch (orderDetail.State) {
-
-            case OrderDetailStates.OnTheWay:
-
-              this.globalOrderDetail = orderDetail;
-              this.router.navigate(['staff/customer-confirming']);
-
-              break;
-
-            default:
-
-              this.globalOrderDetail = orderDetail;
-              this.router.navigate(['staff/order-detail-view']);
-
-              break;
-          }
-
-          break;
-
-        case 2:
-
-          this.openConfirm('Trả đơn này?', () => {
-
-            this.updateFinalState(orderDetail, 'Trả đơn', OrderDetailStates.SentBack);
+            });
 
           });
 
+        break;
+
+
+      case 1:
+
+        this.viewDetail(orderDetail);
+
+        break;
+
+        break;
+    }
+
+  }
+
+  updateOnTheWayDetail(index: number, orderDetail: OrderDetailViewModel) {
+
+    // onTheWayMenuItems = [
+    //   'Hoàn thành đơn',
+    //   'Chụp ảnh giao hàng',
+    //   'Trả hàng',
+    //   'Xem chi tiết đơn'
+    // ];
+
+    switch (index) {
+
+      case 0:
+
+        this.openConfirm('Hoàn thành giao đơn?', () => {
+
+          this.updateFinalState(orderDetail, 'Hoàn thành', OrderDetailStates.Completed);
+
+        });
+
+        break;
+
+      case 1:
+
+        this.globalOrderDetail = orderDetail;
+        this.router.navigate(['staff/customer-confirming']);
+
+        break;
+
+      case 2:
+        this.openConfirm('Trả đơn này?', () => {
+
+          this.updateFinalState(orderDetail, 'Trả đơn', OrderDetailStates.SentBack);
+
+        });
+
+      case 3:
+
+        this.viewDetail(orderDetail);
+
+        break;
+    }
+
+  }
+
+  getMenu(orderDetail: OrderDetailViewModel) {
+
+    let menu: string[];
+
+    switch (orderDetail.State) {
+      case OrderDetailStates.Comfirming:
+      case OrderDetailStates.SentBack:
+        menu = this.waitingMenuItems;
+        break;
+      case OrderDetailStates.OnTheWay:
+        menu = this.onTheWayMenuItems;
+        break;
+    }
+
+    menuOpen((index) => {
+
+      switch (orderDetail.State) {
+        case OrderDetailStates.OnTheWay:
+
+          this.updateOnTheWayDetail(+index, orderDetail);
+
           break;
 
-        case 3:
+        default:
 
-          this.globalOrderDetail = orderDetail;
-          this.router.navigate(['staff/order-detail-view']);
-
-          break;
-
+          this.updateWaitingDetail(+index, orderDetail);
       }
-    }, orderDetail.State === OrderDetailStates.DeliveryWaiting ? this.waitingMenuItems : orderDetail.State === OrderDetailStates.DeliverAssinged ? this.shippingMenuItems : this.onTheWayMenuItems);
+
+    }, menu);
 
   }
 }

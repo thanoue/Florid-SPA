@@ -336,14 +336,14 @@ export class OrderDetailService {
       orderDetailId,
       floristId,
       assignTime,
-      makingType
+      makingType,
     }).then(data => {
       return data;
     });
   }
 
-  assignSingleOD(orderDetailId: number, shipperId: number, assignTime: number): Promise<any> {
-    return this.httpService.post(API_END_POINT.assignSingleOD, {
+  assignSingleShipper(orderDetailId: number, shipperId: number, assignTime: number): Promise<any> {
+    return this.httpService.post(API_END_POINT.assignSingleShipper, {
       orderDetailId,
       shipperId,
       assignTime,
@@ -367,7 +367,7 @@ export class OrderDetailService {
 
   replaceFlorist(orderDetailId: number, oldMakingId: number, newFloristId: number = -1) {
 
-    return this.httpService.post(API_END_POINT.replaceShipper, {
+    return this.httpService.post(API_END_POINT.replaceFlorist, {
       orderDetailId,
       newFloristId,
       oldMakingId,
@@ -405,8 +405,8 @@ export class OrderDetailService {
   }
 
 
-  assignOrderDetails(orderDetailIds: number[], shipperId: number, assignTime: number): Promise<any> {
-    return this.httpService.post(API_END_POINT.assignOrderDetails, {
+  assignShipperForOrderDetails(orderDetailIds: number[], shipperId: number, assignTime: number): Promise<any> {
+    return this.httpService.post(API_END_POINT.assignShipperForOrderDetails, {
       orderDetailIds,
       shipperId,
       assignTime
@@ -424,10 +424,11 @@ export class OrderDetailService {
 
     orderDetailIds.forEach(orderDetail => {
 
-      const making: { AssignTime: number, FloristId: number, MakingType: MakingType, OrderDetailId: number } = {
+      const making: { AssignTime: number, StartTime: number, FloristId: number, MakingType: MakingType, OrderDetailId: number } = {
         AssignTime: assignTime,
+        StartTime: assignTime,
         FloristId: floristdId,
-        MakingType: orderDetail.State === OrderDetailStates.FixingRequest ? MakingType.Fixing : MakingType.Making,
+        MakingType: orderDetail.State === OrderDetailStates.SentBack ? MakingType.Fixing : MakingType.Making,
         OrderDetailId: orderDetail.OrderDetailId
       };
 

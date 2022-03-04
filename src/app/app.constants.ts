@@ -112,10 +112,10 @@ export const API_END_POINT = {
     updateDetailSeen: '/orderDetailSeener/updateDetailSeen',
     getODSeeners: '/orderDetailSeener/getODSeeners',
 
-    assignSingleOD: '/shippingSession/assignSingleOD',
+    assignSingleShipper: '/shippingSession/assignSingleShipper',
     replaceFlorist: '/shippingSession/replaceFlorist',
     replaceShipper: '/shippingSession/replaceShipper',
-    assignOrderDetails: '/shippingSession/assignOrderDetails',
+    assignShipperForOrderDetails: '/shippingSession/assignShipperForOrderDetails',
     getShippingOrderDetails: '/shippingSession/getShippingOrderDetails',
     shippingConfirm: '/shippingSession/shippingConfirm',
     updateShippingFields: '/shippingSession/updateFields',
@@ -186,48 +186,20 @@ export const ORDER_DETAIL_STATES = [
         DisplayName: 'Đã chốt đơn'
     },
     {
-        State: OrderDetailStates.Waiting,
-        DisplayName: 'Chưa chọn thợ cắm'
-    },
-    {
-        State: OrderDetailStates.FloristAssigned,
-        DisplayName: 'Đã chọn thợ cắm'
-    },
-    {
         State: OrderDetailStates.Making,
         DisplayName: 'Đang cắm'
     },
     {
         State: OrderDetailStates.Comfirming,
-        DisplayName: 'Đang xác nhận thành phẩm'
-    },
-    {
-        State: OrderDetailStates.DeliveryWaiting,
-        DisplayName: 'Đã xác nhận SP, chưa có Shipper'
-    },
-    {
-        State: OrderDetailStates.DeliverAssinged,
-        DisplayName: 'Đã chọn Shipper'
+        DisplayName: 'Đã cắm xong, đang chờ giao'
     },
     {
         State: OrderDetailStates.OnTheWay,
         DisplayName: 'Đang giao'
     },
     {
-        State: OrderDetailStates.Deliveried,
-        DisplayName: 'Đã giao, đang xác nhận giao'
-    },
-    {
         State: OrderDetailStates.SentBack,
         DisplayName: 'Đã trả đơn về'
-    },
-    {
-        State: OrderDetailStates.FixingRequest,
-        DisplayName: 'Đang yêu cầu sửa'
-    },
-    {
-        State: OrderDetailStates.FixerAssigned,
-        DisplayName: 'Đã chọn thợ sửa'
     },
     {
         State: OrderDetailStates.Fixing,
@@ -254,23 +226,11 @@ export const ORDER_DETAIL_SORTING_STATES = [
     },
     {
         State: OrderDetailStates.Comfirming,
-        DisplayName: 'Đang xác nhận thành phẩm'
+        DisplayName: 'Đã cắm xong, đang chờ giao'
     },
     {
         State: OrderDetailStates.OnTheWay,
         DisplayName: 'Đang giao'
-    },
-    {
-        State: OrderDetailStates.Deliveried,
-        DisplayName: 'Đã giao, đang xác nhận giao'
-    },
-    {
-        State: OrderDetailStates.FixingRequest,
-        DisplayName: 'Đang yêu cầu sửa'
-    },
-    {
-        State: OrderDetailStates.Fixing,
-        DisplayName: 'Đang sửa'
     },
     {
         State: OrderDetailStates.Completed,

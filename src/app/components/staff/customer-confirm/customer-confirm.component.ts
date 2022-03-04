@@ -26,7 +26,6 @@ export class CustomerConfirmComponent extends BaseComponent {
   selectedBlob: Blob;
   orderDetail: OrderDetailViewModel;
   order: OrderViewModel;
-  totalBalance = 0;
   customer: Customer;
 
   constructor(
@@ -49,7 +48,6 @@ export class CustomerConfirmComponent extends BaseComponent {
       .then(order => {
 
         this.order = order;
-        this.totalBalance = this.order.TotalAmount - this.order.TotalPaidAmount;
 
         this.customerService.getById(this.order.CustomerInfo.Id)
           .then(cus => {
@@ -138,19 +136,13 @@ export class CustomerConfirmComponent extends BaseComponent {
 
               const file = new File([blob], 'shipping.png', { type: 'image/png' });
 
-              this.orderDetailService.shippingConfirm(this.orderDetail, file, note)
-                .then(res => {
-                  this.router.navigate(['staff/shipper-main']);
-                });
+              this.shippingConfirm(file, note);
 
             });
 
         } else {
 
-          this.orderDetailService.shippingConfirm(this.orderDetail, null, note)
-            .then(res => {
-              this.router.navigate(['staff/shipper-main']);
-            });
+          this.shippingConfirm(null, note);
 
         }
 
@@ -158,6 +150,17 @@ export class CustomerConfirmComponent extends BaseComponent {
       default:
         break;
     }
+
+  }
+
+  shippingConfirm(file: File, note: string) {
+    this.orderDetailService.shippingConfirm(this.orderDetail, null, note)
+      .then(res => {
+        this.orderDetailService.completeOD(this.orderDetail, this.order)
+          .then(() => {
+            this.router.navigate(['staff/shipper-main']);
+          });
+      });
 
   }
 

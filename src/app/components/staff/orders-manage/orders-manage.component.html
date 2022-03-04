@@ -8,7 +8,8 @@
             <div class="col-2 order-noti text-right">
                 <a routerLink="/staff/add-purchse"><img src="../../../assets/images/money.svg" alt=""
                         class="main-filter">
-                    <!--<span class="noti-count">20</span>--></a>
+                    <!--<span class="noti-count">20</span>-->
+                </a>
             </div>
         </div>
     </div>
@@ -68,16 +69,16 @@
                                         <span class="prodPrice">{{orderDetail.ModifiedPrice| myCurrPipe}}</span>
                                         <span class="item-quantity">Số lượng:
                                             {{orderDetail.Quantity}}</span>
-                                        <span
-                                            class="item-time">{{orderDetail.DeliveryInfo.DateTime | myTimePipe}}</span>
-                                        <span
-                                            class="item-date">{{orderDetail.DeliveryInfo.DateTime  | myDatePipe}}</span>
+                                        <span class="item-time">{{orderDetail.DeliveryInfo.DateTime |
+                                            myTimePipe}}</span>
+                                        <span class="item-date">{{orderDetail.DeliveryInfo.DateTime |
+                                            myDatePipe}}</span>
                                     </div>
                                 </div>
                             </li>
                         </ul>
-                        <a *ngIf="!order.IsFinished" href="javascript:void(0);" (click)="editOrder(order.OrderId)" class="order-edit"><i
-                                class="fa fa-pencil"></i> Chỉnh sửa</a>
+                        <a *ngIf="!order.IsFinished" href="javascript:void(0);" (click)="editOrder(order.OrderId)"
+                            class="order-edit"><i class="fa fa-pencil"></i> Chỉnh sửa</a>
                     </div>
                 </li>
             </ul>
@@ -103,13 +104,8 @@
             class="mainForm"></textarea>
     </div>
     <div class="row">
-        <div class="col-12 mx-auto text-center">
-            <button type="button" id="choose-florist-btn" class="btn main-btn w-100 mt-3">Chỉ định Florist</button>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-6 mx-auto text-center">
-            <button type="button" id="submit-btn" class="btn main-btn w-100 mt-3">Lưu</button>
+            <button type="button" id="choose-florist-btn" class="btn main-btn w-100 mt-3">Chọn Florist</button>
         </div>
         <div class="col-6 mx-auto text-center">
             <button type="button" id="cancel-btn" class="btn grey-btn w-100 mt-3">Hủy</button>
@@ -135,13 +131,8 @@
             class="mainForm"></textarea>
     </div>
     <div class="row">
-        <div class="col-12 mx-auto text-center">
-            <button type="button" id="choose-florist-btn" class="btn main-btn w-100 mt-3">Chỉ định Shipper</button>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-6 mx-auto text-center">
-            <button type="button" id="submit-btn" class="btn main-btn w-100 mt-3">Lưu</button>
+            <button type="button" id="choose-florist-btn" class="btn main-btn w-100 mt-3">Chọn Shipper</button>
         </div>
         <div class="col-6 mx-auto text-center">
             <button type="button" id="cancel-btn" class="btn grey-btn w-100 mt-3">Hủy</button>
@@ -186,7 +177,7 @@
         <li class="viewItem-three-column" *ngFor="let user of shippers" id="{{user.Id}}">
             <img src="{{user.AvtUrl | ImgPipe : 'UserAvt'}}" alt="" class="itemAva">
             <span class="itemName">{{user.FullName}}</span>
-            <span class="itemRole">{{user.IsExternalShipper ?  'Shipper ngoài' : 'Nhân viên'}}</span>
+            <span class="itemRole">{{user.IsExternalShipper ? 'Shipper ngoài' : 'Nhân viên'}}</span>
         </li>
     </ul>
 </div>

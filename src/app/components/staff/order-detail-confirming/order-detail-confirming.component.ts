@@ -46,7 +46,7 @@ export class OrderDetailConfirmingComponent extends BaseComponent {
       case Roles.Shipper:
 
         this.orderDetailService.updateFields(this.globalOrderDetail.OrderDetailId, {
-          State: OrderDetailStates.Deliveried,
+          State: OrderDetailStates.Completed,
           // tslint:disable-next-line:new-parens
           DeliveryCompletedTime: (new Date).getTime(),
         })

@@ -61,17 +61,10 @@ export enum MenuItems {
 
 export enum OrderDetailStates {
     Added = 'Added',
-    Waiting = 'Waiting',
     Making = 'Making',
     Fixing = 'Fixing',
-    FixingRequest = 'FixingRequest',
-    FixerAssigned = 'FixerAssigned',
-    FloristAssigned = 'FloristAssigned',
     Comfirming = 'Comfirming',
-    DeliveryWaiting = 'DeliveryWaiting',
-    DeliverAssinged = 'DeliverAssinged',
     OnTheWay = 'OnTheWay',
-    Deliveried = 'Deliveried',
     SentBack = 'SentBack',
     Completed = 'Completed',
     Canceled = 'Canceled'
