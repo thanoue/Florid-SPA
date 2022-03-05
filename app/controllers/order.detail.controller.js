@@ -46,7 +46,7 @@ function updateODResult(req, res, resultImgName) {
     let orderDetailId = req.body.orderDetailId;
 
     let updateObj = {
-        State: ODStatuses.DeliveryWaiting,
+        State: ODStatuses.OnTheWay,
     };
 
     OrderDetail.update(updateObj, {
@@ -256,7 +256,7 @@ exports.completeOD = (req, res) => {
         OrderDetail.findAll({ //check if complete all already
             where: {
                 State: {
-                    [Op.ne]: [ODStatuses.Completed, ODStatuses.Canceled]
+                    [Op.notIn]: [ODStatuses.Completed, ODStatuses.Canceled]
                 },
                 OrderId: req.body.OrderId
             }

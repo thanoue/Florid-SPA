@@ -270,6 +270,32 @@ function openCustMenu() {
     });
 }
 
+function getTopScrollPosition(callback) {
+
+    let position = jQuery("#accordionOrder").scrollTop();
+
+    callback(position);
+}
+
+function scrollToOrder(buttonId, scrollPosition) {
+
+    setTimeout(() => {
+
+        let id = `#arrowBtn${buttonId}`;
+
+        let element = document.getElementById(`arrowBtn${buttonId}`);
+
+        if (element == null || element == undefined)
+            return;
+
+        jQuery("#accordionOrder").scrollTop(scrollPosition);
+
+        element.click();
+
+    }, 500);
+
+}
+
 function selectSavedDeliveryInfo(e) {
 
     let index = parseInt(jQuery(e).attr('data-index'));
@@ -970,22 +996,12 @@ function chooseShipper(callback) {
     });
 }
 
-function makingTimeRequest(saveCallback, chooseFloristCallback) {
+function makingTimeRequest(chooseFloristCallback) {
 
     appendInBody();
 
     jQuery("#makingTimeRequest").fadeIn(350);
 
-    jQuery("#makingTimeRequest #submit-btn").off('click');
-    jQuery("#makingTimeRequest #submit-btn").on('click', function () {
-
-        jQuery('#makingTimeRequest').hide(250, function () {
-            jQuery(".overlay-dark:not(.layer2)").remove();
-            saveCallback();
-
-        });
-
-    });
 
     jQuery("#makingTimeRequest #choose-florist-btn").off('click');
     jQuery("#makingTimeRequest #choose-florist-btn").one('click', function () {
@@ -1014,22 +1030,11 @@ function makingTimeRequest(saveCallback, chooseFloristCallback) {
 
 }
 
-function shippingRequest(saveCallback, chooseFloristCallback) {
+function shippingRequest(chooseFloristCallback) {
 
     appendInBody();
 
     jQuery("#shippingRequest").fadeIn(350);
-
-    jQuery("#shippingRequest #submit-btn").off('click');
-    jQuery("#shippingRequest #submit-btn").on('click', function () {
-
-        jQuery('#shippingRequest').hide(250, function () {
-            jQuery(".overlay-dark:not(.layer2)").remove();
-            saveCallback();
-
-        });
-
-    });
 
     jQuery("#shippingRequest #choose-florist-btn").off('click');
     jQuery("#shippingRequest #choose-florist-btn").one('click', function () {

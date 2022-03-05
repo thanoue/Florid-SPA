@@ -8,15 +8,9 @@ exports.fileFolderPath = {
 
 exports.ODStatuses = {
     Added: 'Added',
-    Waiting: 'Waiting',
     Making: 'Making',
     Fixing: 'Fixing',
-    FixingRequest: 'FixingRequest',
-    FixerAssigned: 'FixerAssigned',
-    FloristAssigned: 'FloristAssigned',
     Comfirming: 'Comfirming',
-    DeliveryWaiting: 'DeliveryWaiting',
-    DeliverAssinged: 'DeliverAssinged',
     OnTheWay: 'OnTheWay',
     Deliveried: 'Deliveried',
     SentBack: 'SentBack',
@@ -46,7 +40,7 @@ exports.Roles = {
 };
 
 exports.PurchaseMethods = {
-    All : 'All',
+    All: 'All',
     Cash: 'Cash',
     Banking: 'Banking',
     Momo: 'Momo',

@@ -224,13 +224,13 @@ module.exports = function (app) {
     app.post(`${orderDetailPrefix}updateOrderInfos`,
         [authJwt.verifyToken], orderDetailController.updateOrderInfos)
     app.post(`${orderDetailPrefix}completeOrder`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.completeOrder)
+        [authJwt.verifyToken], orderDetailController.completeOrder)
     app.post(`${orderDetailPrefix}uploadNoteImage`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.uploadNoteImage)
+        [authJwt.verifyToken,], orderDetailController.uploadNoteImage)
     app.post(`${orderDetailPrefix}completeOD`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.completeOD)
+        [authJwt.verifyToken], orderDetailController.completeOD)
     app.post(`${orderDetailPrefix}getFinishedOrderIds`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin], orderDetailController.getFinishedOrderIds)
+        [authJwt.verifyToken], orderDetailController.getFinishedOrderIds)
 
     //shipping session
     app.post(`${shippingSessionPrefix}assignSingleShipper`,
@@ -288,7 +288,7 @@ module.exports = function (app) {
         customerController.getList
     )
     app.post(`${customerPrefix}updateAllCustomerMemberType`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        [authJwt.verifyToken],
         customerController.updateAllCustomerMemberType
     )
     app.get(`${customerPrefix}updateTotalAmount`,
@@ -327,7 +327,7 @@ module.exports = function (app) {
         customerController.getAll
     )
     app.post(`${customerPrefix}updateFields`,
-        [authJwt.verifyToken, authJwt.isAccountOrAdmin],
+        [authJwt.verifyToken],
         customerController.updateFields
     )
     app.post(`${customerPrefix}createCustomers`,
