@@ -49,6 +49,9 @@ export class GlobalService {
     isRememberPassWillCheck = false;
     currentOrderPage = 0;
     currentCustomerPage = 1;
+    selectedOrderId = '';
+    currentOrderListScrollPos = 0;
+    displayStatuses: any[] = [];
 
     navigateOnClick = new Subject<boolean>();
     navigateOnClickEmitter$ = this.navigateOnClick.asObservable;

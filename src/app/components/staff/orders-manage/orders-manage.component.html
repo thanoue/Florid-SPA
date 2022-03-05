@@ -50,8 +50,8 @@
                             <span class="item-date">{{order.DoneTime | myDatePipe}}</span>
                         </div>
                         <button data-toggle="collapse" [attr.data-target]="'#collapse' + orderIndex"
-                            aria-expanded="false" [attr.aria-controls]="'collapse' + orderIndex"
-                            class="collapsed">mở</button>
+                            aria-expanded="false" [attr.aria-controls]="'collapse' + orderIndex" class="collapsed"
+                            (click)="openOrder(order)" [id]="'arrowBtn'+ order.OrderId">mở</button>
                     </div>
                     <div class="item-bot collapse" [id]="'collapse' + orderIndex"
                         [attr.aria-labelledby]="'heading' + orderIndex" [attr.data-parent]="'#order' + orderIndex">

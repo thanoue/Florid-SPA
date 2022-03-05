@@ -270,6 +270,32 @@ function openCustMenu() {
     });
 }
 
+function getTopScrollPosition(callback) {
+
+    let position = jQuery("#accordionOrder").scrollTop();
+
+    callback(position);
+}
+
+function scrollToOrder(buttonId, scrollPosition) {
+
+    setTimeout(() => {
+
+        let id = `#arrowBtn${buttonId}`;
+
+        let element = document.getElementById(`arrowBtn${buttonId}`);
+
+        if (element == null || element == undefined)
+            return;
+
+        jQuery("#accordionOrder").scrollTop(scrollPosition);
+
+        element.click();
+
+    }, 500);
+
+}
+
 function selectSavedDeliveryInfo(e) {
 
     let index = parseInt(jQuery(e).attr('data-index'));

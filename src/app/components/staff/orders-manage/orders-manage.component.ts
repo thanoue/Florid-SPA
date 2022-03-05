@@ -15,6 +15,7 @@ import { UserService } from 'src/app/services/user.service';
 import { MyDatepipe } from 'src/app/pipes/date.pipe';
 import { PrintJob, PrintSaleItem, purchaseItem } from 'src/app/models/entities/printjob.entity';
 import { PrintJobService } from 'src/app/services/print-job.service';
+import { OrderDetail } from 'src/app/models/entities/order.entity';
 
 declare function openColorBoard(): any;
 declare function customerSupport(): any;
@@ -24,6 +25,8 @@ declare function chooseFlorist(saveCallBack: (id: number) => void): any;
 declare function chooseShipper(saveCallBack: (id: number) => void): any;
 declare function filterOrderByState(menuitems: { Name: string; Value: number; }[], callback: (val: any) => void): any;
 declare function getShippingNoteDialog(btnTitle: string, callback: (note: string) => void): any;
+declare function scrollToOrder(orderId: string, position: number): any;
+declare function getTopScrollPosition(callback: (position: number) => void): any;
 
 export interface ISelectedDetail {
   State: OrderDetailStates;
@@ -53,6 +56,14 @@ export class OrdersManageComponent extends BaseComponent {
   shippers: User[];
   pageSize = 20;
 
+  get selectedOrderId(): string {
+    return this.globalService.selectedOrderId;
+  }
+
+  set selectedOrderId(id: string) {
+    this.globalService.selectedOrderId = id;
+  }
+
   get currentPage(): number {
     return this.globalService.currentOrderPage;
   }
@@ -61,8 +72,24 @@ export class OrdersManageComponent extends BaseComponent {
     this.globalService.currentOrderPage = page;
   }
 
+  get currentOrderListScrollPos(): number {
+    return this.globalService.currentOrderListScrollPos;
+  }
+
+  set currentOrderListScrollPos(pos: number) {
+    this.globalService.currentOrderListScrollPos = pos;
+  }
+
+  get displayStatuses(): any[] {
+    return this.globalService.displayStatuses;
+  }
+
+  set displayStatuses(statuses: any[]) {
+    this.globalService.displayStatuses = statuses;
+  }
+
+
   totalPage = 0;
-  statuses: any[] = [];
   searchTerm = '';
   allStatuses: any[] = [
     OrderDetailStates.Added,
@@ -185,9 +212,18 @@ export class OrdersManageComponent extends BaseComponent {
 
       this.currentPage = 0;
 
-      this.statuses = state === 'ALL' ? this.allStatuses : [
-        state
-      ];
+      if (state === 'ALL') {
+        this.displayStatuses = this.allStatuses;
+      } else {
+        if (state === OrderDetailStates.Making) {
+          this.displayStatuses = [
+            OrderDetailStates.Making,
+            OrderDetailStates.Fixing
+          ]
+        } else {
+          this.displayStatuses = [state];
+        }
+      }
 
       this.getOrders();
 
@@ -198,7 +234,7 @@ export class OrdersManageComponent extends BaseComponent {
   getOrders() {
 
     this.orders = [];
-    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses, this.searchTerm)
+    this.orderService.searchOrders(this.currentPage, this.pageSize, this.displayStatuses, this.searchTerm)
       .then(orders => {
 
         this.totalPage = orders.totalPages;
@@ -224,7 +260,7 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.currentPage = page;
 
-    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses, this.searchTerm)
+    this.orderService.searchOrders(this.currentPage, this.pageSize, this.displayStatuses, this.searchTerm)
       .then(orders => {
 
         this.totalPage = orders.totalPages;
@@ -248,13 +284,17 @@ export class OrdersManageComponent extends BaseComponent {
 
     this.setStatusBarColor(false);
 
-    this.statuses = this.allStatuses;
+    this.displayStatuses = this.displayStatuses.length > 0 ? this.displayStatuses : this.allStatuses;
 
-    this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+    this.orderService.searchOrders(this.currentPage, this.pageSize, this.displayStatuses)
       .then(orders => {
 
         this.totalPage = orders.totalPages;
         this.orders = orders.orders;
+
+        if (this.selectedOrderId) {
+          scrollToOrder(this.selectedOrderId, this.currentOrderListScrollPos);
+        }
 
       });
 
@@ -383,7 +423,7 @@ export class OrdersManageComponent extends BaseComponent {
               this.orderService.addScoreToCustomer(order)
                 .then(() => {
 
-                  this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                  this.orderService.searchOrders(this.currentPage, this.pageSize, this.displayStatuses)
                     .then(orders => {
 
                       this.totalPage = orders.totalPages;
@@ -406,7 +446,7 @@ export class OrdersManageComponent extends BaseComponent {
                 .then(res => {
                   this.orderService.deleteOrder(order.OrderId)
                     .then(res2 => {
-                      this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                      this.orderService.searchOrders(this.currentPage, this.pageSize, this.displayStatuses)
                         .then(orders => {
 
                           this.totalPage = orders.totalPages;
@@ -418,7 +458,7 @@ export class OrdersManageComponent extends BaseComponent {
             } else {
               this.orderService.deleteOrder(order.OrderId)
                 .then(res2 => {
-                  this.orderService.searchOrders(this.currentPage, this.pageSize, this.statuses)
+                  this.orderService.searchOrders(this.currentPage, this.pageSize, this.displayStatuses)
                     .then(orders => {
 
                       this.totalPage = orders.totalPages;
@@ -498,6 +538,16 @@ export class OrdersManageComponent extends BaseComponent {
     this.selectedDetail.StateDisplay = ORDER_DETAIL_STATES.filter(p => p.State === orderDetail.State)[0].DisplayName;
 
     openColorBoard();
+  }
+
+  openOrder(order: OrderViewModel) {
+
+    getTopScrollPosition((pos) => {
+
+      this.currentOrderListScrollPos = +pos;
+      this.selectedOrderId = order.OrderId;
+
+    });
   }
 
   updateShippingDetail(orderDetail: OrderDetailViewModel, order: OrderViewModel) {
@@ -897,7 +947,6 @@ export class OrdersManageComponent extends BaseComponent {
     }, items);
 
   }
-
 
   transferToFlorist(orderDetail: OrderDetailViewModel, makingType: MakingType, floristId?: number) {
 

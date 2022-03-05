@@ -187,7 +187,7 @@ export const ORDER_DETAIL_STATES = [
     },
     {
         State: OrderDetailStates.Making,
-        DisplayName: 'Đang cắm'
+        DisplayName: 'Đang cắm/sửa'
     },
     {
         State: OrderDetailStates.Comfirming,
@@ -209,6 +209,7 @@ export const ORDER_DETAIL_STATES = [
         State: OrderDetailStates.Completed,
         DisplayName: 'Đã hoàn tất'
     },
+
     {
         State: OrderDetailStates.Canceled,
         DisplayName: 'Đã huỷ'
@@ -222,7 +223,7 @@ export const ORDER_DETAIL_SORTING_STATES = [
     },
     {
         State: OrderDetailStates.Making,
-        DisplayName: 'Đang cắm'
+        DisplayName: 'Đang cắm/sửa'
     },
     {
         State: OrderDetailStates.Comfirming,
@@ -235,6 +236,10 @@ export const ORDER_DETAIL_SORTING_STATES = [
     {
         State: OrderDetailStates.Completed,
         DisplayName: 'Đã hoàn tất'
+    },
+    {
+        State: OrderDetailStates.SentBack,
+        DisplayName: 'Đã trả về'
     },
     {
         State: OrderDetailStates.Canceled,

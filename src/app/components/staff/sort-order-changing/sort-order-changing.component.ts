@@ -80,7 +80,7 @@ export class SortOrderChangingComponent extends BaseComponent {
   loadShippingDetails() {
 
     this.shippingODs = [];
-    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.OnTheWay], 'ReceivingTime')
+    this.orderDetailService.getDetailWithTimeSort([OrderDetailStates.OnTheWay, OrderDetailStates.SentBack], 'ReceivingTime')
       .then(details => {
 
         details.forEach(detail => {

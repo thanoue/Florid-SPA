@@ -44,6 +44,9 @@ export class OrderDetailService {
 
     return this.httpService.post(API_END_POINT.completeOD, orderDetail).then(res => {
 
+      if (!res)
+        return;
+
       const isFinished = res.finished;
 
       if (!isFinished) {
@@ -53,8 +56,10 @@ export class OrderDetailService {
       return this.orderService.addScoreToCustomer(order);
 
     }).catch(err => {
+
       this.httpService.handleError(err);
       throw err;
+
     });
 
   }

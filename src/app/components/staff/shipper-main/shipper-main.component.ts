@@ -157,7 +157,6 @@ export class ShipperMainComponent extends BaseComponent {
     switch (index) {
       case 0:
 
-        // tslint:disable-next-line:new-parens
         this.orderDetailService.updateDetailSeen(orderDetail.OrderDetailId, this.CurrentUser.Id, (new Date).getTime())
           .then(data => {
 
@@ -176,8 +175,6 @@ export class ShipperMainComponent extends BaseComponent {
       case 1:
 
         this.viewDetail(orderDetail);
-
-        break;
 
         break;
     }
@@ -218,6 +215,8 @@ export class ShipperMainComponent extends BaseComponent {
           this.updateFinalState(orderDetail, 'Trả đơn', OrderDetailStates.SentBack);
 
         });
+
+        break;
 
       case 3:
 
