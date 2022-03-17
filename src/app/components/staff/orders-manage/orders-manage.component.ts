@@ -414,6 +414,7 @@ export class OrdersManageComponent extends BaseComponent {
         case 2:
 
           if (order.IsFinished) {
+            this.showInfo('Đơn đã hoàn tấ!');
             return;
           }
 
